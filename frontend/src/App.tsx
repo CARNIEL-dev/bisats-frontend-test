@@ -1,7 +1,10 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Navigate, Routes } from 'react-router-dom';
-
+import AuthLayout from './layouts/auth/AuthLayout';
+import DashboardLayOut from './layouts/DashboardLayOut';
+import { APP_ROUTES } from './constants/app_route';
 import LogIn from './pages/auth/LogIn';
+import Dashboard from './pages/dashboard/Dashboard';
 import './App.css';
 
 const App: React.FC = () => {
@@ -17,23 +20,27 @@ const App: React.FC = () => {
           token ? (
             <Component {...props} />
           ) : (
-            <Navigate to="/login" />
+              <Navigate to={"/"} />
           )
         }
       />
     );
   };
 
+
   return (
     <Router>
       <Routes>
         <>
+          <Route element={<AuthLayout />}>
+            <Route path={APP_ROUTES?.AUTH.LOGIN} Component={LogIn} />
+          </Route>
 
-          <Route path="/login" Component={LogIn} />
-          {/* <Route path="/home" component={HomePage} /> */}
 
           {/* Protected Route */}
-          {/* <ProtectedRoute path="/dashboard" component={DashboardPage} /> */}
+          {/* <ProtectedRoute element={<DashboardLayOut />} >
+            <Route path={`${APP_ROUTES?.DASHBOARD}/*`} Component={Dashboard} />
+          </ProtectedRoute> */}
           {/* <Route
             path="/dashboard"
             element={token ? <DashboardPage /> : <Navigate to="/login" />}

@@ -1,5 +1,10 @@
 /** @format */
 
+export enum GeneralTypes {
+    LOADING="loading"
+}
+
+
 export enum UserActionTypes {
   LOG_IN_SUCCESS = "logInSuccess",
   SIGN_UP = "signUp",
