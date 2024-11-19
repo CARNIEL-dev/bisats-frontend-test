@@ -1,6 +1,7 @@
 import PrimaryInput from "../../components/Inputs/PrimaryInput"
 import OtherSide from "../../layouts/auth/OtherSide"
-const LogIn = () => {
+
+const Login = () => {
     return (
         <div className="lg:w-[442px] mx-auto">
             <OtherSide
@@ -22,4 +23,4 @@ const LogIn = () => {
     )
 }
 
-export default LogIn
+export default Login
