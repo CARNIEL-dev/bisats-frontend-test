@@ -1,26 +1,96 @@
-import PrimaryInput from "../../components/Inputs/PrimaryInput"
-import OtherSide from "../../layouts/auth/OtherSide"
 
-const Login = () => {
+import { useState, useEffect } from "react"
+import PrimaryInput from "../../components/Inputs/PrimaryInput"
+import { PrimaryButton } from "../../components/buttons/Buttons"
+import OtherSide from "../../layouts/auth/OtherSide"
+import { Login } from "../../redux/actions/userActions"
+import { characterLength, specialCharcterRegex, upperCaseRegex, lowerCaseRegex, numberRegex, CheckRegex } from "../../utils/passwordChecks"
+import GoogleButton from "../../components/buttons/GoogleButton"
+import Toast from "../../components/Toast"
+import { useFormik } from "formik"
+import { LogInSchema } from "../../formSchemas"
+import { APP_ROUTES } from "../../constants/app_route"
+import { useNavigate } from "react-router-dom"
+import AuthPasswordInput from "../../components/Inputs/AuthPasswordInput"
+const LogIn = () => {
+    const [logInBody] = useState({
+        email: "",
+        password: "",
+    })
+
+    const [isLoading, setIsLoading] = useState(false)
+    const navigate = useNavigate()
+
+    const formik = useFormik({
+        initialValues: { ...logInBody },
+        validationSchema: LogInSchema,
+        onSubmit: async (values) => {
+            setIsLoading(true)
+            const { ...payload } = values
+            const response = await Login(payload)
+            if (response.statusCode === 200) {
+                if (!response.data.emailVerfied) return navigate(APP_ROUTES.AUTH.VERIFY)
+                Toast.success("", response.message)
+                navigate(APP_ROUTES.DASHBOARD)
+            }
+            setIsLoading(false)
+        },
+    });
+
     return (
         <div className="lg:w-[442px] mx-auto">
             <OtherSide
-                header="Create your account"
+                header="Welcome to Bisats"
                 subHeader="Exchange fiat and crypto fast, easy and securely."
                 upperSubHeader={<></>} />
-            <div className="w-full">
-                <div className="w-full">
+            <form onSubmit={formik.handleSubmit}>
+
+            <div className="w-full mt-10">
+
+                    <div className="w-full mb-3">
                     <PrimaryInput
                         type="email"
+                            name="email"
+                        label="email"
                         css="w-full h-[48px] px-3 outline-none "
-                        onChange={(e) => console.log(e.target.value)}
- 
+                            error={formik.errors.email}
+                            touched={formik.touched.email}
+                            value={formik.values.email}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
                     />
                 </div>
+                    <div className="w-full mb-3">
+                        <AuthPasswordInput
+                            css="w-full h-[48px] px-3 outline-none"
+                            handleChange={formik.handleChange}
+                            name="password"
+                            error={formik.errors.password}
+                            touched={formik.touched.password}
+                            check={true}
+                            text="Password"
+                            value={formik.values.password}
+                            onBlur={formik.handleBlur}
+                        />
+                    </div>
+                    <div className="w-full">
+                        <PrimaryButton css={""} text={"Log In"} type="submit" loading={isLoading} />
+                    </div>
+                {/* </form> */}
+                    <p className="text-[14px] text-[#C49600] leading-[24px] font-[400] mt-1 cursor-pointer" onClick={() => Toast.warning("Ensure your password meets all the requirements.", "Password incomplete")}>Forgot password?</p>
 
-            </div>
+                <div className="w-full flex items-center my-6">
+                    <hr className="text-[#F3F4F6] w-1/2 h-[1.5px]" />
+                        <span className="text-[12px] text-[#707D96] leading-[16px] font-[400] mx-2">Or</span>
+                    <hr className="text-[#F3F4F6] w-1/2 h-[1.5px]" />
+                </div>
+                    <GoogleButton text="Sign in with Google" />
+                <p className="text-[14px] text-[#515B6E] leading-[24px] font-[600] text-center">Don’t have an account?<span className="text-[#C49600] pl-3 cursor-pointer">Sign Up</span></p>
+
+                </div>
+            </form>
         </div>
     )
 }
 
-export default Login
+export default LogIn
