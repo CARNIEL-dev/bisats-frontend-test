@@ -73,10 +73,7 @@ const ResetPassword = () => {
                 <div className="w-full mb-3">
                     <PrimaryButton css={""} text={"Save password"} loading={isLoading} type="submit" />
                 </div>
-
-                
-
-                <p className="text-[14px] text-[#515B6E] leading-[24px] font-[600] text-center">Don’t have an account?<span className="text-[#C49600] pl-3 cursor-pointer">Sign Up</span></p>
+                <p className="text-[14px] text-[#515B6E] leading-[24px] font-[600] text-center">Don’t have an account?<span className="text-[#C49600] pl-3 cursor-pointer" onClick={() => navigate(APP_ROUTES.AUTH.SIGNUP)}>Sign Up</span></p>
             </form>
             </div>
     )

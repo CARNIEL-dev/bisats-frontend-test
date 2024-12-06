@@ -72,7 +72,6 @@ const SignUp = () => {
                             onBlur={formik.handleBlur}
                         />
                     </div>
-
                     <div className="w-full mb-2">
                     <AuthPasswordInput css="w-full h-[48px] px-3 outline-none "
                             // handleChange={(e) => setSignUpBody({ ...signupBody, confirmPassword: e })}
@@ -85,11 +84,8 @@ const SignUp = () => {
                             handleChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                         />
-                </div>
-
+                    </div>
                     <div>
-
-
                 <div className="flex items-center mb-2">
                             <InputCheck type="checkbox"
                                 name="agreeToTerms"
@@ -114,10 +110,8 @@ const SignUp = () => {
                     <span className="text-[12px] text-[#707D96] leading-[16px] font-[400] mx-2">or</span>
                     <hr className="text-[#F3F4F6] w-1/2 h-[1.5px]" />
                 </div>
-
                 <GoogleButton text="Sign up with Google" />
-
-                <p className="text-[14px] text-[#515B6E] leading-[24px] font-[600] text-center">Already have an account?<span className="text-[#C49600] pl-3 cursor-pointer">Sign In</span></p>
+                <p className="text-[14px] text-[#515B6E] leading-[24px] font-[600] text-center">Already have an account?<span className="text-[#C49600] pl-3 cursor-pointer" onClick={() => navigate(APP_ROUTES.AUTH.LOGIN)}>Sign In</span></p>
 
             </div>
         </div>

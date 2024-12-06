@@ -36,7 +36,7 @@ const ForgotPassword = () => {
             <OtherSide
                 header="Forgot password?"
                 subHeader="Enter your registered email address or phone number, and we’ll send you a link to reset your password."
-                upperSubHeader={<>            <p className="text-[14px] text-[#707D96] leading-[24px] font-[600] text-left flex items-center cursor-pointer mb-2"> <span className="mr-2"><BackArrow /></span> Back to Log in</p>
+                upperSubHeader={<>            <p className="text-[14px] text-[#707D96] leading-[24px] font-[600] text-left flex items-center cursor-pointer mb-2" onClick={() => navigate(APP_ROUTES.AUTH.LOGIN)}> <span className="mr-2"><BackArrow /></span> Back to Log in</p>
                 </>} />
             <form onSubmit={formik.handleSubmit}>
 

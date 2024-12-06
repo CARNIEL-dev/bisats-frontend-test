@@ -4,7 +4,6 @@ import PrimaryInput from "../../components/Inputs/PrimaryInput"
 import { PrimaryButton } from "../../components/buttons/Buttons"
 import OtherSide from "../../layouts/auth/OtherSide"
 import { Login } from "../../redux/actions/userActions"
-import { characterLength, specialCharcterRegex, upperCaseRegex, lowerCaseRegex, numberRegex, CheckRegex } from "../../utils/passwordChecks"
 import GoogleButton from "../../components/buttons/GoogleButton"
 import Toast from "../../components/Toast"
 import { useFormik } from "formik"
@@ -29,7 +28,7 @@ const LogIn = () => {
             const { ...payload } = values
             const response = await Login(payload)
             if (response.statusCode === 200) {
-                if (!response.data.emailVerfied) return navigate(APP_ROUTES.AUTH.VERIFY)
+                if (!response.data.emailVerified) return navigate(APP_ROUTES.AUTH.VERIFY)
                 Toast.success("", response.message)
                 navigate(APP_ROUTES.DASHBOARD)
             }
@@ -77,7 +76,7 @@ const LogIn = () => {
                         <PrimaryButton css={""} text={"Log In"} type="submit" loading={isLoading} />
                     </div>
                 {/* </form> */}
-                    <p className="text-[14px] text-[#C49600] leading-[24px] font-[400] mt-1 cursor-pointer" onClick={() => Toast.warning("Ensure your password meets all the requirements.", "Password incomplete")}>Forgot password?</p>
+                    <p className="text-[14px] text-[#C49600] leading-[24px] font-[400] mt-1 cursor-pointer" onClick={() => navigate(APP_ROUTES.AUTH.FORGOT_PASSWORD)}>Forgot password?</p>
 
                 <div className="w-full flex items-center my-6">
                     <hr className="text-[#F3F4F6] w-1/2 h-[1.5px]" />
@@ -85,8 +84,7 @@ const LogIn = () => {
                     <hr className="text-[#F3F4F6] w-1/2 h-[1.5px]" />
                 </div>
                     <GoogleButton text="Sign in with Google" />
-                <p className="text-[14px] text-[#515B6E] leading-[24px] font-[600] text-center">Don’t have an account?<span className="text-[#C49600] pl-3 cursor-pointer">Sign Up</span></p>
-
+                    <p className="text-[14px] text-[#515B6E] leading-[24px] font-[600] text-center">Don’t have an account?<span className="text-[#C49600] pl-3 cursor-pointer" onClick={() => navigate(APP_ROUTES.AUTH.SIGNUP)}>Sign Up</span></p>
                 </div>
             </form>
         </div>

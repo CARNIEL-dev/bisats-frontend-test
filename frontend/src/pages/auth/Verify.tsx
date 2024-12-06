@@ -71,8 +71,6 @@ const VerifyEmail = () => {
                 <div className="w-full mb-3">
                         <PrimaryButton css={""} text={"Verify account"} type="submit" loading={isLoading} />
                 </div>
-
-
                 <div className="flex items-center justify-between">
                     <p className="text-[14px] text-[#515B6E] leading-[24px] font-[400] text-left">00:31</p>
                     <span className="text-[#C49600] text-[14px] leading-[24px] font-[600] ">Resend a new code</span>
