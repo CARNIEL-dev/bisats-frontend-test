@@ -2,7 +2,7 @@
 
 import { UserActionTypes } from "../types";
 
-interface UserState {
+export interface UserState {
   isAuthenticated: boolean;
   loading: boolean;
   user: {

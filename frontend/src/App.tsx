@@ -4,18 +4,18 @@ import AuthLayout from './layouts/auth/AuthLayout';
 import { LogIn, SignUp, ForgotPassword, VerifyEmail, OTP, ResetPassword } from './pages/auth';
 import './App.css';
 import { APP_ROUTES } from './constants/app_route';
-import ProtectedRoute from './utils/protectedRoutes';
-import { GOOGLE } from './utils/googleCred';
-import { GoogleOAuthProvider } from '@react-oauth/google';
-import { useDispatch } from "react-redux";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Dashboard from './pages/dashboard/Dashboard';
+import ProtectedRoute from './utils/protectedRoutes';
+import { UserState } from './redux/reducers/userSlice';
+import { useSelector } from 'react-redux';
 
 
 
 const App: React.FC = () => {
-  // const dispatch = useDispatch()
+  const userState: UserState = useSelector((state: any) => state.user);
+
   return (
 
     <Router>
@@ -30,19 +30,12 @@ const App: React.FC = () => {
             <Route path={APP_ROUTES?.AUTH.RESET_PASSWORD} Component={ResetPassword} />
 
           </Route>
+          <Route
+            element={<ProtectedRoute user={userState} />}
+          >
+            <Route path="/dashboard" element={<Dashboard />} />
+          </Route>
 
-
-          {/* Protected Route */}
-          {/* <ProtectedRoute element={<DashboardLayOut />} >
-            <Route path={`${APP_ROUTES?.DASHBOARD}/*`} Component={Dashboard} />
-          </ProtectedRoute> */}
-          {/* <Route
-            path="/dashboard"
-            element={token ? <DashboardPage /> : <Navigate to="/login" />}
-          /> */}
-
-
-          {/* Redirect to Home if no route matched */}
           <Route path="*" element={<Navigate to="/home" />} />
         </>
       </Routes>

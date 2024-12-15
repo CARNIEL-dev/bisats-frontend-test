@@ -1,18 +1,17 @@
-import { Navigate } from 'react-router-dom';
-import { useAuth } from './AuthContext';
+import { Navigate, Outlet } from 'react-router-dom';
+import { UserState } from '../redux/reducers/userSlice';
 
 interface ProtectedRouteProps {
-    children: React.ReactNode;
+    user: UserState;
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-    const { isAuthenticated } = useAuth();
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ user }) => {
 
-    if (!isAuthenticated) {
-        return <Navigate to="/login" />;
+    if (!user.isAuthenticated) {
+        return <Navigate to="/auth/login" />;
     }
 
-    return <>{children}</>;
+    return <Outlet />;
 };
 
 export default ProtectedRoute;
