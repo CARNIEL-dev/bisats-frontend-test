@@ -1,4 +1,136 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-  
+
+  .checkbox-container {
+  position: relative;
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+}
+
+/* Hide the default checkbox */
+.checkbox-container input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none; /* For Safari */
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  cursor: pointer;
+  background-color: #FEF8E5; /* Light red background */
+  border: 1px solid #F9D666; /* Red border */
+  border-radius: 4px; /* Rounded edges */
+  outline: none;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Checkbox background and border when checked */
+.checkbox-container input[type="checkbox"]:checked {
+  background-color: #FEF8E5; /* Green background */
+  border-color: #F9D666; /* Dark green border */
+}
+
+/* Label for the checkmark */
+.checkbox-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 16px;
+  font-weight: bold;
+  color: transparent; /* Hidden by default */
+  pointer-events: none;
+  transition: color 0.3s ease;
+}
+/* Checkbox background and border when checked */
+.checkbox-container input[type="checkbox"]:checked {
+  background-color: #FEF8E5; /* Light green background */
+}
+
+/* Custom checkmark styling */
+.checkbox-container input[type="checkbox"]:checked::after {
+  content: '✔'; /* Add the checkmark symbol */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 16px;
+  font-weight: bold;
+  color: black; /* Green checkmark color */
+}
+
+/* Hover effect */
+.checkbox-container input[type="checkbox"]:hover {
+  background-color: white; /* Blue background when hovered */
+  border:2px solid #F9D666
+}
+
+.Toastify__toast--error {
+    border: 1px solid #F3F4F6;
+    border-radius: 12px !important;
+    background: linear-gradient(91.44deg, #FEF2F2 6.53%, #FFFFFF 99.77%) !important;
+}
+
+.Toastify__toast--error::after {
+  content: url("./assets/icons/Cancel.svg");
+  position: absolute;
+  left:375px;
+  padding-top: 2px !important;
+}
+.Toastify__toast--error::before {
+  content: url("./assets/icons/error-toast.svg");
+  position:relative; 
+  z-index:100000;
+  left:12px;
+  top:8px;
+}
+.Toastify__toast--success {
+  border: 1px solid #F3F4F6 !important;
+  border-radius: 12px !important;
+  background: linear-gradient(91.44deg, #FEF2F2 6.53%, #FFFFFF 99.77%) !important;
+}
+.Toastify__toast--success::before {
+  content: url("./assets/icons/warning-toast.svg");
+  position:relative; 
+  z-index:100000;
+  left:12px;
+  top:8px;
+}
+.Toastify__toast--success::after {
+   content: url("./assets/icons/Cancel.svg");
+  position: absolute;
+  left:375px;
+  padding-top: 2px !important;
+}
+.Toastify__toast--warning {
+  border: 1px solid #F3F4F6  !important;
+  border-radius: 12px !important;
+  background: linear-gradient(90.84deg, #FEF8E5 1.19%, #FFFFFF 93.64%) !important;
+}
+.Toastify__toast--warning::before {
+  content: url("./assets/icons/warning-toast.svg");
+  position:relative; 
+  z-index:100000;
+  left:12px;
+  top:8px;
+}  
+.Toastify__toast--warning::after {
+  content: url("./assets/icons/Cancel.svg");
+  position: absolute;
+  left:375px;
+  padding-top: 2px !important;
+}
+.Toastify__toast-body {
+  font-size: 14px;
+  padding-left: 4px;
+  line-height: 24px;
+  padding: 5px;
+  padding-top: 5px;
+  width: 411px !important;
+  font-weight: 400;
+  margin-left: 25px !important;
+} 
+.Toastify__toast > button>  svg {
+    display: none;
+}

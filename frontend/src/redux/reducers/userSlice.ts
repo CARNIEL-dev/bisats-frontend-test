@@ -10,6 +10,10 @@ interface UserState {
   } | null;
   token: string | null;
 }
+interface UserActionProp {
+  type: string;
+  payload: Record<string, any>;
+}
 
 const initialState: UserState = {
   isAuthenticated: false,
@@ -18,16 +22,21 @@ const initialState: UserState = {
   token: null,
 };
 
-interface UserActionProp {
-  type: string;
-  payload: Record<string, any>;
-}
 const userReducer = (state = initialState, action: UserActionProp) => {
   switch (action.type) {
     case UserActionTypes.LOG_IN_SUCCESS:
       return {
         ...state,
-        user: action?.payload?.user,
+        isAuthenticated: true,
+        user: action?.payload,
+        token: action?.payload?.token,
+      };
+    case UserActionTypes.SIGN_UP:
+      console.log(action.payload, action.type);
+      return {
+        ...state,
+        isAuthenticated: true,
+        user: action?.payload,
         token: action?.payload?.token,
       };
     default:
