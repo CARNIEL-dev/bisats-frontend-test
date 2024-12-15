@@ -1,16 +1,17 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Navigate, Routes } from 'react-router-dom';
 import AuthLayout from './layouts/auth/AuthLayout';
+import KycLayOut from './layouts/KycLayOut';
 import { LogIn, SignUp, ForgotPassword, VerifyEmail, OTP, ResetPassword } from './pages/auth';
 import './App.css';
 import { APP_ROUTES } from './constants/app_route';
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Identity, POA, PersonalInformation } from './pages/kyc';
 import Dashboard from './pages/dashboard/Dashboard';
 import ProtectedRoute from './utils/protectedRoutes';
 import { UserState } from './redux/reducers/userSlice';
 import { useSelector } from 'react-redux';
-
 
 
 const App: React.FC = () => {
@@ -28,7 +29,6 @@ const App: React.FC = () => {
             <Route path={`${APP_ROUTES?.AUTH.VERIFY}`} Component={VerifyEmail} />
             <Route path={APP_ROUTES.AUTH.OTP} Component={OTP} />
             <Route path={APP_ROUTES?.AUTH.RESET_PASSWORD} Component={ResetPassword} />
-
           </Route>
           <Route
             element={<ProtectedRoute user={userState} />}

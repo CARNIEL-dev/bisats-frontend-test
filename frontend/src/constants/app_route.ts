@@ -15,6 +15,11 @@ export const APP_ROUTES = {
     VERIFY: "/auth/verify",
     RESET_PASSWORD: "/auth/reset-password",
   },
+  KYC: {
+    PERSONAL: "/kyc/personal-information",
+    POA: "/kyc/poa",
+    IDENTITY: "/kyc/identity",
+  },
   DASHBOARD: "/dashboard",
   AD: "/ad",
 };
