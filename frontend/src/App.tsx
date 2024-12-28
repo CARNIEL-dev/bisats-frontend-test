@@ -13,6 +13,7 @@ import ProtectedRoute from './utils/protectedRoutes';
 import { UserState } from './redux/reducers/userSlice';
 import { useSelector } from 'react-redux';
 import { rehydrateUser } from './redux/actions/userActions';
+import PhoneVerifcation from './pages/kyc/PhoneVerification';
 
 
 const App: React.FC = () => {
@@ -39,9 +40,12 @@ const App: React.FC = () => {
               <Route path={APP_ROUTES?.KYC.POA} Component={POA} />
               <Route path={APP_ROUTES?.KYC.IDENTITY} Component={Identity} />
 
+              
             </Route>
 
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path={APP_ROUTES?.KYC.PHONEVERIFICATION} Component={PhoneVerifcation} />
+
           </Route>
 
           <Route path="*" element={<Navigate to="/home" />} />

@@ -6,8 +6,8 @@ import { PrimaryButton } from "../../components/buttons/Buttons"
 import { useFormik } from "formik"
 import { PersonalInformationSchema } from "../../formSchemas/KYC"
 import { useNavigate } from "react-router-dom"
-import { useState } from "react"
-import { PostPersonalInformation_KYC } from "../../redux/actions/userActions"
+import { useEffect, useState } from "react"
+import { PostPersonalInformation_KYC, GetUserDetails } from "../../redux/actions/userActions"
 import { getUser } from "../../helpers"
 import Toast from "../../components/Toast"
 import { APP_ROUTES } from "../../constants/app_route"
@@ -24,6 +24,13 @@ const PersonalInfo = () => {
     })
     const navigate = useNavigate()
     const user = getUser()
+
+    useEffect(() => {
+        if (user?.kyc.personalInformationVerified) {
+            navigate(APP_ROUTES.KYC.POA)
+        }
+    }, [user])
+    
     const formik = useFormik({
         initialValues: { ...personalInfo },
         validationSchema: PersonalInformationSchema,
@@ -34,11 +41,11 @@ const PersonalInfo = () => {
                 ...payload,
                 userId: user.userId
             }
-            console.log(payloadd)
             const response = await PostPersonalInformation_KYC(payloadd)
             setIsLoading(false)
             if (response.statusCode === 200) {
                 Toast.success(response.message, "Success")
+                GetUserDetails()
                 navigate(APP_ROUTES.KYC.POA)
                 return
             } else {
@@ -52,7 +59,6 @@ const PersonalInfo = () => {
             <div className="w-full p-3">
                 <StepFlow step={1} />
                 <form onSubmit={formik.handleSubmit}>
-
                 <div className="my-4">
                         <div className="lg:flex items-center justify-between w-full lg:w-5/6">
                             <div className="w-full lg:w-[142px]">

@@ -1,5 +1,5 @@
 {
-  "name": "bisats",
+  "name": "Bisats",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -27,7 +27,7 @@
     "yup": "^1.4.0"
   },
   "scripts": {
-      "start-https": "HTTPS=true react-scripts start",
+    "start-https": "HTTPS=true react-scripts start",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

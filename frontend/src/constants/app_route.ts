@@ -19,6 +19,7 @@ export const APP_ROUTES = {
     PERSONAL: "/kyc/personal-information",
     POA: "/kyc/poa",
     IDENTITY: "/kyc/identity",
+    PHONEVERIFICATION:"/phone-verification"
   },
   DASHBOARD: "/dashboard",
   AD: "/ad",

@@ -37,6 +37,7 @@ const userReducer = (state = initialState, action: UserActionProp) => {
         isAuthenticated: true,
         user: action?.payload,
         token: action?.payload?.token,
+        kyc: action?.payload?.kyc,
       };
     case UserActionTypes.SIGN_UP:
       console.log(action.payload, action.type);
@@ -45,6 +46,15 @@ const userReducer = (state = initialState, action: UserActionProp) => {
         isAuthenticated: true,
         user: action?.payload,
         token: action?.payload?.token,
+        kyc: action?.payload?.kyc,
+      };
+    case UserActionTypes.UPDATE_USER:
+      return {
+        ...state,
+        isAuthenticated: true,
+        user: action?.payload,
+        token: action?.payload?.token,
+        kyc: action?.payload?.kyc,
       };
     case UserActionTypes.KYC_STATUS:
       return {

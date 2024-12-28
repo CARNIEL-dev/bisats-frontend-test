@@ -45,6 +45,10 @@ export const VerificationSchema = Yup.object().shape({
 export const EmailSchema = Yup.object().shape({
   email: Yup.string().email().required(),
 });
+
+export const PhoneSchema = Yup.object().shape({
+  phone: Yup.string().required(),
+});
 export const LogInSchema = Yup.object().shape({
   email: Yup.string().email().required(),
   password: Yup.string()

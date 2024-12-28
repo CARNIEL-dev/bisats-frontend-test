@@ -1,7 +1,7 @@
 import Label from "../../components/Inputs/Label"
 import StepFlow from "./StepFlow"
 import { PrimaryButton } from "../../components/buttons/Buttons"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { docUpload } from "../../assets/icons"
 import Toast from "../../components/Toast"
 import { PostPOA_KYC } from "../../redux/actions/userActions"
@@ -18,6 +18,11 @@ const POA = () => {
     const user = getUser()
     const navigate = useNavigate()
 
+    useEffect(() => {
+        if (user?.kyc.utilityBillVerified) {
+            navigate(APP_ROUTES.KYC.IDENTITY)
+        }
+    }, [user])
 
     const handleFileChange = (e: any) => {
         const file = e.target.files[0];
@@ -25,7 +30,6 @@ const POA = () => {
             const allowedTypes = ["application/pdf", "image/jpeg", "image/jpg"];
             if (allowedTypes.includes(file.type)) {
                 setFileName(file.name);
-                console.log(file)
                 setFile(file);
             } else {
                 Toast.warning("Only pdf, jepeg an jpg formats are allowed", "Document type");

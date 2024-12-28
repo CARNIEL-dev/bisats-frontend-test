@@ -4,14 +4,12 @@ import MarketRate from "./MarketRate";
 import Ads from "./Ads";
 import Orders from "./Orders";
 import { getUser } from "../../helpers";
-import { GetKYCStatus } from "../../redux/actions/userActions";
 import { useEffect, useState } from "react";
 import KycVerification from "../../components/Modals/KycVerification";
 
 const Dashboard = () => {  
     const [openKycModal, setKycModalOpen] = useState(false)
     const user = getUser()
-    console.log(user)
     useEffect(() => {
         const kyscStatus = user.kyc
         if (!kyscStatus.identificationVerified || !kyscStatus.personalInformationVerified || !kyscStatus.utilityBillVerified
@@ -20,13 +18,13 @@ const Dashboard = () => {
         }
         // GetKYCStatus({ userId: user?.userId })
     }, [])
-    
+
     return (
         <div>
             <Header />
             <div className="flex justify-center mt-[30px]">
                 <div className="w-[60%]">
-                    <h2 className="text-[34px] mx-[15px] font-semibold" style={{ color: '#0A0E12' }}>Hello, Chillex</h2>
+                    <h2 className="text-[34px] mx-[15px] font-semibold" style={{ color: '#0A0E12' }}>Hello, { user.firstName}</h2>
                     <div className="flex justify-between m-[15px]">
                         <Balance />
                         <MarketRate />

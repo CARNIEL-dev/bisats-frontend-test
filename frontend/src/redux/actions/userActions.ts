@@ -11,7 +11,13 @@ import {
   TPOA,
   TIdentity,
 } from "../../types/user";
-import { setToken, setRefreshToken, setUser, getToken } from "../../helpers";
+import {
+  setToken,
+  setRefreshToken,
+  setUser,
+  getToken,
+  getUser,
+} from "../../helpers";
 import { UserActionTypes, GeneralTypes } from "../types";
 import dispatchWrapper from "../../utils/dispatchWrapper";
 
@@ -277,6 +283,25 @@ export const GetKYCStatus = async (payload: { userId: string }) => {
     );
     const data = response.data;
     dispatchWrapper({ type: UserActionTypes.KYC_STATUS, payload: data });
+    return data;
+  } catch (error) {
+    // throw handleApiError(error);
+    return error;
+  }
+};
+
+export const GetUserDetails = async () => {
+  const user = getUser();
+  try {
+    const response = await Bisatsfetch(`/api/v1/user/${user.userId}/profile`, {
+      method: "GET",
+    });
+    const data = response.data;
+    console.log(data);
+    dispatchWrapper({ type: UserActionTypes.UPDATE_USER, payload: data });
+    setUser(data);
+    setToken(data.token);
+    setRefreshToken(data.refreshToken);
     return data;
   } catch (error) {
     // throw handleApiError(error);

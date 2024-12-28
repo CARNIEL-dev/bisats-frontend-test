@@ -5,12 +5,12 @@ import { PrimaryButton } from "../../components/buttons/Buttons"
 import StepFlow from "./StepFlow"
 import { camera } from "../../assets/icons"
 import Label from "../../components/Inputs/Label"
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { getUser } from "../../helpers"
 import Toast from "../../components/Toast"
 import { useFormik } from "formik"
 import { IdentificationSchema } from "../../formSchemas/KYC"
-import { PostIdentity_KYC } from "../../redux/actions/userActions"
+import { PostIdentity_KYC, GetUserDetails } from "../../redux/actions/userActions"
 import { APP_ROUTES } from "../../constants/app_route"
 import { useNavigate } from "react-router-dom"
 const Identity = () => {
@@ -43,6 +43,13 @@ const Identity = () => {
     },
 
     ]
+
+
+    useEffect(() => {
+        if (user?.kyc.identificationVerified) {
+            navigate(APP_ROUTES.KYC.IDENTITY)
+        }
+    }, [user])
 
     // const dataURLToBlob = (dataUrl: string) => {
     //     const [header, base64Data] = dataUrl.split(',');
@@ -118,7 +125,6 @@ const Identity = () => {
             context?.drawImage(video, 0, 0, canvas.width, canvas.height);
             const imageDataUrl = canvas.toDataURL("image/jpeg");
             const file = base64ToFile(imageDataUrl, "user-image.jpg");
-
             setCapturedImage(imageDataUrl);
             formik.setFieldValue("selfie", file)
             stopCamera();
@@ -162,8 +168,6 @@ const Identity = () => {
             <div className="w-full">
                 <StepFlow step={2} />
             </div>
-
-
             <form onSubmit={formik.handleSubmit}>
                 <MultiSelectDropDown
                     parentId={""} title={"Select"}
