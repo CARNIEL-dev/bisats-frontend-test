@@ -51,5 +51,5 @@ export const getRefreshToken = () => {
 
 export const removeCache = (arg: string) => {
     localStorage.removeItem(arg);
-    sessionStorage.removeItem(arg);
+    // sessionStorage.removeItem(arg);
 };

@@ -1,6 +1,11 @@
 /** @format */
 
 import { UserActionTypes } from "../types";
+interface KycStatus {
+  identificationVerified: boolean;
+  personalInformationVerified: boolean;
+  utilityBillVerified: boolean;
+}
 
 export interface UserState {
   isAuthenticated: boolean;
@@ -9,6 +14,7 @@ export interface UserState {
     [key: string]: any;
   } | null;
   token: string | null;
+  kyc: KycStatus | null;
 }
 interface UserActionProp {
   type: string;
@@ -20,6 +26,7 @@ const initialState: UserState = {
   loading: false,
   user: null,
   token: null,
+  kyc: null,
 };
 
 const userReducer = (state = initialState, action: UserActionProp) => {
@@ -38,6 +45,11 @@ const userReducer = (state = initialState, action: UserActionProp) => {
         isAuthenticated: true,
         user: action?.payload,
         token: action?.payload?.token,
+      };
+    case UserActionTypes.KYC_STATUS:
+      return {
+        ...state,
+        kyc: action.payload,
       };
     default:
       return state;

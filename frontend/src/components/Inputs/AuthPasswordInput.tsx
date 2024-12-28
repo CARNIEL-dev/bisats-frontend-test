@@ -18,7 +18,6 @@ const AuthPasswordInput: React.FC<TInput> = ({ css, handleChange, text, check, e
     const [passwordHidden, setPasswordHidden] = useState(true)
     const [passwordString, setPasswordString] = useState("")
 
-    console.log(error)
     const PasswordChecks = [{
         title: "characterLength",
         check: "8 - 30 Characters"
@@ -66,7 +65,7 @@ const AuthPasswordInput: React.FC<TInput> = ({ css, handleChange, text, check, e
             {(check && passwordString) &&
                 <div className='text-[#515B6E] text-[12px] leading-[16px] font-[400] flex justify-between flex-wrap mt-5'>
                     {
-                        PasswordChecks.map((item, idx) => <div className='flex items-center w-1/2 my-1' key={idx}>
+                        PasswordChecks.map((item, idx) => <div className='flex items-center w-full lg:w-1/2 my-1' key={idx}>
                             {
                                 CheckRegex(passwordString, item?.title === "characterLength" ? characterLength : item?.title === "upperCaseRegex" ? upperCaseRegex : item?.title === "lowerCaseRegex" ? lowerCaseRegex : item?.title === "numberRegex" ? numberRegex : specialCharcterRegex) ? <PassCheck /> : <FailCheck />}
                             <p className='ml-2'>{item?.check}</p>

@@ -2,9 +2,17 @@
 
 import Bisatsfetch from "../fetchWrapper";
 import { BACKEND_URLS } from "../../utils/backendUrls";
-import { TUser, TLogin, TSignUp, TResponse } from "../../types/user";
-import { setToken, setRefreshToken, setUser } from "../../helpers";
-import { UserActionTypes } from "../types";
+import {
+  TUser,
+  TLogin,
+  TSignUp,
+  TResponse,
+  TPersonalInfoKYC,
+  TPOA,
+  TIdentity,
+} from "../../types/user";
+import { setToken, setRefreshToken, setUser, getToken } from "../../helpers";
+import { UserActionTypes, GeneralTypes } from "../types";
 import dispatchWrapper from "../../utils/dispatchWrapper";
 
 export const Login = async (payload: TLogin) => {
@@ -50,6 +58,22 @@ export const VerifyUser = async (payload: { userId: string; code: string }) => {
       {
         method: "POST",
         body: JSON.stringify(payload),
+      }
+    );
+    return response;
+  } catch (error) {
+    // throw handleApiError(error);
+    return error;
+  }
+};
+
+export const ReSendverificationCode = async (payload: { userId: string }) => {
+  try {
+    const response = await Bisatsfetch(
+      `/api/v1/user/${payload.userId}/resend-verification-otp`,
+      {
+        method: "GET",
+        // body: JSON.stringify(payload),
       }
     );
     return response;
@@ -128,16 +152,20 @@ export const refreshAccessToken = async (payload: { refreshToken: string }) => {
     return error;
   }
 };
-export const rehydrateUser = (dispatch: any) => {
-  const user = localStorage.getItem("user");
+export const rehydrateUser = () => {
+  const user = localStorage.getItem("_user");
   const token = localStorage.getItem("token");
-  const data = JSON.parse(user ?? "");
 
-  if (user && token) {
+  const data = user ? JSON.parse(user ?? "") : user;
+
+  if (data && token) {
+    dispatchWrapper({
+      type: UserActionTypes?.LOG_IN_SUCCESS,
+      payload: data,
+    });
     setUser(data);
     setToken(token);
     setRefreshToken(data.refreshToken);
-    dispatchWrapper({ type: UserActionTypes?.LOG_IN_SUCCESS, payload: user });
   }
 };
 
@@ -153,6 +181,103 @@ export const GoogleAuth = async (payload: { email: string; id: string }) => {
     setToken(data.token);
     setRefreshToken(data.refreshToken);
     return response;
+  } catch (error) {
+    // throw handleApiError(error);
+    return error;
+  }
+};
+
+//KYC
+
+export const PostPersonalInformation_KYC = async (
+  payload: TPersonalInfoKYC
+) => {
+  try {
+    const response = await Bisatsfetch(
+      `/api/v1/user/${payload.userId}/upload-personal-info`,
+      {
+        method: "POST",
+        body: JSON.stringify(payload),
+      }
+    );
+    const data = response.data;
+    dispatchWrapper({ type: GeneralTypes.SUCCESS, payload: data });
+
+    return response;
+  } catch (error) {
+    // throw handleApiError(error);
+    return error;
+  }
+};
+
+export const PostPOA_KYC = async (payload: TPOA) => {
+  const formData = new FormData();
+  formData.append("image", payload.file);
+  const token = getToken();
+  try {
+    const response = await fetch(
+      `${BACKEND_URLS.BASE_URL}/api/v1/user/${payload.userId}/verify-utility-bill`,
+      {
+        method: "PUT",
+        headers: {
+          // "Content-Type": "multipart/form-data",
+          Authorization: `${token}`,
+        },
+        body: formData,
+      }
+    );
+    const data = response.json();
+    console.log(data);
+
+    // dispatchWrapper({ type: GeneralTypes.SUCCESS, payload: data });
+
+    return data;
+  } catch (error) {
+    console.log(error);
+    // throw handleApiError(error);
+    return error;
+  }
+};
+
+export const PostIdentity_KYC = async (payload: TIdentity) => {
+  const formData = new FormData();
+  formData.append("image", payload.selfie);
+  formData.append("identificationType", payload.docType);
+  formData.append("identificationNumber", payload.identificationNo);
+  const token = getToken();
+  try {
+    const response = await fetch(
+      `${BACKEND_URLS.BASE_URL}/api/v1/user/${payload.userId}/verify-identity`,
+      {
+        method: "PUT",
+        headers: {
+          // "Content-Type": "multipart/form-data",
+          Authorization: `${token}`,
+        },
+        body: formData,
+      }
+    );
+    const data = response.json();
+    console.log(data);
+    // dispatchWrapper({ type: GeneralTypes.SUCCESS, payload: data });
+    return data;
+  } catch (error) {
+    // throw handleApiError(error);
+    return error;
+  }
+};
+
+export const GetKYCStatus = async (payload: { userId: string }) => {
+  try {
+    const response = await Bisatsfetch(
+      `/api/v1/user/${payload.userId}/fetch-kyc-status`,
+      {
+        method: "GET",
+      }
+    );
+    const data = response.data;
+    dispatchWrapper({ type: UserActionTypes.KYC_STATUS, payload: data });
+    return data;
   } catch (error) {
     // throw handleApiError(error);
     return error;

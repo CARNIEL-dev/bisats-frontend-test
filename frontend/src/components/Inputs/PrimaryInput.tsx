@@ -16,10 +16,10 @@ const PrimaryInput: React.FC<TInput> = ({ css, label, error, touched, ...props }
             </div>
             <input
                 type={props.type ?? "text"}
-                className={`rounded-[6px]  border-[1px] border-[#D6DAE1] outline-[none] focus:border-[#C49600] focus:shadow-[0_0_10px_#FEF8E5] text-[#606C82] p-1 ${css} ${error && touched ? "border-[#EF4444] outline-[none] focus:border-[#EF4444]" : ""}`}
+                style={{outline:"none"}}
+                className={`rounded-[6px] text-[14px] leading-[24px] text-[#525C76] font-[300] border-[1px] border-[#D6DAE1] outline-[none] focus:border-[#C49600] focus:shadow-[0_0_10px_#FEF8E5] text-[#606C82] p-1 px-3 ${css} ${error && touched ? "border-[#EF4444] outline-0 focus:border-[#EF4444]" : ""}`}
                 {...props}
             />
-
         </div>
     )
 }

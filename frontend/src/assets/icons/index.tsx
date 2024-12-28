@@ -1,4 +1,6 @@
 import ArrowLeft from "./arrow-left.svg"
+import docUpload from "./document-upload.svg"
+import camera from "./camera.svg"
 type passwordTypes = {
     color: string
 }
@@ -23,5 +25,9 @@ export const PassCheck = () => {
 }
 
 export const BackArrow = () => <img src={ArrowLeft} alt="arrow left" />
+
+export {
+    ArrowLeft, docUpload, camera
+}
 
 

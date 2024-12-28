@@ -9,6 +9,7 @@ import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { APP_ROUTES } from "../../constants/app_route"
 import { useSearchParams } from "react-router-dom";
+import { ReSendverificationCode } from "../../redux/actions/userActions"
 
 const VerifyEmail = () => {
     const [isLoading, setIsLoading] = useState(false)
@@ -41,9 +42,9 @@ const VerifyEmail = () => {
     useEffect(() => {
         if (codeLink && userId) {
             formik.submitForm()
-            console.log(formik.submitCount)
         }
     }, [])
+    
     return (
         <div className="lg:w-[442px] mx-auto">
             <OtherSide
@@ -67,16 +68,14 @@ const VerifyEmail = () => {
                             onBlur={formik.handleBlur}
                     />
                 </div>
-
                 <div className="w-full mb-3">
                         <PrimaryButton css={""} text={"Verify account"} type="submit" loading={isLoading} />
                 </div>
                 <div className="flex items-center justify-between">
                     <p className="text-[14px] text-[#515B6E] leading-[24px] font-[400] text-left">00:31</p>
-                    <span className="text-[#C49600] text-[14px] leading-[24px] font-[600] ">Resend a new code</span>
+                        <span className="text-[#C49600] text-[14px] leading-[24px] font-[600] " onClick={() => ReSendverificationCode({ userId: user?.userId })
+                        }>Resend a new code</span>
                 </div>
-
-
                 </div>
             </form>
         </div>

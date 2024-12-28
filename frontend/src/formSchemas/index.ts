@@ -8,6 +8,7 @@ import {
   characterLength,
 } from "../utils/passwordChecks";
 
+//Auth
 export const SignupSchema = Yup.object().shape({
   email: Yup.string().email().required(),
   password: Yup.string()
@@ -54,3 +55,6 @@ export const LogInSchema = Yup.object().shape({
     .matches(characterLength)
     .required(),
 });
+
+
+//Auth

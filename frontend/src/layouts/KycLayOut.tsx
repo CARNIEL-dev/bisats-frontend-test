@@ -3,8 +3,8 @@ import OtherSide from "./auth/OtherSide";
 
 const KycLayOut = () => {
     return (
-        <div className={`bg-white bg-no-repeat bg-cover h-full w-full py-40`}>
-            <div className="w-full lg:w-1/3 mx-auto h-full  border lg:items-center ">
+        <div className={`bg-white bg-no-repeat bg-cover h-full w-full py-20`}>
+            <div className="w-full lg:w-1/3 mx-auto h-full  lg:items-center ">
                 <OtherSide
                     header="Complete your KYC"
                     subHeader="Verify Your Identity to fully unlock your Bisats account"

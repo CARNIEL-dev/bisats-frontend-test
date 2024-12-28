@@ -38,7 +38,7 @@ const Bisatsfetch = async (
     } else {
       const res = await response.res.json(); // Use the raw JSON response
 
-      Toast.error(res.message, "");
+      // Toast.error(res.message, "");
     }
 
     // Response interceptor: Handle 403 (Forbidden) and refresh token

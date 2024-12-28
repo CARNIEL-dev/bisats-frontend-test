@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Route, Navigate, Routes } from 'react-router-dom';
 import AuthLayout from './layouts/auth/AuthLayout';
 import KycLayOut from './layouts/KycLayOut';
@@ -12,11 +12,12 @@ import Dashboard from './pages/dashboard/Dashboard';
 import ProtectedRoute from './utils/protectedRoutes';
 import { UserState } from './redux/reducers/userSlice';
 import { useSelector } from 'react-redux';
+import { rehydrateUser } from './redux/actions/userActions';
 
 
 const App: React.FC = () => {
   const userState: UserState = useSelector((state: any) => state.user);
-
+  useEffect(() => { rehydrateUser() }, [])
   return (
 
     <Router>
@@ -33,6 +34,13 @@ const App: React.FC = () => {
           <Route
             element={<ProtectedRoute user={userState} />}
           >
+            <Route element={<KycLayOut />}>
+              <Route path={APP_ROUTES?.KYC.PERSONAL} Component={PersonalInformation} />
+              <Route path={APP_ROUTES?.KYC.POA} Component={POA} />
+              <Route path={APP_ROUTES?.KYC.IDENTITY} Component={Identity} />
+
+            </Route>
+
             <Route path="/dashboard" element={<Dashboard />} />
           </Route>
 
