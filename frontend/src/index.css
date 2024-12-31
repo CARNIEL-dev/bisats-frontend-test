@@ -88,10 +88,10 @@
 .Toastify__toast--success {
   border: 1px solid #F3F4F6 !important;
   border-radius: 12px !important;
-  background: linear-gradient(91.44deg, #FEF2F2 6.53%, #FFFFFF 99.77%) !important;
+  background: linear-gradient(91.44deg, #EBF9F0 100%, #FFFFFF 100%) !important;
 }
 .Toastify__toast--success::before {
-  content: url("./assets/icons/warning-toast.svg");
+  content: url("./assets/icons/success.png");
   position:relative; 
   z-index:100000;
   left:12px;
@@ -134,3 +134,108 @@
 .Toastify__toast > button>  svg {
     display: none;
 }
+
+.country-select {
+  border: 0;
+}
+
+.file-upload-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.file-upload-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 96px;
+  border: 2px dashed #D6DAE1;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: #F9F9FB;
+  text-align: center;
+  position: relative;
+}
+
+.file-upload-box:hover {
+  background-color: #f1f1f1;
+}
+
+.file-upload-icon {
+  font-size: 36px;
+  color: #888;
+}
+
+.file-upload-text {
+  font-size: 16px;
+  color: #515B6E;
+  margin-top: 10px;
+}
+
+.file-upload-input {
+  position: absolute;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.error-text {
+  color: red;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+
+
+
+.video-feed {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+}
+
+.camera-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.capture-button, .stop-button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.capture-button {
+    background-color: #007bff;
+    color: white;
+}
+
+.capture-button:hover {
+    background-color: #0056b3;
+}
+
+.stop-button {
+    background-color: #ff4d4f;
+    color: white;
+}
+
+.stop-button:hover {
+    background-color: #d32f2f;
+}
+
+.selfie-image {
+    max-width: 100%;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+}
+

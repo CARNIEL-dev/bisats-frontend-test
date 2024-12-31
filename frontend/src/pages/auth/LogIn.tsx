@@ -3,7 +3,7 @@ import { useState, useEffect } from "react"
 import PrimaryInput from "../../components/Inputs/PrimaryInput"
 import { PrimaryButton } from "../../components/buttons/Buttons"
 import OtherSide from "../../layouts/auth/OtherSide"
-import { Login } from "../../redux/actions/userActions"
+import { Login, ReSendverificationCode } from "../../redux/actions/userActions"
 import GoogleButton from "../../components/buttons/GoogleButton"
 import Toast from "../../components/Toast"
 import { useFormik } from "formik"
@@ -28,9 +28,13 @@ const LogIn = () => {
             const { ...payload } = values
             const response = await Login(payload)
             if (response.statusCode === 200) {
-                if (!response.data.emailVerified) return navigate(APP_ROUTES.AUTH.VERIFY)
-                Toast.success("", response.message)
+                if (!response.data.emailVerified) {
+                    ReSendverificationCode({ userId: response.data.userId })
+                    return navigate(APP_ROUTES.AUTH.VERIFY)
+                }
                 navigate(APP_ROUTES.DASHBOARD)
+                Toast.success("", response.message)
+
             }
             setIsLoading(false)
         },
@@ -50,8 +54,8 @@ const LogIn = () => {
                     <PrimaryInput
                         type="email"
                             name="email"
-                        label="email"
-                        css="w-full h-[48px] px-3 outline-none "
+                            label="email"
+                            css="w-full h-[48px] px-3 outline-none "
                             error={formik.errors.email}
                             touched={formik.touched.email}
                             value={formik.values.email}

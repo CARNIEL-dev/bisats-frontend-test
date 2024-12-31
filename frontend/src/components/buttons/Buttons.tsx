@@ -19,7 +19,23 @@ export const PrimaryButton: React.FC<TButtons> = ({ css, text, loading, ...props
                     size={30}
                     aria-label="Loading Spinner"
                     data-testid="loader" /> : text
+            }
+        </button>
+    )
+}
 
+export const RedTransparentButton: React.FC<TButtons> = ({ css, text, loading, ...props }) => {
+    return (
+        <button type='submit' className={`h-[48px] w-full rounded-[6px] bg-transparent text-[#DC2625] text-[14px] leading-[24px] font-[600] text-center py-3`}
+            {...props}>
+            {
+                loading ? <DotLoader
+                    color={"#0A0E12"}
+                    loading={loading}
+                    // cssOverride={override}
+                    size={30}
+                    aria-label="Loading Spinner"
+                    data-testid="loader" /> : text
             }
         </button>
     )

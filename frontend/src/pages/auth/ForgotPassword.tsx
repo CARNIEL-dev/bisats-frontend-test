@@ -55,13 +55,10 @@ const ForgotPassword = () => {
 
                     />
                 </div>
-
                 <div className="w-full mb-3">
                         <PrimaryButton css={""} text={"Send OTP"} loading={isLoading} type="submit" />
                 </div>
-
                 <p className="text-[14px] text-[#515B6E] leading-[24px] font-[600] text-left">Need help?<span className="text-[#C49600] pl-2 cursor-pointer">Contact Support</span></p>
-
                 </div>
             </form>
 

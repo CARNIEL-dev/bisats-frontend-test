@@ -1,9 +1,10 @@
 import React from 'react'
 import GoogleLogo from "../../assets/logo/Google.svg"
-import { useGoogleOAuth, useGoogleLogin } from '@react-oauth/google';
+import { useGoogleLogin } from '@react-oauth/google';
 import { GoogleAuth } from '../../redux/actions/userActions';
 import { useNavigate } from 'react-router-dom';
 import { APP_ROUTES } from '../../constants/app_route';
+import { BACKEND_URLS } from '../../utils/backendUrls';
 
 type TGButtonProps = {
     text: string
@@ -27,7 +28,7 @@ const GoogleButton: React.FC<TGButtonProps> = ({ text }) => {
     const fetchUserData = async (accessToken: string) => {
         try {
             // Use the Google People API to fetch the user's profile
-            const response = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+            const response = await fetch(BACKEND_URLS.GOOGLEAPI, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
@@ -41,7 +42,7 @@ const GoogleButton: React.FC<TGButtonProps> = ({ text }) => {
             const { email, id } = data
             const SignUpResponse = await GoogleAuth({ email, id })
             if (SignUpResponse?.statusCode === 200) {
-                navigate(APP_ROUTES.AUTH.LOGIN)
+                navigate(APP_ROUTES.DASHBOARD)
             }
         } catch (error) {
             console.error('Error fetching user data:', error);

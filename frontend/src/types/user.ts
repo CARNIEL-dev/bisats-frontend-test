@@ -34,7 +34,26 @@ export type TSignUp = {
   password: string;
   confirmPassword: string;
 };
+export type TPersonalInfoKYC = {
+  userId: string;
+  firstName: string;
+  lastName: string;
+  middleName: string;
+  dateOfBirth: string;
+  nationality: string;
+};
 
+export type TPOA = {
+  userId: string;
+  file: File;
+};
+
+export type TIdentity = {
+  userId: string;
+  docType: string;
+  identificationNo: string;
+  selfie: File | string;
+};
 // type TAuth = {
 //   statusCode: number;
 //   status: boolean;

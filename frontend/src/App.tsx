@@ -1,25 +1,31 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Route, Navigate, Routes } from 'react-router-dom';
 import AuthLayout from './layouts/auth/AuthLayout';
-import DashboardLayOut from './layouts/DashboardLayOut';
+import KycLayOut from './layouts/KycLayOut';
 import { LogIn, SignUp, ForgotPassword, VerifyEmail, OTP, ResetPassword } from './pages/auth';
-import Dashboard from './pages/dashboard/Dashboard';
 import './App.css';
 import { APP_ROUTES } from './constants/app_route';
-import ProtectedRoute from './utils/protectedRoutes';
-import { GOOGLE } from './utils/googleCred';
-import { GoogleOAuthProvider } from '@react-oauth/google';
-import { useDispatch } from "react-redux";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import { Identity, POA, PersonalInformation } from './pages/kyc';
+import Dashboard from './pages/dashboard/Dashboard';
+import ProtectedRoute from './utils/protectedRoutes';
+import { UserState } from './redux/reducers/userSlice';
+import { useSelector } from 'react-redux';
+import { rehydrateUser } from './redux/actions/userActions';
+import PhoneVerifcation from './pages/kyc/PhoneVerification';
+import DepositPage from './pages/wallet/deposits';
+import TranscLayOut from './layouts/TranscLayOut';
+import WithdrawalPage from './pages/wallet/withdrawal';
 
 
 const App: React.FC = () => {
-  // const dispatch = useDispatch()
+  const userState: UserState = useSelector((state: any) => state.user);
+  useEffect(() => { rehydrateUser() }, [userState.isAuthenticated])
   return (
 
     <Router>
+
       <Routes>
         <>
           <Route element={<AuthLayout />}>
@@ -29,22 +35,31 @@ const App: React.FC = () => {
             <Route path={`${APP_ROUTES?.AUTH.VERIFY}`} Component={VerifyEmail} />
             <Route path={APP_ROUTES.AUTH.OTP} Component={OTP} />
             <Route path={APP_ROUTES?.AUTH.RESET_PASSWORD} Component={ResetPassword} />
+          </Route>
+          <Route
+            element={<ProtectedRoute user={userState} />}
+          >
+            <Route element={<KycLayOut />}>
+              <Route path={APP_ROUTES?.KYC.PERSONAL} Component={PersonalInformation} />
+              <Route path={APP_ROUTES?.KYC.POA} Component={POA} />
+              <Route path={APP_ROUTES?.KYC.IDENTITY} Component={Identity} />
+
+              
+            </Route>
+            <Route element={<TranscLayOut />}>
+              <Route path={APP_ROUTES.WALLET.DEPOSIT} element={<DepositPage />} />
+              <Route path={APP_ROUTES.WALLET.WITHDRAW} element={<WithdrawalPage />} />
+
+
+            </Route>
+
+            <Route path={APP_ROUTES.DASHBOARD} element={<Dashboard />} />
+
+            <Route path={APP_ROUTES?.KYC.PHONEVERIFICATION} Component={PhoneVerifcation} />
 
           </Route>
 
-
-          {/* Protected Route */}
-          {/* <ProtectedRoute element={<DashboardLayOut />} >
-            <Route path={`${APP_ROUTES?.DASHBOARD}/*`} Component={Dashboard} />
-          </ProtectedRoute> */}
-          {/* <Route
-            path="/dashboard"
-            element={token ? <DashboardPage /> : <Navigate to="/login" />}
-          /> */}
-
-
-          {/* Redirect to Home if no route matched */}
-          <Route path="*" element={<Navigate to="/home" />} />
+          <Route path="*" element={<Navigate to="/404" />} />
         </>
       </Routes>
       <ToastContainer
