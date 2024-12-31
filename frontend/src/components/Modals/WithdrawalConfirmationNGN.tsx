@@ -1,0 +1,39 @@
+import { PrimaryButton } from "../buttons/Buttons";
+import ModalTemplate from "./ModalTemplate";
+
+interface Props {
+    close: () => void;
+    transactionFee: string;
+    withdrawalAmount: string;
+    total: string
+
+}
+const WithdrawalConfirmationNGN: React.FC<Props> = ({ close, transactionFee, withdrawalAmount, total }) => {
+    return (
+        <ModalTemplate onClose={close}>
+            <div className="flex flex-col justify-center w-full text-center mx-auto">
+                <h1 className="text-[#0A0E12] text-[22px] leading-[32px] font-[600] text-left mt-5">Withdrawal Confirmation</h1>
+
+                <div className="h-fit rounded border border  border-[#F3F4F6] bg-[#F9F9FB] rounded-[12px] py-3 px-5 my-5 text-[14px] leading-[24px] ">
+                    <div className="flex justify-between items-center mb-2">
+                        <p className="text-[#424A59] font-[400]">Transaction fee:</p>
+                        <p className="text-[#606C82]  font-[600]">{transactionFee}xNGN</p>
+                    </div>
+                    <div className="flex justify-between items-center mb-2">
+                        <p className="text-[#424A59] font-[400]">Withdrawal amount:</p>
+                        <p className="text-[#606C82]  font-[600]">{withdrawalAmount} xNGN</p>
+                    </div>
+                    <div className="flex justify-between items-center mb-2">
+                        <p className="text-[#424A59] font-[400]">Total:</p>
+                        <p className="text-[#606C82]  font-[600]">{total} xNGN</p>
+                    </div>
+                </div>
+                <PrimaryButton css={""} text={"Proceed"} loading={false} />
+
+            </div>
+        </ModalTemplate>
+
+    )
+}
+
+export default WithdrawalConfirmationNGN

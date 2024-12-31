@@ -155,7 +155,7 @@ const Identity = () => {
             console.log(response)
             if (response.statusCode === 200) {
                 Toast.success("Success", response.message)
-                navigate(APP_ROUTES.KYC.POA)
+                navigate(APP_ROUTES.DASHBOARD)
             } else {
                 setIsLoading(false)
                 Toast.error("Error", response.message)
@@ -166,7 +166,7 @@ const Identity = () => {
     return (
         <div className="p-3">
             <div className="w-full">
-                <StepFlow step={2} />
+                <StepFlow step={3} />
             </div>
             <form onSubmit={formik.handleSubmit}>
                 <MultiSelectDropDown

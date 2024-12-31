@@ -30,7 +30,7 @@ const PersonalInfo = () => {
             navigate(APP_ROUTES.KYC.POA)
         }
     }, [user])
-    
+
     const formik = useFormik({
         initialValues: { ...personalInfo },
         validationSchema: PersonalInformationSchema,

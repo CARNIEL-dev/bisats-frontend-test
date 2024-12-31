@@ -14,14 +14,18 @@ import { UserState } from './redux/reducers/userSlice';
 import { useSelector } from 'react-redux';
 import { rehydrateUser } from './redux/actions/userActions';
 import PhoneVerifcation from './pages/kyc/PhoneVerification';
+import DepositPage from './pages/wallet/deposits';
+import TranscLayOut from './layouts/TranscLayOut';
+import WithdrawalPage from './pages/wallet/withdrawal';
 
 
 const App: React.FC = () => {
   const userState: UserState = useSelector((state: any) => state.user);
-  useEffect(() => { rehydrateUser() }, [])
+  useEffect(() => { rehydrateUser() }, [userState.isAuthenticated])
   return (
 
     <Router>
+
       <Routes>
         <>
           <Route element={<AuthLayout />}>
@@ -42,13 +46,20 @@ const App: React.FC = () => {
 
               
             </Route>
+            <Route element={<TranscLayOut />}>
+              <Route path={APP_ROUTES.WALLET.DEPOSIT} element={<DepositPage />} />
+              <Route path={APP_ROUTES.WALLET.WITHDRAW} element={<WithdrawalPage />} />
 
-            <Route path="/dashboard" element={<Dashboard />} />
+
+            </Route>
+
+            <Route path={APP_ROUTES.DASHBOARD} element={<Dashboard />} />
+
             <Route path={APP_ROUTES?.KYC.PHONEVERIFICATION} Component={PhoneVerifcation} />
 
           </Route>
 
-          <Route path="*" element={<Navigate to="/home" />} />
+          <Route path="*" element={<Navigate to="/404" />} />
         </>
       </Routes>
       <ToastContainer

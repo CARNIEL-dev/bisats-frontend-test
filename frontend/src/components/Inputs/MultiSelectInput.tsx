@@ -27,7 +27,7 @@ export const MultiSelectDropDown = ({ parentId, title, choices, label, error, to
     return (
         <div className="w-full relative">
             {label && (
-                <div className="mb-3">
+                <div className="mb-2">
                     <Label text={label} css="" />
                 </div>
 

@@ -19,7 +19,12 @@ export const APP_ROUTES = {
     PERSONAL: "/kyc/personal-information",
     POA: "/kyc/poa",
     IDENTITY: "/kyc/identity",
-    PHONEVERIFICATION:"/phone-verification"
+    PHONEVERIFICATION: "/phone-verification",
+  },
+  WALLET: {
+    HOME: "/wallet",
+    DEPOSIT: "/wallet/deposit",
+    WITHDRAW: "/wallet/withdrawal",
   },
   DASHBOARD: "/dashboard",
   AD: "/ad",

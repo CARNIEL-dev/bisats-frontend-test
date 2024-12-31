@@ -1,6 +1,6 @@
 /** @format */
 
-import { UserActionTypes } from "../types";
+import { GeneralTypes, UserActionTypes } from "../types";
 interface KycStatus {
   identificationVerified: boolean;
   personalInformationVerified: boolean;
@@ -31,6 +31,11 @@ const initialState: UserState = {
 
 const userReducer = (state = initialState, action: UserActionProp) => {
   switch (action.type) {
+    case GeneralTypes.LOADING:
+      return {
+        ...state,
+        loading: true,
+      };
     case UserActionTypes.LOG_IN_SUCCESS:
       return {
         ...state,
@@ -38,6 +43,7 @@ const userReducer = (state = initialState, action: UserActionProp) => {
         user: action?.payload,
         token: action?.payload?.token,
         kyc: action?.payload?.kyc,
+        loading: false,
       };
     case UserActionTypes.SIGN_UP:
       console.log(action.payload, action.type);

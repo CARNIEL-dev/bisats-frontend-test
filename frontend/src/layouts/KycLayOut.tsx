@@ -1,8 +1,12 @@
 import { Outlet } from "react-router-dom";
 import OtherSide from "./auth/OtherSide";
+import Header from "../components/Header";
 
 const KycLayOut = () => {
     return (
+        <div>
+            <Header />
+
         <div className={`bg-white bg-no-repeat bg-cover h-full w-full py-20`}>
             <div className="w-full lg:w-1/3 mx-auto h-full  lg:items-center ">
                 <OtherSide
@@ -16,6 +20,7 @@ const KycLayOut = () => {
                         <Outlet />
                     </div>
                 </div>
+            </div>
             </div>
         </div>
     )

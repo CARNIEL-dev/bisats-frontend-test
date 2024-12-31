@@ -22,6 +22,9 @@ export const BACKEND_URLS = {
   DASHBOARD: {
     DASHBOARD: "/v1/dashboard",
   },
+  WALLET: {
+    TOPUPNGN: "/top-up-wallet",
+  },
   NOTIFICATIONS: "/v1/user/notifications",
   ADD_PUSH_NOTIFICATION: "/v1/notification/add-push-token",
   SUPPORT_CHANNEL: "/v1/support",

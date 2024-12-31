@@ -32,9 +32,8 @@ const LogIn = () => {
                     ReSendverificationCode({ userId: response.data.userId })
                     return navigate(APP_ROUTES.AUTH.VERIFY)
                 }
-                Toast.success("", response.message)
-                // navigate(APP_ROUTES.DASHBOARD)
                 navigate(APP_ROUTES.DASHBOARD)
+                Toast.success("", response.message)
 
             }
             setIsLoading(false)
