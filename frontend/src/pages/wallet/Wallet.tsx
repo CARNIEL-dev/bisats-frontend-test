@@ -1,19 +1,14 @@
 import Header from "../../components/Header"
-import Balance from "../../components/Balance"
-import MarketRate from "./MarketRate";
-import Ads from "./Ads";
-import Orders from "./Orders";
+import Balance from "../../components/Balance";
 
-const Dashboard = () => {    
+const Wallet = () => {    
     return (
         <div>
-            <Header currentPage="Dashboard" />
+            <Header currentPage="Wallet"/>
             <div className="flex justify-center mt-[30px]">
                 <div className="w-[60%]">
-                    <h2 className="text-[34px] mx-[15px] font-semibold" style={{ color: '#0A0E12' }}>Hello, Chillex</h2>
-                    <div className="flex justify-between m-[15px]">
+                    <div className="flex m-[15px]">
                         <Balance />
-                        <MarketRate />
                     </div>
                     <div className="border-[1px] h-[288px] m-[15px] p-[24px]" style={{ borderRadius: '12px', borderColor: "#D6DAE1" }}>
                         <div className="mb-[12px]">
@@ -26,7 +21,6 @@ const Dashboard = () => {
                                 </button>
                             </p>
                         </div>
-                        <Ads />
                     </div>
                     <div className="border-[1px] h-[288px] m-[15px] p-[24px]" style={{ borderRadius: '12px', borderColor: "#D6DAE1" }}>
                     <div className="mb-[12px]">
@@ -39,11 +33,10 @@ const Dashboard = () => {
                                 </button>
                             </p>
                         </div>
-                        <Orders />
                     </div>
                 </div>
             </div>
         </div>
     )
 }
-export default Dashboard
+export default Wallet

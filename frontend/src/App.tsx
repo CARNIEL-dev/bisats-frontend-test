@@ -10,6 +10,7 @@ import Dashboard from './pages/dashboard/Dashboard';
 import ProtectedRoute from './utils/protectedRoutes';
 import { UserState } from './redux/reducers/userSlice';
 import { useSelector } from 'react-redux';
+import Wallet from './pages/wallet/Wallet';
 
 
 
@@ -34,6 +35,7 @@ const App: React.FC = () => {
             element={<ProtectedRoute user={userState} />}
           >
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/wallet" element={<Wallet />} />
           </Route>
 
           <Route path="*" element={<Navigate to="/home" />} />
