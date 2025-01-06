@@ -1,5 +1,5 @@
 import Header from "../../components/Header"
-import Balance from "../../components/Balance"
+import Balance from "./Balance"
 import MarketRate from "./MarketRate";
 import Ads from "./Ads";
 import Orders from "./Orders";
@@ -9,7 +9,7 @@ const Dashboard = () => {
         <div>
             <Header currentPage="Dashboard" />
             <div className="flex justify-center mt-[30px]">
-                <div className="w-[60%]">
+                <div className="w-[65%]">
                     <h2 className="text-[34px] mx-[15p x] font-semibold" style={{ color: '#0A0E12' }}>Hello, Chillex</h2>
                     <div className="flex justify-between m-[15px]">
                         <Balance />

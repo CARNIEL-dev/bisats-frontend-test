@@ -1,14 +1,14 @@
 import Header from "../../components/Header"
-import Balance from "../../components/Balance";
+import Balance from "./Balance";
 import Assets from "./Assets";
 import Orders from "../dashboard/Orders";
 
-const Wallet = () => {    
+const Wallet = () => {
     return (
         <div>
             <Header currentPage="Wallet"/>
             <div className="flex justify-center mt-[30px]">
-                <div className="w-[60%]">
+                <div className="w-[65%]">
                     <div className="flex m-[15px]">
                         <Balance />
                     </div>
