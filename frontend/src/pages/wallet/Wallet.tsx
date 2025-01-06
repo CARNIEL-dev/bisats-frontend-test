@@ -1,7 +1,7 @@
 import Header from "../../components/Header"
 import Balance from "./Balance";
 import Assets from "./Assets";
-import Orders from "../dashboard/Orders";
+import Transactions from "./Transaction";
 
 const Wallet = () => {
     return (
@@ -35,7 +35,7 @@ const Wallet = () => {
                                     view all
                                 </button>
                             </p>
-                            <Orders />
+                            <Transactions />
 
                         </div>
                     </div>
