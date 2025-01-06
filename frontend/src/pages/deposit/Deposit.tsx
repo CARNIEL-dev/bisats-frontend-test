@@ -53,23 +53,23 @@ const Deposit = () => {
                         <select
                             name="Asset"
                             className="w-[100%] h-[48px] px-[16px] mb-[10px]"
-                            style={{ border: "1px solid #E2E4E8", borderRadius: "8px" }}
+                            style={{ border: "1px solid #E2E4E8", borderRadius: "8px", fontSize: "12px", fontWeight: 200 }}
                             onChange={handleSelectChange}
                         >
                             <option value="" disabled selected>
                                 Select option
                             </option>
-                            <option value="xngn">XNGN</option>
-                            <option value="usd">USD</option>
-                            <option value="sol">Solana</option>
-                            <option value="eth">ETH</option>
+                            <option value="XNGN">XNGN</option>
+                            <option value="USDT">USDT</option>
+                            <option value="SOL">Solana</option>
+                            <option value="ETH">ETH</option>
                         </select>
                         {depositDetails.Asset !== "" && (
                             <p style={{ color: "#606C82", fontSize: "12px" }}>Current Balance: -</p>
                         )}
                     </div>
                     {depositDetails.Asset !== "" && (
-                        depositDetails.Asset !== "xngn" ? (
+                        depositDetails.Asset !== "XNGN" ? (
                             <div className="mb-[5px]">
                                 <p style={{ color: "#515B6E", fontSize: "14px" }} className="mb-2">
                                     Select Network
@@ -77,16 +77,17 @@ const Deposit = () => {
                                 <select
                                     name="Network"
                                     className="w-[100%] h-[48px] px-[16px]"
-                                    style={{ border: "1px solid #E2E4E8", borderRadius: "8px", fontSize: "16px" }}
+                                    style={{ border: "1px solid #E2E4E8", borderRadius: "8px", fontSize: "12px", fontWeight: 200 }}
                                     value={depositDetails.Network}
                                     onChange={handleSelectChange}
                                 >
-                                    <option style={{ color: "#858FA5", fontSize: "12px" }} value="" disabled selected>
+                                    <option style={{ color: "#858FA5" }} value="" disabled selected>
                                         Select
                                     </option>
-                                    <option value="eth">Ethereum</option>
-                                    <option value="sol">Solana</option>
-                                    <option value="base">Base</option>
+                                    <option value="ETH">Ethereum (ERC20)</option>
+                                    <option value="BSC">BSC</option>
+                                    <option value="SOL">SOLANA</option>
+                                    <option value="BASE">BASE</option>
                                 </select>
                             </div>
                         ) : (
@@ -97,7 +98,7 @@ const Deposit = () => {
                                 <select
                                     name="Payment"
                                     className="w-[100%] h-[48px] px-[16px]"
-                                    style={{ border: "1px solid #E2E4E8", borderRadius: "8px", fontSize: "16px" }}
+                                    style={{ border: "1px solid #E2E4E8", borderRadius: "8px", fontSize: "12px", fontWeight: 200 }}
                                     value={depositDetails.Payment}
                                     onChange={handleSelectChange}
                                 >
@@ -111,21 +112,22 @@ const Deposit = () => {
                             </div>
                         )
                     )}
-                    {depositDetails.Network !== "" && depositDetails.Asset !== "xngn" && (
+                    {depositDetails.Network !== "" && depositDetails.Asset !== "XNGN" && (
                         <div className="border border-dashed h-[84px] p-[16px] mb-[15px]" style={{ borderColor: "#F59E0C", borderRadius: "12px", lineHeight: "24px" }}>
                             <p style={{ color: "#2B313B", fontSize: "14px", fontWeight: 600 }}>Wallet Address</p>
                             <p style={{ color: "#515B6E", fontSize: "14px", fontWeight: 400 }}>0x8708bcabde9d58fedcd164ebf0d3742486284b90</p>
                         </div>
                     )}
-                    {(depositDetails.Network !== "" || depositDetails.Asset === "xngn") && (
+                    {(depositDetails.Network !== "" || depositDetails.Asset === "XNGN") && (
                         <div className="mt-[10px]">
                             <div>
                                 <input
                                     type="text"
                                     name="Amount"
+                                    value={depositDetails.Amount}
                                     placeholder="Enter Amount"
                                     className="w-[100%] h-[48px] px-[16px] mb-[10px]"
-                                    style={{ border: "1px solid #E2E4E8", borderRadius: "8px" }}
+                                    style={{ border: "1px solid #E2E4E8", borderRadius: "8px", fontSize: "12px", fontWeight: 200 }}
                                     onChange={(e) => setDepositDetails((prevState) => ({ ...prevState, Amount: e.target.value }))}
                                 />
                             </div>
