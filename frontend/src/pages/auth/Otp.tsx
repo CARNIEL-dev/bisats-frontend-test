@@ -28,7 +28,6 @@ const OTP = () => {
                 email: email ?? "",
                 code: values.code ?? ""
             }
-            console.log('Form data:', values);
             const response = await VerifyForgotPassword(payload)
             setIsLoading(false)
             if (response?.statusCode === 200) {

@@ -49,7 +49,27 @@ export const getRefreshToken = () => {
     }
 };
 
+export const setAppState = (state: any) => {
+    try {
+        const serializedState = JSON.stringify(state);
+        localStorage.setItem('appState', serializedState);
+    } catch (error) {
+        console.error('Could not save state', error);
+    }
+};
+
+export const getAppState = () => {
+    try {
+        const serializedState = localStorage.getItem('appState');
+        if (serializedState === null) return undefined; // Return undefined for initial state
+        return JSON.parse(serializedState);
+    } catch (error) {
+        console.error('Could not load state', error);
+        return undefined;
+    }
+};
+
 export const removeCache = (arg: string) => {
     localStorage.removeItem(arg);
-    sessionStorage.removeItem(arg);
+    // sessionStorage.removeItem(arg);
 };

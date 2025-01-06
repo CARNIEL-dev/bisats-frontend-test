@@ -8,6 +8,7 @@ import {
   characterLength,
 } from "../utils/passwordChecks";
 
+//Auth
 export const SignupSchema = Yup.object().shape({
   email: Yup.string().email().required(),
   password: Yup.string()
@@ -44,6 +45,10 @@ export const VerificationSchema = Yup.object().shape({
 export const EmailSchema = Yup.object().shape({
   email: Yup.string().email().required(),
 });
+
+export const PhoneSchema = Yup.object().shape({
+  phone: Yup.string().required(),
+});
 export const LogInSchema = Yup.object().shape({
   email: Yup.string().email().required(),
   password: Yup.string()
@@ -53,4 +58,15 @@ export const LogInSchema = Yup.object().shape({
     .matches(specialCharcterRegex)
     .matches(characterLength)
     .required(),
+});
+
+//Auth
+
+//Wallet
+
+export const TopUpSchema = Yup.object().shape({
+  amount: Yup.string()
+    .matches(/^\d*$/, "Amount must be a number") 
+    .required("Amount is required"),
+  paymentMethod: Yup.string().required(),
 });
