@@ -22,7 +22,7 @@ interface UserActionProp {
 }
 
 const initialState: UserState = {
-  isAuthenticated: false,
+  isAuthenticated: true,
   loading: false,
   user: null,
   token: null,

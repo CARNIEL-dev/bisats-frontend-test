@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 const Balance: React.FC = () => {
     return (
-        <div className="border-[1px] h-[220px] w-[48.5%] py-[24px] px-[34px]" style={{ borderRadius: '12px', borderColor: "#D6DAE1" }}>
+        <div className="border-[1px] h-[220px] w-[65%] py-[24px] px-[34px]" style={{ borderRadius: '12px', borderColor: "#D6DAE1" }}>
             <div className="m-[2px]">
                 <p style={{color: "#2B313B", fontSize: "15px"}} className="font-semibold">
                     Total Balance
@@ -26,9 +26,12 @@ const Balance: React.FC = () => {
                     <span style={{fontSize: "12px", fontWeight: 400}} className="ml-[4px]">0.11%</span>
                 </p>
             </div>
-            <div>
-                <Link to="/wallet/deposit" className="inline-flex items-center justify-center w-full h-[48px] py-[10px] px-[16px] font-semibold rounded-md " style={{backgroundColor: "#F5BB00", color: "#0A0E12", fontSize: "14px", lineHeight: "24px"}}>
+            <div className='flex justify-between'>
+                <Link to="/wallet/deposit" className="inline-flex items-center justify-center w-[48%] h-[48px] py-[10px] px-[16px] font-semibold rounded-md " style={{backgroundColor: "#F5BB00", color: "#0A0E12", fontSize: "14px", lineHeight: "24px"}}>
                     Deposit
+                </Link>
+                <Link to="/wallet/withdrawal" className="inline-flex items-center justify-center w-[48%] h-[48px] py-[10px] px-[16px] font-semibold rounded-md" style={{backgroundColor: "#F9F9FB", color: "#0A0E12", fontSize: "14px", lineHeight: "24px"}}>
+                    Withdrawal
                 </Link>
             </div>
         </div>

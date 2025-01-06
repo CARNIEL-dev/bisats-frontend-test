@@ -12,6 +12,9 @@ import Dashboard from './pages/dashboard/Dashboard';
 import ProtectedRoute from './utils/protectedRoutes';
 import { UserState } from './redux/reducers/userSlice';
 import { useSelector } from 'react-redux';
+import Wallet from './pages/wallet/Wallet';
+import Deposit from './pages/deposit/Deposit';
+import Withdrawal from './pages/withdrawal/Withdrawal';
 import { rehydrateUser } from './redux/actions/userActions';
 import PhoneVerifcation from './pages/kyc/PhoneVerification';
 import DepositPage from './pages/wallet/deposits';
@@ -39,6 +42,11 @@ const App: React.FC = () => {
           <Route
             element={<ProtectedRoute user={userState} />}
           >
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/wallet" element={<Wallet />} />
+            <Route path="/wallet/deposit" element={<Deposit />} />
+            <Route path="/wallet/withdrawal" element={<Withdrawal />} />
+
             <Route element={<KycLayOut />}>
               <Route path={APP_ROUTES?.KYC.PERSONAL} Component={PersonalInformation} />
               <Route path={APP_ROUTES?.KYC.POA} Component={POA} />
