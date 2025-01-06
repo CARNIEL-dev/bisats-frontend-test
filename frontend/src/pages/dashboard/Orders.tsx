@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Table from '../../components/Table/Table';
-import Empty from './Empty';
+import Empty from '../../components/Empty';
 
 const defaultOrders = [
     {

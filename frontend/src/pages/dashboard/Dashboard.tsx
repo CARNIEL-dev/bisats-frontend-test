@@ -10,7 +10,7 @@ const Dashboard = () => {
             <Header currentPage="Dashboard" />
             <div className="flex justify-center mt-[30px]">
                 <div className="w-[60%]">
-                    <h2 className="text-[34px] mx-[15px] font-semibold" style={{ color: '#0A0E12' }}>Hello, Chillex</h2>
+                    <h2 className="text-[34px] mx-[15p x] font-semibold" style={{ color: '#0A0E12' }}>Hello, Chillex</h2>
                     <div className="flex justify-between m-[15px]">
                         <Balance />
                         <MarketRate />

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const Balance: React.FC = () => {
     return (
@@ -26,9 +27,11 @@ const Balance: React.FC = () => {
                 </p>
             </div>
             <div>
-                <button className="w-full h-[48px] py-[10px] px-[16px] font-semibold rounded-md" style={{backgroundColor: "#F5BB00", color: "#0A0E12", fontSize: "14px", lineHeight: "24px"}}>
-                    Deposit
-                </button>
+                <Link to="/wallet/deposit">
+                    <button className="w-full h-[48px] py-[10px] px-[16px] font-semibold rounded-md" style={{backgroundColor: "#F5BB00", color: "#0A0E12", fontSize: "14px", lineHeight: "24px"}}>
+                        Deposit
+                    </button>
+                </Link>
             </div>
         </div>
     );
