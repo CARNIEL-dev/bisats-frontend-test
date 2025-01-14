@@ -3,7 +3,7 @@ import Header from "../components/Header";
 const TranscLayOut = () => {
     return (
         <div>
-            <Header />
+            <Header currentPage={""} />
             <div className={`bg-white bg-no-repeat bg-cover h-full w-full py-20`}>
                 <div className="w-full lg:w-1/3 mx-auto h-full  lg:items-center ">
 
