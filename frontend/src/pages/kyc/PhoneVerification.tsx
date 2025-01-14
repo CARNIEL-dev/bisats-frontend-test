@@ -34,7 +34,7 @@ const PhoneVerifcation = () => {
 
     return (
         <div className="">
-            <Header />
+            <Header currentPage={""} />
             <div className="lg:w-[442px] mx-auto py-24">
                 <OtherSide
                     header="Verify your Phone number"

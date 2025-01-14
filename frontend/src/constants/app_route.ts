@@ -26,6 +26,12 @@ export const APP_ROUTES = {
     DEPOSIT: "/wallet/deposit",
     WITHDRAW: "/wallet/withdrawal",
   },
+  P2P: {
+    MARKETPLACE: "/p2p/market-place",
+    EXPRESS: "/p2p/express",
+    MY_ADS: "/p2p/my-ads",
+    MY_PROFILE: "/p2p/my-profile",
+  },
   DASHBOARD: "/dashboard",
   AD: "/ad",
 };

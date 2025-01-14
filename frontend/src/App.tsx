@@ -20,6 +20,11 @@ import PhoneVerifcation from './pages/kyc/PhoneVerification';
 import DepositPage from './pages/wallet/deposits';
 import TranscLayOut from './layouts/TranscLayOut';
 import WithdrawalPage from './pages/wallet/withdrawal';
+import P2PLayOut from './layouts/P2PLayOut';
+import MarketPlace from './pages/p2p/MarketPlace';
+import Express from './pages/p2p/Express';
+import MyAds from './pages/p2p/MyAds';
+import Profile from './pages/p2p/Profile';
 
 
 const App: React.FC = () => {
@@ -44,27 +49,27 @@ const App: React.FC = () => {
           >
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/wallet" element={<Wallet />} />
-            <Route path="/wallet/deposit" element={<Deposit />} />
-            <Route path="/wallet/withdrawal" element={<Withdrawal />} />
+            {/* <Route path="/wallet/deposit" element={<Deposit />} />
+            <Route path="/wallet/withdrawal" element={<Withdrawal />} /> */}
 
             <Route element={<KycLayOut />}>
               <Route path={APP_ROUTES?.KYC.PERSONAL} Component={PersonalInformation} />
               <Route path={APP_ROUTES?.KYC.POA} Component={POA} />
               <Route path={APP_ROUTES?.KYC.IDENTITY} Component={Identity} />
-
-              
             </Route>
             <Route element={<TranscLayOut />}>
               <Route path={APP_ROUTES.WALLET.DEPOSIT} element={<DepositPage />} />
               <Route path={APP_ROUTES.WALLET.WITHDRAW} element={<WithdrawalPage />} />
-
-
             </Route>
-
+            <Route element={<P2PLayOut />}>
+              <Route path={APP_ROUTES.P2P.MARKETPLACE} element={<MarketPlace />} />
+              <Route path={APP_ROUTES.P2P.EXPRESS} element={<Express />} />
+              <Route path={APP_ROUTES.P2P.MY_ADS} element={<MyAds />} />
+              <Route path={APP_ROUTES.P2P.MY_PROFILE} element={<Profile />} />
+            </Route>
             <Route path={APP_ROUTES.DASHBOARD} element={<Dashboard />} />
 
             <Route path={APP_ROUTES?.KYC.PHONEVERIFICATION} Component={PhoneVerifcation} />
-
           </Route>
 
           <Route path="*" element={<Navigate to="/404" />} />
