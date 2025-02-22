@@ -35,6 +35,8 @@ const LogIn = () => {
                 navigate(APP_ROUTES.DASHBOARD)
                 Toast.success("", response.message)
 
+            } else {
+                Toast.error(response.message, "Login Failed")
             }
             setIsLoading(false)
         },

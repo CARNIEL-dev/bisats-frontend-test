@@ -4,6 +4,7 @@ import { BTC, NGN, ETH, USDT, SOL } from "../assets/tokens"
 import { Link, Outlet } from "react-router-dom"
 import { useState } from "react"
 import Header from "../components/Header"
+import { APP_ROUTES } from "../constants/app_route"
 
 const P2PLayOut = () => {
     const [activePage, setActivePage] = useState(0)
@@ -11,19 +12,19 @@ const P2PLayOut = () => {
     const PageData = [
         {
             tab: "Market",
-            link: "market"
+            link: APP_ROUTES.P2P.MARKETPLACE
         },
         {
             tab: "Express",
-            link: "express"
+            link: APP_ROUTES.P2P.EXPRESS
         },
         {
             tab: "My ads",
-            link: "my-ads"
+            link: APP_ROUTES.P2P.MY_ADS
         },
         {
             tab: "My profile",
-            link: "my-profile"
+            link: APP_ROUTES.P2P.MY_PROFILE
         },
     ]
     const LiveData = [
@@ -89,7 +90,7 @@ const P2PLayOut = () => {
                 <div className=" hidden lg:flex justify-between px-[8px] pt-4 w-[50%] items-center mx-auto flex-nowrap " style={{ color: "#515B6E" }}>
 
                     {
-                        PageData.map((page, idx) => <Link to={`/${page.link}`} className={`${activePage === idx ? "border-b-4" : ""} text-[14px] text-[#515B6E] leading-[24px] font-[600] px-5`} style={activePage === idx ? { color: "#937000", borderBottomColor: "#F5BB00", borderRadius: "2px" } : {}}>{page.tab}</Link>
+                        PageData.map((page, idx) => <Link to={`${page.link}`} className={`${activePage === idx ? "border-b-4" : ""} text-[14px] text-[#515B6E] leading-[24px] font-[600] px-5`} style={activePage === idx ? { color: "#937000", borderBottomColor: "#F5BB00", borderRadius: "2px" } : {}} onClick={()=>setActivePage(idx)}>{page.tab}</Link>
                         )
                     }
 

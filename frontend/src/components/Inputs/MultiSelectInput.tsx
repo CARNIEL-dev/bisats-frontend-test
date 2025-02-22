@@ -3,12 +3,13 @@ import { useState } from "react";
 import Label from "./Label";
 
 interface IMultiSelectDropDownProps {
-    parentId: string;
+    parentId?: string;
     title: string;
     choices: Array<{ value: string; label: string }> | [];
     error: string | undefined | null,
     touched: boolean | undefined,
-    label: string; handleChange: (prop: string) => void
+    label: string;
+    handleChange: (prop: string) => void
 
 }
 

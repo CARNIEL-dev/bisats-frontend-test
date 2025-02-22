@@ -25,6 +25,13 @@ import MarketPlace from './pages/p2p/MarketPlace';
 import Express from './pages/p2p/Express';
 import MyAds from './pages/p2p/MyAds';
 import Profile from './pages/p2p/Profile';
+import Sell from './pages/p2p/Sell';
+import Buy from './pages/p2p/Buy';
+import Receipt from './pages/p2p/Receipt';
+import SettingsLayOut from './layouts/SettingsLayOut';
+import UserInfo from './pages/settings/UserInfo';
+import Security from './pages/settings/Security';
+import Payment from './pages/settings/Payment';
 
 
 const App: React.FC = () => {
@@ -47,8 +54,8 @@ const App: React.FC = () => {
           <Route
             element={<ProtectedRoute user={userState} />}
           >
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/wallet" element={<Wallet />} />
+            {/* <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/wallet" element={<Wallet />} /> */}
             {/* <Route path="/wallet/deposit" element={<Deposit />} />
             <Route path="/wallet/withdrawal" element={<Withdrawal />} /> */}
 
@@ -66,8 +73,19 @@ const App: React.FC = () => {
               <Route path={APP_ROUTES.P2P.EXPRESS} element={<Express />} />
               <Route path={APP_ROUTES.P2P.MY_ADS} element={<MyAds />} />
               <Route path={APP_ROUTES.P2P.MY_PROFILE} element={<Profile />} />
+              <Route path={APP_ROUTES.P2P.SELL} element={<Sell />} />
+              <Route path={APP_ROUTES.P2P.BUY} element={<Buy />} />
+              <Route path={APP_ROUTES.P2P.RECEIPT} element={<Receipt />} />
+            </Route>
+            <Route element={<SettingsLayOut />}>
+              <Route path={APP_ROUTES.SETTINGS.PROFILE} element={<UserInfo />} />
+              <Route path={APP_ROUTES.SETTINGS.SECURITY} element={<Security />} />
+              <Route path={APP_ROUTES.SETTINGS.PAYMENT} element={<Payment />} />
             </Route>
             <Route path={APP_ROUTES.DASHBOARD} element={<Dashboard />} />
+            <Route path={APP_ROUTES.WALLET.HOME} element={<Wallet />} />
+            <Route path={APP_ROUTES.PROFILE} element={<Profile />} />
+
 
             <Route path={APP_ROUTES?.KYC.PHONEVERIFICATION} Component={PhoneVerifcation} />
           </Route>

@@ -4,7 +4,6 @@ import { PrimaryButton } from "../buttons/Buttons";
 
 interface Props {
     close: () => void;
-
 }
 const SecurityVerification: React.FC<Props> = ({ close }) => {
     return (
