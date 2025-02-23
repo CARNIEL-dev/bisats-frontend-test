@@ -79,7 +79,7 @@ const LogIn = () => {
                         />
                     </div>
                     <div className="w-full">
-                        <PrimaryButton css={""} text={"Log In"} type="submit" loading={isLoading} />
+                        <PrimaryButton css={"w-full"} text={"Log In"} type="submit" loading={isLoading} />
                     </div>
                 {/* </form> */}
                     <p className="text-[14px] text-[#C49600] leading-[24px] font-[400] mt-1 cursor-pointer" onClick={() => navigate(APP_ROUTES.AUTH.FORGOT_PASSWORD)}>Forgot password?</p>

@@ -159,20 +159,29 @@ export const refreshAccessToken = async (payload: { refreshToken: string }) => {
   }
 };
 export const rehydrateUser = () => {
-  const user = localStorage.getItem("_user");
-  const token = localStorage.getItem("token");
-
-  const data = user ? JSON.parse(user ?? "") : user;
-
-  if (data && token) {
-    dispatchWrapper({
-      type: UserActionTypes?.LOG_IN_SUCCESS,
-      payload: data,
-    });
-    setUser(data);
-    setToken(token);
-    setRefreshToken(data.refreshToken);
+  const user = getUser();
+  const token = getToken();
+  if (!user || !token) {
+    logoutUser();
+    return;
   }
+
+  GetUserDetails();
+  // if (data && token) {
+  //   dispatchWrapper({
+  //     type: UserActionTypes?.LOG_IN_SUCCESS,
+  //     payload: data,
+  //   });
+  //   setUser(data);
+  //   setToken(token);
+  //   setRefreshToken(data.refreshToken);
+  // }
+};
+
+export const logoutUser = () => {
+  localStorage.removeItem("_user");
+  localStorage.removeItem("token");
+  dispatchWrapper({ type: UserActionTypes?.LOG_OUT, payload: null });
 };
 
 export const GoogleAuth = async (payload: { email: string; id: string }) => {
@@ -292,16 +301,51 @@ export const GetKYCStatus = async (payload: { userId: string }) => {
 
 export const GetUserDetails = async () => {
   const user = getUser();
+  const token = getToken();
   try {
     const response = await Bisatsfetch(`/api/v1/user/${user.userId}/profile`, {
       method: "GET",
     });
     const data = response.data;
-    console.log(data);
-    dispatchWrapper({ type: UserActionTypes.UPDATE_USER, payload: data });
-    setUser(data);
-    setToken(data.token);
-    setRefreshToken(data.refreshToken);
+    if (response.status) {
+      dispatchWrapper({
+        type: UserActionTypes.UPDATE_USER,
+        payload: {
+          ...data,
+          token: token,
+          refreshToken: user?.refreshToken,
+          userId: user?.userId,
+        },
+      });
+      return data;
+    } else {
+      logoutUser();
+    }
+  } catch (error) {
+    logoutUser();
+    // throw handleApiError(error);
+    return error;
+  }
+};
+
+export const UpdateUserName = async (payload: {
+  firstName: string;
+  lastName: string;
+  userName: string;
+}) => {
+  const user = getUser();
+  try {
+    const response = await Bisatsfetch(
+      `/api/v1/user/${user.userId}/update-profile`,
+      {
+        method: "PUT",
+       
+        body: JSON.stringify(payload),
+      }
+    );
+    const data = response;
+    GetUserDetails();
+    // dispatchWrapper({ type: GeneralTypes.SUCCESS, payload: data });
     return data;
   } catch (error) {
     // throw handleApiError(error);

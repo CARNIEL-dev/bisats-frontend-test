@@ -22,7 +22,7 @@ interface UserActionProp {
 }
 
 const initialState: UserState = {
-  isAuthenticated: true,
+  isAuthenticated: false,
   loading: false,
   user: null,
   token: null,
@@ -66,6 +66,13 @@ const userReducer = (state = initialState, action: UserActionProp) => {
       return {
         ...state,
         kyc: action.payload,
+      };
+    case UserActionTypes.LOG_OUT:
+      return {
+        isAuthenticated: false,
+        user: null,
+        token: null,
+        kyc: null,
       };
     default:
       return state;

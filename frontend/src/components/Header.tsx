@@ -46,11 +46,11 @@ const Header: React.FC<HeaderProps> = ({ currentPage }) => {
         },
         Profile: {
             text: "Profile",
-            link: "/profile"
+            link: APP_ROUTES.PROFILE
         },
         Settings: {
             text: "Settings",
-            link: ""
+            link: APP_ROUTES.SETTINGS.PROFILE
         },
         Support: {
             text: "Support",

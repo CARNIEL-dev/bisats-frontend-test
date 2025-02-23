@@ -25,6 +25,7 @@ export const APP_ROUTES = {
     HOME: "/wallet",
     DEPOSIT: "/wallet/deposit",
     WITHDRAW: "/wallet/withdrawal",
+    TRANSACTION_BREAKDOWN:"/wallet/deposit/transaction-breakdown"
   },
   P2P: {
     MARKETPLACE: "/p2p/market-place",

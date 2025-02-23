@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+import { GetBankList } from "../../redux/actions/walletActions";
 import { PrimaryButton, WhiteTransparentButton } from "../buttons/Buttons"
 import { MultiSelectDropDown } from "../Inputs/MultiSelectInput";
 import PrimaryInput from "../Inputs/PrimaryInput";
@@ -7,13 +9,22 @@ interface Props {
 }
 
 const AddWithdrawalBankAccount: React.FC<Props> = ({ close }) => {
+    const [bankList, setBankList] = useState([])
+    const FetchBankList = async () => {
+        let res = await GetBankList()
+        setBankList(res)
+    }
+    useEffect(() => {
+        FetchBankList()
+    }, [])
+
     return (
         <ModalTemplate onClose={close}>
 
             <div className='relative pt-10'>
                 <h1 className='text-[#2B313B] text-[18px] lg:text-[22px] leading-[32px] font-[600]'>Add Withdrawal Bank Account</h1>
                 <div className="my-5">
-                    <MultiSelectDropDown title={"Select Bank"} choices={[]} error={undefined} touched={undefined} label={"Bank"} handleChange={function (prop: string): void {
+                    <MultiSelectDropDown title={"Select Bank"} choices={bankList} error={undefined} touched={undefined} label={"Bank"} handleChange={function (prop: string): void {
                         throw new Error("Function not implemented.");
                     }} />
                     <div className="my-3">

@@ -32,15 +32,15 @@ import SettingsLayOut from './layouts/SettingsLayOut';
 import UserInfo from './pages/settings/UserInfo';
 import Security from './pages/settings/Security';
 import Payment from './pages/settings/Payment';
+import TransactionBreakdown from './pages/wallet/deposits/TransactionBreakdown';
 
 
 const App: React.FC = () => {
   const userState: UserState = useSelector((state: any) => state.user);
-  useEffect(() => { rehydrateUser() }, [userState.isAuthenticated])
+  useEffect(() => { rehydrateUser() }, [])
   return (
 
     <Router>
-
       <Routes>
         <>
           <Route element={<AuthLayout />}>
@@ -67,6 +67,8 @@ const App: React.FC = () => {
             <Route element={<TranscLayOut />}>
               <Route path={APP_ROUTES.WALLET.DEPOSIT} element={<DepositPage />} />
               <Route path={APP_ROUTES.WALLET.WITHDRAW} element={<WithdrawalPage />} />
+              <Route path={APP_ROUTES.WALLET.TRANSACTION_BREAKDOWN} element={<TransactionBreakdown />} />
+
             </Route>
             <Route element={<P2PLayOut />}>
               <Route path={APP_ROUTES.P2P.MARKETPLACE} element={<MarketPlace />} />

@@ -1,38 +1,11 @@
 import React, { useState } from 'react';
 import Empty from '../../components/Empty';
+import { WalletState } from '../../redux/reducers/walletSlice';
+import { useSelector } from 'react-redux';
+import { TWallet } from '../../types/wallet';
+import { GetLivePrice } from '../../redux/actions/walletActions';
 
-const defaultAssets = [
-    {
-        Asset: 'BTC',
-        name: 'Bitcoin',
-        Balance: 1,
-        Rate : 98000
-    },
-    {
-        Asset: 'Eth',
-        name: 'Ethereum',
-        Balance: 2,
-        Rate: 3800
-    },
-    {
-        Asset: 'SOL',
-        name: 'Solana',
-        Balance: 100,
-        Rate: 240
-    },
-    {
-        Asset: 'USDT',
-        name: 'Tether USD',
-        Balance: 1000,
-        Rate: 0.99
-    },
-    {
-        Asset: 'xNGN',
-        name: 'Naira on Bisats',
-        Balance: 1800,
-        Rate: 80
-    },
-]
+
 
 
 export enum Fields {
@@ -92,6 +65,43 @@ const Table: React.FC<TableProps> = ({data}) => {
 }
 
 const Assets: React.FC = () => {
+
+    const wallet: TWallet = useSelector((state: any) => state.wallet).wallet
+    const tokenLivePrices = GetLivePrice()
+    const defaultAssets = [
+        {
+            Asset: 'BTC',
+            name: 'Bitcoin',
+            Balance: wallet?.BTC ?? 0,
+            Rate: tokenLivePrices.BTC
+        },
+        {
+            Asset: 'Eth',
+            name: 'Ethereum',
+            Balance: wallet.ETH ?? 0,
+            Rate: tokenLivePrices.ETH
+        },
+        {
+            Asset: 'SOL',
+            name: 'Solana',
+            Balance: wallet.SOL ?? 0,
+            Rate: tokenLivePrices.SOL
+        },
+        {
+            Asset: 'USDT',
+            name: 'Tether USD',
+            Balance: wallet.USDT ?? 0,
+            Rate: tokenLivePrices.USDT
+        },
+        {
+            Asset: 'xNGN',
+            name: 'Naira on Bisats',
+            Balance: wallet.xNGN ?? 0,
+            Rate: tokenLivePrices.xNGN
+        },
+    ]
+
+    console.log(tokenLivePrices)
     // const fields: Fields[]  = [Fields.Asset, Fields.Balance, Fields.Empty];
     const [openAssets] = useState<Array<Asset>>(defaultAssets);
 
