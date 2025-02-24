@@ -1,6 +1,6 @@
 import { MoreVertical, ToggleRight } from 'lucide-react';
-import { PrimaryButton } from "../../components/buttons/Buttons"
-import TableActionMenu from '../../components/Modals/TableActionMenu';
+import { PrimaryButton } from '../../../components/buttons/Buttons';
+import TableActionMenu from '../../../components/Modals/TableActionMenu';
 
 const MyAds = () => {
     return (
@@ -119,7 +119,6 @@ const MyAds = () => {
                         <table className="table-auto w-full" style={{color: "#515B6E", fontSize: "14px"}}>
                             <thead className='text-justify'>
                                 <tr style={{backgroundColor: "#F9F9FB"}}>
-                                    {/* <th className={(index + 1) > fields.length / 2 ? 'text-right px-4 py-3' : 'text-left px-4 py-4'} style={{backgroundColor: "#F9F9FB"}}> */}
                                     <th className='text-left px-4 py-4'>
                                         Type
                                     </th>

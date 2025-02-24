@@ -13,8 +13,6 @@ import ProtectedRoute from './utils/protectedRoutes';
 import { UserState } from './redux/reducers/userSlice';
 import { useSelector } from 'react-redux';
 import Wallet from './pages/wallet/Wallet';
-import Deposit from './pages/deposit/Deposit';
-import Withdrawal from './pages/withdrawal/Withdrawal';
 import { rehydrateUser } from './redux/actions/userActions';
 import PhoneVerifcation from './pages/kyc/PhoneVerification';
 import DepositPage from './pages/wallet/deposits';
@@ -23,7 +21,7 @@ import WithdrawalPage from './pages/wallet/withdrawal';
 import P2PLayOut from './layouts/P2PLayOut';
 import MarketPlace from './pages/p2p/MarketPlace';
 import Express from './pages/p2p/Express';
-import MyAds from './pages/p2p/MyAds';
+import MyAds from './pages/p2p/ads/MyAds';
 import Profile from './pages/p2p/Profile';
 import Sell from './pages/p2p/Sell';
 import Buy from './pages/p2p/Buy';
@@ -32,7 +30,8 @@ import SettingsLayOut from './layouts/SettingsLayOut';
 import UserInfo from './pages/settings/UserInfo';
 import Security from './pages/settings/Security';
 import Payment from './pages/settings/Payment';
-import AdDetails from './pages/p2p/AdDetails';
+import AdDetails from './pages/p2p/ads/AdDetails';
+import CreateAd from './pages/p2p/ads/CreateAd';
 
 
 const App: React.FC = () => {
@@ -74,6 +73,7 @@ const App: React.FC = () => {
               <Route path={APP_ROUTES.P2P.EXPRESS} element={<Express />} />
               <Route path={APP_ROUTES.P2P.MY_ADS} element={<MyAds />} />
               <Route path={APP_ROUTES.P2P.AD_DETAILS} element={<AdDetails />} />
+              <Route path={APP_ROUTES.P2P.CREATE_AD} element={<CreateAd />} />
               <Route path={APP_ROUTES.P2P.MY_PROFILE} element={<Profile />} />
               <Route path={APP_ROUTES.P2P.SELL} element={<Sell />} />
               <Route path={APP_ROUTES.P2P.BUY} element={<Buy />} />
