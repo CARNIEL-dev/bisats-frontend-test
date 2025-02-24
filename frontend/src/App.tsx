@@ -32,6 +32,7 @@ import Security from './pages/settings/Security';
 import Payment from './pages/settings/Payment';
 import AdDetails from './pages/p2p/ads/AdDetails';
 import CreateAd from  './pages/p2p/ads/Ad';
+import OrderHistory from './pages/p2p/OrderHistory';
 
 
 const App: React.FC = () => {
@@ -71,6 +72,7 @@ const App: React.FC = () => {
             <Route element={<P2PLayOut />}>
               <Route path={APP_ROUTES.P2P.MARKETPLACE} element={<MarketPlace />} />
               <Route path={APP_ROUTES.P2P.EXPRESS} element={<Express />} />
+              <Route path={APP_ROUTES.P2P.ORDER_HISTORY} element={<OrderHistory />} />
               <Route path={APP_ROUTES.P2P.MY_ADS} element={<MyAds />} />
               <Route path={APP_ROUTES.P2P.AD_DETAILS} element={<AdDetails />} />
               <Route path={APP_ROUTES.P2P.CREATE_AD} element={<CreateAd />} />
