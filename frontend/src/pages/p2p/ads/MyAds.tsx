@@ -1,4 +1,4 @@
-import { MoreVertical, ToggleRight } from 'lucide-react';
+import { ToggleRight } from 'lucide-react';
 import { PrimaryButton } from '../../../components/buttons/Buttons';
 import TableActionMenu from '../../../components/Modals/TableActionMenu';
 
@@ -59,7 +59,8 @@ const MyAds = () => {
                                 <tr>
                                         {/* <td className={(colIndex + 1) > fields.length / 2 ? 'text-right font-semibold px-4 py-3' : 'text-left px-4 py-2'}> */}
                                         <td className='text-left px-4 py-2 font-semibold'>
-                                            <span style={"Sell" === "Sell" ? {color: "#DC2625"} : {color: "#17A34A"}}>
+                                            {/* <span style={"Sell" === "Sell" ? {color: "#DC2625"} : {color: "#17A34A"}}> */}
+                                            <span style={{color: "#DC2625"}} >
                                                 Sell
                                             </span>                           
                                         </td>
@@ -146,8 +147,8 @@ const MyAds = () => {
                             <tr>
                                         {/* <td className={(colIndex + 1) > fields.length / 2 ? 'text-right font-semibold px-4 py-3' : 'text-left px-4 py-2'}> */}
                                         <td className={`text-left px-4 py-2 font-semibold`}>
-                                            <span style={"Sell" === "Sell" ? {color: "#DC2625"} : {color: "#17A34A"}}>
-                                                Sell
+                                            <span style={{color: "#17A34A"}}>
+                                                Buy
                                             </span>                           
                                         </td>
                                         <td className='text-left px-4 py-2 font-semibold'>
