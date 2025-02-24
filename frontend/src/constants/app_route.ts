@@ -31,6 +31,7 @@ export const APP_ROUTES = {
     MARKETPLACE: "/p2p/market-place",
     EXPRESS: "/p2p/express",
     MY_ADS: "/p2p/my-ads",
+    AD_DETAILS: "/p2p/ad",
     MY_PROFILE: "/p2p/my-profile",
     SELL: "/p2p/market-place/sell",
     BUY: "/p2p/market-place/buy",
