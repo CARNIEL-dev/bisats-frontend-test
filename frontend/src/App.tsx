@@ -31,8 +31,7 @@ import UserInfo from './pages/settings/UserInfo';
 import Security from './pages/settings/Security';
 import Payment from './pages/settings/Payment';
 import AdDetails from './pages/p2p/ads/AdDetails';
-import CreateAd from './pages/p2p/ads/CreateAd';
-import CreateAdPricing from './pages/p2p/ads/AdPricing';
+import CreateAd from  './pages/p2p/ads/Ad';
 
 
 const App: React.FC = () => {
@@ -75,7 +74,6 @@ const App: React.FC = () => {
               <Route path={APP_ROUTES.P2P.MY_ADS} element={<MyAds />} />
               <Route path={APP_ROUTES.P2P.AD_DETAILS} element={<AdDetails />} />
               <Route path={APP_ROUTES.P2P.CREATE_AD} element={<CreateAd />} />
-              <Route path={APP_ROUTES.P2P.AD_PRICING} element={<CreateAdPricing />} />
               <Route path={APP_ROUTES.P2P.MY_PROFILE} element={<Profile />} />
               <Route path={APP_ROUTES.P2P.SELL} element={<Sell />} />
               <Route path={APP_ROUTES.P2P.BUY} element={<Buy />} />
