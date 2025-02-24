@@ -1,8 +1,11 @@
 import { ToggleRight } from 'lucide-react';
 import { PrimaryButton } from '../../../components/buttons/Buttons';
 import TableActionMenu from '../../../components/Modals/TableActionMenu';
+import { useNavigate } from 'react-router-dom';
 
 const MyAds = () => {
+    const navigate = useNavigate()
+
     return (
         <div className="w-full lg:w-2/3 mx-auto px-3">
             <div className="flex justify-between items-center p-4 bg-gray-100">
@@ -13,7 +16,7 @@ const MyAds = () => {
                     </p>
                 </div>
 
-                <PrimaryButton text="Create Ad" loading={false} />
+                <PrimaryButton text="Create Ad" loading={false} onClick={() => navigate("/p2p/ad/create")} />
             </div>
             <div>
                 <div className="h-[288px] m-[15px] p-[24px]">
