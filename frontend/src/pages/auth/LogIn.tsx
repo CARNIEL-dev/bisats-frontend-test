@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import PrimaryInput from "../../components/Inputs/PrimaryInput"
 import { PrimaryButton } from "../../components/buttons/Buttons"
 import OtherSide from "../../layouts/auth/OtherSide"
@@ -11,6 +11,7 @@ import { LogInSchema } from "../../formSchemas"
 import { APP_ROUTES } from "../../constants/app_route"
 import { useNavigate } from "react-router-dom"
 import AuthPasswordInput from "../../components/Inputs/AuthPasswordInput"
+
 const LogIn = () => {
     const [logInBody] = useState({
         email: "",

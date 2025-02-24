@@ -86,7 +86,8 @@ const AdDetails = () => {
                             <tbody>
                             <tr>
                                     <td className={`text-left px-4 py-2 font-semibold`}>
-                                        <span style={"Buy" === "Buy" ? {color: "#DC2625"} : {color: "#17A34A"}}>
+                                        {/* <span style={"Buy" === "Buy" ? {color: "#DC2625"} : {color: "#17A34A"}}> */}
+                                        <span style={{color: "#DC2625"}}>
                                             Buy
                                         </span>                 
                                     </td>

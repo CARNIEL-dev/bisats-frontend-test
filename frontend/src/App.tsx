@@ -13,8 +13,6 @@ import ProtectedRoute from './utils/protectedRoutes';
 import { UserState } from './redux/reducers/userSlice';
 import { useSelector } from 'react-redux';
 import Wallet from './pages/wallet/Wallet';
-import Deposit from './pages/deposit/Deposit';
-import Withdrawal from './pages/withdrawal/Withdrawal';
 import { rehydrateUser } from './redux/actions/userActions';
 import PhoneVerifcation from './pages/kyc/PhoneVerification';
 import DepositPage from './pages/wallet/deposits';
@@ -32,11 +30,8 @@ import SettingsLayOut from './layouts/SettingsLayOut';
 import UserInfo from './pages/settings/UserInfo';
 import Security from './pages/settings/Security';
 import Payment from './pages/settings/Payment';
-<<<<<<< HEAD
 import TransactionBreakdown from './pages/wallet/deposits/TransactionBreakdown';
-=======
 import AdDetails from './pages/p2p/AdDetails';
->>>>>>> 452ed2d (My Ads and aD DETAILS)
 
 
 const App: React.FC = () => {
