@@ -1,6 +1,7 @@
 import { Pen } from "lucide-react";
+import { InputCheck } from "../../../components/Inputs/CheckBox";
 
-const AdReview = ({ adValues }: any) => {
+const AdReview = ({ formik }: any) => {
     return (
         <div className="text-sm mb-3">
             <div className="mb-4">
@@ -10,8 +11,8 @@ const AdReview = ({ adValues }: any) => {
                     </span>
                     <Pen size={14} className="inline curser-pointer -mt-1" color="#606C82"  />
                 </p> 
-                <p className={adValues.transactionType === "Buy" ? "text-[#606C82] font-semibold" : "text-red font-semibold"}>
-                    {adValues.transactionType}
+                <p className={formik.values.transactionType === "Buy" ? "text-[#606C82] font-semibold" : "text-red font-semibold"}>
+                    {formik.values.transactionType}
                 </p>
             </div>
             <div className="mb-4">
@@ -22,7 +23,7 @@ const AdReview = ({ adValues }: any) => {
                     <Pen size={14} className="inline curser-pointer -mt-1" color="#606C82"  />
                 </p> 
                 <p className="text-[#515B6E] font-semibold">
-                    {adValues.asset}
+                    {formik.values.asset}
                 </p>
             </div>
             <div className="mb-4">
@@ -33,8 +34,8 @@ const AdReview = ({ adValues }: any) => {
                     <Pen size={14} className="inline curser-pointer -mt-1" color="#606C82"  />
                 </p> 
                 <p className="text-[#515B6E] font-semibold">
-                    <span className="mr-2">Min: {adValues.limits.min}</span>
-                    <span>Max: {adValues.limits.max}</span>
+                    <span className="mr-2">Min: {formik.values.limits.min}</span>
+                    <span>Max: {formik.values.limits.max}</span>
                 </p>
             </div>
             <div className="mb-4">
@@ -45,7 +46,7 @@ const AdReview = ({ adValues }: any) => {
                     <Pen size={14} className="inline curser-pointer -mt-1" color="#606C82"  />
                 </p> 
                 <p className="text-[#515B6E] font-semibold">
-                    {adValues.pricingType}
+                    {formik.values.pricingType}
                 </p>
             </div>
             <div className="mb-4">
@@ -56,7 +57,7 @@ const AdReview = ({ adValues }: any) => {
                     <Pen size={14} className="inline curser-pointer -mt-1" color="#606C82"  />
                 </p> 
                 <p className="text-[#515B6E] font-semibold">
-                    {adValues.amount}
+                    {formik.values.amount}
                 </p>
             </div>
             <div className="mb-4">
@@ -67,7 +68,7 @@ const AdReview = ({ adValues }: any) => {
                     <Pen size={14} className="inline curser-pointer -mt-1" color="#606C82"  />
                 </p> 
                 <p className="text-[#515B6E] font-semibold">
-                    {adValues.price}
+                    {formik.values.price}
                 </p>
             </div>
             <div className="mb-4">
@@ -78,7 +79,7 @@ const AdReview = ({ adValues }: any) => {
                     <Pen size={14} className="inline curser-pointer -mt-1" color="#606C82"  />
                 </p> 
                 <p className="text-[#515B6E] font-semibold">
-                    {adValues.margin}
+                    {formik.values.margin}
                 </p>
             </div>
             <div className="mb-4">
@@ -89,7 +90,7 @@ const AdReview = ({ adValues }: any) => {
                     <Pen size={14} className="inline curser-pointer -mt-1" color="#606C82"  />
                 </p> 
                 <p className="text-[#515B6E] font-semibold">
-                    {adValues.priceLimits.upper}
+                    {formik.values.priceLimits.upper}
                 </p>
             </div>
             <div className="mb-4">
@@ -100,7 +101,7 @@ const AdReview = ({ adValues }: any) => {
                     <Pen size={14} className="inline curser-pointer -mt-1" color="#606C82"  />
                 </p> 
                 <p className="text-[#515B6E] font-semibold">
-                    {adValues.priceLimits.lower}
+                    {formik.values.priceLimits.lower}
                 </p>
             </div>
             <div className="mb-4">
@@ -111,7 +112,7 @@ const AdReview = ({ adValues }: any) => {
                     <Pen size={14} className="inline curser-pointer -mt-1" color="#606C82"  />
                 </p> 
                 <p className="text-[#515B6E] font-semibold">
-                    {adValues.currency}
+                    {formik.values.currency}
                 </p>
             </div>
             <div className="mb-4">
@@ -122,10 +123,16 @@ const AdReview = ({ adValues }: any) => {
                     <Pen size={14} className="inline curser-pointer -mt-1" color="#606C82"  />
                 </p> 
                 <p className="text-[#515B6E] font-semibold text-bold">
-                    {adValues.duration.days}days, {adValues.duration.hours}hrs, {adValues.duration.minutes}mins
+                    {formik.values.duration.days}days, {formik.values.duration.hours}hrs, {formik.values.duration.minutes}mins
                 </p>
             </div>
             <div>
+                <InputCheck type="checkbox"
+                    name="agreeToTerms"
+                    checked={formik.values.agree}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                />
                 <span className="text-xs text-[#606C82]">
                     I agree to the platform's Terms and Conditions.
                 </span>

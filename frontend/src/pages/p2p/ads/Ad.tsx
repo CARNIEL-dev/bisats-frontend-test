@@ -36,14 +36,14 @@ interface IAd {
         days: number,
         hours: number,
         minutes: number
-    }
+    },
 }
 
 const initialAd: IAd = {
-    transactionType: "",
+    transactionType: "Buy",
     asset: "",
     amount: 0,
-    pricingType: "",
+    pricingType: "Static",
     price: 0,
     currency: "NGN",
     margin: 0.5,
@@ -59,24 +59,24 @@ const initialAd: IAd = {
         days: 0,
         hours: 0,
         minutes: 0
-    }
+    },
 }
 
 const AdSchema = Yup.object().shape({
     transactionType: Yup.string().required('Transaction type is required'),
     asset: Yup.string().required('Asset selection is required'),
     amount: Yup.number()
-        .min(0, 'Amount must be greater than 0')
+        .min(1, 'Amount must be greater than 0')
         .required('Amount is required'),
     pricingType: Yup.string().required('Pricing type is required'),
     currency: Yup.string().required('Currency selection is required'),
     margin: Yup.number().nullable(),
     price: Yup.number()
-        .min(0, 'Price must be greater than 0')
+        .min(1, 'Price must be greater than 0')
         .required('Price is required'),
     priceLimits: Yup.object().shape({
         lower: Yup.number()
-            .min(0, 'Lower limit must be greater than 0')
+            .min(1, 'Lower limit must be greater than 0')
             .required('Lower limit is required'),
         upper: Yup.number()
             .min(Yup.ref('min'), 'Upper limit must be greater than lower limit')
@@ -84,7 +84,7 @@ const AdSchema = Yup.object().shape({
     }),
     limits: Yup.object().shape({
         min: Yup.number()
-            .min(0, 'Minimum limit must be greater than 0')
+            .min(1, 'Minimum limit must be greater than 0')
             .required('Minimum limit is required'),
         max: Yup.number()
             .min(Yup.ref('min'), 'Maximum limit must be greater than minimum limit')
@@ -111,10 +111,11 @@ const CreateAd = () => {
     const user: UserState = useSelector((state: any) => state.user);
 
     const formik = useFormik({
-        initialValues: initialAd,
+        initialValues: { ...initialAd, agree: false  },
         validationSchema: AdSchema,
         onSubmit: async (values) => {
             setIsLoading(true);
+            console.log(values);
             try {
                 const payload = {
                     ...values,
@@ -148,7 +149,7 @@ const CreateAd = () => {
                             <CreateAdPricing formik={formik} setStage={setStage} />
                         ) : (
                             <>
-                                <AdReview adValues={formik.values}  />
+                                <AdReview formik={formik}  />
                                 <PrimaryButton css="w-full" text="Continue" loading={isLoading} />
                             </>
                         )

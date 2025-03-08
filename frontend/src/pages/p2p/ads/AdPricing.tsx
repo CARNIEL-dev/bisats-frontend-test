@@ -23,9 +23,9 @@ const CreateAdPricing = ({ formik, setStage }: any) => {
 
     const handleNextStage = async () => {
         try {
-            await formik.validateForm();
+            let errors = await formik.validateForm();
             const requiredFields = ["pricingType", "price", "priceLimits.lower", "priceLimits.upper"];
-            const errors = Object.keys(formik.errors).filter(field => requiredFields.includes(field));
+            errors = Object.keys(errors).filter(field => requiredFields.includes(field));
             if (errors.length === 0) {
                 setStage("review");
             } else {
@@ -97,14 +97,14 @@ const CreateAdPricing = ({ formik, setStage }: any) => {
                                 css="w-full p-2.5"
                                 label="Margin relative to the market price (%)"
                                 placeholder="0.5"
-                                name="amount"
+                                name="margin"
                                 error={formik.errors.margin}
                                 value={formik.values.margin}
                                 touched={formik.touched.margin}
                                 onChange={(e) => {
                                     const value = e.target.value;
                                     if (/^\d*$/.test(value)) {
-                                        formik.setFieldValue('amount', value === '' ? 0.5 : Number(value));
+                                        formik.setFieldValue('margin', value === '' ? 0 : Number(value));
                                     }
                                 }}
                             />
@@ -121,28 +121,28 @@ const CreateAdPricing = ({ formik, setStage }: any) => {
                         css="w-[98%] p-2.5 mr-1"
                         label="Lower Price Limit"
                         placeholder="0"
-                        name="limits.lower"
+                        name="priceLimits.lower"
                         error={formik.errors.limits?.lower}
                         value={formik.values.limits.lower}
                         touched={formik.touched.limits?.lower}
                         onChange={(e) => {
                             const value = e.target.value;
                             if (/^\d*$/.test(value)) {
-                                formik.setFieldValue('limits.lower', value === '' ? 0 : Number(value));
+                                formik.setFieldValue('priceLimits.lower', value === '' ? 0 : Number(value));
                             }
                         }}
                     />
                     <PrimaryInput
                         css="w-[100%] p-2.5"
                         label="Upper price Limit"
-                        name="limits.upper"
+                        name="upperLimits.upper"
                         error={formik.errors.limits?.upper}
                         value={formik.values.limits.upper}
                         touched={formik.touched.limits?.upper}
                         onChange={(e) => {
                             const value = e.target.value;
                             if (/^\d*$/.test(value)) {
-                                formik.setFieldValue('limits.upper', value === '' ? 0 : Number(value));
+                                formik.setFieldValue('upperLimits.upper', value === '' ? 0 : Number(value));
                             }
                         }}
                     />

@@ -13,19 +13,25 @@ const CreateAdDetails = ({ formik, setStage }: any) => {
 
     const handleNextStage = async () => {
         try {
-            await formik.validateForm();
+            console.log(formik.values)
+            let errors = await formik.validateForm();
+            console.log('errors', errors)
             const requiredFields = ["transactionType", "asset", "amount", "limits.min", "limits.max", "duration.days", "duration.hours", "duration.minutes"];
-            const errors = Object.keys(formik.errors).filter(field => requiredFields.includes(field));
+            errors = Object.keys(errors).filter(field => {
+                console.log(field);
+                return requiredFields.includes(field);
+            });
+            console.log('errors', errors)
             if (errors.length === 0) {
                 setStage("pricing");
             } else {
+                console.log(formik.values)
                 formik.setTouched(requiredFields.reduce((acc, field) => ({ ...acc, [field]: true }), {}));
             }
         } catch (err) {
             console.error("Validation failed", err);
         }
     };
-    
 
     return (
         <>
@@ -63,6 +69,7 @@ const CreateAdDetails = ({ formik, setStage }: any) => {
                     onChange={(e) => {
                         const value = e.target.value;
                         if (/^\d*$/.test(value)) {
+                            console.log(value)
                             formik.setFieldValue('amount', value === '' ? 0 : Number(value));
                         }
                     }}
