@@ -18,8 +18,12 @@ export enum UserActionTypes {
   SIGN_UP = "signUp",
   UPDATE_USER = "updateUser",
   RESET_USER = "resetUser",
-  KYC_STATUS="kycstatus"
+  KYC_STATUS = "kycstatus",
+  LOG_OUT = "logout",
   // Add other action types here
+}
+export enum WalletActionypes {
+  GET_WALLET = "getwallet",
 }
 
 

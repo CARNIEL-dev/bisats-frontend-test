@@ -23,7 +23,10 @@ export const BACKEND_URLS = {
     DASHBOARD: "/v1/dashboard",
   },
   WALLET: {
+    GET_WALLET: "/wallet/get-user-wallet",
+    TRANSC_BREAKDOWN: "/payment/top-up-breakdown",
     TOPUPNGN: "/top-up-wallet",
+    LIST_BANKS: "/list-banks",
   },
   NOTIFICATIONS: "/v1/user/notifications",
   ADD_PUSH_NOTIFICATION: "/v1/notification/add-push-token",

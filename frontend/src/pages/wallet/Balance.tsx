@@ -1,7 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { GetLivePrice, GetWallet } from '../../redux/actions/walletActions';
 
 const Balance: React.FC = () => {
+    const tokenUsdtValues = GetLivePrice()
+    useEffect(() => {
+        GetWallet()
+    }, [])
     return (
         <div className="border-[1px] h-[220px] w-[65%] py-[24px] px-[34px]" style={{ borderRadius: '12px', borderColor: "#D6DAE1" }}>
             <div className="m-[2px]">

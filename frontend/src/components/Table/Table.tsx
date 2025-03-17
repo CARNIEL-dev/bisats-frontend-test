@@ -6,6 +6,7 @@ interface TableProps {
 }
 
 const Table: React.FC<TableProps> = ({ fields, data }) => {
+    console.log(fields,data)
     return (
         <table className="table-auto w-full" style={{color: "#515B6E", fontSize: "14px"}}>
             <thead className='text-justify'>

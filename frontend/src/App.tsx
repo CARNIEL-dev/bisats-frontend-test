@@ -13,8 +13,6 @@ import ProtectedRoute from './utils/protectedRoutes';
 import { UserState } from './redux/reducers/userSlice';
 import { useSelector } from 'react-redux';
 import Wallet from './pages/wallet/Wallet';
-import Deposit from './pages/deposit/Deposit';
-import Withdrawal from './pages/withdrawal/Withdrawal';
 import { rehydrateUser } from './redux/actions/userActions';
 import PhoneVerifcation from './pages/kyc/PhoneVerification';
 import DepositPage from './pages/wallet/deposits';
@@ -25,15 +23,23 @@ import MarketPlace from './pages/p2p/MarketPlace';
 import Express from './pages/p2p/Express';
 import MyAds from './pages/p2p/MyAds';
 import Profile from './pages/p2p/Profile';
+import Sell from './pages/p2p/Sell';
+import Buy from './pages/p2p/Buy';
+import Receipt from './pages/p2p/Receipt';
+import SettingsLayOut from './layouts/SettingsLayOut';
+import UserInfo from './pages/settings/UserInfo';
+import Security from './pages/settings/Security';
+import Payment from './pages/settings/Payment';
+import TransactionBreakdown from './pages/wallet/deposits/TransactionBreakdown';
+import AdDetails from './pages/p2p/AdDetails';
 
 
 const App: React.FC = () => {
   const userState: UserState = useSelector((state: any) => state.user);
-  useEffect(() => { rehydrateUser() }, [userState.isAuthenticated])
+  useEffect(() => { rehydrateUser() }, [])
   return (
 
     <Router>
-
       <Routes>
         <>
           <Route element={<AuthLayout />}>
@@ -47,8 +53,8 @@ const App: React.FC = () => {
           <Route
             element={<ProtectedRoute user={userState} />}
           >
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/wallet" element={<Wallet />} />
+            {/* <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/wallet" element={<Wallet />} /> */}
             {/* <Route path="/wallet/deposit" element={<Deposit />} />
             <Route path="/wallet/withdrawal" element={<Withdrawal />} /> */}
 
@@ -60,14 +66,28 @@ const App: React.FC = () => {
             <Route element={<TranscLayOut />}>
               <Route path={APP_ROUTES.WALLET.DEPOSIT} element={<DepositPage />} />
               <Route path={APP_ROUTES.WALLET.WITHDRAW} element={<WithdrawalPage />} />
+              <Route path={APP_ROUTES.WALLET.TRANSACTION_BREAKDOWN} element={<TransactionBreakdown />} />
+
             </Route>
             <Route element={<P2PLayOut />}>
               <Route path={APP_ROUTES.P2P.MARKETPLACE} element={<MarketPlace />} />
               <Route path={APP_ROUTES.P2P.EXPRESS} element={<Express />} />
               <Route path={APP_ROUTES.P2P.MY_ADS} element={<MyAds />} />
+              <Route path={APP_ROUTES.P2P.AD_DETAILS} element={<AdDetails />} />
               <Route path={APP_ROUTES.P2P.MY_PROFILE} element={<Profile />} />
+              <Route path={APP_ROUTES.P2P.SELL} element={<Sell />} />
+              <Route path={APP_ROUTES.P2P.BUY} element={<Buy />} />
+              <Route path={APP_ROUTES.P2P.RECEIPT} element={<Receipt />} />
+            </Route>
+            <Route element={<SettingsLayOut />}>
+              <Route path={APP_ROUTES.SETTINGS.PROFILE} element={<UserInfo />} />
+              <Route path={APP_ROUTES.SETTINGS.SECURITY} element={<Security />} />
+              <Route path={APP_ROUTES.SETTINGS.PAYMENT} element={<Payment />} />
             </Route>
             <Route path={APP_ROUTES.DASHBOARD} element={<Dashboard />} />
+            <Route path={APP_ROUTES.WALLET.HOME} element={<Wallet />} />
+            <Route path={APP_ROUTES.PROFILE} element={<Profile />} />
+
 
             <Route path={APP_ROUTES?.KYC.PHONEVERIFICATION} Component={PhoneVerifcation} />
           </Route>

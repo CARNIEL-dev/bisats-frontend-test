@@ -1,4 +1,5 @@
 import { TUser } from "../types/user";
+import { TDepositBreakDowns } from "../types/wallet";
 
 export const setToken = (token: string) => {
     localStorage.setItem("token", token);
@@ -14,7 +15,6 @@ export const getUser = () => {
     if (!localStorage.getItem("_user")) return undefined;
 
     const user = localStorage.getItem("_user");
-
     if (user) {
         return JSON.parse(localStorage.getItem("_user") ?? "");
     }
@@ -30,6 +30,21 @@ export const getToken = () => {
 
     if (token) {
         return localStorage.getItem("token");
+    }
+};
+
+export const setDepositTranscBreakDown = (breakDown: TDepositBreakDowns) => {
+    localStorage.setItem("_depositBreakDown", JSON.stringify(breakDown));
+};
+
+export const getDepositBreakDown = () => {
+    if (typeof window === "undefined") return undefined;
+
+    if (!localStorage.getItem("_depositBreakDown")) return undefined;
+
+    const depositBreakDown = localStorage.getItem("_depositBreakDown");
+    if (depositBreakDown) {
+        return JSON.parse(localStorage.getItem("_depositBreakDown") ?? "");
     }
 };
 

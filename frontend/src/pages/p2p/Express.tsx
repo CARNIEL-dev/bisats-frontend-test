@@ -1,8 +1,14 @@
+import ExpressSwap from "./components/ExpressSwap"
+import { typeofSwam } from "./components/Swap"
 
 const Express = () => {
     return (
-        <div>
-            Express
+        <div className="w-full">
+            <div className="w-1/3 mx-auto">
+                <ExpressSwap  />
+
+            </div>
+
         </div>
     )
 }

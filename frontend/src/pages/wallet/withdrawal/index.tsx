@@ -46,7 +46,7 @@ const WithdrawalPage = () => {
 
                     <div className="my-4">
                         {
-                            selectedToken === "ngn" ?
+                            selectedToken !== "ngn" ?
                                 <MultiSelectDropDown parentId={""} title={"Select option"} choices={networks} error={undefined} touched={undefined} label={"Payment options"} handleChange={(e) => setPaymentOption(e)} />
 
                                 : <MultiSelectDropDown parentId={""} title={"Select"} choices={networks} error={undefined} touched={undefined} label={"Select Network"} handleChange={(e) => setSelectedNetworks(e)} />

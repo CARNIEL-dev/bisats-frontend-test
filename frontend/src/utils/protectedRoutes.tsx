@@ -8,6 +8,8 @@ interface ProtectedRouteProps {
 }
 // const userFromLocalStorage = getUser()
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ user }) => {
+    console.log(user)
+
     if (!user.isAuthenticated) {
         return <Navigate to="/auth/login" />;
     }

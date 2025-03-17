@@ -68,5 +68,4 @@ export const TopUpSchema = Yup.object().shape({
   amount: Yup.string()
     .matches(/^\d*$/, "Amount must be a number") 
     .required("Amount is required"),
-  paymentMethod: Yup.string().required(),
 });

@@ -9,8 +9,11 @@ import { useFormik } from "formik"
 import { useSelector } from "react-redux"
 import { UserState } from "../../../redux/reducers/userSlice"
 import { TopUpSchema } from "../../../formSchemas"
-import { TopUpNGNBalance } from "../../../redux/actions/walletActions"
+import { DepositTranscBreakDown, TopUpNGNBalance } from "../../../redux/actions/walletActions"
 import Toast from "../../../components/Toast"
+import { useNavigate } from "react-router-dom"
+import { APP_ROUTES } from "../../../constants/app_route"
+import { setDepositTranscBreakDown } from "../../../helpers"
 
 export type TNetwork = {
     label: string,
@@ -22,6 +25,7 @@ const DepositPage = () => {
     const [networks, setNetworks] = useState<TNetwork[]>([])
     const [selectedNetwork, setSelectedNetworks] = useState<string>()
     const [paymentOption, setPaymentOption] = useState<string>("")
+    const navigate = useNavigate()
 
     const user: UserState = useSelector((state: any) => state.user);
 
@@ -36,7 +40,7 @@ const DepositPage = () => {
     }, [selectedToken])
 
     const formik = useFormik({
-        initialValues: { amount: "", paymentMethod: paymentOption },
+        initialValues: { amount: "" },
         validationSchema: TopUpSchema,
         onSubmit: async (values) => {
             setIsLoading(true)
@@ -46,11 +50,12 @@ const DepositPage = () => {
                 userId: `${user?.user?.userId}`,
                 amount: Number(payload.amount)
             }
-            const response = await TopUpNGNBalance(payloadd)
+            const response = await DepositTranscBreakDown(payloadd)
             console.log(response)
             setIsLoading(false)
             if (response.statusCode === 200) {
-                Toast.success(response.message, "Success")
+                setDepositTranscBreakDown(response.data)
+                navigate(APP_ROUTES.WALLET.TRANSACTION_BREAKDOWN)
                 return
             } else {
                 Toast.error(response.message, "Error")
@@ -58,7 +63,6 @@ const DepositPage = () => {
             }
         },
     });
-
 
     return (
         <div>
@@ -72,28 +76,27 @@ const DepositPage = () => {
 
                     <div className="my-4">
                         {
-                            selectedToken === "ngn" ?
-                                <MultiSelectDropDown parentId={""} title={"Select option"} choices={networks} error={formik.errors.paymentMethod} touched={formik.touched.paymentMethod} label={"Payment options"} handleChange={(e) => { setPaymentOption(e); formik.setFieldValue("paymentMethod", e) }} />
-
-                                : <MultiSelectDropDown parentId={""} title={"Select"} choices={networks} error={undefined} touched={undefined} label={"Select Network"} handleChange={(e) => setSelectedNetworks(e)} />
+                                selectedToken !== "ngn"
+                                && <MultiSelectDropDown parentId={""} title={"Select"} choices={networks} error={undefined} touched={undefined} label={"Select Network"} handleChange={(e) => setSelectedNetworks(e)} />
 
                         }
                     </div>
                 }
 
+                {selectedToken === "ngn" &&
+                    <div>
+                        <PrimaryInput css={"w-full p-2.5 mb-7"} label={"Amount"} placeholder="Enter amount" name="amount" error={formik.errors.amount} value={formik.values.amount} touched={formik.touched.amount} onChange={(e) => {
+                            const value = e.target.value;
+                            if (/^\d*$/.test(value)) {
+                                formik.setFieldValue('amount', value);
+                            }
+                        }} />
+                        <PrimaryButton css={"w-full"} text={"Proceed"} loading={isLoading} />
+                    </div>}
                 {
-                    ((selectedNetwork || paymentOption) && selectedToken) && (
-                        selectedToken === "ngn" ?
-                            <div>
-                                <PrimaryInput css={"w-full p-2.5 mb-7"} label={"Amount"} placeholder="Enter amount" name="amount" error={formik.errors.amount} value={ formik.values.amount} touched={formik.touched.amount} onChange={(e) => {
-                                    const value = e.target.value;
-                                    if (/^\d*$/.test(value)) {
-                                        formik.setFieldValue('amount', value);
-                                    }
-                                }} />
-                                <PrimaryButton css={""} text={"Proceed"} loading={isLoading} />
-                            </div>
-                            :
+                    ((selectedNetwork)) && (
+
+
                             <div>
                                 <div className="lg:h-[84px] rounded border border-dashed  border-[#F59E0C] bg-[#FFFBEB] rounded-[12px] py-1 lg:py-3 px-2 lg:px-5">
                                     <h1 className="text-[#2B313B] text-[14px] leading-[24px] font-[600]">Wallet Address</h1>

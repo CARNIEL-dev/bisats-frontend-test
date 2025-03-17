@@ -25,13 +25,25 @@ export const APP_ROUTES = {
     HOME: "/wallet",
     DEPOSIT: "/wallet/deposit",
     WITHDRAW: "/wallet/withdrawal",
+    TRANSACTION_BREAKDOWN:"/wallet/deposit/transaction-breakdown"
   },
   P2P: {
     MARKETPLACE: "/p2p/market-place",
     EXPRESS: "/p2p/express",
     MY_ADS: "/p2p/my-ads",
+    AD_DETAILS: "/p2p/ad",
     MY_PROFILE: "/p2p/my-profile",
+    SELL: "/p2p/market-place/sell",
+    BUY: "/p2p/market-place/buy",
+    RECEIPT: "/p2p/market-place/receipt",
+  },
+  SETTINGS: {
+    PROFILE: "/settings/user-info",
+    SECURITY: "/settings/security",
+    PAYMENT: "/settings/payment",
+    SUPPORT: "/settings/support",
   },
   DASHBOARD: "/dashboard",
   AD: "/ad",
+  PROFILE: "/profile",
 };

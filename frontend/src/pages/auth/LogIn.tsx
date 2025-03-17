@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import PrimaryInput from "../../components/Inputs/PrimaryInput"
 import { PrimaryButton } from "../../components/buttons/Buttons"
 import OtherSide from "../../layouts/auth/OtherSide"
@@ -11,6 +11,7 @@ import { LogInSchema } from "../../formSchemas"
 import { APP_ROUTES } from "../../constants/app_route"
 import { useNavigate } from "react-router-dom"
 import AuthPasswordInput from "../../components/Inputs/AuthPasswordInput"
+
 const LogIn = () => {
     const [logInBody] = useState({
         email: "",
@@ -35,6 +36,8 @@ const LogIn = () => {
                 navigate(APP_ROUTES.DASHBOARD)
                 Toast.success("", response.message)
 
+            } else {
+                Toast.error(response.message, "Login Failed")
             }
             setIsLoading(false)
         },
@@ -77,7 +80,7 @@ const LogIn = () => {
                         />
                     </div>
                     <div className="w-full">
-                        <PrimaryButton css={""} text={"Log In"} type="submit" loading={isLoading} />
+                        <PrimaryButton css={"w-full"} text={"Log In"} type="submit" loading={isLoading} />
                     </div>
                 {/* </form> */}
                     <p className="text-[14px] text-[#C49600] leading-[24px] font-[400] mt-1 cursor-pointer" onClick={() => navigate(APP_ROUTES.AUTH.FORGOT_PASSWORD)}>Forgot password?</p>
