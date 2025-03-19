@@ -28,6 +28,15 @@ export const BACKEND_URLS = {
     TOPUPNGN: "/top-up-wallet",
     LIST_BANKS: "/list-banks",
   },
+  P2P: {
+    ADS: {
+      CREATE: "/ads/create",
+      GET_ALL: "/ads/get-user-ads",
+      GET_BY_ID: "/ads/:adsId/get-user-ads-by-id",
+      GET_ORDER: "/ads/:adsId/get-user-ads-order",
+      SEARCH: "/ads/search-ads",
+    }
+  },
   NOTIFICATIONS: "/v1/user/notifications",
   ADD_PUSH_NOTIFICATION: "/v1/notification/add-push-token",
   SUPPORT_CHANNEL: "/v1/support",

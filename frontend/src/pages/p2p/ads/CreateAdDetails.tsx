@@ -3,29 +3,31 @@ import { MultiSelectDropDown } from "../../../components/Inputs/MultiSelectInput
 import PrimaryInput from "../../../components/Inputs/PrimaryInput";
 import TokenSelect from "../../../components/Inputs/TokenSelect";
 import { PrimaryButton } from "../../../components/buttons/Buttons";
- 
-const CreateAdDetails = ({ formik, setStage }: any) => {
+import { AdsProps, } from "./Ad";
+import Toast from "../../../components/Toast";
+// import DateInput from "../../../components/Inputs/DateInput";
+
+const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage }) => {
     const loading = false;
-    const transactionType = [
+    const type = [
         { value: "Buy", label: "Buy" },
         { value: "Sell", label: "Sell" }
     ];
 
     const handleNextStage = async () => {
         try {
-            console.log(formik.values)
             let errors = await formik.validateForm();
             console.log('errors', errors)
-            const requiredFields = ["transactionType", "asset", "amount", "limits.min", "limits.max", "duration.days", "duration.hours", "duration.minutes"];
-            errors = Object.keys(errors).filter(field => {
+            const requiredFields = ["type", "asset", "amount", "minimumLimit", "maximumLimit", "expiryDate"];
+            let updatedErrors = Object.keys(errors).filter(field => {
                 console.log(field);
                 return requiredFields.includes(field);
             });
             console.log('errors', errors)
-            if (errors.length === 0) {
+            if (updatedErrors.length === 0) {
                 setStage("pricing");
             } else {
-                console.log(formik.values)
+                Toast.error(`${updatedErrors[0]}`, "ERROR" );                
                 formik.setTouched(requiredFields.reduce((acc, field) => ({ ...acc, [field]: true }), {}));
             }
         } catch (err) {
@@ -39,11 +41,11 @@ const CreateAdDetails = ({ formik, setStage }: any) => {
                 <MultiSelectDropDown
                     parentId=""
                     title="Buy"
-                    choices={transactionType}
-                    error={formik.errors.transactionType}
-                    touched={formik.touched.transactionType}
+                    choices={type}
+                    error={formik.errors.type}
+                    touched={formik.touched.type}
                     label="Transaction Type"
-                    handleChange={(value) => formik.setFieldValue("transactionType", value)}
+                    handleChange={(value) => formik.setFieldValue("type", value)}
                 />
             </div>
 
@@ -84,14 +86,14 @@ const CreateAdDetails = ({ formik, setStage }: any) => {
                         css="w-[98%] p-2.5 mr-1"
                         label="Minimum"
                         placeholder="0"
-                        name="limits.min"
-                        error={formik.errors.limits?.min}
-                        value={formik.values.limits.min}
-                        touched={formik.touched.limits?.min}
+                        name="minimumLimit"
+                        error={formik.errors.minimumLimit}
+                        value={formik.values.minimumLimit}
+                        touched={formik.touched.minimumLimit}
                         onChange={(e) => {
                             const value = e.target.value;
                             if (/^\d*$/.test(value)) {
-                                formik.setFieldValue('limits.min', value === '' ? 0 : Number(value));
+                                formik.setFieldValue('minimumLimit', value === '' ? 0 : Number(value));
                             }
                         }}
                     />
@@ -99,14 +101,14 @@ const CreateAdDetails = ({ formik, setStage }: any) => {
                         css="w-[100%] p-2.5"
                         label="Maximum"
                         placeholder="0"
-                        name="limits.max"
-                        error={formik.errors.limits?.max}
-                        value={formik.values.limits.max}
-                        touched={formik.touched.limits?.max}
+                        name="maximumLimit"
+                        error={formik.errors.maximumLimit}
+                        value={formik.values.maximumLimit}
+                        touched={formik.touched.maximumLimit}
                         onChange={(e) => {
                             const value = e.target.value;
                             if (/^\d*$/.test(value)) {
-                                formik.setFieldValue('limits.max', value === '' ? 0 : Number(value));
+                                formik.setFieldValue('maximumLimit', value === '' ? 0 : Number(value));
                             }
                         }}
                     />
@@ -120,53 +122,19 @@ const CreateAdDetails = ({ formik, setStage }: any) => {
             </div>
 
             <div className="mb-4">
-                <p className="mb-3 text-[#515B6E] font-semibold text-sm">Ad Duration</p>
                 <div className="flex justify-between mb-[1px]">
-                    <PrimaryInput
-                        css="w-[96%] p-2.5 mr-1"
-                        label="Days"
-                        placeholder="0"
-                        name="duration.days"
-                        error={formik.errors.duration?.days}
-                        value={formik.values.duration.days}
-                        touched={formik.touched.duration?.days}
-                        onChange={(e) => {
-                            const value = e.target.value;
-                            if (/^\d*$/.test(value)) {
-                                formik.setFieldValue('duration.days', value === '' ? 0 : Number(value));
-                            }
-                        }}
-                    />
-                    <PrimaryInput
-                        css="w-[96%] p-2.5 mr-1"
-                        label="Hours"
-                        placeholder="0"
-                        name="duration.hours"
-                        error={formik.errors.duration?.hours}
-                        value={formik.values.duration.hours}
-                        touched={formik.touched.duration?.hours}
-                        onChange={(e) => {
-                            const value = e.target.value;
-                            if (/^\d*$/.test(value)) {
-                                formik.setFieldValue('duration.hours', value === '' ? 0 : Number(value));
-                            }
-                        }}
-                    />
-                    <PrimaryInput
-                        css="w-[100%] p-2.5"
-                        label="Minutes"
-                        placeholder="0"
-                        name="duration.minutes"
-                        error={formik.errors.duration?.minutes}
-                        value={formik.values.duration.minutes}
-                        touched={formik.touched.duration?.minutes}
-                        onChange={(e) => {
-                            const value = e.target.value;
-                            if (/^\d*$/.test(value)) {
-                                formik.setFieldValue('duration.minutes', value === '' ? 0 : Number(value));
-                            }
-                        }}
-                    />
+                {/* <DateInput 
+                    name="expiryDate"
+                    label="Expiry Date"
+                    error={formik.errors.expiryDate}
+                    handleChange={(e) => {
+                        const value = e.target.value;
+                        if (/^\d*$/.test(value)) {
+                            formik.setFieldValue('expiryDate', value === '' ? 0 : Number(value));
+                        }
+                    }}  
+                /> */}
+                    <p className="mb-3 text-[#515B6E] font-semibold text-sm">Expiry Date</p>
                 </div>
             </div>
             <PrimaryButton css="w-full disabled" text="Continue" loading={loading} onClick={handleNextStage} />
