@@ -5,6 +5,7 @@ import TokenSelect from "../../../components/Inputs/TokenSelect";
 import { PrimaryButton } from "../../../components/buttons/Buttons";
 import { AdsProps, } from "./Ad";
 import Toast from "../../../components/Toast";
+import DateInput from "../../../components/Inputs/DateInput";
 // import DateInput from "../../../components/Inputs/DateInput";
 
 const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage }) => {
@@ -123,17 +124,16 @@ const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage }) => {
 
             <div className="mb-4">
                 <div className="flex justify-between mb-[1px]">
-                {/* <DateInput 
-                    name="expiryDate"
-                    label="Expiry Date"
-                    error={formik.errors.expiryDate}
-                    handleChange={(e) => {
-                        const value = e.target.value;
-                        if (/^\d*$/.test(value)) {
-                            formik.setFieldValue('expiryDate', value === '' ? 0 : Number(value));
-                        }
-                    }}  
-                /> */}
+                <DateInput 
+                        name="expiryDate"
+                        label="Expiry Date"
+                        error={formik.errors.expiryDate}
+                        handleChange={(e) => {
+                            const value = e.target.value;
+                            if (/^\d*$/.test(value)) {
+                                formik.setFieldValue('expiryDate', value === '' ? 0 : Number(value));
+                            }
+                        } } title="expiryDate" />
                     <p className="mb-3 text-[#515B6E] font-semibold text-sm">Expiry Date</p>
                 </div>
             </div>

@@ -2,12 +2,12 @@ import React, { useRef, useState } from "react";
 import Label from "./Label";
 
 interface TDateType {
-    parentId: string;
+    parentId?: string;
     title: string;
     label: string;
     name: string;
-    error: string | undefined | null,
-    touched: boolean | undefined
+    error?: string | undefined | null,
+    touched?: boolean | undefined
     handleChange: React.ChangeEventHandler<HTMLInputElement>
 
 }

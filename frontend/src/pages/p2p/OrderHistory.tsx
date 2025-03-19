@@ -1,8 +1,13 @@
+import { useEffect, useState } from "react"
 import DateInput from "../../components/Inputs/DateInput"
 import { MultiSelectDropDown } from "../../components/Inputs/MultiSelectInput"
 import SearchInput from "../../components/Inputs/SearchInput"
+import { BACKEND_URLS } from "../../utils/backendUrls"
+import Bisatsfetch from "../../redux/fetchWrapper"
+import Toast from "../../components/Toast"
 
 const OrderHistory = () => {
+    const [orders, setOrders] = useState<Array<any>>([]);
     const assets = [
         {"value": "USDT", "label": "USDT"},
         {"value": "BTC", "label": "BTC"},
@@ -16,6 +21,23 @@ const OrderHistory = () => {
         {"value": "price", "label": "Price"},
         {"value": "date", "label": "Date"}
     ]
+
+    useEffect(() => {
+        const fetchOrders = async () => {
+            try {
+                const response = await Bisatsfetch(BACKEND_URLS.P2P.ADS.FETCH_ORDERS, {
+                    method: "GET",
+                });
+                console.log(response)
+                setOrders(response.data);
+            } catch (error: any) {
+                console.error("Error fetching ads:", error);
+                Toast.error(error.message, "Error")
+            }
+        };
+
+        fetchOrders();
+    }, []);
 
     return (
         <div className="w-full xl:w-3/4 lg:w-5/6 mx-auto px-6">
@@ -31,8 +53,7 @@ const OrderHistory = () => {
                             title="All"
                             choices={assets}
                             handleChange={(e) => console.log(e)}
-                            label="Assets"
-                        />
+                            label="Assets" error={undefined} touched={undefined}                        />
                     </div>
                     <div className="xl:w-40 lg:w-28 md:w-24">
                         <MultiSelectDropDown
@@ -40,14 +61,13 @@ const OrderHistory = () => {
                             title="All"
                             choices={types}
                             handleChange={(e) => console.log(e)}
-                            label="Type"
-                        />
+                            label="Type" error={undefined} touched={undefined}                        />
                     </div>
                     <div className="xl:w-80 lg:w-72 md:w-64">
                         <SearchInput placeholder="Search by ref. or counterparty" handleChange={(e) => console.log(e)} />
                     </div>
                     <div className="w-48">
-                        <DateInput label="Date Range" handleChange={(e) => console.log(e)}  />
+                        <DateInput label="Date Range" handleChange={(e) => console.log(e)} title="Date Range" name="Date Range" error={undefined} touched={undefined}  />
                     </div>
                     <div className="xl:w-40 lg:w-28 md:w-24">
                         <MultiSelectDropDown
@@ -55,8 +75,7 @@ const OrderHistory = () => {
                             title="Sort By"
                             choices={sortOptions}
                             handleChange={(e) => console.log(e)}
-                            label=""
-                        />
+                            label="sort" error={undefined} touched={undefined}                        />
                     </div>
                 </div>
             </div>
@@ -101,34 +120,38 @@ const OrderHistory = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td className={`text-left px-4 py-4 font-semibold`}>
-                                <span style={"Buy" === "Buy" ? {color: "#DC2625"} : {color: "#17A34A"}}>
-                                    Buy
-                                </span>                 
-                            </td>
-                            <td className='text-left px-4 py-4 font-semibold'>
-                                BTC
-                            </td>
-                            <td className='text-left px-4 py-4'>
-                                1670.23
-                            </td>
-                            <td className='text-left px-4 py-4'>
-                                10,000 USDT
-                            </td>
-                            <td className='text-right px-4 py-4'>
-                                1670.23 NGN
-                            </td>
-                            <td className='text-right px-4 py-4'>
-                                10000 USDT
-                            </td>
-                            <td className='text-right px-4 py-4'>
-                                Express
-                            </td>
-                            <td className='text-right px-4 py-4'>
-                                10/11 12:12
-                            </td>
-                        </tr>
+                        {
+                            orders.map(order => (
+                                <tr>
+                                    <td className={`text-left px-4 py-4 font-semibold`}>
+                                        <span style={order.type === "Buy" ? {color: "#DC2625"} : {color: "#17A34A"}}>
+                                            {order.type}
+                                        </span>                 
+                                    </td>
+                                    <td className='text-left px-4 py-4 font-semibold'>
+                                        {order.asset}
+                                    </td>
+                                    <td className='text-left px-4 py-4'>
+                                        1670.23
+                                    </td>
+                                    <td className='text-left px-4 py-4'>
+                                        10,000 USDT
+                                    </td>
+                                    <td className='text-right px-4 py-4'>
+                                        1670.23 NGN
+                                    </td>
+                                    <td className='text-right px-4 py-4'>
+                                        10000 USDT
+                                    </td>
+                                    <td className='text-right px-4 py-4'>
+                                        Express
+                                    </td>
+                                    <td className='text-right px-4 py-4'>
+                                        10/11 12:12
+                                    </td>
+                                </tr>
+                            ))
+                        }
                         {false && (
                             <tr>
                                 <td colSpan={8} className="text-center py-8 text-gray-500">
