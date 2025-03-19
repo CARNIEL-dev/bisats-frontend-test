@@ -6,10 +6,21 @@ import { useEffect, useState } from 'react';
 import Toast from '../../../components/Toast';
 import Bisatsfetch from '../../../redux/fetchWrapper';
 import { BACKEND_URLS } from '../../../utils/backendUrls';
+export interface IAd {
+    type: string,
+    priceType: string,
+    currency: string,
+    priceMargin: number,
+    asset: string,
+    amount: number,
+    amountFilled: number,
+    price: number,
+    status: string
+}
 
 const MyAds = () => {
     const navigate = useNavigate();
-    const [ads, setAds] = useState([]);
+    const [ads, setAds] = useState<Array<IAd>>([]);
 
     useEffect(() => {
         const fetchAds = async () => {
@@ -52,7 +63,6 @@ const MyAds = () => {
                         <table className="table-auto w-full" style={{color: "#515B6E", fontSize: "14px"}}>
                             <thead className='text-justify'>
                                 <tr style={{backgroundColor: "#F9F9FB"}}>
-                                    {/* <th className={(index + 1) > fields.length / 2 ? 'text-right px-4 py-3' : 'text-left px-4 py-4'} style={{backgroundColor: "#F9F9FB"}}> */}
                                     <th className='text-left px-4 py-4'>
                                         Type
                                     </th>
@@ -80,55 +90,57 @@ const MyAds = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {/* <tr style={{backgroundColor: "#F9F9FB"}}> */}
-                                <tr>
-                                        {/* <td className={(colIndex + 1) > fields.length / 2 ? 'text-right font-semibold px-4 py-3' : 'text-left px-4 py-2'}> */}
-                                        <td className='text-left px-4 py-2 font-semibold'>
-                                            {/* <span style={"Sell" === "Sell" ? {color: "#DC2625"} : {color: "#17A34A"}}> */}
-                                            <span style={{color: "#DC2625"}} >
-                                                Sell
-                                            </span>                           
-                                        </td>
-                                        <td className='text-left px-4 py-2 font-semibold'>
-                                            USDT
-                                        </td>
-                                        <td className='text-left px-4 py-2'>
-                                            1670.23
-                                        </td>
-                                        <td className='text-left px-4 py-2'>
-                                            10,000 USDT
-                                        </td>
-                                        <td className='text-right px-4 py-2'>
-                                            2,450 USDT
-                                        </td>
-                                        <td className='text-right px-4 py-3'>
-                                            10/11 12:12
-                                        </td>
-                                        <td className='text-right space-x-2'>
-                                            <span>
-                                                Active
-                                            </span>
-                                            <ToggleRight 
-                                                className="inline cursor-pointer" 
-                                                fill="#22C55D"
-                                                color="#22C55D"
-                                                strokeWidth={1}
-                                                >
-                                                <circle cx="17" cy="12" r="5" fill="white" />
-                                            </ToggleRight>
-                                            {/* <ToggleLeft
-                                                className="inline transition-all duration-200"
-                                                fill="#9CA3AF"
-                                                color="#9CA3AF"
-                                                strokeWidth={1}
-                                                >
-                                                <circle cx="7" cy="12" r="5" fill="white" />
-                                            </ToggleLeft> */}
-                                        </td>
-                                        <td className="text-right px-4 py-3 relative">
-                                            <TableActionMenu />
-                                        </td>
-                                </tr>
+                                {
+                                    ads.map(ad => (
+                                        <tr>
+                                            {/* <td className={(colIndex + 1) > fields.length / 2 ? 'text-right font-semibold px-4 py-3' : 'text-left px-4 py-2'}> */}
+                                            <td className='text-left px-4 py-2 font-semibold'>
+                                                <span style={ad.type === "Sell" ? {color: "#DC2625"} : {color: "#17A34A"}}>
+                                                    {ad.type}
+                                                </span>                           
+                                            </td>
+                                            <td className='text-left px-4 py-2 font-semibold'>
+                                                {ad.asset}
+                                            </td>
+                                            <td className='text-left px-4 py-2'>
+                                                {ad.price}
+                                            </td>
+                                            <td className='text-left px-4 py-2'>
+                                                {ad.amount} 
+                                            </td>
+                                            <td className='text-right px-4 py-2'>
+                                                {ad.amountFilled}
+                                            </td>
+                                            <td className='text-right px-4 py-3'>
+                                                10/11 12:12
+                                            </td>
+                                            <td className='text-right space-x-2'>
+                                                <span>
+                                                    {ad.status}
+                                                </span>
+                                                <ToggleRight 
+                                                    className="inline cursor-pointer" 
+                                                    fill="#22C55D"
+                                                    color="#22C55D"
+                                                    strokeWidth={1}
+                                                    >
+                                                    <circle cx="17" cy="12" r="5" fill="white" />
+                                                </ToggleRight>
+                                                {/* <ToggleLeft
+                                                    className="inline transition-all duration-200"
+                                                    fill="#9CA3AF"
+                                                    color="#9CA3AF"
+                                                    strokeWidth={1}
+                                                    >
+                                                    <circle cx="7" cy="12" r="5" fill="white" />
+                                                </ToggleLeft> */}
+                                            </td>
+                                            <td className="text-right px-4 py-3 relative">
+                                                <TableActionMenu />
+                                            </td>
+                                    </tr>
+                                    ))
+                                }
                             </tbody>
                         </table>
                     </div>

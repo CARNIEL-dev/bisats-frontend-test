@@ -1,9 +1,9 @@
 import { Pen } from "lucide-react";
 import { InputCheck } from "../../../components/Inputs/CheckBox";
 import { FormikProps } from "formik";
-import { IAd } from "./Ad";
+import { IAdRequest } from "./Ad";
 
-const AdReview: React.FC<{ formik: FormikProps<IAd> }> = ({ formik }) => {
+const AdReview: React.FC<{ formik: FormikProps<IAdRequest> }> = ({ formik }) => {
     return (
         <div className="text-sm mb-3">
             <div className="mb-4">

@@ -18,7 +18,7 @@ export type TNetwork = {
     value: string
 }
 
-export interface IAd {
+export interface IAdRequest {
     type: string,
     priceType: string,
     currency: string,
@@ -30,11 +30,11 @@ export interface IAd {
     maximumLimit: number,
     priceUpperLimit: number, 
     priceLowerLimit: number,
-    expiryDate: string
+    expiryDate: string 
     agree?: boolean
 }
 
-const initialAd: IAd = {
+const initialAd: IAdRequest = {
     type: "Buy",
     asset: "",
     amount: 0,
@@ -51,7 +51,7 @@ const initialAd: IAd = {
 }
 
 export interface AdsProps {
-    formik: FormikProps<IAd>,
+    formik: FormikProps<IAdRequest>,
     setStage: React.Dispatch<React.SetStateAction<string>>
 }
 
@@ -87,7 +87,7 @@ const CreateAd = () => {
     const [stage, setStage] = useState("details")
     const user: UserState = useSelector((state: any) => state.user);
 
-    const formik = useFormik<IAd>({
+    const formik = useFormik<IAdRequest>({
         initialValues: { ...initialAd, agree: false  },
         validationSchema: AdSchema,
         onSubmit: async (values) => {

@@ -1,4 +1,57 @@
+import { useEffect, useState } from "react";
+import { BACKEND_URLS } from "../../../utils/backendUrls";
+import Toast from "../../../components/Toast";
+import Bisatsfetch from "../../../redux/fetchWrapper";
+
+interface IAd {
+    type: string,
+    priceType: string,
+    currency: string,
+    priceMargin: number,
+    asset: string,
+    amount: number,
+    amountFilled: number,
+    createdAt: string,
+    expiryDate: string,
+    price: number,
+    status: string
+}
+
 const AdDetails = () => {
+    const [ad, setAd] = useState<IAd>();
+    const [orders, setOrders] = useState<Array<any>>();
+
+    useEffect(() => {
+        const fetchAd = async () => {
+            try {
+                const response = await Bisatsfetch(BACKEND_URLS.P2P.ADS.GET_BY_ID, {
+                    method: "GET",
+                });
+                console.log(response)
+                setAd(response.data);
+            } catch (error: any) {
+                console.error("Error fetching ads:", error);
+                Toast.error(error.message, "Error")
+            }
+        };
+
+        const fetchOrders = async () => {
+            try {
+                const response = await Bisatsfetch(BACKEND_URLS.P2P.ADS.GET_ORDER, {
+                    method: "GET",
+                });
+                console.log(response)
+                setOrders(response.data);
+            } catch (error: any) {
+                console.error("Error fetching ads:", error);
+                Toast.error(error.message, "Error")
+            }
+        };
+
+        fetchAd();
+        fetchOrders();
+    }, []);
+
     return (
         <div className="w-full lg:w-2/3 mx-auto px-3">
             <div>
@@ -15,12 +68,12 @@ const AdDetails = () => {
                     </thead>
                     <tbody>
                     <tr className="">
-                        <td className="p-1 w-1/6 font-semibold text-[#17A34A]">Buy</td>
-                        <td className="p-1 w-1/6">USDT</td>
-                        <td className="p-1 w-1/6">10/11/25 12:45</td>
-                        <td className="p-1 w-1/6">12/11/25 12:45</td>
-                        <td className="p-1 w-1/6">10,000 USDT</td>
-                        <td className="p-1 w-1/6">2,450 USDT</td>
+                        <td className="p-1 w-1/6 font-semibold text-[#17A34A]">{ad?.type}</td>
+                        <td className="p-1 w-1/6">{ad?.asset}</td>
+                        <td className="p-1 w-1/6">{ad?.createdAt}</td>
+                        <td className="p-1 w-1/6">{ad?.expiryDate}</td>
+                        <td className="p-1 w-1/6">{ad?.amount} USDT</td>
+                        <td className="p-1 w-1/6">{ad?.amountFilled} USDT</td>
                     </tr>
                     </tbody>
                 </table>
@@ -35,7 +88,7 @@ const AdDetails = () => {
                     </thead>
                     <tbody>
                     <tr className="text-black">
-                        <td className="p-1 w-1/6">Static</td>
+                        <td className="p-1 w-1/6">{ad?.type}</td>
                         <td className="p-1 w-1/6">1640.44 NGN</td>
                         <td className="p-1 w-1/6">1,000,000.99 NGN</td>
                         <td className="p-1 w-1/6">1,000.99 NGN</td>
@@ -84,34 +137,38 @@ const AdDetails = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                    <td className={`text-left px-4 py-2 font-semibold`}>
-                                        <span style={"Buy" === "Buy" ? {color: "#DC2625"} : {color: "#17A34A"}}>
-                                            Buy
-                                        </span>                 
-                                    </td>
-                                    <td className='text-left px-4 py-2 font-semibold'>
-                                        BTC
-                                    </td>
-                                    <td className='text-left px-4 py-2'>
-                                        1670.23
-                                    </td>
-                                    <td className='text-left px-4 py-2'>
-                                        10,000 USDT
-                                    </td>
-                                    <td className='text-right px-4 py-3'>
-                                        1670.23 NGN
-                                    </td>
-                                    <td className='text-right px-4 py-3'>
-                                        10000 USDT
-                                    </td>
-                                    <td className='text-right px-4 py-3'>
-                                        Express
-                                    </td>
-                                    <td className='text-right px-4 py-3'>
-                                        10/11 12:12
-                                    </td>
-                                </tr>
+                                {
+                                    orders?.map(order => (
+                                        <tr>
+                                            <td className={`text-left px-4 py-2 font-semibold`}>
+                                                <span style={order.type === "Buy" ? {color: "#DC2625"} : {color: "#17A34A"}}>
+                                                    {order.type}
+                                                </span>                 
+                                            </td>
+                                            <td className='text-left px-4 py-2 font-semibold'>
+                                                {order.asset}
+                                            </td>
+                                            <td className='text-left px-4 py-2'>
+                                                1670.23
+                                            </td>
+                                            <td className='text-left px-4 py-2'>
+                                                10,000 USDT
+                                            </td>
+                                            <td className='text-right px-4 py-3'>
+                                                1670.23 NGN
+                                            </td>
+                                            <td className='text-right px-4 py-3'>
+                                                10000 USDT
+                                            </td>
+                                            <td className='text-right px-4 py-3'>
+                                                Express
+                                            </td>
+                                            <td className='text-right px-4 py-3'>
+                                                10/11 12:12
+                                            </td>
+                                        </tr>
+                                    ))
+                                }
                             </tbody>
                         </table>
                     </div>
