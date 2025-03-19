@@ -2,9 +2,31 @@ import { ToggleRight } from 'lucide-react';
 import { PrimaryButton } from '../../../components/buttons/Buttons';
 import TableActionMenu from '../../../components/Modals/TableActionMenu';
 import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import Toast from '../../../components/Toast';
+import Bisatsfetch from '../../../redux/fetchWrapper';
+import { BACKEND_URLS } from '../../../utils/backendUrls';
 
 const MyAds = () => {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const [ads, setAds] = useState([]);
+
+    useEffect(() => {
+        const fetchAds = async () => {
+            try {
+                const response = await Bisatsfetch(BACKEND_URLS.P2P.ADS.GET_ALL, {
+                    method: "GET",
+                });
+                console.log(response)
+                setAds(response.data);
+            } catch (error: any) {
+                console.error("Error fetching ads:", error);
+                Toast.error(error.message, "Error")
+            }
+        };
+
+        fetchAds();
+    }, []);
 
     return (
         <div className="w-full lg:w-2/3 mx-auto px-3">
