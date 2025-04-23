@@ -24,7 +24,6 @@ export const MultiSelectDropDown = ({ parentId, title, choices, label, error, to
     // const root = useOutsideClick(() => {
     //     setDropdownOpen(false);
     // });
-
     return (
         <div className="w-full relative">
             {label && (
@@ -60,12 +59,12 @@ export const MultiSelectDropDown = ({ parentId, title, choices, label, error, to
                     } bg-white rounded w-full shadow`}
             >
                 <ul
-                    className="p-1 space-y-1 text-xs font-secondary h-[150px] overflow-y-scroll"
+                    className="p-1 space-y-1 text-xs font-secondary h-fit overflow-y-scroll"
                     aria-labelledby={`${parentId}Btn`}
                 >
                     <div className=" w-full gap-4 px-3">
                         {choices.map((data) => (
-                            <div className="flex items-center my-2 cursor-pointer" onClick={() => {
+                            <div className="flex items-center my-2 cursor-pointer border-grey border-b-[0.5px]" onClick={() => {
                                 toggleDropdown(); setSelected(data.label); handleChange(data.value)
                             }}>
                                 <p className="mx-2 text-[14px] p-3">{data.label}</p>

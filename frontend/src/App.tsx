@@ -68,6 +68,7 @@ const App: React.FC = () => {
               <Route path={APP_ROUTES.WALLET.WITHDRAW} element={<WithdrawalPage />} />
               <Route path={APP_ROUTES.WALLET.TRANSACTION_BREAKDOWN} element={<TransactionBreakdown />} />
 
+
             </Route>
             <Route element={<P2PLayOut />}>
               <Route path={APP_ROUTES.P2P.MARKETPLACE} element={<MarketPlace />} />

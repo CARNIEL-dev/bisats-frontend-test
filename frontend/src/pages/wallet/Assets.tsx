@@ -78,25 +78,25 @@ const Assets: React.FC = () => {
         {
             Asset: 'Eth',
             name: 'Ethereum',
-            Balance: wallet.ETH ?? 0,
+            Balance: wallet?.ETH ?? 0,
             Rate: tokenLivePrices.ETH
         },
         {
             Asset: 'SOL',
             name: 'Solana',
-            Balance: wallet.SOL ?? 0,
+            Balance: wallet?.SOL ?? 0,
             Rate: tokenLivePrices.SOL
         },
         {
             Asset: 'USDT',
             name: 'Tether USD',
-            Balance: wallet.USDT ?? 0,
+            Balance: wallet?.USDT ?? 0,
             Rate: tokenLivePrices.USDT
         },
         {
             Asset: 'xNGN',
             name: 'Naira on Bisats',
-            Balance: wallet.xNGN ?? 0,
+            Balance: wallet?.xNGN ?? 0,
             Rate: tokenLivePrices.xNGN
         },
     ]
