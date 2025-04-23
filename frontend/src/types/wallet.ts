@@ -3,6 +3,7 @@
 export type TTopUpNGN = {
   userId: string;
   amount: number;
+  bankAccountId?: string;
 };
 
 export type TConfirmDeposit = {
@@ -10,6 +11,7 @@ export type TConfirmDeposit = {
   paymentId: string;
   bankAccountId: string;
 };
+
 export type TWallet = {
   id: string;
   userId: string;
