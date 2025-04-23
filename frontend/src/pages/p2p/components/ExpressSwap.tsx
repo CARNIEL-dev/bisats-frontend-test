@@ -17,8 +17,6 @@ const ExpressSwap = () => {
             <div className='flex items-center my-1 w-full border-b-[1px] border-[#F3F4F6] justify-between my-5'>
                 <p onClick={() => setActive(0)} className={`w-1/2  text-center cursor-pointer ${active === 0 ? " text-[18px] border-b-[3px] py-1 px-3 border-[#49DE80] rounded-t-[2px] text-[#49DE80] font-[600]" : ""}`}> Buy</p>
                 <p onClick={() => setActive(1)} className={`w-1/2  text-center cursor-pointer ${active === 1 ? " text-[18px] border-b-[3px] py-1 px-3 border-[#DC2625] rounded-t-[2px] text-[#DC2625] font-[600]" : ""}`}> Sell</p>
-
-
             </div>
 
             <div>
@@ -39,15 +37,11 @@ const ExpressSwap = () => {
                                 {TokenData[1].tokenName}
                             </div>
                             {/* </Typography.Text> */}
-
-
-
                         </button>
                         {/* <CryptoFilter error={undefined} touched={undefined} handleChange={() => console.log("mms")} /> */}
                     </div>
                     <small className='text-[#606C82] text-[12px] font-[400]'>Balance: 20,000 xNGN</small>
-                </div >
-
+                </div>
                 <div className='relative my-10'>
                     <PrimaryInput css={'w-full h-[64px]'} label={'You’ll receive at least'} error={undefined} touched={undefined} />
                     <div className='absolute right-3 top-10'>

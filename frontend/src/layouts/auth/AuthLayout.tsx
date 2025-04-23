@@ -3,12 +3,15 @@ import HomeLogo from "../../assets/logo";
 import SideFrame from "../../assets/illustrations/sideFrame.png"
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { GOOGLE } from "../../utils/googleCred";
+import NavBar from "../../components/NavBar";
+import { Footer } from "../../components/Footer";
 
 
 
 const AuthLayout = () => {
     return (
         <GoogleOAuthProvider clientId={GOOGLE.CLIENT_ID ?? ""}>
+            <NavBar />
 
         <div className={`bg-white bg-no-repeat bg-cover h-[100vh] w-full`}>
             <div className="w-full h-full flex flex-col-reverse lg:flex-row lg:justify-start lg:items-center p-6">
@@ -25,6 +28,7 @@ const AuthLayout = () => {
                 </div>
             </div>
             </div>
+            <Footer/>
         </GoogleOAuthProvider>
     );
 };
