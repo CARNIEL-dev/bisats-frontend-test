@@ -32,6 +32,7 @@ import Security from './pages/settings/Security';
 import Payment from './pages/settings/Payment';
 import TransactionBreakdown from './pages/wallet/deposits/TransactionBreakdown';
 import AdDetails from './pages/p2p/AdDetails';
+import { Bisats } from './pages/landing-page/src/screens/Bisats';
 
 
 const App: React.FC = () => {
@@ -94,6 +95,8 @@ const App: React.FC = () => {
           </Route>
 
           <Route path="*" element={<Navigate to="/404" />} />
+          <Route path="/" element={<Bisats/>} />
+
         </>
       </Routes>
       <ToastContainer

@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+
   .checkbox-container {
   position: relative;
   display: inline-block;
