@@ -1,5 +1,7 @@
 import React from 'react'
 import { PrimaryButton } from './buttons/Buttons'
+import { APP_ROUTES } from '../constants/app_route';
+import { useNavigate } from 'react-router-dom';
 
 const NavBar = () => {
     const navLinks = [
@@ -7,12 +9,13 @@ const NavBar = () => {
         { title: "More", href: "#" },
         { title: "Contact", href: "#" },
     ];
+    const navigate=useNavigate()
 
   return (
       <div className='bg-[#0A0E12]'>
-          <header className="flex items-center justify-between px-20 py-6 relative z-10">
+          <header className="flex items-center justify-between px-5 lg:px-20 py-4 lg:py-6 relative z-10">
               <img
-                  className="w-[132.92px] h-8"
+                  className="w-[132.92px] h-5 lg:h-8"
                   alt="Bisats Logo"
                   src="/logo-1.svg"
               />
@@ -28,7 +31,7 @@ const NavBar = () => {
                       </a>
                   ))}
 
-                  <PrimaryButton  text={'Sign in'} loading={false}/>
+                  <PrimaryButton  text={'Sign in'} loading={false} onClick={() => navigate(APP_ROUTES.AUTH.SIGNUP)}/>
               </nav>
           </header>
     </div>
