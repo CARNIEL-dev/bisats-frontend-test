@@ -21,7 +21,7 @@ import WithdrawalPage from './pages/wallet/withdrawal';
 import P2PLayOut from './layouts/P2PLayOut';
 import MarketPlace from './pages/p2p/MarketPlace';
 import Express from './pages/p2p/Express';
-import MyAds from './pages/p2p/MyAds';
+import MyAds from './pages/p2p/ads/MyAds';
 import Profile from './pages/p2p/Profile';
 import Sell from './pages/p2p/Sell';
 import Buy from './pages/p2p/Buy';
@@ -35,6 +35,9 @@ import AdDetails from './pages/p2p/AdDetails';
 import { Bisats } from './pages/landing-page/src/screens/Bisats';
 import BVNVerification from './pages/kyc/BVNVerification';
 import Level3Verification from './pages/kyc/Level3Verification';
+import CreateAd from  './pages/p2p/ads/Ad';
+import OrderHistory from './pages/p2p/OrderHistory';
+
 
 
 const App: React.FC = () => {
@@ -76,8 +79,10 @@ const App: React.FC = () => {
             <Route element={<P2PLayOut />}>
               <Route path={APP_ROUTES.P2P.MARKETPLACE} element={<MarketPlace />} />
               <Route path={APP_ROUTES.P2P.EXPRESS} element={<Express />} />
+              <Route path={APP_ROUTES.P2P.ORDER_HISTORY} element={<OrderHistory />} />
               <Route path={APP_ROUTES.P2P.MY_ADS} element={<MyAds />} />
               <Route path={APP_ROUTES.P2P.AD_DETAILS} element={<AdDetails />} />
+              <Route path={APP_ROUTES.P2P.CREATE_AD} element={<CreateAd />} />
               <Route path={APP_ROUTES.P2P.MY_PROFILE} element={<Profile />} />
               <Route path={APP_ROUTES.P2P.SELL} element={<Sell />} />
               <Route path={APP_ROUTES.P2P.BUY} element={<Buy />} />

@@ -33,8 +33,10 @@ export const APP_ROUTES = {
   P2P: {
     MARKETPLACE: "/p2p/market-place",
     EXPRESS: "/p2p/express",
+    ORDER_HISTORY: "/p2p/orders",
     MY_ADS: "/p2p/my-ads",
     AD_DETAILS: "/p2p/ad",
+    CREATE_AD: "/p2p/ad/create",
     MY_PROFILE: "/p2p/my-profile",
     SELL: "/p2p/market-place/sell",
     BUY: "/p2p/market-place/buy",
