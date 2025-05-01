@@ -67,6 +67,7 @@ export const BACKEND_URLS = {
       GET_BY_ID: "/ads/:adsId/get-user-ads-by-id",
       GET_ORDER: "/ads/:adsId/get-user-ads-order",
       SEARCH: "/ads/search-ads",
+      FETCH_ORDERS:""
     }
   },
   NOTIFICATIONS: "/v1/user/notifications",

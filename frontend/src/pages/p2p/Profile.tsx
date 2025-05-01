@@ -131,7 +131,7 @@ const Profile = () => {
                     <div className="flex flex-wrap  items-center">
 
                         {
-                            kycStatus.map((item, idx) =>
+                            kycStatus?.map((item, idx) =>
                                 <div className="flex  items-center mr-3 my-1" key={idx}>
                                     <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M5 0.125C4.03582 0.125 3.09329 0.410914 2.2916 0.946586C1.48991 1.48226 0.865067 2.24363 0.496089 3.13442C0.127112 4.02521 0.030571 5.00541 0.218674 5.95107C0.406777 6.89672 0.871076 7.76536 1.55286 8.44715C2.23464 9.12893 3.10328 9.59323 4.04894 9.78133C4.99459 9.96943 5.97479 9.87289 6.86558 9.50391C7.75637 9.13494 8.51775 8.51009 9.05342 7.7084C9.58909 6.90671 9.875 5.96418 9.875 5C9.87252 3.70783 9.35811 2.46929 8.44441 1.55559C7.53071 0.641888 6.29217 0.127478 5 0.125ZM7.32031 4.14688L4.57344 6.77188C4.50243 6.83868 4.40843 6.8756 4.31094 6.875C4.26329 6.87568 4.21597 6.86692 4.17172 6.84922C4.12747 6.83152 4.08716 6.80523 4.05313 6.77188L2.67969 5.45938C2.6416 5.42614 2.61061 5.38554 2.58861 5.34003C2.5666 5.29452 2.55403 5.24502 2.55164 5.19452C2.54925 5.14403 2.5571 5.09357 2.57471 5.04618C2.59232 4.99879 2.61933 4.95545 2.65411 4.91877C2.6889 4.88208 2.73074 4.85281 2.77713 4.83271C2.82352 4.81261 2.87349 4.8021 2.92404 4.80181C2.9746 4.80152 3.02469 4.81145 3.07131 4.83101C3.11792 4.85056 3.1601 4.87935 3.19531 4.91562L4.31094 5.97969L6.80469 3.60312C6.8776 3.53951 6.97229 3.50654 7.06894 3.51112C7.1656 3.51569 7.25675 3.55745 7.32333 3.62766C7.38991 3.69788 7.42678 3.79111 7.42621 3.88788C7.42565 3.98464 7.38771 4.07744 7.32031 4.14688Z"
@@ -146,7 +146,7 @@ const Profile = () => {
 
 
                     <div className="flex flex-wrap items-center justify-between mt-5">
-                        {Limits.map((item, idx) =>
+                        {Limits?.map((item, idx) =>
                             <div key={idx} className="my-3 lg:my-0 text-left w-1/2 lg:w-fit">
                                 <p className="text-[12px]  leading-[16px] font-[400] text-[#707D96] mb-2"> {item.limit}</p>
                                 <h1 className="text-[14px]  leading-[24px] font-[600] text-[#515B6E]">{item.amount}</h1>
@@ -171,7 +171,7 @@ const Profile = () => {
 
 
                     <div className="flex  flex-wrap items-center justify-between mt-0 lg:my-5">
-                        {ActivitySummary.slice(0, 4).map((item, idx) =>
+                        {ActivitySummary.slice(0, 4)?.map((item, idx) =>
                             <div key={idx} className="my-3 lg:my-0 text-left w-1/2 lg:w-fit">
                                 <p className="text-[12px]  leading-[16px] font-[400] text-[#707D96] mb-2"> {item.type}</p>
                                 <h1 className="text-[14px]  leading-[24px] font-[600] text-[#515B6E]">{item.value}</h1>
@@ -180,7 +180,7 @@ const Profile = () => {
                     </div>
 
                     <div className="flex flex-wrap items-center justify-between mt-0 lg:mt-5">
-                        {ActivitySummary.slice(4).map((item, idx) =>
+                        {ActivitySummary.slice(4)?.map((item, idx) =>
                             <div key={idx} className="my-3 lg:my-0 text-left w-1/2 lg:w-fit">
                                 <p className="text-[12px]  leading-[16px] font-[400] text-[#707D96] mb-2"> {item.type}</p>
                                 <h1 className="text-[14px]  leading-[24px] font-[600] text-[#515B6E]">{item.value}</h1>
