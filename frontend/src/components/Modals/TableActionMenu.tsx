@@ -1,9 +1,12 @@
 import React, { useState, useRef } from 'react';
 import { MoreVertical } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const TableActionMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
   const buttonRef = useRef(null);
+
+  const navigate = useNavigate()
 
   const handleClick = () => {
     setIsOpen(!isOpen);
@@ -28,7 +31,7 @@ const TableActionMenu = () => {
           <div className="absolute right-6 mt-1 w-40 bg-white rounded-md shadow-lg border border-gray-200 py-1 z-50">
             <button 
               className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-              onClick={() => console.log('View details')}
+              onClick={() => navigate("/p2p/ad")}
             >
               View full details
             </button>

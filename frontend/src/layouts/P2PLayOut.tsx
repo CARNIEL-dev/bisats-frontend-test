@@ -23,8 +23,8 @@ const P2PLayOut = () => {
             link: APP_ROUTES.P2P.MY_ADS
         },
         {
-            tab: "My profile",
-            link: APP_ROUTES.P2P.MY_PROFILE
+            tab: "Order history",
+            link: APP_ROUTES.P2P.ORDER_HISTORY
         },
     ]
     const LiveData = [
