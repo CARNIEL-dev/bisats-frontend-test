@@ -1,9 +1,13 @@
 import { isTemplateExpression } from "typescript"
 import { PrimaryButton } from "../../components/buttons/Buttons"
 import Header from "../../components/Header"
+import { UserState } from "../../redux/reducers/userSlice";
+import { useSelector } from "react-redux";
 
 
 const Profile = () => {
+    const userState: UserState = useSelector((state: any) => state.user);
+    const user = userState.user
     const kycStatus = [
         {
             type: "Email",
@@ -92,10 +96,10 @@ const Profile = () => {
     ]
     return (
         <div>
-
+            <Header currentPage="Wallet" />
             <div className=" mt-20 w-[95%] lg:w-2/3 mx-auto ">
                 <div className='flex items-center  my-10 '>
-                    <h1 className='text-[28px] lg:text-[34px] leading-[40px] font-[600] text-[#0A0E12] mr-4'>Chinex Exchanger</h1>
+                    <h1 className='text-[28px] lg:text-[34px] leading-[40px] font-[600] text-[#0A0E12] mr-4'>{user?.userName }</h1>
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <g clip-path="url(#clip0_15475_11815)">
                             <g clip-path="url(#clip1_15475_11815)">

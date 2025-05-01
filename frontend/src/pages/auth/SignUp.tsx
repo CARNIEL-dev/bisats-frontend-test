@@ -100,7 +100,7 @@ const SignUp = () => {
                         ) : null}
                     </div>
                 <div className="w-full mb-3">
-                        <PrimaryButton css={(!formik.isValid || !formik.dirty) ? "bg-[lightGrey] w-full" : ""} text={"Create account"} type="submit" disabled={!formik.isValid || !formik.dirty}
+                        <PrimaryButton css={(!formik.isValid || !formik.dirty) ? "bg-[lightGrey] w-full" : "w-full"} text={"Create account"} type="submit" disabled={!formik.isValid || !formik.dirty}
                             loading={isLoading}
                         />
                 </div>

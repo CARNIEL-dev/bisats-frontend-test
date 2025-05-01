@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom"
 import { APP_ROUTES } from "../../constants/app_route"
 import { useSearchParams } from "react-router-dom";
 import { ReSendverificationCode } from "../../redux/actions/userActions"
+import Toast from "../../components/Toast"
 
 const VerifyEmail = () => {
     const [isLoading, setIsLoading] = useState(false)
@@ -18,7 +19,7 @@ const VerifyEmail = () => {
     const [searchParams] = useSearchParams();
 
     const codeLink = searchParams.get("code");
-    const userId = searchParams.get("userId");
+    const userId = searchParams.get("email");
     const formik = useFormik({
         initialValues: { code: codeLink ? codeLink : "" },
         validationSchema: VerificationSchema,
@@ -34,7 +35,12 @@ const VerifyEmail = () => {
             const response = await VerifyUser(payload)
             setIsLoading(false)
             if (response?.statusCode === 200) {
+                Toast.success(response.message, "Email verified")
+
                 navigate(APP_ROUTES.AUTH.LOGIN)
+            }
+            else {
+                Toast.error(response.message,"Verification failed")
             }
         },
     });
@@ -69,7 +75,7 @@ const VerifyEmail = () => {
                     />
                 </div>
                 <div className="w-full mb-3">
-                        <PrimaryButton css={""} text={"Verify account"} type="submit" loading={isLoading} />
+                        <PrimaryButton css={"w-full"} text={"Verify account"} type="submit" loading={isLoading} />
                 </div>
                 <div className="flex items-center justify-between">
                     <p className="text-[14px] text-[#515B6E] leading-[24px] font-[400] text-left">00:31</p>

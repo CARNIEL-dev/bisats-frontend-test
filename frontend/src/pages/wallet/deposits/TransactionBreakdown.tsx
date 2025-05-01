@@ -22,6 +22,8 @@ const TransactionBreakdown = () => {
     const [isBreakDown, setIsBreakDown] = useState(false)
     const [loading, setLoading] = useState(false)
     const [confirmLoading, setConfirmLoading] = useState(false)
+    const [cancelLoading, setCancelLoading] = useState(false)
+
 
     const [selectedBank, setSelectedBank] = useState<TBank>()
 
@@ -33,11 +35,14 @@ const TransactionBreakdown = () => {
         value: tb?.id,
         label: <div className='text-[12px] flex flex-col '>
             <p>{tb?.bankName}</p>
-            {/* <p className='my-1'>{tb?.accountNumber}</p>
-
-                <p>{tb?.accountName}</p> */}
-
-        </div>
+            <p className='my-1'>{tb?.accountNumber}</p>
+            <p>{tb?.accountName}</p> 
+        </div>,
+        labelDisplay: <div className='text-[12px] flex flex '>
+            <p>{tb?.bankName}</p>
+            <p className=''>- {tb?.accountNumber}</p>
+            {/* <p>{tb?.accountName}</p> */}
+        </div>,
     }))
     const navigate = useNavigate()
 
@@ -54,7 +59,7 @@ const TransactionBreakdown = () => {
         setLoading(true)
         const response = await TopUpNGNBalance({
             userId: `${user?.user?.userId}`,
-            amount: Number(TransBreakDown?.totalAmount),
+            amount: Number(TransBreakDown?.amount),
             bankAccountId: selectedBankID
         })
         setLoading(false)
@@ -68,28 +73,33 @@ const TransactionBreakdown = () => {
     }
 
     const ConfirmPayment = async (prop: string) => {
-        setConfirmLoading(true)
+        {
+            prop === "confirmed" ?
+        
+                setConfirmLoading(true) : setCancelLoading(true)
+        }
         const response = await ConfirmDeposit({
             userId: `${user?.user?.userId}`,
             status: `${prop}`,
             paymentId: paymentID
         })
-        setConfirmLoading(false)
+        {
+            prop === "confirmed" ?
 
-        console.log(response)
-    // if (response?.status) {
-    //     setIsBreakDown(true)
-    //     Toast.success("", response.message,)
-    // } else {
-    //     Toast.error(response.message, "")
-    // }
+                setConfirmLoading(false) : setCancelLoading(false)
+        }
+    if (response?.status) {
+        navigate(APP_ROUTES.WALLET.HOME)
+        Toast.success("", response?.message,)
+    } else {
+        Toast.error(response?.message, "Failed")
     }
+    }
+
     return (
         <div>
             <div>
                 <Head header={isBreakDown ? "Confirm Deposit" : "Select Bank"} subHeader={isBreakDown ? "Make sure to send the exact amount to avoid loss of funds." : "Select a bank you will be making payments into"} />
-
-
                 {
                     isBreakDown ? <>
                         <div className='py-5'>
@@ -138,9 +148,10 @@ const TransactionBreakdown = () => {
 
                             </div>
                         </div>
-                        <PrimaryButton text={'I have made payment'} loading={confirmLoading} css='w-full' onClick={() => ConfirmPayment("paid")} />
-                        <WhiteTransparentButton text={'Cancel'} loading={confirmLoading} css='w-full mt-3' onClick={() => ConfirmPayment("cancel")} />
-                    </> : <>  <div className="h-fit rounded border border  border-[#F3F4F6] bg-[#F9F9FB] rounded-[12px] p-2  my-5 text-[14px] leading-[24px] ">
+                        <PrimaryButton text={'I have made payment'} loading={confirmLoading} css='w-full' onClick={() => ConfirmPayment("confirmed")} />
+                        <WhiteTransparentButton text={'Cancel'} loading={cancelLoading} css='w-full mt-3' onClick={() => ConfirmPayment("cancel")} />
+                    </> :
+                        <>  <div className="h-fit rounded border border  border-[#F3F4F6] bg-[#F9F9FB] rounded-[12px] p-2  my-5 text-[14px] leading-[24px] ">
                         <h1 className="text-[#424A59] font-[600] text-[16px]"> Select Bank</h1>
 
                         <div>

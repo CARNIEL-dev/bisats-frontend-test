@@ -50,6 +50,25 @@ export type TbankAccount = {
   bankCode?: null;
 };
 
+export type TWithdrawalBankAccount = {
+  userId: string;
+  accountNumber: string;
+  accountName: string;
+  bankName: string;
+  bankCode?: string;
+  bankId?:string
+};
+export type TDeleteWithdrawalRequest = {
+  userId: string;
+  bankAccountId: string;
+};
+export type TWithdrawalRequest = {
+  userId: string;
+  amount: number;
+  bankAccountId: string;
+}
+
+
 export type TDepositBreakDowns = {
   amount: number;
   duty: number;
@@ -60,6 +79,13 @@ export type TDepositBreakDowns = {
   bankAccounts: TbankAccount[];
 };
 
+export type T2FARequest = {
+  
+    "userId": string, 
+    "code": string,
+    "pin": string
+
+}
 
 export enum DepositStatus {
   CANCEL = "cancel",

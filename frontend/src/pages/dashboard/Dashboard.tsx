@@ -3,16 +3,24 @@ import Balance from "./Balance"
 import MarketRate from "./MarketRate";
 import Ads from "./Ads";
 import Orders from "./Orders";
-import { getUser } from "../../helpers";
 import { useEffect, useState } from "react";
 import KycBanner from "../../components/KycBanner";
+import { useSelector } from "react-redux";
+import { UserState } from "../../redux/reducers/userSlice";
+import SecurityVerification from "../../components/Modals/SecurityVerification";
+import { GetWallet } from "../../redux/actions/walletActions";
 
 const Dashboard = () => {  
     const [openKycModal, setKycModalOpen] = useState(false)
-    const user = getUser()
+    const userState: UserState = useSelector((state: any) => state.user);
+    const user = userState.user
+
+     useEffect(() => {
+            GetWallet()
+        }, [])
     useEffect(() => {
-        const kyscStatus = user.kyc
-        if (!kyscStatus.identificationVerified || !kyscStatus.personalInformationVerified || !kyscStatus.utilityBillVerified
+        const kyscStatus = user?.kyc
+        if (!kyscStatus?.identificationVerified || !kyscStatus?.personalInformationVerified || !user?.phoneNumberVerified
         ) {
             setKycModalOpen(true)
         }
@@ -22,7 +30,7 @@ const Dashboard = () => {
     return (
         <div>
             <Header currentPage="Dashboard" />
-            <div className="w-[90%] lg:w-[70%] mx-auto pt-20">
+            <div className="w-[90%] lg:w-[70%] mx-auto lg:pt-5">
                 <div >
                     {openKycModal &&
                         <KycBanner />}
@@ -30,7 +38,7 @@ const Dashboard = () => {
                 <div className="w-full flex justify-center mt-[30px]">
 
                     <div className="w-full">
-                        <h2 className="text-[34px] mx-[15px] font-semibold" style={{ color: '#0A0E12' }}>Hello, {user.firstName}</h2>
+                        <h2 className="text-[34px] mx-[15px] font-semibold" style={{ color: '#0A0E12' }}>Hello, { user?.firstName}</h2>
 
                         <div className="flex justify-between m-[15px]">
                             <Balance />
@@ -65,8 +73,7 @@ const Dashboard = () => {
                     </div>
                 </div>
             </div>
-
-
+            {/* <SecurityVerification func={() => console.log("ddyjjjj")} close={()=>console.log("ddf")}/> */}
         </div>
     )
 }

@@ -5,17 +5,19 @@ import Label from "./Label";
 interface IMultiSelectDropDownProps {
     parentId?: string;
     title: string;
-    choices: Array<{ value: string; label: string }> | [];
+    choices: Array<{ value: string; label: string | React.ReactNode, labelDisplay?: string | React.ReactNode }> | [];
     error: string | undefined | null,
     touched: boolean | undefined,
     label: string;
+    scrollHeight?: string;
+   
     handleChange: (prop: string) => void
 
 }
 
-export const MultiSelectDropDown = ({ parentId, title, choices, label, error, touched, handleChange }: IMultiSelectDropDownProps) => {
+export const MultiSelectDropDown = ({ parentId, title, choices, label, error, touched, handleChange,scrollHeight }: IMultiSelectDropDownProps) => {
     const [isDropdownOpen, setDropdownOpen] = useState(false);
-    const [selected, setSelected] = useState("");
+    const [selected, setSelected] = useState<string|React.ReactNode>("");
 
     const toggleDropdown = () => {
         setDropdownOpen(!isDropdownOpen);
@@ -59,13 +61,13 @@ export const MultiSelectDropDown = ({ parentId, title, choices, label, error, to
                     } bg-white rounded w-full shadow`}
             >
                 <ul
-                    className="p-1 space-y-1 text-xs font-secondary h-fit overflow-y-scroll"
+                    className={`p-1 space-y-1 text-xs font-secondary  ${scrollHeight?"h-[300px]":"h-fit"} overflow-y-scroll`}
                     aria-labelledby={`${parentId}Btn`}
                 >
                     <div className=" w-full gap-4 px-3">
                         {choices.map((data) => (
-                            <div className="flex items-center my-2 cursor-pointer border-grey border-b-[0.5px]" onClick={() => {
-                                toggleDropdown(); setSelected(data.label); handleChange(data.value)
+                            <div className="flex items-center my-2 cursor-pointer text-grey-700 bg-[#f5f5f5] hover:bg-[#EEEFF2] rounded-md" onClick={() => {
+                                toggleDropdown(); setSelected(data.labelDisplay??data?.label); handleChange(data.value)
                             }}>
                                 <p className="mx-2 text-[14px] p-3">{data.label}</p>
                             </div>

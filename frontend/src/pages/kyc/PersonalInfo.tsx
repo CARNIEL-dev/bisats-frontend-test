@@ -20,6 +20,7 @@ const PersonalInfo = () => {
         lastName: "",
         dateOfBirth: "",
         nationality: "",
+        businessName:"",
         address: ""
     })
     const navigate = useNavigate()
@@ -27,7 +28,7 @@ const PersonalInfo = () => {
 
     useEffect(() => {
         if (user?.kyc.personalInformationVerified) {
-            navigate(APP_ROUTES.KYC.POA)
+            navigate(APP_ROUTES.KYC.IDENTITY)
         }
     }, [user])
 
@@ -60,11 +61,11 @@ const PersonalInfo = () => {
                 <StepFlow step={1} />
                 <form onSubmit={formik.handleSubmit}>
                 <div className="my-4">
-                        <div className="lg:flex items-center justify-between w-full lg:w-5/6">
-                            <div className="w-full lg:w-[142px]">
+                        <div className="lg:flex items-center justify-between w-full  ">
+                            <div className="w-full lg:w-full">
                                 <PrimaryInput
                                     name="firstName"
-                                    css={"w-full lg:w-[142px] h-[48px]"}
+                                    css={"w-full  h-[48px]"}
                                     label={"First Name"}
                                     error={formik.errors.firstName}
                                     touched={formik.touched.firstName}
@@ -73,10 +74,10 @@ const PersonalInfo = () => {
                                     onBlur={formik.handleBlur}
                                 />
                             </div>
-                            <div className="w-full lg:w-[142px] lg:mx-5">
+                            <div className="w-full lg:w-full lg:mx-3">
                                 <PrimaryInput
                                     name="middleName"
-                                    css={"w-full lg:w-[142px] h-[48px]"}
+                                    css={"w-full = h-[48px]"}
                                     label={"Middle Name"}
                                     error={formik.errors.middleName}
                                     touched={formik.touched.middleName}
@@ -86,10 +87,10 @@ const PersonalInfo = () => {
                                 />
 
                         </div>
-                            <div className="w-full lg:w-[142px]">
+                            <div className="w-full lg:w-full">
                                 <PrimaryInput
                                     name="lastName"
-                                    css={"w-full lg:w-[142px] h-[48px]"}
+                                    css={"w-full  h-[48px]"}
                                     label={"Last Name"}
                                     error={formik.errors.lastName}
                                     touched={formik.touched.lastName}
@@ -132,9 +133,20 @@ const PersonalInfo = () => {
 
                         />
                     </div>
+                    <div className="w-full ">
+                        <PrimaryInput
+                            css="w-full h-[48px]" name="businessName" placeholder="Your business name"
+                            label={"Business Name"} error={formik.errors.businessName} touched={formik.touched.businessName}
+                            value={formik.values.businessName}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            info="This is very important in verifying your application to be a merchant"
+
+                        />
+                    </div>
 
                     <div className="my-4">
-                        <PrimaryButton css={""} text={"Continue"} loading={isLoading} />
+                        <PrimaryButton css={"w-full"} text={"Continue"} loading={isLoading} />
                     </div>
                 </form>
             </div>

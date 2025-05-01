@@ -21,5 +21,29 @@ export const countries = [
   { key: "SA", country: "Saudi Arabia" },
   { key: "AR", country: "Argentina" },
   { key: "EG", country: "Egypt" },
-  // Add more countries here if needed
-];
+ ];
+
+export const countryDataForPhone = [
+  { code: "NG", dialCode: "234", name: "Nigeria", flag: "🇳🇬" },
+  { code: "US", dialCode: "1", name: "United States", flag: "🇺🇸" },
+  { code: "CA", dialCode: "1", name: "Canada", flag: "🇨🇦" },
+  { code: "GB", dialCode: "44", name: "United Kingdom", flag: "🇬🇧" },
+  { code: "GH", dialCode: "233", name: "Ghana", flag: "🇬🇭" },
+  { code: "KE", dialCode: "254", name: "Kenya", flag: "🇰🇪" },
+
+]
+
+
+
+export const account_level_features = {
+  level_2: [
+    "Create sell ads (max 23M NGN in crypto assets)",
+    "Create buy ads (max 23M NGN in crypto assets)",
+    "Max daily limit for withdrawal is 500m NGN and 1m USD in crypto assets",
+  ],
+  level_3: [
+    "Create sell ads (max 100M NGN in crypto assets)",
+    "Create buy ads (max 100M NGN in crypto assets)",
+    "Max daily limit for withdrawal is unlimited NGN and 3m USD in crypto",
+  ],
+};

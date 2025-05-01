@@ -1,10 +1,39 @@
+import { useState } from "react";
 import { PrimaryButton, WhiteTransparentButton } from "../buttons/Buttons"
 import PrimaryInput from "../Inputs/PrimaryInput"
 import ModalTemplate from "./ModalTemplate"
+import { UserState } from "../../redux/reducers/userSlice";
+import { useSelector } from "react-redux";
+import Toast from "../Toast";
+import { DeleteBankAccountForWithdrawal } from "../../redux/actions/walletActions";
 interface Props {
     close: () => void;
+    bank?: { id: string; accountNumber: string; accountName: string; bankName: string; bankCode: string; }
+
 }
-const DeleteWithdrawalAccount: React.FC<Props> = ({ close }) => {
+const DeleteWithdrawalAccount: React.FC<Props> = ({ close,bank }) => {
+    const [isLoading, setIsLoading] = useState(false)
+
+    const userState: UserState = useSelector((state: any) => state.user);
+    const user = userState.user
+    const DeleteBankAccount = async () => {
+     console.log(bank)
+        setIsLoading(true)
+        const response = await DeleteBankAccountForWithdrawal({
+            userId: user?.userId,
+            bankAccountId: bank?.id??"",
+           
+        })
+        setIsLoading(false)
+        if (response?.status) {
+            Toast.success(response.message, "Bank Account Deleted")
+            close()
+        } else {
+
+            Toast.error(response.message, "Failed")
+
+        }
+    }
     return (
         <ModalTemplate onClose={() => close()}>
 
@@ -16,7 +45,7 @@ const DeleteWithdrawalAccount: React.FC<Props> = ({ close }) => {
 
                 <div className='flex items-center w-full mt-5'>
                     <WhiteTransparentButton text={'Cancel'} loading={false} onClick={close} css='w-[]' style={{ width: "50%" }} />
-                    <PrimaryButton text={'Proceed'} loading={false} css='w-1/2 ml-3' />
+                    <PrimaryButton text={'Proceed'} loading={isLoading} css='w-1/2 ml-3' onClick={()=>DeleteBankAccount()} />
                 </div>
             </div>
         </ModalTemplate>

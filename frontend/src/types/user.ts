@@ -1,5 +1,7 @@
 /** @format */
 
+import { KycStatus } from "../redux/reducers/userSlice";
+
 export type TResponse = {
   status: boolean;
   statusCode: number;
@@ -12,6 +14,8 @@ export type TUser = {
   userType: string;
   firstName: string | null;
   lastName: string | null;
+  middleName?: string | null;
+  accountLevel?: string | null;
   email: string;
   phoneNumber: number | null;
   emailVerified: boolean;
@@ -23,6 +27,11 @@ export type TUser = {
     url: string | null;
   };
   refreshToken: string;
+  kyc: KycStatus;
+  wallet: {
+    pinSet: boolean;
+  };
+  twoFactorAuthEnabled: boolean;
 };
 export type TLogin = {
   email: string;
@@ -77,3 +86,32 @@ export type TIdentity = {
 //     refreshToken: "ST4APowc1oOZsSsJS2F4KyX9DYPJVuCtTcau5wHn5gd7O8FvrpgtW1Zju1e2jWOM19JEROkZvgulgpxCwLx4OHZ7MUZKzpBZ4G2xEFXI0l7Hq5gKGgAuYiwMIqw24AZqxEZLExeUqf4wOzS0prrz5PQ9WVuldw8MpfrEAYT5uNZLiEmkMSeMRsEYolFiytD4y2W7OvLbJrrTthOaiJSuEKr8TAKvz2Elz2F0qCnuZoYJkdraCPz7z1qHlJRX3myP";
 //   };
 // };
+
+export type TRequestPhone = {
+  userId: string;
+  phoneNumber: string;
+};
+
+export type TVerifyPhone = {
+  userId: string;
+  code: string;
+};
+
+export type TPinRequest = {
+  userId?: string;
+  pin: string;
+  confirmPin: string;
+  oldPin?:string
+};
+
+
+export type TVerify2FARequest = {
+  userId?: string;
+  code: string;
+};
+
+export type TUpdate2FAStatus = {
+  userId?: string;
+  enable?: boolean;
+  code: string;
+};

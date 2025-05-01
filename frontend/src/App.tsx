@@ -31,7 +31,10 @@ import UserInfo from './pages/settings/UserInfo';
 import Security from './pages/settings/Security';
 import Payment from './pages/settings/Payment';
 import TransactionBreakdown from './pages/wallet/deposits/TransactionBreakdown';
-import AdDetails from './pages/p2p/ads/AdDetails';
+import AdDetails from './pages/p2p/AdDetails';
+import { Bisats } from './pages/landing-page/src/screens/Bisats';
+import BVNVerification from './pages/kyc/BVNVerification';
+import Level3Verification from './pages/kyc/Level3Verification';
 import CreateAd from  './pages/p2p/ads/Ad';
 import OrderHistory from './pages/p2p/OrderHistory';
 
@@ -96,6 +99,10 @@ const App: React.FC = () => {
 
 
             <Route path={APP_ROUTES?.KYC.PHONEVERIFICATION} Component={PhoneVerifcation} />
+            <Route path={APP_ROUTES?.KYC.BVNVERIFICATION} Component={BVNVerification} />
+            <Route path={APP_ROUTES?.KYC.LEVEL3VERIFICATION} Component={Level3Verification} />
+
+
           </Route>
 
           <Route path="*" element={<Navigate to="/404" />} />

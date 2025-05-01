@@ -6,9 +6,11 @@ interface Props {
     transactionFee: string;
     withdrawalAmount: string;
     total: string
+    submit?: () => void;
+    isLoading?:boolean
 
 }
-const WithdrawalConfirmationNGN: React.FC<Props> = ({ close, transactionFee, withdrawalAmount, total }) => {
+const WithdrawalConfirmationNGN: React.FC<Props> = ({ close, transactionFee, withdrawalAmount, total, submit ,isLoading}) => {
     return (
         <ModalTemplate onClose={close}>
             <div className="flex flex-col justify-center w-full text-center mx-auto">
@@ -17,7 +19,7 @@ const WithdrawalConfirmationNGN: React.FC<Props> = ({ close, transactionFee, wit
                 <div className="h-fit rounded border border  border-[#F3F4F6] bg-[#F9F9FB] rounded-[12px] py-3 px-5 my-5 text-[14px] leading-[24px] ">
                     <div className="flex justify-between items-center mb-2">
                         <p className="text-[#424A59] font-[400]">Transaction fee:</p>
-                        <p className="text-[#606C82]  font-[600]">{transactionFee}xNGN</p>
+                        <p className="text-[#606C82]  font-[600]">{transactionFee} xNGN</p>
                     </div>
                     <div className="flex justify-between items-center mb-2">
                         <p className="text-[#424A59] font-[400]">Withdrawal amount:</p>
@@ -28,7 +30,7 @@ const WithdrawalConfirmationNGN: React.FC<Props> = ({ close, transactionFee, wit
                         <p className="text-[#606C82]  font-[600]">{total} xNGN</p>
                     </div>
                 </div>
-                <PrimaryButton css={""} text={"Proceed"} loading={false} />
+                <PrimaryButton css={""} text={"Proceed"} loading={isLoading??false}  onClick={submit}/>
 
             </div>
         </ModalTemplate>
