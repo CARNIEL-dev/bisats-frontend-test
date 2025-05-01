@@ -25,7 +25,8 @@ export const BACKEND_URLS = {
   WALLET: {
     GET_WALLET: "/wallet/get-user-wallet",
     TRANSC_BREAKDOWN: "/payment/top-up-breakdown",
-    TOPUPNGN: "/top-up-wallet",
+    TOPUPNGN: "/payment/top-up-wallet",
+    CONFIRM_TOPUP:"/confirm-wallet-top-up",
     LIST_BANKS: "/list-banks",
   },
   P2P: {

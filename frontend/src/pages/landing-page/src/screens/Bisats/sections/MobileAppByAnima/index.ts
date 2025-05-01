@@ -1,0 +1,1 @@
+export { MobileAppByAnima } from "./MobileAppByAnima";

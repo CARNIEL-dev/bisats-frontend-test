@@ -92,7 +92,6 @@ const Profile = () => {
     ]
     return (
         <div>
-            <Header currentPage="Dashboard" />
 
             <div className=" mt-20 w-[95%] lg:w-2/3 mx-auto ">
                 <div className='flex items-center  my-10 '>

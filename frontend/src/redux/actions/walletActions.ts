@@ -1,6 +1,6 @@
 /** @format */
 
-import { getUser } from "../../helpers";
+import { getToken, getUser } from "../../helpers";
 import { TTopUpNGN } from "../../types/wallet";
 import { BACKEND_URLS } from "../../utils/backendUrls";
 import dispatchWrapper from "../../utils/dispatchWrapper";
@@ -51,13 +51,26 @@ export const DepositTranscBreakDown = async (payload: TTopUpNGN) => {
   }
 };
 
-export const ConfirmDeposit = async () => {
+export const ConfirmDeposit = async (payload: {
+  userId: string;
+  status: string;
+  paymentId: string;
+}) => {
+  const token = getToken();
+
   try {
-    const response = await Bisatsfetch(
-      `/api/v1/user/:userId/payment/:paymentId/confirm-wallet-top-up`,
+    const response = await fetch(
+      `${BACKEND_URLS.BASE_URL}/api/v1/user/${payload.userId}/payment/${payload.paymentId}${BACKEND_URLS.WALLET.CONFIRM_TOPUP}`,
       {
         method: "POST",
-        body: JSON.stringify({ userId: "", status: "paid" }),
+        headers: {
+          // "Content-Type": "multipart/form-data",
+          Authorization: `${token}`,
+        },
+        body: JSON.stringify({
+          // userId: payload.userId,
+          status: payload.status,
+        }),
       }
     );
     const data = response;
@@ -80,7 +93,6 @@ export const GetLivePrice = () => {
 };
 
 export const TopUpNGNBalance = async (payload: TTopUpNGN) => {
-  const user = getUser();
   try {
     const response = await Bisatsfetch(
       `/api/v1/user/${payload.userId}${BACKEND_URLS.WALLET.TOPUPNGN}`,
