@@ -61,8 +61,8 @@ const OTP = () => {
                     />
 
                 <div className="w-full mb-3">
-                        <PrimaryButton css={""} text={"Enter code"} loading={isLoading} type="submit" />
-                    </div>
+                        <PrimaryButton css={"w-full"} text={"Enter code"} loading={isLoading} type="submit" />
+                </div>
 
 
 

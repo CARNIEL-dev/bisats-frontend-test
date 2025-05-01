@@ -47,7 +47,7 @@ const Identity = () => {
 
     useEffect(() => {
         if (user?.kyc.identificationVerified) {
-            navigate(APP_ROUTES.KYC.IDENTITY)
+            navigate(APP_ROUTES.KYC.BVNVERIFICATION)
         }
     }, [user])
 
@@ -252,7 +252,7 @@ const Identity = () => {
 
                 </div>
                 <div className="my-4">
-                    <PrimaryButton css={""} text={"Continue"} loading={isLoading} />
+                    <PrimaryButton css={"w-full"} text={"Continue"} loading={isLoading} />
                 </div>
             </form>
 

@@ -1,6 +1,5 @@
 import { useSelector } from "react-redux";
 import { WhiteTransparentButton } from "../../components/buttons/Buttons"
-import Label from "../../components/Inputs/Label"
 import PrimaryInput from "../../components/Inputs/PrimaryInput"
 import { UserState } from "../../redux/reducers/userSlice";
 import { useState } from "react";
@@ -34,10 +33,10 @@ const UserInfo = () => {
             label: "Full Name",
             value: `${user?.firstName ?? "-"} ${user?.middleName ?? "-"} ${user?.lastName ?? "-"}`
         },
-        {
-            label: "User ID",
-            value: user?.email
-        },
+        // {
+        //     label: "User ID",
+        //     value: user?.email
+        // },
         {
             label: "Email Address",
             value: user?.email

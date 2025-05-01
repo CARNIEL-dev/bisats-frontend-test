@@ -14,6 +14,8 @@ import Toast from "../../../components/Toast"
 import { useNavigate } from "react-router-dom"
 import { APP_ROUTES } from "../../../constants/app_route"
 import { setDepositTranscBreakDown } from "../../../helpers"
+import KycRouteGuard from "../../../components/KycGuard"
+import { ACTIONS } from "../../../utils/transaction_limits"
 
 export type TNetwork = {
     label: string,
@@ -51,7 +53,6 @@ const DepositPage = () => {
                 amount: Number(payload.amount)
             }
             const response = await DepositTranscBreakDown(payloadd)
-            console.log(response)
             setIsLoading(false)
             if (response.statusCode === 200) {
                 setDepositTranscBreakDown(response.data)
@@ -65,6 +66,9 @@ const DepositPage = () => {
     });
 
     return (
+        <KycRouteGuard requiredAction={ACTIONS.DEPOSIT}
+            fallbackRedirect={APP_ROUTES.DASHBOARD}
+        >
         <div>
             <Head header={"Make a Deposit"} subHeader={"Securely deposit fiat or crypto to fund your account and start trading."} />
 
@@ -82,7 +86,6 @@ const DepositPage = () => {
                         }
                     </div>
                 }
-
                 {selectedToken === "ngn" &&
                     <div>
                         <PrimaryInput css={"w-full p-2.5 mb-7"} label={"Amount"} placeholder="Enter amount" name="amount" error={formik.errors.amount} value={formik.values.amount} touched={formik.touched.amount} onChange={(e) => {
@@ -128,7 +131,9 @@ const DepositPage = () => {
 
             </form>
 
-        </div>
+            </div>
+        </KycRouteGuard>
+
     )
 }
 

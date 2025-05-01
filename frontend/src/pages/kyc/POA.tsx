@@ -82,7 +82,7 @@ const POA = () => {
                         {error && <p className="error-text">{error}</p>}
                     </div>
                     <div className="my-4">
-                        <PrimaryButton css={""} text={"Continue"} loading={isLoading} />
+                        <PrimaryButton css={"w-full"} text={"Continue"} loading={isLoading} />
                     </div>
                 </div>
 

@@ -1,7 +1,12 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { PrimaryButton } from '../../components/buttons/Buttons';
+import KycManager from '../kyc/KYCManager';
+import { APP_ROUTES } from '../../constants/app_route';
+import { ACTIONS } from '../../utils/transaction_limits';
 
 const Balance: React.FC = () => {
+        const navigate = useNavigate()
     return (
         <div className="border-[1px] h-[220px] w-[48.5%] py-[24px] px-[34px]" style={{ borderRadius: '12px', borderColor: "#D6DAE1" }}>
             <div className="m-[2px]">
@@ -27,9 +32,12 @@ const Balance: React.FC = () => {
                 </p>
             </div>
             <div>
-                <Link to="/wallet/deposit" className="inline-flex items-center justify-center w-full h-[48px] py-[10px] px-[16px] font-semibold rounded-md " style={{backgroundColor: "#F5BB00", color: "#0A0E12", fontSize: "14px", lineHeight: "24px"}}>
-                    Deposit
-                </Link>
+              
+                <KycManager action={ACTIONS.DEPOSIT} func={()=>navigate(APP_ROUTES.WALLET.DEPOSIT)}>
+                        {(validateAndExecute) => (
+                            <PrimaryButton text={'Deposit'} loading={false} css='w-full' onClick={validateAndExecute} />)}
+                </KycManager>
+
             </div>
         </div>
     );

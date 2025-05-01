@@ -39,6 +39,20 @@ export const ResetPasswordSchema = Yup.object().shape({
     .required("Confirm password is required"),
 });
 
+export const ChangePasswordSchema = Yup.object().shape({
+  oldPassword: Yup.string().required(),
+  newPassword: Yup.string()
+    .matches(lowerCaseRegex)
+    .matches(upperCaseRegex)
+    .matches(numberRegex)
+    .matches(specialCharcterRegex)
+    .matches(characterLength)
+    .required(),
+  confirmPassword: Yup.string()
+    .oneOf([Yup.ref("newPassword")], "Passwords must match")
+    .required("Confirm password is required"),
+});
+
 export const VerificationSchema = Yup.object().shape({
   code: Yup.string().length(6).required(),
 });
@@ -48,6 +62,9 @@ export const EmailSchema = Yup.object().shape({
 
 export const PhoneSchema = Yup.object().shape({
   phone: Yup.string().required(),
+});
+export const BVNSchema = Yup.object().shape({
+  bvn: Yup.string().required(),
 });
 export const LogInSchema = Yup.object().shape({
   email: Yup.string().email().required(),

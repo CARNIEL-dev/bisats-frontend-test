@@ -1,20 +1,32 @@
 /** @format */
 
+import { TUser } from "../../types/user";
 import { GeneralTypes, UserActionTypes } from "../types";
-interface KycStatus {
+export interface KycStatus {
   identificationVerified: boolean;
   personalInformationVerified: boolean;
   utilityBillVerified: boolean;
+  proofOfProfileVerified: boolean;
+  sourceOfWealthVerified: boolean;
+  bvnVerified:boolean
 }
 
 export interface UserState {
   isAuthenticated: boolean;
   loading: boolean;
-  user: {
-    [key: string]: any;
-  } | null;
+  user:
+    | TUser
+    | {
+        [key: string]: any;
+      }
+    | null;
   token: string | null;
   kyc: KycStatus | null;
+
+  twoFactorAuthEnabled:boolean;
+  wallet: {
+    pinSet: boolean;
+  } | null;
 }
 interface UserActionProp {
   type: string;
@@ -27,6 +39,8 @@ const initialState: UserState = {
   user: null,
   token: null,
   kyc: null,
+  wallet: null,
+  twoFactorAuthEnabled:false,
 };
 
 const userReducer = (state = initialState, action: UserActionProp) => {

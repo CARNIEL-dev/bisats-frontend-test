@@ -33,6 +33,8 @@ import Payment from './pages/settings/Payment';
 import TransactionBreakdown from './pages/wallet/deposits/TransactionBreakdown';
 import AdDetails from './pages/p2p/AdDetails';
 import { Bisats } from './pages/landing-page/src/screens/Bisats';
+import BVNVerification from './pages/kyc/BVNVerification';
+import Level3Verification from './pages/kyc/Level3Verification';
 
 
 const App: React.FC = () => {
@@ -92,6 +94,10 @@ const App: React.FC = () => {
 
 
             <Route path={APP_ROUTES?.KYC.PHONEVERIFICATION} Component={PhoneVerifcation} />
+            <Route path={APP_ROUTES?.KYC.BVNVERIFICATION} Component={BVNVerification} />
+            <Route path={APP_ROUTES?.KYC.LEVEL3VERIFICATION} Component={Level3Verification} />
+
+
           </Route>
 
           <Route path="*" element={<Navigate to="/404" />} />

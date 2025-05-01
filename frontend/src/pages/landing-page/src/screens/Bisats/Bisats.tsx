@@ -15,7 +15,7 @@ export const Bisats = (): JSX.Element => {
            <NavBar/>
           <HeroSectionByAnima />
           <HowItWorksByAnima />
-          {/* <ChangingTheByAnima /> */}
+          <ChangingTheByAnima />
           <ChangingThePpByAnima />
           <MobileAppByAnima />
           <Footer/>

@@ -10,6 +10,11 @@ import {
   TPersonalInfoKYC,
   TPOA,
   TIdentity,
+  TRequestPhone,
+  TVerifyPhone,
+  TPinRequest,
+  TVerify2FARequest,
+  TUpdate2FAStatus,
 } from "../../types/user";
 import {
   setToken,
@@ -142,6 +147,30 @@ export const ResetPassword = async (payload: {
     return error;
   }
 };
+
+
+export const UpdatePassword = async (payload: {
+  userId: string,
+  oldPassword: string,
+  newPassword: string,
+  confirmPassword: string
+}) => {
+  try {
+    const response = await Bisatsfetch(
+      `/api/v1/user/${payload.userId}${BACKEND_URLS.AUTH.CHANGE_PASSWORD}`,
+      {
+        method: "POST",
+        body: JSON.stringify(payload),
+      }
+    );
+    const data = response.data;
+    return response;
+  } catch (error) {
+    // throw handleApiError(error);
+    return error;
+  }
+};
+
 export const refreshAccessToken = async (payload: { refreshToken: string }) => {
   try {
     const response = await Bisatsfetch("/api/v1/user/refresh-token", {
@@ -231,7 +260,7 @@ export const PostPOA_KYC = async (payload: TPOA) => {
   const token = getToken();
   try {
     const response = await fetch(
-      `${BACKEND_URLS.BASE_URL}/api/v1/user/${payload.userId}/verify-utility-bill`,
+      `${BACKEND_URLS.BASE_URL}/api/v1/user/${payload.userId}${BACKEND_URLS.KYC.POST_PROOF_ADDRESS}`,
       {
         method: "PUT",
         headers: {
@@ -253,6 +282,10 @@ export const PostPOA_KYC = async (payload: TPOA) => {
     return error;
   }
 };
+
+
+
+
 
 export const PostIdentity_KYC = async (payload: TIdentity) => {
   const formData = new FormData();
@@ -352,3 +385,286 @@ export const UpdateUserName = async (payload: {
     return error;
   }
 };
+
+export const PostPhoneNumber_KYC = async (
+  payload: TRequestPhone
+) => {
+  try {
+    const response = await Bisatsfetch(
+      `/api/v1/user/${payload.userId}${BACKEND_URLS.AUTH.ADD_PHONE}`,
+      {
+        method: "POST",
+        body: JSON.stringify(payload),
+      }
+    );
+    const data = response.data;
+    console.log(data)
+    // dispatchWrapper({ type: GeneralTypes.SUCCESS, payload: data });
+
+    return response;
+  } catch (error) {
+    // throw handleApiError(error);
+    return error;
+  }
+};
+
+
+export const Verify_OTP_PhoneNumber_KYC = async (payload: TVerifyPhone) => {
+  try {
+    const response = await Bisatsfetch(
+      `/api/v1/user/${payload.userId}${BACKEND_URLS.AUTH.VERIFY_PHONE}`,
+      {
+        method: "POST",
+        body: JSON.stringify(payload),
+      }
+    );
+    const data = response.data;
+    console.log(data);
+    // dispatchWrapper({ type: GeneralTypes.SUCCESS, payload: data });
+
+    return response;
+  } catch (error) {
+    // throw handleApiError(error);
+    return error;
+  }
+};
+
+export const Resend_OTP_PhoneNumber_KYC = async (payload: string) => {
+  try {
+    const response = await Bisatsfetch(
+      `/api/v1/user/${payload}${BACKEND_URLS.AUTH.RESEND_PHONE_OTP}`,
+      {
+        method: "GET",
+      }
+    );
+    const data = response.data;
+    console.log(data);
+    return response;
+  } catch (error) {
+    // throw handleApiError(error);
+    return error;
+  }
+};
+
+export const PostBVN_KYC = async (payload: {bvn:string, userId:string}) => {
+  try {
+    const response = await Bisatsfetch(
+      `/api/v1/user/${payload.userId}${BACKEND_URLS.KYC.POST_BVN}`,
+      {
+        method: "PUT",
+        body: JSON.stringify(payload),
+      }
+    );
+    const data = response.data;
+    console.log(data);
+    // dispatchWrapper({ type: GeneralTypes.SUCCESS, payload: data });
+
+    return response;
+  } catch (error) {
+    // throw handleApiError(error);
+    return error;
+  }
+};
+
+export const Verify_BVN_KYC = async (payload: TVerifyPhone) => {
+  try {
+    const response = await Bisatsfetch(
+      `/api/v1/user/${payload.userId}${BACKEND_URLS.KYC.BVN_VERIFICATION}`,
+      {
+        method: "PUT",
+        body: JSON.stringify({code:payload.code}),
+      }
+    );
+    const data = response.data;
+    console.log(data);
+    // dispatchWrapper({ type: GeneralTypes.SUCCESS, payload: data });
+
+    return response;
+  } catch (error) {
+    // throw handleApiError(error);
+    return error;
+  }
+};
+
+
+export const Post_Proof_of_Wealth_KYC = async (payload: TPOA) => {
+  const formData = new FormData();
+  formData.append("image", payload.file);
+    const token = getToken();
+
+  try {
+    const response = await fetch(
+      `${BACKEND_URLS.BASE_URL}/api/v1/user/${payload.userId}${BACKEND_URLS.KYC.POST_SOURCE_WEALTH}`,
+      {
+        method: "PUT",
+        headers: {
+          // "Content-Type": "multipart/form-data",
+          Authorization: `${token}`,
+        },
+        body: formData,
+      }
+    );
+    const data = response.json();
+    console.log(data);
+
+    // dispatchWrapper({ type: GeneralTypes.SUCCESS, payload: data });
+
+    return data;
+  } catch (error) {
+    console.log(error);
+    // throw handleApiError(error);
+    return error;
+  }
+};
+
+export const Post_Proof_of_Profile_KYC = async (payload: TPOA) => {
+  const formData = new FormData();
+  formData.append("image", payload.file);
+    const token = getToken();
+
+  try {
+    const response = await fetch(
+      `${BACKEND_URLS.BASE_URL}/api/v1/user/${payload.userId}${BACKEND_URLS.KYC.POST_PROOF_PROFILE}`,
+      {
+        method: "PUT",
+        headers: {
+          // "Content-Type": "multipart/form-data",
+          Authorization: `${token}`,
+        },
+        body: formData,
+      }
+    );
+    const data = response.json();
+    console.log(data);
+
+    // dispatchWrapper({ type: GeneralTypes.SUCCESS, payload: data });
+
+    return data;
+  } catch (error) {
+    console.log(error);
+    // throw handleApiError(error);
+    return error;
+  }
+};
+
+
+
+export const Set_PIN = async (payload: TPinRequest) => {
+  try {
+    const response = await Bisatsfetch(
+      `/api/v1/user/${payload.userId}${BACKEND_URLS.AUTH.SET_PIN}`,
+      {
+        method: "POST",
+        body: JSON.stringify(payload),
+      }
+    );
+    const data = response.data;
+    console.log(data);
+
+    return response;
+  } catch (error) {
+    // throw handleApiError(error);
+    return error;
+  }
+};
+
+export const UPDATE_PIN = async (payload: TPinRequest) => {
+  try {
+    const response = await Bisatsfetch(
+      `/api/v1/user/${payload.userId}${BACKEND_URLS.AUTH.UPDATE_PIN}`,
+      {
+        method: "POST",
+        body: JSON.stringify({
+          oldPin:payload.oldPin,
+          newPin: payload.pin,
+          confirmPin: payload.confirmPin,
+        }),
+      }
+    );
+    const data = response.data;
+    console.log(data);
+
+    return response;
+  } catch (error) {
+    // throw handleApiError(error);
+    return error;
+  }
+};
+
+
+
+export const Generate2FA_QRCODE = async (payload:string) => {
+  try {
+    const response = await Bisatsfetch(`/api/v1/user/${payload}${BACKEND_URLS.AUTH.GENERATE_2FA_QRCODE}`, {
+      method: "GET",
+    });
+    const data = response;
+    if (response.status) {
+     
+      return data;
+    } 
+  } catch (error) {
+    logoutUser();
+    // throw handleApiError(error);
+    return error;
+  }
+};
+
+export const VerifyTwoFactorAuth = async (payload: TVerify2FARequest) => {
+  try {
+    const response = await Bisatsfetch(
+      `/api/v1/user/${payload.userId}${BACKEND_URLS.AUTH.VERIFY_2FA}`,
+      {
+        method: "POST",
+        body: JSON.stringify(payload),
+      }
+    );
+    const data = response;
+    return data;
+  } catch (error) {
+    // throw handleApiError(error);
+    return error;
+  }
+};
+
+
+export const UpdateTwoFactorAuth = async (payload: TUpdate2FAStatus) => {
+  try {
+    const response = await Bisatsfetch(
+      `/api/v1/user/${payload.userId}${
+        payload.enable
+          ? BACKEND_URLS.AUTH.ENABLE_2FA
+          : BACKEND_URLS.AUTH.DISABLE_2FA
+      }`,
+      {
+        method: "PUT",
+        body: JSON.stringify({ code: payload.code }),
+      }
+    );
+    const data = response;
+    return data;
+  } catch (error) {
+    // throw handleApiError(error);
+    return error;
+  }
+};
+
+// export const Verify_OTP_PhoneNumber_KYC = async (payload: TVerifyPhone) => {
+//   try {
+//     const response = await Bisatsfetch(
+//       `/api/v1/user/${payload.userId}${BACKEND_URLS.AUTH.VERIFY_PHONE}`,
+//       {
+//         method: "POST",
+//         body: JSON.stringify(payload),
+//       }
+//     );
+//     const data = response.data;
+//     console.log(data);
+//     // dispatchWrapper({ type: GeneralTypes.SUCCESS, payload: data });
+
+//     return response;
+//   } catch (error) {
+//     // throw handleApiError(error);
+//     return error;
+//   }
+// };
