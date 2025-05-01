@@ -25,7 +25,7 @@ const OrderHistory = () => {
     useEffect(() => {
         const fetchOrders = async () => {
             try {
-                const response = await Bisatsfetch(BACKEND_URLS.P2P.ADS.FETCH_ORDERS, {
+                const response = await Bisatsfetch(BACKEND_URLS.P2P.ADS?.FETCH_ORDERS, {
                     method: "GET",
                 });
                 console.log(response)
@@ -121,7 +121,7 @@ const OrderHistory = () => {
                     </thead>
                     <tbody>
                         {
-                            orders.map(order => (
+                            orders?.map(order => (
                                 <tr>
                                     <td className={`text-left px-4 py-4 font-semibold`}>
                                         <span style={order.type === "Buy" ? {color: "#DC2625"} : {color: "#17A34A"}}>
