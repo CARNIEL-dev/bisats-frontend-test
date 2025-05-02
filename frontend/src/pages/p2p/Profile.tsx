@@ -3,39 +3,46 @@ import { PrimaryButton } from "../../components/buttons/Buttons"
 import Header from "../../components/Header"
 import { UserState } from "../../redux/reducers/userSlice";
 import { useSelector } from "react-redux";
+import { AccountLevel, bisats_limit } from "../../utils/transaction_limits";
+import { useNavigate } from "react-router-dom";
+import { APP_ROUTES } from "../../constants/app_route";
 
 
 const Profile = () => {
     const userState: UserState = useSelector((state: any) => state.user);
     const user = userState.user
+    const account_level = user?.accountLevel ?? "level_1"
+    const navigate=useNavigate()
+
+    const limits = bisats_limit[account_level as AccountLevel]
     const kycStatus = [
         {
             type: "Email",
-            verified: true
+            verified: user?.emailVerified
         },
         {
             type: "Phone no",
-            verified: true
+            verified: user?.phoneNumberVerified
         },
         {
             type: "Govt ID",
-            verified: true
+            verified: userState?.kyc?.identificationVerified
         },
         {
             type: "BVN",
-            verified: true
+            verified: userState?.kyc?.bvnVerified
         },
         {
             type: "Proof of Address",
-            verified: true
+            verified: userState?.kyc?.utilityBillVerified
         },
         {
             type: "Source of wealth",
-            verified: true
+            verified: userState?.kyc?.sourceOfWealthVerified
         },
         {
             type: "Proof of Profile",
-            verified: true
+            verified: userState?.kyc?.proofOfProfileVerified
         },
 
     ]
@@ -43,11 +50,11 @@ const Profile = () => {
     const Limits = [
         {
             limit: "Daily Fiat Withdrawal Limit",
-            amount: "10,000,000 NGN"
+            amount: `${limits?.daily_withdrawal_limit_fiat} NGN`
         },
         {
             limit: "Daily Crypto Withdrawal Limit",
-            amount: "1,000,000 USD"
+            amount: `${limits?.daily_withdrawal_limit_crypto} USD`
         },
         {
             limit: "Sell Ad Limit",
@@ -123,9 +130,12 @@ const Profile = () => {
                 }}>
                     <div className="flex items-center text-[18px]  leading-[32px] font-[600] mb-3">
                         <h1 className="text-[#515B6E] ">Account Tier:</h1>
-                        <h1 className="text-[#17A34A] mx-2">Level 1</h1>
-                        <button type='submit' className={`h-[24px]  px-3 rounded-[6px] bg-[#F5BB00] text-[#0A0E12] text-[12px] leading-[24px] font-[600] text-center  shadow-[0_0_0.8px_#000] `}>Upgrade</button>
-
+                        <h1 className="text-[#17A34A] mx-2">Level {!user?.accountLevel ? "N/A" : user?.accountLevel === "level_1" ? 1 : user?.accountLevel === "level_2" ? 2 : 3}</h1>
+                        {
+                            user?.accountLevel !== "level_3" &&
+                        
+                            <button type='submit' className={`h-[24px]  px-3 rounded-[6px] bg-[#F5BB00] text-[#0A0E12] text-[12px] leading-[24px] font-[600] text-center  shadow-[0_0_0.8px_#000] `} onClick={() => { !user?.accountLevel ? navigate(APP_ROUTES.KYC.PHONEVERIFICATION) : user?.accountLevel === "level_1" ? navigate(APP_ROUTES?.KYC.BVNVERIFICATION) : navigate(APP_ROUTES.KYC.LEVEL3VERIFICATION) }}>Upgrade</button>
+                        }
                     </div>
 
                     <div className="flex flex-wrap  items-center">
