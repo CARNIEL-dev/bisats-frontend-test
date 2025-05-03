@@ -1,34 +1,70 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 import { PrimaryButton } from "../../components/buttons/Buttons";
 import KycManager from "../kyc/KYCManager";
 import { APP_ROUTES } from "../../constants/app_route";
 import { ACTIONS } from "../../utils/transaction_limits";
+import { WalletState } from "../../redux/reducers/walletSlice";
+import { GetWallet } from "../../redux/actions/walletActions";
+
+interface RootState {
+	wallet: WalletState;
+}
 
 const Balance: React.FC = () => {
 	const navigate = useNavigate();
+	const dispatch = useDispatch();
 	const [showBalance, setShowBalance] = useState(true);
 	const [currency, setCurrency] = useState<"USD" | "NGN">("USD");
 	const [showCurrencyDropdown, setShowCurrencyDropdown] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
+	const [error, setError] = useState<string | null>(null);
+
+	const walletData = useSelector((state: RootState) => state.wallet.wallet);
 
 	const conversionRates = {
 		USD: 1,
 		NGN: 1500,
 	};
 
-	// Balance amounts
-	const balanceUSD = 100000.05;
-	const dailyGainUSD = 100.45;
-	const percentageGain = 0.11;
+	useEffect(() => {
+		const fetchWalletData = async () => {
+			setIsLoading(true);
+			try {
+				await GetWallet();
+				setIsLoading(false);
+			} catch (err) {
+				console.error("Error fetching wallet:", err);
+				setError("Failed to load wallet data");
+				setIsLoading(false);
+			}
+		};
+
+		fetchWalletData();
+	}, []);
+
+	const getWalletBalance = () => {
+		return walletData?.balance || 0;
+	};
+
+	const getDailyGain = () => {
+		return walletData?.dailyGain || 0;
+	};
+
+	const getPercentageGain = () => {
+		return walletData?.percentageGain || 0;
+	};
 
 	const formatBalance = () => {
+		const balance = getWalletBalance();
 		if (currency === "USD") {
-			return balanceUSD.toLocaleString("en-US", {
+			return balance.toLocaleString("en-US", {
 				minimumFractionDigits: 2,
 				maximumFractionDigits: 2,
 			});
 		} else {
-			const balanceNGN = balanceUSD * conversionRates.NGN;
+			const balanceNGN = balance * conversionRates.NGN;
 			return balanceNGN.toLocaleString("en-US", {
 				minimumFractionDigits: 2,
 				maximumFractionDigits: 2,
@@ -37,10 +73,11 @@ const Balance: React.FC = () => {
 	};
 
 	const formatDailyGain = () => {
+		const dailyGain = getDailyGain();
 		if (currency === "USD") {
-			return `+$${dailyGainUSD.toFixed(2)}`;
+			return `+$${dailyGain.toFixed(2)}`;
 		} else {
-			const gainNGN = dailyGainUSD * conversionRates.NGN;
+			const gainNGN = dailyGain * conversionRates.NGN;
 			return `+₦${gainNGN.toLocaleString("en-US", {
 				minimumFractionDigits: 2,
 				maximumFractionDigits: 2,
@@ -92,7 +129,17 @@ const Balance: React.FC = () => {
 			</div>
 			<div className="m-[2px]">
 				<p style={{ color: "#0A0E12" }}>
-					{showBalance ? (
+					{isLoading ? (
+						<span style={{ fontSize: "22px", fontWeight: 400 }}>
+							Loading...
+						</span>
+					) : error ? (
+						<span
+							style={{ fontSize: "18px", fontWeight: 400, color: "#ff6b6b" }}
+						>
+							Error loading balance
+						</span>
+					) : showBalance ? (
 						<>
 							<span
 								style={{ fontSize: "34px", fontWeight: 600 }}
@@ -156,7 +203,11 @@ const Balance: React.FC = () => {
 			</div>
 			<div>
 				<p style={{ color: "#515B6E" }} className="mb-[25px]">
-					{showBalance ? (
+					{isLoading ? (
+						<span style={{ fontSize: "12px" }}>Loading...</span>
+					) : error ? (
+						<span style={{ fontSize: "12px" }}></span>
+					) : showBalance ? (
 						<>
 							<span style={{ fontSize: "12px", fontWeight: 600 }}>
 								{formatDailyGain()}
@@ -165,7 +216,7 @@ const Balance: React.FC = () => {
 								style={{ fontSize: "12px", fontWeight: 400 }}
 								className="ml-[4px]"
 							>
-								{percentageGain}%
+								{getPercentageGain()}%
 							</span>
 						</>
 					) : (
@@ -181,7 +232,7 @@ const Balance: React.FC = () => {
 					{(validateAndExecute) => (
 						<PrimaryButton
 							text={"Deposit"}
-							loading={false}
+							loading={isLoading}
 							css="w-full"
 							onClick={validateAndExecute}
 						/>
