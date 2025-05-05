@@ -6,29 +6,33 @@ import { PrimaryButton } from "../../../components/buttons/Buttons";
 import { AdsProps, } from "./Ad";
 import Toast from "../../../components/Toast";
 import DateInput from "../../../components/Inputs/DateInput";
+import DateTimePicker from "../../../components/Inputs/DateTimePicker";
+import TimePicker from "../../../components/Inputs/TimePicker";
+import { useState } from "react";
 // import DateInput from "../../../components/Inputs/DateInput";
 
 const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage }) => {
+    const [time, setTime] = useState(''); 
     const loading = false;
     const type = [
         { value: "Buy", label: "Buy" },
         { value: "Sell", label: "Sell" }
     ];
 
-    const handleNextStage = async () => {
+    const handleNextStage = async (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
         try {
             let errors = await formik.validateForm();
             console.log('errors', errors)
-            const requiredFields = ["type", "asset", "amount", "minimumLimit", "maximumLimit", "expiryDate"];
+            const requiredFields = ["type", "asset", "amount", "minimumLimit", "maximumLimit", "expiryDate", "expiryTime"];
             let updatedErrors = Object.keys(errors).filter(field => {
-                console.log(field);
                 return requiredFields.includes(field);
             });
-            console.log('errors', errors)
+            console.log('errors', errors,updatedErrors)
             if (updatedErrors.length === 0) {
                 setStage("pricing");
             } else {
-                Toast.error(`${updatedErrors[0]}`, "ERROR" );                
+                Toast.error(`Please fill all required fields`, "ERROR" );                
                 formik.setTouched(requiredFields.reduce((acc, field) => ({ ...acc, [field]: true }), {}));
             }
         } catch (err) {
@@ -122,22 +126,42 @@ const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage }) => {
                 </p>
             </div>
 
-            <div className="mb-4">
-                <div className="flex justify-between mb-[1px]">
+            <div className="mb-4 w-full flex items-center">
+                <div className="flex justify-between mb-[1px] w-1/2">
                 <DateInput 
                         name="expiryDate"
                         label="Expiry Date"
                         error={formik.errors.expiryDate}
+                        touched={formik.errors.expiryDate}
                         handleChange={(e) => {
                             const value = e.target.value;
-                            if (/^\d*$/.test(value)) {
-                                formik.setFieldValue('expiryDate', value === '' ? 0 : Number(value));
-                            }
+                            
+                                formik.setFieldValue('expiryDate', value);
+                            
                         } } title="expiryDate" />
-                    <p className="mb-3 text-[#515B6E] font-semibold text-sm">Expiry Date</p>
+                    {/* <p className="mb-3 text-[#515B6E] font-semibold text-sm">Expiry Date</p> */}
                 </div>
+                <div className="flex justify-between mb-[1px] w-1/2 ml-3">
+
+                <TimePicker
+                    label="Expiry Time"
+                    error={formik.errors.expiryTime}
+                    touched={formik.errors.expiryTime}
+                    handleChange={(value) => { formik.setFieldValue('expiryTime', value.target.value) }}
+                    title={"expiryTime"}
+                    name={"expiryTime"} />
+</div>
+                
             </div>
-            <PrimaryButton css="w-full disabled" text="Continue" loading={loading} onClick={handleNextStage} />
+            <PrimaryButton
+                css={`w-full `}
+                // disabled={formik.errors ? true : false}
+                text="Continue"
+                type="button"
+                loading={loading}
+                onClick={(e) => handleNextStage(e)}
+ />
+            
         </>
     )
 }

@@ -91,7 +91,7 @@ const MyAds = () => {
                             </thead>
                             <tbody>
                                 {
-                                    ads.map(ad => (
+                                    ads?.map(ad => (
                                         <tr>
                                             {/* <td className={(colIndex + 1) > fields.length / 2 ? 'text-right font-semibold px-4 py-3' : 'text-left px-4 py-2'}> */}
                                             <td className='text-left px-4 py-2 font-semibold'>

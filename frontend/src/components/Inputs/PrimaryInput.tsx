@@ -9,7 +9,8 @@ interface TInput extends InputHTMLAttributes<HTMLInputElement> {
     touched: boolean | undefined,
     info?:string
 }
-const PrimaryInput: React.FC<TInput> = ({ css, label, error, touched,info, ...props }) => {
+const PrimaryInput: React.FC<TInput> = ({ css, label, error, touched, info, ...props }) => {
+
     return (
         <div className='w-full h-full'>
             <div className="mb-2">

@@ -12,6 +12,7 @@ import CreateAdPricing from "./AdPricing"
 import AdReview from "./AdReview"
 import { BACKEND_URLS } from "../../../utils/backendUrls"
 import Bisatsfetch from "../../../redux/fetchWrapper"
+import { combineDateAndTimeToISO } from "../../../utils/dateTimeConverter"
 
 export type TNetwork = {
     label: string,
@@ -30,7 +31,8 @@ export interface IAdRequest {
     maximumLimit: number,
     priceUpperLimit: number, 
     priceLowerLimit: number,
-    expiryDate: string 
+    expiryDate: string,
+    expiryTime: string ,
     agree?: boolean
 }
 
@@ -47,6 +49,7 @@ const initialAd: IAdRequest = {
     priceUpperLimit: 0, 
     priceLowerLimit: 0,
     expiryDate: "",
+    expiryTime: "",
     agree: false
 }
 
@@ -67,19 +70,30 @@ const AdSchema = Yup.object().shape({
     price: Yup.number()
         .min(1, 'Price must be greater than 0')
         .required('Price is required'),
-    priceLowerLimits: Yup.number()
-            .min(1, 'Lower limit must be greater than 0')
-            .required('Lower limit is required'),
-    priceUpperLimits:Yup.number()
-        .min(Yup.ref('min'), 'Upper limit must be greater than lower limit')
-        .required('Upper limit is required'),
+    minimumLimit: Yup.number()
+        .min(1, 'Minimum must be greater than 0')
+        .when('amount', (amount, schema) =>
+            schema.max(Number(amount), 'Minimum must be less than or equal to amount')
+        )
+        .required('Minimum is required'),
+
+    maximumLimit: Yup.number()
+        .when(['minimumLimit', 'amount'], ([min, amount], schema) =>
+            schema
+                .min(Number(min) + 1, 'Maximum limit must be greater than minimum limit')
+                .max(Number(amount), 'Maximum must be less than or equal to amount')
+        )
+        .required('Maximum limit is required'),
+  
     priceLowerLimit: Yup.number()
         .min(1, 'Minimum limit must be greater than 0')
         .required('Minimum limit is required'),
     priceUpperLimit: Yup.number()
         .min(Yup.ref('min'), 'Maximum limit must be greater than minimum limit')
         .required('Maximum limit is required'),
-    expiryDate: Yup.date()
+    expiryDate: Yup.date().required('Expiry date is required'),
+    expiryTime: Yup.string().required('Expiry time is required')
+
 });
 
 const CreateAd = () => {
@@ -91,20 +105,24 @@ const CreateAd = () => {
         initialValues: { ...initialAd, agree: false  },
         validationSchema: AdSchema,
         onSubmit: async (values) => {
+            const expiryTimestamp = combineDateAndTimeToISO(values.expiryDate, values.expiryTime);
+
             setIsLoading(true);
             console.log(values);
             try {
                 const payload = {
                     ...values,
                     userId: user?.user?.userId,
+                    expiryDate: expiryTimestamp
+
                 };
                 console.log(payload)
-                const response = await Bisatsfetch(BACKEND_URLS.P2P.ADS.CREATE, {
-                    method: "POST",
-                    body: JSON.stringify(payload),
-                  });
-                console.log(response)
-                Toast.success(response.message, "Success");
+                // const response = await Bisatsfetch(BACKEND_URLS.P2P.ADS.CREATE, {
+                //     method: "POST",
+                //     body: JSON.stringify(payload),
+                //   });
+                // console.log(response)
+                // Toast.success(response.message, "Success");
             } catch (error) {
                 Toast.error("Failed to create ad", "Error");
             } finally {
@@ -127,7 +145,7 @@ const CreateAd = () => {
                         ) : (
                             <>
                                 <AdReview formik={formik}  />
-                                <PrimaryButton css="w-full disabled" type="button" text="Continue" loading={isLoading} onClick={() => formik.handleSubmit()} />
+                                <PrimaryButton css="w-full disabled" type="button" text="Continue" loading={isLoading} onClick={() => console.log(formik.values)} />
                             </>
                         )
                     )
