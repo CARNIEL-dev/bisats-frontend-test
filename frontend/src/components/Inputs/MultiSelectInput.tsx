@@ -10,12 +10,11 @@ interface IMultiSelectDropDownProps {
     touched: boolean | undefined,
     label: string;
     scrollHeight?: string;
-   
     handleChange: (prop: string) => void
 
 }
 
-export const MultiSelectDropDown = ({ parentId, title, choices, label, error, touched, handleChange,scrollHeight }: IMultiSelectDropDownProps) => {
+export const MultiSelectDropDown = ({ parentId, title, choices, label, error, touched, handleChange,scrollHeight,...props }: IMultiSelectDropDownProps) => {
     const [isDropdownOpen, setDropdownOpen] = useState(false);
     const [selected, setSelected] = useState<string|React.ReactNode>("");
 

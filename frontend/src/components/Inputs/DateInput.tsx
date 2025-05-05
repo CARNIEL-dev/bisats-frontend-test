@@ -7,7 +7,7 @@ interface TDateType {
     label: string;
     name: string;
     error?: string | undefined | null,
-    touched?: boolean | undefined
+    touched?: boolean | string| undefined
     handleChange: React.ChangeEventHandler<HTMLInputElement>
 
 }
@@ -28,9 +28,9 @@ const DateInput = ({ parentId, title, label, touched, error, handleChange, name,
         setSelectedDate(e.target.value); // Update the state with the selected date
         handleChange(e)
     };
-
+console.log(error,touched)
     return (
-        <div>
+        <div className="w-full cursor-pointer">
             <div className="w-full relative cursor-pointer">
                 {label && (
                     <div className="mb-2">
@@ -55,7 +55,7 @@ const DateInput = ({ parentId, title, label, touched, error, handleChange, name,
                         onClick={openCalendar}
                     >
                         <span className="text-[#858FA5] text-[14px] leading-[24px]">
-                            {selectedDate || title || "Select date"}
+                            {selectedDate  || "Select date"}
                         </span>
                         <div
                             className="ml-auto cursor-pointer flex items-center"
@@ -74,12 +74,11 @@ const DateInput = ({ parentId, title, label, touched, error, handleChange, name,
                                 <path d="M6.91209 11.4167H6.91957" stroke="#606C82" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                                 <path d="M6.91209 13.9167H6.91957" stroke="#606C82" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
-
-
                         </div>
                     </div>
                 </div>
             </div>
+            {/* {error && touched ? <span className="text-[#EF4444] text-[12px]">Please select a date</span>:<></>} */}
         </div>
     );
 };
