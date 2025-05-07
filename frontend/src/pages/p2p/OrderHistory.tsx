@@ -61,7 +61,6 @@ const OrderHistory = () => {
 				) {
 					setOrders(response.data);
 				} else {
-					console.log("No orders found or invalid response format");
 					setOrders([]);
 				}
 			} catch (error) {
