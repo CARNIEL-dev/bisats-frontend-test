@@ -60,9 +60,7 @@ const OrderHistory = () => {
 					Array.isArray(response.data)
 				) {
 					setOrders(response.data);
-					console.log("Orders fetched successfully:", response.data);
 				} else {
-					console.log("No orders found or invalid response format");
 					setOrders([]);
 				}
 			} catch (error) {
