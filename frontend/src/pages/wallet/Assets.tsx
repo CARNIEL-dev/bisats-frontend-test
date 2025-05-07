@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Empty from '../../components/Empty';
 import { WalletState } from '../../redux/reducers/walletSlice';
 import { useSelector } from 'react-redux';
 import { TWallet } from '../../types/wallet';
 import { GetLivePrice } from '../../redux/actions/walletActions';
+import { assets } from '../../data';
 
 
 
@@ -25,6 +26,25 @@ interface TableProps {
     data: Array<any>;
 }
 
+export type PriceData = {
+    xNGN: number;
+    BTC: number;
+    SOL: number;
+    ETH: number;
+    USDT: number;
+    BTC_TEST: number;
+    SOL_TEST: number;
+    ETH_TEST5: number;
+    USDT_ETH_TEST5_KDZ7: number;
+    TRX_TEST: number;
+    USDT_TRX_TEST: number;
+    USDT_SOL_TEST: number
+    USDT_TRC20: number;
+    USDT_SOL: number;
+    TRX: number;
+    USDT_TRX: number;
+
+};
 const Table: React.FC<TableProps> = ({data}) => {
     return (
         <table className="table-auto w-full" style={{color: "#515B6E", fontSize: "14px"}}>
@@ -65,39 +85,46 @@ const Table: React.FC<TableProps> = ({data}) => {
 }
 
 const Assets: React.FC = () => {
+    const [tokenLivePrices,setTokenLivePrices]= useState<PriceData>()
+    useEffect(() => {
+        const fetchPrices = async () => {
+            const prices = await GetLivePrice();
+            setTokenLivePrices(prices);
+        };
 
+        fetchPrices();
+    }, []);
     const wallet: TWallet = useSelector((state: any) => state.wallet).wallet
-    const tokenLivePrices = GetLivePrice()
     const defaultAssets = [
         {
             Asset: 'BTC',
             name: 'Bitcoin',
             Balance: wallet?.BTC ?? 0,
-            Rate: tokenLivePrices.BTC
+            Rate:  tokenLivePrices?.BTC??0
         },
         {
             Asset: 'Eth',
             name: 'Ethereum',
             Balance: wallet?.ETH ?? 0,
-            Rate: tokenLivePrices.ETH
+            Rate: tokenLivePrices?.ETH??0
         },
         {
             Asset: 'SOL',
             name: 'Solana',
             Balance: wallet?.SOL ?? 0,
-            Rate: tokenLivePrices.SOL
+            Rate: tokenLivePrices?.SOL??0
         },
         {
             Asset: 'USDT',
             name: 'Tether USD',
             Balance: wallet?.USDT ?? 0,
-            Rate: tokenLivePrices.USDT
+            Rate: tokenLivePrices?.USDT??0
         },
         {
             Asset: 'xNGN',
             name: 'Naira on Bisats',
             Balance: wallet?.xNGN ?? 0,
-            Rate: tokenLivePrices.xNGN
+            Rate: tokenLivePrices?.xNGN??0
         },
     ]
 

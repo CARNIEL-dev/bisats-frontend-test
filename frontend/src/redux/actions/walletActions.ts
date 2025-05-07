@@ -2,7 +2,7 @@
 
 import { useSelector } from "react-redux";
 import { getToken, getUser } from "../../helpers";
-import { T2FARequest, TDeleteWithdrawalRequest, TTopUpNGN, TWithdrawalBankAccount, TWithdrawalRequest } from "../../types/wallet";
+import { T2FARequest, TAddSearchRequest, TCreateAdsRequest, TDeleteWithdrawalRequest, TTopUpNGN, TWithdrawalBankAccount, TWithdrawalRequest } from "../../types/wallet";
 import { BACKEND_URLS } from "../../utils/backendUrls";
 import dispatchWrapper from "../../utils/dispatchWrapper";
 import Bisatsfetch from "../fetchWrapper";
@@ -84,16 +84,55 @@ export const ConfirmDeposit = async (payload: {
     return error;
   }
 };
-export const GetLivePrice = () => {
-  //dummy data crypto/USDT
-  return {
-    xNGN: 1500,
-    BTC: 96336,
-    SOL: 171.44,
-    ETH: 2808,
-    USDT: 1.002,
-  };
+export const GetLivePrice = async () => {
+  const endpoint =
+    "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,tether&vs_currencies=usd,ngn";
+
+  try {
+    const response = await fetch(endpoint);
+    const data = await response.json();
+
+    return {
+      xNGN: data.tether.ngn, // NGN price of USDT
+      BTC: data.bitcoin.usd, // USD price of Bitcoin
+      SOL: data.solana.usd, // USD price of Solana
+      ETH: data.ethereum.usd, // USD price of Ethereum
+      USDT: data.tether.usd, // USD price of Tether (USDT)
+       BTC_TEST: 0,
+    SOL_TEST: 0,
+    ETH_TEST5: 0,
+    USDT_ETH_TEST5_KDZ7: 0,
+    TRX_TEST: 0,
+    USDT_TRX_TEST: 0,
+    USDT_SOL_TEST: 0,
+    USDT_TRC20: 0,
+    USDT_SOL: 0,
+    TRX: 0,
+    USDT_TRX: 0,
+    };
+  } catch (error) {
+    console.error("Failed to fetch live prices:", error);
+    return {
+      xNGN: 1500,
+      BTC: 96336,
+      SOL: 171.44,
+      ETH: 2808,
+      USDT: 1.002,
+      BTC_TEST: 0,
+      SOL_TEST: 0,
+      ETH_TEST5: 0,
+      USDT_ETH_TEST5_KDZ7: 0,
+      TRX_TEST: 0,
+      USDT_TRX_TEST: 0,
+      USDT_SOL_TEST: 0,
+      USDT_TRC20: 0,
+      USDT_SOL: 0,
+      TRX: 0,
+      USDT_TRX: 0,
+    };
+  }
 };
+
 
 export const TopUpNGNBalance = async (payload: TTopUpNGN) => {
   try {
@@ -243,6 +282,70 @@ export const TwoFactorAuth = async (payload: T2FARequest) => {
     const data = response;
     return data;
   } catch (error) {
+    // throw handleApiError(error);
+    return error;
+  }
+};
+
+
+
+export const CreateAds = async (
+  payload: TCreateAdsRequest
+) => {
+  try {
+    const response = await Bisatsfetch(
+      `/api/v1/user/${payload.userId}${BACKEND_URLS.P2P.ADS.CREATE}`,
+      {
+        method: "POST",
+        body: JSON.stringify(payload),
+      }
+    );
+    const data = response;
+    console.log(data);
+    return data;
+  } catch (error) {
+    // throw handleApiError(error);
+    return error;
+  }
+};
+
+
+export const GetExpressAds = async (payload: TAddSearchRequest) => {
+  try {
+    const response = await Bisatsfetch(
+      `/api/v1/user/${payload.userId}${BACKEND_URLS?.P2P.ADS.EXPRESS_ADS}?asset=${payload.asset}&amount=${payload.amount}&type=${payload.type==="buy"?"sell":"buy"}&limit=1&skip=0`,
+      {
+        method: "GET",
+      }
+    );
+    const data = response.data;
+    if (response.status) {
+      return data;
+    } else {
+      return data
+    }
+  } catch (error) {
+ 
+    return error;
+  }
+};
+
+export const GetSearchAds= async (userId: string) => {
+  try {
+    const response = await Bisatsfetch(
+      `/api/v1/user/${userId}${BACKEND_URLS?.WALLET?.LIST_BANKS}`,
+      {
+        method: "GET",
+      }
+    );
+    const data = response.data;
+    if (response.status) {
+      return data;
+    } else {
+      // logoutUser();
+    }
+  } catch (error) {
+    // logoutUser();
     // throw handleApiError(error);
     return error;
   }

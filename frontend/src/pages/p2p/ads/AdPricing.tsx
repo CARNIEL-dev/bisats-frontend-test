@@ -1,20 +1,23 @@
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { TriangleAlert } from "lucide-react"
 
 import { MultiSelectDropDown } from "../../../components/Inputs/MultiSelectInput"
 import PrimaryInput from "../../../components/Inputs/PrimaryInput"
 import { PrimaryButton } from "../../../components/buttons/Buttons";
 import { AdsProps } from "./Ad";
+import Toast from "../../../components/Toast";
 
-const CreateAdPricing: React.FC<AdsProps> = ({ formik, setStage }) => {
+const CreateAdPricing: React.FC<AdsProps> = ({ formik, setStage,liveRate }) => {
     const [pricingType, setPricingType] = useState("Static")
+    const [margin, setMargin] = useState(0)
+
     const loading = false;
 
     const currency = [
         { value: "NGN", label: "NGN" },
-        { value: "USD", label: "USD" },
-        { value: "GBP", label: "GBP" },
-        { value: "CAD", label: "CAD" },
+        // { value: "USD", label: "USD" },
+        // { value: "GBP", label: "GBP" },
+        // { value: "CAD", label: "CAD" },
     ];
 
     const pricingTypes = [
@@ -25,17 +28,25 @@ const CreateAdPricing: React.FC<AdsProps> = ({ formik, setStage }) => {
     const handleNextStage = async () => {
         try {
             let errors = await formik.validateForm();
-            const requiredFields = ["pricingType", "price", "priceLimits.lower", "priceLimits.upper"];
+            const requiredFields = pricingType.toLowerCase() === "static" ? ["pricingType", "price", "priceLowerLimit", "priceUpperLimit"] : ["pricingType", "priceLowerLimit", "priceUpperLimit", "priceMargin"]
             let updatedErrors = Object.keys(errors).filter(field => requiredFields.includes(field));
             if (updatedErrors.length === 0) {
                 setStage("review");
             } else {
+                Toast.error(`Please fill all required fields`, "ERROR");                
                 formik.setTouched(requiredFields.reduce((acc, field) => ({ ...acc, [field]: true }), {}));
             }
         } catch (err) {
             console.error("Validation failed", err);
         }
     };
+
+    const CalculateDynamicPrice = useMemo(() => {
+        const price =( (liveRate?.xNGN ?? 0) + (margin * (liveRate?.xNGN ?? 0))).toFixed(2)
+        // formik.setFieldValue("price",price)
+        return price
+        
+    },[formik, liveRate?.xNGN, margin])
 
     return (
         <>
@@ -64,11 +75,12 @@ const CreateAdPricing: React.FC<AdsProps> = ({ formik, setStage }) => {
                 <div className="w-[90%] mr-1">
                     <PrimaryInput
                         css="w-full p-2.5"
-                        label={pricingType === "Static" ? "Price" : "Market Price"}
-                        placeholder="0.0"
+                        label={pricingType === "Static" ? "Price" : "Current Market Price"}
+                        disabled={pricingType === "Static" ? false : true}
+                        placeholder="0.00 xNGN"
                         name="price"
                         error={formik.errors.price}
-                        value={formik.values.price}
+                        value={pricingType === "Static" ?formik.values.price:liveRate?.xNGN}
                         touched={formik.touched.price}
                         onChange={(e) => {
                             const value = e.target.value;
@@ -97,37 +109,54 @@ const CreateAdPricing: React.FC<AdsProps> = ({ formik, setStage }) => {
                             <PrimaryInput
                                 css="w-full p-2.5"
                                 label="Margin relative to the market price (%)"
-                                placeholder="0.5"
+                                placeholder="%"
                                 name="margin"
+                                type="number"
                                 error={formik.errors.priceMargin}
                                 value={formik.values.priceMargin}
                                 touched={formik.touched.priceMargin}
                                 onChange={(e) => {
                                     const value = e.target.value;
-                                    if (/^\d*$/.test(value)) {
+
+                                    if (/^\d*\.?\d*$/.test(value)) {
                                         formik.setFieldValue('priceMargin', value === '' ? 0 : Number(value));
+                                        setMargin(Number(value))
                                     }
+
+                                    // if (/^\d*\.?\d*$/.test(value)) {
+                                    //     formik.setFieldValue('priceMargin', value === '' ? 0 : Number(value));
+                                    //     setMargin(Number(value))
+                                    // }
                                 }}
                             />
                         </div>
+                          <p>
+                    <TriangleAlert color="#F59E0C" size={12} className="inline mr-1" />
+                    <span className="text-[#515B6E] text-xs font-light">
+                        This price is subject to change during fulfilment of this order due to current market conditions
+                    </span>
+                </p>
+                        {/* <p className="text-[#515B6E] text-xs font-light mb-4">Your current price: <span className="text-[#17A34A]">1 USDT ≈ {CalculateDynamicPrice} xNGN</span></p> */}
+
                     </>
                 ) : <></>
             }
             
-            <p className="text-[#515B6E] text-xs font-light mb-4">Market Price: 1 USDT ≈ 1,661.66166 xNGN</p>
+            <p className="text-[#515B6E] text-xs font-light mb-4">Market Price: 1 USDT ≈ { liveRate?.xNGN} xNGN</p>
 
             <div className="mb-4">
                 <div className="flex justify-between mb-[1px]">
                     <PrimaryInput
                         css="w-[98%] p-2.5 mr-1"
                         label="Lower Price Limit"
-                        placeholder="0"
+                        placeholder="0.00 xNGN"
                         name="priceLowerLimit"
                         error={formik.errors.priceLowerLimit}
                         value={formik.values.priceLowerLimit}
                         touched={formik.touched.priceLowerLimit}
                         onChange={(e) => {
                             const value = e.target.value;
+
                             if (/^\d*$/.test(value)) {
                                 formik.setFieldValue('priceLowerLimit', value === '' ? 0 : Number(value));
                             }
@@ -137,6 +166,7 @@ const CreateAdPricing: React.FC<AdsProps> = ({ formik, setStage }) => {
                         css="w-[100%] p-2.5"
                         label="Upper price Limit"
                         name="priceUpperLimit"
+                        placeholder="0.00 xNGN"
                         error={formik.errors.priceUpperLimit}
                         value={formik.values.priceUpperLimit}
                         touched={formik.touched.priceUpperLimit}
@@ -155,7 +185,7 @@ const CreateAdPricing: React.FC<AdsProps> = ({ formik, setStage }) => {
                     </span>
                 </p>
             </div>
-            <PrimaryButton css="w-full disabled" text="Continue" loading={loading} onClick={handleNextStage} />
+            <PrimaryButton css="w-full disabled" type="button" text="Continue" loading={loading} onClick={handleNextStage} />
         </>
     );
 };

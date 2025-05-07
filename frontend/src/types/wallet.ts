@@ -79,13 +79,35 @@ export type TDepositBreakDowns = {
   bankAccounts: TbankAccount[];
 };
 
-export type T2FARequest = {
-  
+export type TCreateAdsRequest = {
+  userId: string;
+  asset: string;
+  type: string;
+  amount: number;
+  minimumLimit: number;
+  maximumLimit: number;
+  expiryDate: string;
+  priceType: string;
+  price: number;
+  priceMargin: number;
+  priceUpperLimit: number;
+  priceLowerLimit: number;
+};
+
+export type T2FARequest = { 
     "userId": string, 
     "code": string,
     "pin": string
-
 }
+
+export type TAddSearchRequest = {
+  userId: string;
+  asset: string;
+  type: string;
+  amount: string;
+  limit?: string;
+  skip?:string
+};
 
 export enum DepositStatus {
   CANCEL = "cancel",

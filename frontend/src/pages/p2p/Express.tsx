@@ -1,5 +1,4 @@
 import ExpressSwap from "./components/ExpressSwap"
-import { typeofSwam } from "./components/Swap"
 
 const Express = () => {
     return (

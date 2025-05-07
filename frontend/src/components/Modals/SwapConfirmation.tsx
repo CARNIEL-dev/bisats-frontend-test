@@ -38,7 +38,7 @@ const SwapConfirmation: React.FC<Props> = ({
 				<div>
 					<h1
 						className={` ${
-							type === typeofSwam.Buy ? "text-[#17A34A]" : "text-[#DC2625]"
+							type === (typeofSwam.Buy) ? "text-[#17A34A]" : "text-[#DC2625]"
 						} text-[22px] leading-[32px] font-[600] text-left mt-5`}
 					>
 						{type === typeofSwam.Buy ? "Buy" : "Sell"} {token}
@@ -77,7 +77,7 @@ const SwapConfirmation: React.FC<Props> = ({
 					</div>
 
 					{error && (
-						<div className="text-red-500 text-[14px] font-[400] mb-4 p-2 bg-red-50 rounded-lg">
+						<div className="text-[#FFCCCB] text-[14px] font-[400] mb-4 p-2 bg-red-50 rounded-lg">
 							{error}
 						</div>
 					)}
