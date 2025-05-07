@@ -104,7 +104,7 @@ const Balance: React.FC = () => {
 
 	return (
 		<div
-			className="border-[1px] h-[220px] w-[48.5%] py-[24px] px-[34px]"
+			className="border-[1px] h-full md:h-[220px] w-[100%] py-3 px-3 md:py-[24px] md:px-[34px]"
 			style={{ borderRadius: "12px", borderColor: "#D6DAE1" }}
 		>
 			<div className="m-[2px]">
@@ -142,20 +142,25 @@ const Balance: React.FC = () => {
 					) : showBalance ? (
 						<>
 							<span
-								style={{ fontSize: "34px", fontWeight: 600 }}
-								className="mr-[0.5px]"
+								style={{ fontWeight: 600 }}
+								className="mr-[0.5px] text-[28px] md:text-[34px]"
 							>
 								{formatBalance().split(".")[0]}
 							</span>
 							<span
-								style={{ fontSize: "22px", fontWeight: 600 }}
-								className="mr-[4px]"
+								style={{ fontWeight: 600 }}
+								className="mr-[4px] text-[18px] md:text-[22px]"
 							>
 								.{formatBalance().split(".")[1]}
 							</span>
 						</>
 					) : (
-						<span style={{ fontSize: "34px", fontWeight: 600 }}>***.**</span>
+						<span
+							style={{ fontWeight: 600 }}
+							className="text-[18px] md:text-[22px]"
+						>
+							***.**
+						</span>
 					)}
 					<span
 						className="cursor-pointer relative"
@@ -202,7 +207,7 @@ const Balance: React.FC = () => {
 				</p>
 			</div>
 			<div>
-				<p style={{ color: "#515B6E" }} className="mb-[25px]">
+				<p style={{ color: "#515B6E" }} className="mb-3 md:mb-[25px]">
 					{isLoading ? (
 						<span style={{ fontSize: "12px" }}>Loading...</span>
 					) : error ? (

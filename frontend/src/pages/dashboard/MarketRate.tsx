@@ -149,7 +149,7 @@ const MarketRate: React.FC = () => {
 
 	return (
 		<div
-			className="border-[1px] h-[220px] w-[48.5%] p-[16px]"
+			className="border-[1px] sm:h-[220px] w-[100%] p-3 md:p-[16px]"
 			style={{ borderRadius: "12px", borderColor: "#D6DAE1" }}
 		>
 			<div className="mb-[6px]">
@@ -182,8 +182,8 @@ const MarketRate: React.FC = () => {
 									/>
 									<div>
 										<p
-											style={{ color: "#515B6E", fontSize: "15px" }}
-											className="font-semibold"
+											style={{ color: "#515B6E", fontSize: "14px" }}
+											className="font-semibold "
 										>
 											{rate.token}
 										</p>
@@ -196,10 +196,9 @@ const MarketRate: React.FC = () => {
 									<p
 										style={{
 											color: "#2B313B",
-											fontSize: "15px",
 											fontWeight: "600",
 										}}
-										className="mr-[8px]"
+										className="mr-[8px] text-[12px] sm:text-[14px]"
 									>
 										{rate.rate} NGN
 									</p>
