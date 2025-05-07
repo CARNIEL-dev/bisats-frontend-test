@@ -4,6 +4,9 @@ import { useState, useEffect } from "react";
 import MarketPlaceContent from "./components/MarketPlaceTable";
 import { useSelector } from "react-redux";
 import Bisatsfetch from "../../redux/fetchWrapper";
+import { GetSearchAds } from "../../redux/actions/walletActions";
+import { UserState } from "../../redux/reducers/userSlice";
+import { AdSchema } from "./components/ExpressSwap";
 
 interface RootState {
 	user: {
@@ -19,51 +22,46 @@ interface PaginationState {
 }
 
 const MarketPlace = () => {
+	const user = useSelector((state: { user: UserState }) => state.user);
+	const userId = user?.user?.userId || "";
+	const [searchAds, setSearchAds] = useState<AdSchema[]>([]);
+
 	const [active, setActive] = useState(0);
 	const [selectedToken, setSelectedToken] = useState("usdt");
-	const user = useSelector((state: RootState) => state.user.user);
 	const [loading, setLoading] = useState(false);
 	const [ads, setAds] = useState([]);
 	const [error, setError] = useState<string | null>(null);
+	const [adsParam, setAdsParam] = useState({
+			asset: "",
+			type: "buy",
+			amount:"0"
+		})
 	const [pagination, setPagination] = useState({
 		limit: 10,
 		skip: 0,
 	});
 
-	const fetchAds = async () => {
-		setLoading(true);
-		setError(null);
-		try {
-			const type = active === 0 ? "buy" : "sell";
-			const response = await Bisatsfetch(
-				`/api/v1/user/${
-					user?.userId
-				}/ads/search-ads?asset=${selectedToken.toUpperCase()}_TEST5&type=${type}&limit=${
-					pagination.limit
-				}&skip=${pagination.skip}`,
-				{ method: "GET" }
-			);
-			console.log(`API Response for ${selectedToken}:`, user?.userId, response);
-
-			if (response.status) {
-				setAds(response.data);
-			} else {
-				setAds([]);
+		useEffect(() => {
+			const FetchAds = async () => {
+				
+				const res = await GetSearchAds({ ...adsParam, userId: userId })
+			
+				if (res.length <= 0||!res) {
+					setError("Could not find any express ad at this moment")
+				} else {
+					setError(null)
+				}
+				setSearchAds(res)
 			}
-		} catch (err) {
-			console.error("Error fetching ads:", err);
-			setError("Failed to load data. Please try again.");
-		} finally {
-			setLoading(false);
-		}
-	};
-
-	useEffect(() => {
-		if (user?.userId) {
-			console.log("Fetching ads for user:", user?.userId);
-			fetchAds();
-		}
-	}, [active, selectedToken, pagination.skip, pagination.limit, user?.userId]);
+	
+			if (adsParam?.amount && parseFloat(adsParam?.amount) > 0) {
+				const debounceTimer = setTimeout(() => {
+					FetchAds()
+				}, 500); 
+	
+				return () => clearTimeout(debounceTimer);
+			}
+		},[adsParam, userId])
 
 	const handleTokenChange = (tokenId: string): void => {
 		setSelectedToken(tokenId);
