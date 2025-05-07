@@ -330,10 +330,14 @@ export const GetExpressAds = async (payload: TAddSearchRequest) => {
   }
 };
 
-export const GetSearchAds= async (userId: string) => {
+export const GetSearchAds= async (payload: TAddSearchRequest) => {
   try {
     const response = await Bisatsfetch(
-      `/api/v1/user/${userId}${BACKEND_URLS?.WALLET?.LIST_BANKS}`,
+      `/api/v1/user/${payload.userId}${
+        BACKEND_URLS?.P2P.ADS.EXPRESS_ADS
+      }?asset=${payload.asset}&amount=${payload.amount}&type=${
+        payload.type === "buy" ? "sell" : "buy"
+      }&limit=10&skip=0`,
       {
         method: "GET",
       }
@@ -342,11 +346,9 @@ export const GetSearchAds= async (userId: string) => {
     if (response.status) {
       return data;
     } else {
-      // logoutUser();
     }
   } catch (error) {
-    // logoutUser();
-    // throw handleApiError(error);
+ 
     return error;
   }
 };

@@ -67,9 +67,10 @@ export const BACKEND_URLS = {
       GET_BY_ID: "/ads/:adsId/get-user-ads-by-id",
       GET_ORDER: "/ads/:adsId/get-user-ads-order",
       SEARCH: "/ads/search-ads",
-      FETCH_ORDERS:"/order/fetch-user-orders"
-    }
-
+      FETCH_ORDERS: "/order/fetch-user-orders",
+      EXPRESS_ADS: "/ads/express-ads",
+      SEARCH_ADS: "/ads/search-ads",
+    },
   },
   NOTIFICATIONS: "/v1/user/notifications",
   ADD_PUSH_NOTIFICATION: "/v1/notification/add-push-token",

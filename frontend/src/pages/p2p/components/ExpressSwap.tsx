@@ -16,7 +16,7 @@ import { WalletState } from "../../../redux/reducers/walletSlice";
 import { bisats_charges } from "../../../utils/transaction_limits";
 import Toast from "../../../components/Toast";
 
-interface ExpressAd {
+export interface AdSchema {
 	id: string;
 	userId: string;
 	type: string;
@@ -62,7 +62,7 @@ interface ApiResponse {
 	status: boolean;
 	statusCode: number;
 	message: string;
-	data: ExpressAd[];
+	data: AdSchema[];
 }
 
 const ExpressSwap = () => {
@@ -70,7 +70,7 @@ const ExpressSwap = () => {
 	const [showConfirmation, setShowConfirmation] = useState(false);
 	const [amount, setAmount] = useState("");
 	const [loading, setLoading] = useState(false);
-	const [expressAds, setExpressAds] = useState<ExpressAd[]>([]);
+	const [expressAds, setExpressAds] = useState<AdSchema[]>([]);
 	const [error, setError] = useState<string | null>(null);
 	const [confirmLoading, setConfirmLoading] = useState(false);
 	const [networkFee, setNetworkFee] = useState<string | null>(null);
@@ -80,7 +80,6 @@ const ExpressSwap = () => {
 		asset: "",
 		type: "buy",
 		amount:"0"
-		
 	})
 	const [tokenPrice,setTokenPrice]=useState<PriceData>()
 	const user = useSelector((state: { user: UserState }) => state.user);
