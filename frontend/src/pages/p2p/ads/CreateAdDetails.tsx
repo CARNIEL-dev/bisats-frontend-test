@@ -8,12 +8,17 @@ import Toast from "../../../components/Toast";
 import DateInput from "../../../components/Inputs/DateInput";
 import DateTimePicker from "../../../components/Inputs/DateTimePicker";
 import TimePicker from "../../../components/Inputs/TimePicker";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 // import DateInput from "../../../components/Inputs/DateInput";
 
-const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage }) => {
-    const [time, setTime] = useState(''); 
+const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage,wallet }) => {
+    const [adType, setAdType] = useState('Buy'); 
+    const [token, setToken] = useState(''); 
+
     const loading = false;
+    const walletData = wallet?.wallet
+
+    console.log(wallet)
     const type = [
         { value: "Buy", label: "Buy" },
         { value: "Sell", label: "Sell" }
@@ -40,6 +45,14 @@ const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage }) => {
         }
     };
 
+   
+    const calculateDisplayWalletBallance = useMemo(() => {
+        if (adType.toLowerCase() === "buy") {
+            return `${walletData?.xNGN} xNGN`
+        } else {
+            return walletData? `${walletData?.[token]} ${token}`:"-"
+        }
+    },[adType, token, walletData])
     return (
         <>
             <div className="my-4">
@@ -50,7 +63,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage }) => {
                     error={formik.errors.type}
                     touched={formik.touched.type}
                     label="Transaction Type"
-                    handleChange={(value) => formik.setFieldValue("type", value)}
+                    handleChange={(value) => { formik.setFieldValue("type", value); setAdType(value) }}
                 />
             </div>
 
@@ -60,7 +73,8 @@ const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage }) => {
                     label="Asset"
                     error={formik.errors.asset}
                     touched={formik.touched.asset}
-                    handleChange={(value) => formik.setFieldValue("asset", value)}
+                    handleChange={(value) => { formik.setFieldValue("asset", value); setToken(value) }}
+                    removexNGN={true}
                 />
             </div>
 
@@ -81,7 +95,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage }) => {
                         }
                     }}
                 />
-                <p className="text-[#515B6E] text-xs font-light">Wallet Balance: {/* Add wallet balance here */}</p>
+                <p className="text-[#515B6E] text-xs font-light">Wallet Balance: {calculateDisplayWalletBallance}</p>
             </div>
 
             <div className="mb-4">

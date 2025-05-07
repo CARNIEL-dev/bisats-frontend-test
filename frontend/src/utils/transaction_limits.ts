@@ -43,6 +43,11 @@ export const bisats_limit = {
   },
 };
 
+export const bisats_charges = {
+  crypto_buy: 0.02,
+  crypto_sell: 0.015,
+  ad_creation_sell:0.02
+}
 
 /// kycRules.js
 
