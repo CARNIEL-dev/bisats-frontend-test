@@ -57,7 +57,7 @@ export const BACKEND_URLS = {
     MY_BANKS: "/bank/get-bank-details?bankAccountType=withdrawal",
     ADD_BANK_ACCOUNT: "/bank/set-bank-details",
     EDIT_BANK_ACCOUNT: "/update-bank-details",
-    DELE_BANK_ACCOUNT:"/delete-bank-details",
+    DELE_BANK_ACCOUNT: "/delete-bank-details",
     WITHDRAW: "/withdraw",
   },
   P2P: {
@@ -69,6 +69,7 @@ export const BACKEND_URLS = {
       SEARCH: "/ads/search-ads",
       FETCH_ORDERS:"/order/fetch-user-orders"
     }
+
   },
   NOTIFICATIONS: "/v1/user/notifications",
   ADD_PUSH_NOTIFICATION: "/v1/notification/add-push-token",

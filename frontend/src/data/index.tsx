@@ -1,8 +1,15 @@
+import { LiveAssets, TestAssets } from "../utils/assets";
+
+const isDev = process.env.REACT_APP_NODE_ENV === "development";
+export const assets = isDev ? TestAssets : LiveAssets;
+
+
+
 
 export const TokenData = [
     {
-        id: "ngn",
-        tokenName: "xNGN",
+        id: assets.xNGN,
+        tokenName: assets.xNGN,
         networks: [
             {
                 label: "BudPay", value: "budpay"
@@ -24,8 +31,8 @@ export const TokenData = [
 
     },
     {
-        id: "usdt",
-        tokenName: "USDT",
+        id: assets.USDT,
+        tokenName: assets.USDT,
         networks: [{
             value: "Sol", label: "Sol"
         }, {
@@ -45,8 +52,8 @@ export const TokenData = [
 
     },
     {
-        id: "btc",
-        tokenName: "BTC",
+        id: assets.BTC,
+        tokenName: assets.BTC,
         networks: [{
             value: "Sol", label: "Sol"
         }, {
@@ -61,8 +68,8 @@ export const TokenData = [
         </svg>
     },
     {
-        id: "eth",
-        tokenName: "ETH",
+        id: assets.ETH,
+        tokenName: assets.ETH,
         networks: [{
             value: "Sol", label: "Sol"
         }, {
@@ -85,8 +92,8 @@ export const TokenData = [
 
     },
     {
-        id: "sol",
-        tokenName: "SOL",
+        id: assets.SOL,
+        tokenName: assets.SOL,
         networks: [{
             value: "Sol", label: "Sol"
         }, {

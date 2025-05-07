@@ -1,14 +1,18 @@
-import { ReactSVGElement, useState } from "react";
+import { ReactSVGElement, useMemo, useState } from "react";
 import Label from "./Label";
 import { TokenData } from "../../data";
 import { TNetwork } from "../../pages/wallet/deposits";
+import { WalletState } from "../../redux/reducers/walletSlice";
+import { useSelector } from "react-redux";
 
 interface TTokenSelectProps {
     title: string,
     label: string,
     error: string | undefined | null,
     touched: boolean | undefined,
-    handleChange: (prop: string) => void
+    handleChange: (prop: string) => void,
+    removexNGN?: boolean
+    hideDropdown?:boolean
 
 }
 
@@ -22,13 +26,22 @@ type TTokenOption = {
 } | null
 
 
-const TokenSelect = ({ title, label, error, touched, handleChange }: TTokenSelectProps) => {
+const TokenSelect = ({ title, label, error, touched, handleChange,removexNGN,hideDropdown }: TTokenSelectProps) => {
     const [isDropdownOpen, setDropdownOpen] = useState(false);
     const [selected, setSelected] = useState<TTokenOption>(null);
+    const walletState: WalletState = useSelector((state: any) => state.wallet);
+    const walletData= walletState.wallet
+
 
     const toggleDropdown = () => {
         setDropdownOpen(!isDropdownOpen);
     };
+
+     const calculateCurrentWalletBallance = useMemo(() => {
+           
+                return walletData ? `${walletData?.[selected?.id??"xNGN"]} ${selected?.id}` : "-"
+            
+        }, [selected?.id, walletData])
     return (
         <div className="w-full relative">
             {label && (
@@ -55,31 +68,44 @@ const TokenSelect = ({ title, label, error, touched, handleChange }: TTokenSelec
                     }
                 </div>
             </button>
-            {selected && <p className="text-[#606C82] text-[12px] leading-[16px] font-[400] mt-1.5">Current Balance: <span className="font-[600] text-[#515B6E]">{selected?.currentBalance}</span></p>
+            {selected && <p className="text-[#606C82] text-[12px] leading-[16px] font-[400] mt-2.5">Current Balance: <span className="font-[600] text-[#515B6E]">{calculateCurrentWalletBallance}</span></p>
             }
+            {
+                !hideDropdown &&
 
-            <div
-                // ref={root}
-                id={`tokenSelectBtn`}
-                className={`absolute mt-1 z-10 transition-all duration-150 ease ${isDropdownOpen ? "visible translate-y-0 opacity-100" : "invisible -translate-y-3 opacity-0"
-                    } bg-[#EEEFF2] rounded w-full shadow`}
-            >
-                <ul
-                    className="p-1 space-y-1 text-xs font-secondary h-[230px] overflow-y-scroll"
-                    aria-labelledby={`tokenSelectBtn`}
+                <div
+                    // ref={root}
+                    id={`tokenSelectBtn`}
+                    className={`absolute mt-1 z-10 transition-all duration-150 ease ${isDropdownOpen ? "visible translate-y-0 opacity-100" : "invisible -translate-y-3 opacity-0"
+                        } bg-[#EEEFF2] rounded w-full shadow`}
                 >
-                    <div className=" w-full gap-4 px-3 ">
-                        {TokenData.map((token) => (
-                            <div className="flex items-center my-5 cursor-pointer" onClick={() => {
-                                toggleDropdown(); setSelected(token); handleChange(token.id)
-                            }}>
-                                <div className="w-[20px] h-[20px] rounded-full mr-2">{token.tokenLogo}</div>
-                                <p className="mx-2">{token.tokenName}</p>
-                            </div>
-                        ))}
-                    </div>
-                </ul>
-            </div>
+                    <ul
+                        className="p-1 space-y-1 text-xs font-secondary h-[230px] overflow-y-scroll"
+                        aria-labelledby={`tokenSelectBtn`}
+                    >
+                        <div className=" w-full gap-4 px-3 ">
+                            {
+                                !removexNGN ? TokenData.map((token) => (
+                                    <div className="flex items-center my-5 cursor-pointer" onClick={() => {
+                                        toggleDropdown(); setSelected(token); handleChange(token.id)
+                                    }}>
+                                        <div className="w-[20px] h-[20px] rounded-full mr-2">{token.tokenLogo}</div>
+                                        <p className="mx-2">{token.tokenName}</p>
+                                    </div>
+                                )) :
+                                    TokenData.slice(1).map((token) => (
+                                        <div className="flex items-center my-5 cursor-pointer" onClick={() => {
+                                            toggleDropdown(); setSelected(token); handleChange(token.id)
+                                        }}>
+                                            <div className="w-[20px] h-[20px] rounded-full mr-2">{token.tokenLogo}</div>
+                                            <p className="mx-2">{token.tokenName}</p>
+                                        </div>
+                                    ))
+                    
+                            }
+                        </div>
+                    </ul>
+                </div>}
         </div>
     )
 }

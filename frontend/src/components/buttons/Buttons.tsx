@@ -11,7 +11,10 @@ interface TButtons extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 export const PrimaryButton: React.FC<TButtons> = ({ css, text, loading, ...props }) => {
     return (
-        <button type='submit' className={`flex justify-center h-[48px]  px-5 rounded-[6px] bg-[#F5BB00] text-[#0A0E12] text-[14px] leading-[24px] font-[600] text-center py-3 shadow-[0_0_0.8px_#000] ${props.disabled ? "bg-[lightGrey] text-grey" : ""} ${css}`}
+        <button
+            type='submit'
+        disabled={loading}
+            className={`flex justify-center h-[48px]  px-5 rounded-[6px] bg-[#F5BB00] text-[#0A0E12] text-[14px] leading-[24px] font-[600] text-center py-3 shadow-[0_0_0.8px_#000] ${props.disabled ? "bg-[lightGrey] text-grey" : ""} ${css}`}
             {...props}>
             {
                 loading ? <DotLoader
