@@ -15,6 +15,7 @@ import { convertAssetToNaira, convertNairaToAsset } from "../../../utils/convers
 import { WalletState } from "../../../redux/reducers/walletSlice";
 import { bisats_charges } from "../../../utils/transaction_limits";
 import Toast from "../../../components/Toast";
+import Header from "./Header";
 
 export interface AdSchema {
 	id: string;
@@ -272,13 +273,8 @@ const ExpressSwap = () => {
 
 	return (
 		<div>
-			<h1 className="text-[28px] md:text-[34px] text-[#0A0E12] font-[600] leading-[40px] my-3">
-				P2P Express
-			</h1>
+			<Header text="P2P Express" subtext="Skip the stress of manually finding a merchant." />
 
-			<p className="text-[#515B6E] text-[14px] font-[400] my-2">
-				Skip the stress of manually finding a merchant.
-			</p>
 			<div className="flex items-center my-1 w-full border-b-[1px] border-[#F3F4F6] justify-between my-5">
 				<p
 					onClick={() => setAdsParam({ ...adsParam, type: "buy",amount:"0",asset:"" })}

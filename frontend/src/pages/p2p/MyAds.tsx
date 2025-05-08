@@ -6,6 +6,7 @@ import { getUser } from "../../helpers";
 import Bisatsfetch from "../../redux/fetchWrapper";
 import { useSelector } from "react-redux";
 import { BACKEND_URLS } from "../../utils/backendUrls";
+import Header from "./components/Header";
 
 interface Ad {
 	id: string;
@@ -98,20 +99,12 @@ const MyAds = () => {
 	};
 
 	return (
-		<div className="w-full lg:w-2/3 mx-auto px-3">
-			<div className="flex justify-between items-center p-4 bg-gray-100">
-				<div className="flex flex-col">
-					<h2
-						className="font-semibold"
-						style={{ color: "#0A0E12", fontSize: "34px" }}
-					>
-						My Ads
-					</h2>
-					<p style={{ color: "#0A0E12", fontSize: "14px", fontWeight: 400 }}>
-						Create, view and manage your ads on Bisats here
-					</p>
-				</div>
-
+		<div className="w-full lg:w-2/3 mx-auto px-[16px]">
+			<div className="flex flex-col bg-gray-100">
+				<Header
+					text="My Ads"
+					subtext="Create, view and manage your ads on Bisats here"
+				/>
 				<PrimaryButton text="Create Ad" loading={false} />
 			</div>
 
