@@ -2,6 +2,7 @@ import React from "react";
 import P2PMPTable from "../../../components/Table/P2PMarketPlaceTable";
 import MobileP2PMP from "../../../components/Table/MobileP2PMarketPlace";
 import Empty from "../../../components/Empty";
+import { AdSchema } from "./ExpressSwap";
 
 type limits = {
 	available: string;
@@ -21,7 +22,7 @@ interface PaginationProps {
 
 interface MarketPlaceContentProps {
 	type: string;
-	ads: Ad[];
+	ads: AdSchema[];
 	pagination: PaginationProps;
 	setPagination: React.Dispatch<React.SetStateAction<PaginationProps>>;
 }
@@ -46,7 +47,7 @@ const MarketPlaceContent = ({
 		Fields.UnitPrice,
 		Fields.Limits,
 	];
-
+console.log(ads)
 	return (
 		<div>
 			{ads.length === 0 ? (

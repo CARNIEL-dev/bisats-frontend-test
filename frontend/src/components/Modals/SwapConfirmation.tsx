@@ -9,7 +9,7 @@ interface Props {
 	amount: string;
 	receiveAmount: string;
 	fee: string;
-	token: string;
+	token: string|undefined;
 	currency: string;
 	loading?: boolean;
 	onConfirm: () => void;

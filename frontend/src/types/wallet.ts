@@ -68,6 +68,12 @@ export type TWithdrawalRequest = {
   bankAccountId: string;
 }
 
+export type TCryptoWithdrawalRequest = {
+  userId: string;
+  amount: number;
+  address: string;
+  asset: string;
+};
 
 export type TDepositBreakDowns = {
   amount: number;

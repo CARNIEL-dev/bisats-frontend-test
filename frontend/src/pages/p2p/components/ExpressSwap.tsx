@@ -20,7 +20,8 @@ export interface AdSchema {
 	id: string;
 	userId: string;
 	type: string;
-	asset: string;
+	orderType: "buy"|"sell"|string;
+	asset: keyof typeof assets;
 	amount: number;
 	amountAvailable: number;
 	amountFilled: number;
