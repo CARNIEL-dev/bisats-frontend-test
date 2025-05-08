@@ -50,29 +50,36 @@ const Dashboard = () => {
 				<div className="w-full flex justify-center mt-[30px]">
 					<div className="w-full">
 						<h2
-							className="text-[34px] mx-[15px] font-semibold"
+							className="text-[22px] md-[34px] mx-[15px] font-semibold"
 							style={{ color: "#0A0E12" }}
 						>
 							Hello, {user?.firstName}
 						</h2>
 
-						<div className="flex justify-between m-[15px]">
-							<Balance />
-							<MarketRate />
+						<div className="w-full overflow-x-auto md:overflow-visible">
+							<div className="flex w-max sm:w-full m-4 gap-4 sm:justify-between">
+								<div className="w-[75vw] sm:w-[48.5%] flex-shrink-0">
+									<Balance />
+								</div>
+
+								<div className="w-[75vw] sm:w-[48.5%] flex-shrink-0">
+									<MarketRate />
+								</div>
+							</div>
 						</div>
+
 						<div
-							className="border-[1px] h-[288px] m-[15px] p-[24px]"
+							className="sm:border-[1px] sm:h-[288px] m-[15px] sm:p-[24px]"
 							style={{ borderRadius: "12px", borderColor: "#D6DAE1" }}
 						>
 							<div className="mb-[12px]">
 								<p style={{ fontSize: "15px" }}>
 									<span
 										style={{
-											fontSize: "18px",
 											fontWeight: "600",
 											color: "#0A0E12",
 										}}
-										className="mr-[8px]"
+										className="mr-[8px] text-[18px] sm:text-[16px]"
 									>
 										Open ads
 									</span>
@@ -91,18 +98,17 @@ const Dashboard = () => {
 							<Ads />
 						</div>
 						<div
-							className="border-[1px] h-[288px] m-[15px] p-[24px]"
+							className="sm:border-[1px] sm:h-[288px] m-[15px] sm:p-[24px]"
 							style={{ borderRadius: "12px", borderColor: "#D6DAE1" }}
 						>
 							<div className="mb-[12px]">
-								<p style={{ fontSize: "15px" }}>
+								<p>
 									<span
 										style={{
-											fontSize: "18px",
 											fontWeight: "600",
 											color: "#0A0E12",
 										}}
-										className="mr-[8px]"
+										className="mr-[8px] text-[18px] sm:text-[16px]"
 									>
 										Order History
 									</span>

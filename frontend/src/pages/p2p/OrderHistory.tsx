@@ -22,16 +22,52 @@ const OrderHistory = () => {
 		buyer?: { userName: string };
 	}
 
-	const [orders, setOrders] = useState<Order[]>([]);
 	const [loading, setLoading] = useState(true);
 	const userState: UserState = useSelector((state: any) => state.user);
 	const user = userState.user;
 	const userId = user?.userId;
+	const [orders, setOrders] = useState<Order[]>([]);
+
+	const fetchOrders = async () => {
+		try {
+			setLoading(true);
+			const response = await Bisatsfetch(
+				`/api/v1/user/${userId}${BACKEND_URLS.P2P.ADS.FETCH_ORDERS}`,
+				{
+					method: "GET",
+				}
+			);
+			console.log("orders history", response);
+
+			if (
+				response.status === true &&
+				response.data &&
+				Array.isArray(response.data)
+			) {
+				setOrders(response.data);
+			} else {
+				setOrders([]);
+			}
+		} catch (error) {
+			console.error("Error fetching orders:", error);
+			Toast.error("Failed to fetch orders. Please try again later.", "Error");
+			setOrders([]);
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	useEffect(() => {
+		if (userId) {
+			fetchOrders();
+		}
+	}, [userId]);
 
 	const assets = [
 		{ value: "USDT", label: "USDT" },
 		{ value: "BTC", label: "BTC" },
 		{ value: "ETH", label: "ETH" },
+		{ value: "SOL_TEST", label: "SOL_TEST" },
 	];
 	const types = [
 		{ value: "Buy", label: "Buy" },
@@ -42,128 +78,219 @@ const OrderHistory = () => {
 		{ value: "date", label: "Date" },
 	];
 
-	useEffect(() => {
-		const fetchOrders = async () => {
-			try {
-				setLoading(true);
-				const response = await Bisatsfetch(
-					`/api/v1/user/${userId}${BACKEND_URLS.P2P.ADS.FETCH_ORDERS}`,
-					{
-						method: "GET",
-					}
-				);
-				console.log("orders history", response);
+	// Mobile order row component
+	const MobileOrderRow = ({
+		order,
+		index,
+	}: {
+		order: Order;
+		index: number;
+	}) => {
+		// Format date if available
+		const formattedDate = order.createdAt
+			? new Date(order.createdAt).toLocaleString("en-US", {
+					month: "2-digit",
+					day: "2-digit",
+					hour: "2-digit",
+					minute: "2-digit",
+					hour12: false,
+			  })
+			: "N/A";
 
-				if (
-					response.status === true &&
-					response.data &&
-					Array.isArray(response.data)
-				) {
-					setOrders(response.data);
-				} else {
-					setOrders([]);
-				}
-			} catch (error) {
-				console.error("Error fetching orders:", error);
-				Toast.error("Failed to fetch orders. Please try again later.", "Error");
-				setOrders([]);
-			} finally {
-				setLoading(false);
-			}
-		};
+		const counterParty =
+			order.type?.toLowerCase() === "buy"
+				? order.merchant?.userName
+				: order.buyer?.userName;
 
-		if (userId) {
-			fetchOrders();
-		}
-	}, [userId]);
+		return (
+			<div
+				className={`flex flex-col p-4 ${
+					index % 2 === 0 ? "bg-white" : "bg-[#F9F9FB]"
+				}`}
+			>
+				{/* First row - Type and Order ref */}
+				<div className="flex justify-between mb-3">
+					<div className="flex flex-col">
+						<span style={{ color: "#515B6E", fontSize: "14px" }}>Type</span>
+						<span
+							className="font-semibold"
+							style={
+								order.type?.toLowerCase() === "buy"
+									? { color: "#DC2625" }
+									: { color: "#17A34A" }
+							}
+						>
+							{order.type?.charAt(0).toUpperCase() +
+								order.type?.slice(1).toLowerCase() || "N/A"}
+						</span>
+					</div>
+					<div className="flex flex-col items-end">
+						<span style={{ color: "#515B6E", fontSize: "14px" }}>
+							Order ref.
+						</span>
+						<span className="font-semibold">{order.reference || "N/A"}</span>
+					</div>
+				</div>
+
+				{/* Second row - Asset and Amount */}
+				<div className="flex justify-between mb-3">
+					<div className="flex flex-col">
+						<span style={{ color: "#515B6E", fontSize: "14px" }}>Asset</span>
+						<span>{order.asset || "N/A"}</span>
+					</div>
+					<div className="flex flex-col items-end">
+						<span style={{ color: "#515B6E", fontSize: "14px" }}>Amount</span>
+						<span>
+							{order.amount
+								? `${order.amount.toLocaleString()} ${order.asset}`
+								: "N/A"}
+						</span>
+					</div>
+				</div>
+
+				{/* Third row - Price and Quantity */}
+				<div className="flex justify-between mb-3">
+					<div className="flex flex-col">
+						<span style={{ color: "#515B6E", fontSize: "14px" }}>Price</span>
+						<span>
+							{order.price ? `${order.price.toLocaleString()} NGN` : "N/A"}
+						</span>
+					</div>
+					<div className="flex flex-col items-end">
+						<span style={{ color: "#515B6E", fontSize: "14px" }}>Quantity</span>
+						<span>
+							{order.quantity ? `${order.quantity} ${order.asset}` : "N/A"}
+						</span>
+					</div>
+				</div>
+
+				{/* Fourth row - CounterParty and Date */}
+				<div className="flex justify-between">
+					<div className="flex flex-col">
+						<span style={{ color: "#515B6E", fontSize: "14px" }}>
+							CounterParty
+						</span>
+						<span>{counterParty || "N/A"}</span>
+					</div>
+					<div className="flex flex-col items-end">
+						<span style={{ color: "#515B6E", fontSize: "14px" }}>Date</span>
+						<span>{formattedDate}</span>
+					</div>
+				</div>
+			</div>
+		);
+	};
 
 	const renderOrdersTable = () => {
 		return (
-			<div className="overflow-x-auto">
-				<table className="table-auto w-full text-[#515B6E] text-sm">
-					<thead className="text-justify">
-						<tr style={{ backgroundColor: "#F9F9FB" }}>
-							<th className="text-left px-4 py-4">Type</th>
-							<th className="text-left px-4 py-4">Order ref.</th>
-							<th className="text-left px-4 py-4">Asset</th>
-							<th className="text-left px-4 py-4">Amount</th>
-							<th className="text-right px-4 py-4">Price</th>
-							<th className="text-right px-4 py-4">Quantity</th>
-							<th className="text-right px-4 py-3">CounterParty</th>
-							<th className="text-right px-4 py-3">Date</th>
-						</tr>
-					</thead>
-					<tbody>
-						{loading ? (
-							<tr>
-								<td colSpan={8} className="text-center py-8 text-gray-500">
-									Loading orders...
-								</td>
+			<>
+				{/* Desktop table view */}
+				<div className="hidden md:block">
+					<table className="table-auto w-full text-[#515B6E] text-sm">
+						<thead className="text-justify">
+							<tr style={{ backgroundColor: "#F9F9FB" }}>
+								<th className="text-left px-4 py-4">Type</th>
+								<th className="text-left px-4 py-4">Order ref.</th>
+								<th className="text-left px-4 py-4">Asset</th>
+								<th className="text-left px-4 py-4">Amount</th>
+								<th className="text-right px-4 py-4">Price</th>
+								<th className="text-right px-4 py-4">Quantity</th>
+								<th className="text-right px-4 py-3">CounterParty</th>
+								<th className="text-right px-4 py-3">Date</th>
 							</tr>
-						) : (
-							orders.map((order, index) => {
-								// Format date if available
-								const formattedDate = order.createdAt
-									? new Date(order.createdAt).toLocaleString("en-US", {
-											month: "2-digit",
-											day: "2-digit",
-											hour: "2-digit",
-											minute: "2-digit",
-											hour12: false,
-									  })
-									: "N/A";
+						</thead>
+						<tbody>
+							{loading ? (
+								<tr>
+									<td colSpan={8} className="text-center py-8 text-gray-500">
+										Loading orders...
+									</td>
+								</tr>
+							) : (
+								orders.map((order, index) => {
+									// Format date if available
+									const formattedDate = order.createdAt
+										? new Date(order.createdAt).toLocaleString("en-US", {
+												month: "2-digit",
+												day: "2-digit",
+												hour: "2-digit",
+												minute: "2-digit",
+												hour12: false,
+										  })
+										: "N/A";
 
-								const counterParty =
-									order.type?.toLowerCase() === "buy"
-										? order.merchant?.userName
-										: order.buyer?.userName;
+									const counterParty =
+										order.type?.toLowerCase() === "buy"
+											? order.merchant?.userName
+											: order.buyer?.userName;
 
-								return (
-									<tr key={index} className="border-b border-gray-100">
-										<td className="text-left px-4 py-4 font-semibold">
-											<span
-												style={
-													order.type?.toLowerCase() === "buy"
-														? { color: "#DC2625" }
-														: { color: "#17A34A" }
-												}
-											>
-												{order.type?.charAt(0).toUpperCase() +
-													order.type?.slice(1).toLowerCase() || "N/A"}
-											</span>
-										</td>
-										<td className="text-left px-4 py-4 font-semibold">
-											{order.reference || "N/A"}
-										</td>
-										<td className="text-left px-4 py-4">
-											{order.asset || "N/A"}
-										</td>
-										<td className="text-left px-4 py-4">
-											{order.amount
-												? `${order.amount.toLocaleString()} ${order.asset}`
-												: "N/A"}
-										</td>
-										<td className="text-right px-4 py-4">
-											{order.price
-												? `${order.price.toLocaleString()} NGN`
-												: "N/A"}
-										</td>
-										<td className="text-right px-4 py-4">
-											{order.quantity
-												? `${order.quantity} ${order.asset}`
-												: "N/A"}
-										</td>
-										<td className="text-right px-4 py-4">
-											{counterParty || "N/A"}
-										</td>
-										<td className="text-right px-4 py-4">{formattedDate}</td>
-									</tr>
-								);
-							})
-						)}
-					</tbody>
-				</table>
-			</div>
+									return (
+										<tr
+											key={index}
+											className={index % 2 === 0 ? "bg-white" : "bg-[#F9F9FB]"}
+										>
+											<td className="text-left px-4 py-4 font-semibold">
+												<span
+													style={
+														order.type?.toLowerCase() === "buy"
+															? { color: "#DC2625" }
+															: { color: "#17A34A" }
+													}
+												>
+													{order.type?.charAt(0).toUpperCase() +
+														order.type?.slice(1).toLowerCase() || "N/A"}
+												</span>
+											</td>
+											<td className="text-left px-4 py-4 font-semibold">
+												{order.reference || "N/A"}
+											</td>
+											<td className="text-left px-4 py-4">
+												{order.asset || "N/A"}
+											</td>
+											<td className="text-left px-4 py-4">
+												{order.amount
+													? `${order.amount.toLocaleString()} ${order.asset}`
+													: "N/A"}
+											</td>
+											<td className="text-right px-4 py-4">
+												{order.price
+													? `${order.price.toLocaleString()} NGN`
+													: "N/A"}
+											</td>
+											<td className="text-right px-4 py-4">
+												{order.quantity
+													? `${order.quantity} ${order.asset}`
+													: "N/A"}
+											</td>
+											<td className="text-right px-4 py-4">
+												{counterParty || "N/A"}
+											</td>
+											<td className="text-right px-4 py-4">{formattedDate}</td>
+										</tr>
+									);
+								})
+							)}
+						</tbody>
+					</table>
+				</div>
+
+				{/* Mobile card view */}
+				<div className="md:hidden">
+					{loading ? (
+						<div className="flex justify-center items-center h-40">
+							<p className="text-gray-500">Loading orders...</p>
+						</div>
+					) : orders.length > 0 ? (
+						<div className="rounded overflow-hidden">
+							{orders.map((order, index) => (
+								<MobileOrderRow key={index} order={order} index={index} />
+							))}
+						</div>
+					) : (
+						<Empty />
+					)}
+				</div>
+			</>
 		);
 	};
 

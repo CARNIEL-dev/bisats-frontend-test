@@ -1,15 +1,11 @@
-import ExpressSwap from "./components/ExpressSwap"
+import ExpressSwap from "./components/ExpressSwap";
 
 const Express = () => {
-    return (
-        <div className="w-full">
-            <div className="w-1/3 mx-auto">
-                <ExpressSwap  />
+	return (
+		<div className="w-full lg:w-1/3 mx-auto px-[16px]">
+			<ExpressSwap />
+		</div>
+	);
+};
 
-            </div>
-
-        </div>
-    )
-}
-
-export default Express
+export default Express;
