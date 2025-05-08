@@ -74,7 +74,6 @@ const Ads: React.FC = () => {
 				setLoading(false);
 				return;
 			}
-
 			const response = await Bisatsfetch(
 				`/api/v1/user/${user.userId}/ads/get-user-ads`,
 				{ method: "GET" }
