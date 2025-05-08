@@ -59,6 +59,7 @@ export const BACKEND_URLS = {
     EDIT_BANK_ACCOUNT: "/update-bank-details",
     DELE_BANK_ACCOUNT: "/delete-bank-details",
     WITHDRAW: "/withdraw",
+    WITHDRAW_CRYPTO: "/withdraw-token",
   },
   P2P: {
     ADS: {

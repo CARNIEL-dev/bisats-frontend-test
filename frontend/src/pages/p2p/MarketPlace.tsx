@@ -7,6 +7,7 @@ import Bisatsfetch from "../../redux/fetchWrapper";
 import { GetSearchAds } from "../../redux/actions/walletActions";
 import { UserState } from "../../redux/reducers/userSlice";
 import { AdSchema } from "./components/ExpressSwap";
+import PrimaryInput from "../../components/Inputs/PrimaryInput";
 
 interface RootState {
 	user: {
@@ -25,46 +26,46 @@ const MarketPlace = () => {
 	const user = useSelector((state: { user: UserState }) => state.user);
 	const userId = user?.user?.userId || "";
 	const [searchAds, setSearchAds] = useState<AdSchema[]>([]);
-
 	const [active, setActive] = useState(0);
-	const [selectedToken, setSelectedToken] = useState("usdt");
 	const [loading, setLoading] = useState(false);
-	const [ads, setAds] = useState([]);
 	const [error, setError] = useState<string | null>(null);
 	const [adsParam, setAdsParam] = useState({
-			asset: "",
+			asset: "USDT",
 			type: "buy",
-			amount:"0"
+			amount:"10"
 		})
 	const [pagination, setPagination] = useState({
 		limit: 10,
 		skip: 0,
 	});
 
+
 		useEffect(() => {
 			const FetchAds = async () => {
-				
-				const res = await GetSearchAds({ ...adsParam, userId: userId })
-			
-				if (res.length <= 0||!res) {
+
+				const res = await GetSearchAds({ ...adsParam, userId: userId }) ?? []
+				console.log(res)
+				if (res?.length <= 0 || !res) {
 					setError("Could not find any express ad at this moment")
 				} else {
 					setError(null)
 				}
 				setSearchAds(res)
 			}
-	
 			if (adsParam?.amount && parseFloat(adsParam?.amount) > 0) {
-				const debounceTimer = setTimeout(() => {
-					FetchAds()
-				}, 500); 
-	
-				return () => clearTimeout(debounceTimer);
-			}
-		},[adsParam, userId])
+			const debounceTimer = setTimeout(() => {
+				FetchAds()
+			}, 500); 
+
+			return () => clearTimeout(debounceTimer);
+		}
+		},[ adsParam, userId])
 
 	const handleTokenChange = (tokenId: string): void => {
-		setSelectedToken(tokenId);
+		setAdsParam({
+			...adsParam,
+			asset:tokenId
+		})
 		setPagination({
 			limit: 10,
 			skip: 0,
@@ -82,18 +83,18 @@ const MarketPlace = () => {
 
 			<div className="flex items-center w-1/2 lg:w-1/4 justify-between my-5">
 				<p
-					onClick={() => setActive(0)}
+					onClick={() => setAdsParam({ ...adsParam, type: "buy", })}
 					className={`cursor-pointer text-[#515B6E] text-[18px] font-[18px] pb-1 px-5 ${
-						active === 0 &&
+						adsParam?.type==="buy" &&
 						"border-b-[4px] rounded-x-[2px] border-[#49DE80] text-[#17A34A]"
 					}`}
 				>
 					Buy
 				</p>
 				<p
-					onClick={() => setActive(1)}
+					onClick={() => setAdsParam({ ...adsParam, type: "sell", })}
 					className={`cursor-pointer text-[#515B6E] text-[18px] font-[18px] pb-1 px-5 ${
-						active === 1 &&
+						adsParam?.type==="sell" &&
 						"border-b-[4px] rounded-x-[2px] border-[#F87171] text-[#DC2625]"
 					}`}
 				>
@@ -107,8 +108,11 @@ const MarketPlace = () => {
 					touched={undefined}
 					handleChange={handleTokenChange}
 				/>
+				<div>
+					<PrimaryInput css={""} label={""} error={undefined} touched={undefined} className="w-[208px] " />
+				</div>
 
-				<button className="border-[1px] border-[#D6DAE1] rounded-[6px] w-[120px] px-4 flex justify-between items-center h-[48px] text-[#515B6E] text-[14px]">
+				<button className="border-[1px] border-[#D6DAE1] rounded-[6px] w-[120px] px-4 flex justify-between items-center h-[48px] text-[#515B6E] text-[14px]" onClick={() => setAdsParam({ ...adsParam })}>
 					Filter
 					<svg
 						width="18"
@@ -148,8 +152,8 @@ const MarketPlace = () => {
 				</p>
 
 				<MarketPlaceContent
-					type={active === 0 ? "Buy" : "Sell"}
-					ads={ads}
+					type={adsParam.type==="buy" ? "Buy" : "Sell"}
+					ads={searchAds}
 					pagination={pagination}
 					setPagination={setPagination}
 				/>

@@ -2,7 +2,7 @@
 
 import { useSelector } from "react-redux";
 import { getToken, getUser } from "../../helpers";
-import { T2FARequest, TAddSearchRequest, TCreateAdsRequest, TDeleteWithdrawalRequest, TTopUpNGN, TWithdrawalBankAccount, TWithdrawalRequest } from "../../types/wallet";
+import { T2FARequest, TAddSearchRequest, TCreateAdsRequest, TCryptoWithdrawalRequest, TDeleteWithdrawalRequest, TTopUpNGN, TWithdrawalBankAccount, TWithdrawalRequest } from "../../types/wallet";
 import { BACKEND_URLS } from "../../utils/backendUrls";
 import dispatchWrapper from "../../utils/dispatchWrapper";
 import Bisatsfetch from "../fetchWrapper";
@@ -269,6 +269,23 @@ export const Withdraw_xNGN = async (
   }
 };
 
+export const Withdraw_Crypto = async (payload: TCryptoWithdrawalRequest) => {
+  try {
+    const response = await Bisatsfetch(
+      `/api/v1/user/${payload.userId}${BACKEND_URLS.WALLET.WITHDRAW_CRYPTO}`,
+      {
+        method: "POST",
+        body: JSON.stringify(payload),
+      }
+    );
+    const data = response;
+    return data;
+  } catch (error) {
+    // throw handleApiError(error);
+    return error;
+  }
+};
+
 
 export const TwoFactorAuth = async (payload: T2FARequest) => {
   try {
@@ -334,8 +351,8 @@ export const GetSearchAds= async (payload: TAddSearchRequest) => {
   try {
     const response = await Bisatsfetch(
       `/api/v1/user/${payload.userId}${
-        BACKEND_URLS?.P2P.ADS.EXPRESS_ADS
-      }?asset=${payload.asset}&amount=${payload.amount}&type=${
+        BACKEND_URLS?.P2P.ADS.SEARCH_ADS
+      }?asset=${payload.asset}&type=${
         payload.type === "buy" ? "sell" : "buy"
       }&limit=10&skip=0`,
       {
@@ -343,6 +360,7 @@ export const GetSearchAds= async (payload: TAddSearchRequest) => {
       }
     );
     const data = response.data;
+    console.log(response)
     if (response.status) {
       return data;
     } else {

@@ -23,7 +23,6 @@ type Prices = {
     TRX: number;
     USDT_TRX: number;
     // trx:usdt: number;,
-  
 };
 
 
@@ -54,11 +53,49 @@ export function convertAssetToNaira(
 ): number | null {
   const usdPriceOfAsset = prices[asset];
   const ngnToUsdRate = adPrice;
-
   if (!usdPriceOfAsset || !ngnToUsdRate || asset === "xNGN") return null;
 
   const valueInUsd = assetAmount * usdPriceOfAsset;
-  const valueInNaira = valueInUsd * ngnToUsdRate;
+    const valueInNaira = valueInUsd * ngnToUsdRate;
 
   return Math.round(valueInNaira);
+}
+
+
+export function convertAssetToUSD(
+  asset: keyof Prices,
+  assetAmount: number,
+  adPrice: number,
+  prices: Prices
+): number | null {
+  if ( !prices)
+    return null;
+  const usdPriceOfAsset = prices[asset];
+    console.log(assetAmount, usdPriceOfAsset);
+
+    // if (!usdPriceOfAsset ) return null;
+    console.log(assetAmount, usdPriceOfAsset);
+
+  const valueInUsd =
+    asset !== "xNGN" ? assetAmount * usdPriceOfAsset : assetAmount/usdPriceOfAsset;
+  
+
+  return Math.round(valueInUsd);
+}
+
+export function convertUSDToAsset(
+  asset: keyof Prices,
+  usdAmount: number,
+  prices: Prices
+): number | null {
+  if (!prices || !prices[asset]) return null;
+
+  const assetPriceInUsd = prices[asset];
+
+  const amountInAsset =
+    asset !== "xNGN"
+      ? usdAmount / assetPriceInUsd
+      : usdAmount * assetPriceInUsd;
+
+  return Number(amountInAsset.toFixed(8))??0; 
 }

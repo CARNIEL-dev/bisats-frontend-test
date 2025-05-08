@@ -1,11 +1,17 @@
+import { PriceData } from "../../pages/wallet/Assets";
 import { PrimaryButton } from "../buttons/Buttons";
 import ModalTemplate from "./ModalTemplate";
 
 interface Props {
     close: () => void;
-
+    asset: keyof PriceData;
+    address: string;
+    amount: string;
+    livePricesData: any;
+    submit: () => void;
+    isLoading:boolean
 }
-const WithdrawalConfirmationCrypto: React.FC<Props> = ({ close }) => {
+const WithdrawalConfirmationCrypto: React.FC<Props> = ({ close,asset,address,amount,livePricesData,submit,isLoading }) => {
     return (
         <ModalTemplate onClose={close}>
             <div className="flex flex-col justify-center w-full text-center mx-auto">
@@ -14,19 +20,19 @@ const WithdrawalConfirmationCrypto: React.FC<Props> = ({ close }) => {
                 <div className="h-fit rounded border border  border-[#F3F4F6] bg-[#F9F9FB] rounded-[12px] py-3 px-5 my-5 text-[14px] leading-[24px] w-full ">
                     <div className="flex justify-between items-start mb-2 text-wrap w-full">
                         <p className="text-[#424A59] font-[400] ">Withdrawal Address:</p>
-                        <p className="text-[#606C82]  font-[600]  text-right w-1/2 break-all ">JDXGDxR8qpPaEcQuBtbp2eCRPDFqzdCoYX3eEvRxM9</p>
+                        <p className="text-[#606C82]  font-[600]  text-right w-1/2 break-all ">{address }</p>
                     </div>
                     <div className="flex justify-between items-center mb-2">
                         <p className="text-[#424A59] font-[400]">Network:</p>
-                        <p className="text-[#606C82]  font-[600]">Ethereum</p>
+                        <p className="text-[#606C82]  font-[600]">{ asset}</p>
                     </div>
                     <div className="flex justify-between items-center mb-2">
                         <p className="text-[#424A59] font-[400]">Withdrawal amount:</p>
-                        <p className="text-[#606C82]  font-[600]">5 ETH</p>
+                        <p className="text-[#606C82]  font-[600]">{ amount} { asset}</p>
                     </div>
                     <div className="flex justify-between items-center mb-2">
                         <p className="text-[#424A59] font-[400]">Fee:</p>
-                        <p className="text-[#606C82]  font-[600]">0.005 ETH</p>
+                        <p className="text-[#606C82]  font-[600]">{ 2} USDT</p>
                     </div>
                 </div>
 
@@ -42,7 +48,7 @@ const WithdrawalConfirmationCrypto: React.FC<Props> = ({ close }) => {
 
 
                 </div>
-                <PrimaryButton css={""} text={"Proceed"} loading={false} />
+                <PrimaryButton css={"w-full"} text={"Proceed"} loading={isLoading}  onClick={submit}/>
 
             </div>
         </ModalTemplate>

@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Empty from '../../components/Empty';
 import { WalletState } from '../../redux/reducers/walletSlice';
 import { useSelector } from 'react-redux';
 import { TWallet } from '../../types/wallet';
 import { GetLivePrice } from '../../redux/actions/walletActions';
 import { assets } from '../../data';
+import { convertAssetToUSD } from '../../utils/conversions';
+import { Link } from 'react-router-dom';
 
 
 
@@ -24,6 +26,7 @@ export interface Asset {
 
 interface TableProps {
     data: Array<any>;
+    livePrices?:any
 }
 
 export type PriceData = {
@@ -45,7 +48,8 @@ export type PriceData = {
     USDT_TRX: number;
 
 };
-const Table: React.FC<TableProps> = ({data}) => {
+const Table: React.FC<TableProps> = ({ data, livePrices }) => {
+    console.log(livePrices)
     return (
         <table className="table-auto w-full" style={{color: "#515B6E", fontSize: "14px"}}>
             <thead className='text-justify' style={{backgroundColor: "#F9F9FB"}}>
@@ -56,7 +60,7 @@ const Table: React.FC<TableProps> = ({data}) => {
                 </tr>
             </thead>
             <tbody>
-                {data.map((row, rowIndex) => (
+                {data?.map((row, rowIndex) => (
                     <tr key={rowIndex} style={rowIndex % 2 === 0 ? {} : {backgroundColor: "#F9F9FB"}}>
                         <td className=''>
                             <div className="flex px-4 py-3">
@@ -70,12 +74,17 @@ const Table: React.FC<TableProps> = ({data}) => {
                         <td className='px-4 py-3'>
                             <div>
                                 <p style={{color: "#515B6E", fontSize: "14px"}} className="font-semibold">{row.Balance}</p>
-                                <p style={{color: "#606C82", fontSize: "12px"}}> ~{Math.round(row.Balance / row.Rate)} USD</p>
+                                <p style={{color: "#606C82", fontSize: "12px"}}> ~{convertAssetToUSD(row?.Asset,row?.Balance,row?.Rate,livePrices)} USD</p>
                             </div>
                         </td>
                         <td className='px-4 py-3 flex justify-end'>
-                            <button style={{backgroundColor: "#FEF8E5", color: "#624B00"}} className='px-[12px] py-[6px] w-[108px] font-semibold mr-2'>Deposit</button>
-                            <button style={{backgroundColor: "#FEF8E5", color: "#624B00"}} className='px-[12px] py-[6px] w-[108px] font-semibold'>Withdraw</button>
+                                            <Link to="/wallet/deposit" state={{asset:row.Asset}} >
+                                <button style={{ backgroundColor: "#FEF8E5", color: "#624B00" }} className='px-[12px] py-[6px] w-[108px] font-semibold mr-2'>Deposit</button>
+                            </Link>
+                            <Link to="/wallet/withdrawal" state={{ asset: row.Asset }} >
+
+                                <button style={{ backgroundColor: "#FEF8E5", color: "#624B00" }} className='px-[12px] py-[6px] w-[108px] font-semibold'>Withdraw</button>
+                                </Link>
                         </td>
                     </tr>
                 ))}
@@ -95,47 +104,49 @@ const Assets: React.FC = () => {
         fetchPrices();
     }, []);
     const wallet: TWallet = useSelector((state: any) => state.wallet).wallet
-    const defaultAssets = [
+    
+    const defaultAssets = useMemo(() => [
         {
             Asset: 'BTC',
             name: 'Bitcoin',
             Balance: wallet?.BTC ?? 0,
-            Rate:  tokenLivePrices?.BTC??0
+            Rate: tokenLivePrices?.BTC ?? 0
         },
         {
-            Asset: 'Eth',
+            Asset: 'ETH',
             name: 'Ethereum',
             Balance: wallet?.ETH ?? 0,
-            Rate: tokenLivePrices?.ETH??0
+            Rate: tokenLivePrices?.ETH ?? 0
         },
         {
             Asset: 'SOL',
             name: 'Solana',
             Balance: wallet?.SOL ?? 0,
-            Rate: tokenLivePrices?.SOL??0
+            Rate: tokenLivePrices?.SOL ?? 0
         },
         {
             Asset: 'USDT',
             name: 'Tether USD',
             Balance: wallet?.USDT ?? 0,
-            Rate: tokenLivePrices?.USDT??0
+            Rate: tokenLivePrices?.USDT ?? 0
         },
         {
             Asset: 'xNGN',
             name: 'Naira on Bisats',
             Balance: wallet?.xNGN ?? 0,
-            Rate: tokenLivePrices?.xNGN??0
+            Rate: tokenLivePrices?.xNGN ?? 0
         },
     ]
+,[tokenLivePrices?.BTC, tokenLivePrices?.ETH, tokenLivePrices?.SOL, tokenLivePrices?.USDT, tokenLivePrices?.xNGN, wallet?.BTC, wallet?.ETH, wallet?.SOL, wallet?.USDT, wallet?.xNGN]
+    )
 
-    console.log(tokenLivePrices)
     // const fields: Fields[]  = [Fields.Asset, Fields.Balance, Fields.Empty];
     const [openAssets] = useState<Array<Asset>>(defaultAssets);
 
     return (
         <div>
             {
-                openAssets.length === 0 ? <Empty /> : <Table data={openAssets} />
+                openAssets.length === 0||!tokenLivePrices ? <Empty /> : <Table data={openAssets} livePrices={ tokenLivePrices} />
             }
         </div>
     );

@@ -1,86 +1,370 @@
-import React from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import PrimaryInput from '../../../components/Inputs/PrimaryInput'
-import CryptoFilter from '../../../components/CryptoFilter'
 import { PrimaryButton } from '../../../components/buttons/Buttons'
 import { TokenData } from '../../../data'
+import { AdSchema } from './ExpressSwap'
+import { useNavigate } from 'react-router-dom'
+import { assets, convertAssetToNaira, convertNairaToAsset } from '../../../utils/conversions'
+import { useSelector } from 'react-redux'
+import { WalletState } from '../../../redux/reducers/walletSlice'
+import SwapConfirmation from '../../../components/Modals/SwapConfirmation'
+import { GetLivePrice } from '../../../redux/actions/walletActions'
+import { PriceData } from '../../wallet/Assets'
+import { bisats_charges } from '../../../utils/transaction_limits'
+import Toast from '../../../components/Toast'
+import Bisatsfetch from '../../../redux/fetchWrapper'
+import { UserState } from '../../../redux/reducers/userSlice'
+// assets = isDev ? TestAssets : LiveAssets
+
+export const assetIndexMap: Record<string, number> = Object.values(assets).reduce((acc, asset, index) => {
+    acc[asset] = index;
+    return acc;
+}, {} as Record<string, number>);
+
 
 export enum typeofSwam { "Buy", "Sell" }
-const Swap = ({ type }: { type: typeofSwam }) => {
+const Swap = ({ type, adDetail }: { type: "buy" | "sell", adDetail?: AdSchema | undefined }) => {
+    const [showConfirmation, setShowConfirmation] = useState(false);
+    const [amount, setAmount] = useState("0")
+    const [tokenPrice, setTokenPrice] = useState<PriceData>()
+    const [confirmLoading, setConfirmLoading] = useState(false);
+    const [orderError, setOrderError] = useState<string | null>(null);
+    const [networkFee, setNetworkFee] = useState<string | null>(null);
+    const [transactionFee, setTransactionFee] = useState<string | null>(null);
+    const [error, setError] = useState<string | null>(null);
 
+
+
+
+
+    const walletState: WalletState = useSelector((state: any) => state.wallet);
+    const user = useSelector((state: { user: UserState }) => state.user);
+    const userId = user?.user?.userId || "";
+
+    
+    
+    const navigate = useNavigate()
+   
+    useEffect(() => {
+        if (!adDetail) navigate(-1);
+
+    },[])
+
+     useEffect(() => {
+                const fetchPrices = async () => {
+                    const prices = await GetLivePrice();
+                    setTokenPrice(prices);
+                };
+        
+                fetchPrices();
+     }, []);
+    
+    const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        // setAmount(e.target.value);
+        setAmount( e.target.value )
+    };
+    const fetchNetworkFee = async () => {
+        if ( !amount) return null;
+
+        try {
+            const adsId = adDetail?.id;
+            const amountValue = parseFloat(amount);
+
+            const response = await Bisatsfetch(
+                `/api/v1/user/${userId}/ads/${adsId}/networkFee`,
+                {
+                    method: "POST",
+                    body: JSON.stringify({
+                        userId: userId,
+                        amount: amountValue,
+                    }),
+                }
+            );
+
+
+            if (response.status) {
+                setNetworkFee(response?.data?.networkFee);
+                setTransactionFee(response?.data?.transactionFee);
+                return response.data;
+            } else {
+                setError("Failed to fetch network fee: " + response.message);
+                return response;
+            }
+        } catch (err) {
+            console.error("Error fetching network fee:", err);
+            setError("Failed to fetch network fee. Please try again.");
+            return null;
+        }
+    };
+
+
+    const handleConfirmTransaction = async () => {
+        if ( !amount) return;
+        if (adDetail?.orderType === "buy") {
+            if (Number(amount) > Number(walletState?.wallet?.xNGN)) {
+                Toast.error("Your xNGN balance is not enough to carry out this transaction", "Insufficient Wallet Balance")
+                return
+            }
+        } else {
+            if (Number(amount) > Number(walletState?.wallet?.[adDetail?.asset??"BTC"])) {
+                Toast.error(`Your ${adDetail?.asset} balance is not enough to carry out this transaction`, "Insufficient Wallet Balance")
+                return
+            }
+        }
+        setConfirmLoading(true);
+        setOrderError(null);
+
+        try {
+            const feeData = await fetchNetworkFee();
+            if (!feeData.status) {
+                setOrderError(feeData?.message);
+                Toast.error(feeData?.message, "Failed")
+                setConfirmLoading(false);
+                setShowConfirmation(false)
+                return;
+            }
+
+            const orderResult = await placeOrder(feeData);
+            if (orderResult?.success) {
+                setShowConfirmation(false);
+                setAmount("");
+                setNetworkFee(null);
+                setTransactionFee(null);
+
+                // TODO: Show success notification
+                Toast.success(orderResult?.message, "Success");
+            } else {
+                Toast.error(orderResult?.message, "Failed");
+            }
+        } catch (err) {
+            console.error(err)
+            Toast.error("An eeror occured", "Error");
+            setOrderError("An unexpected error occurred. Please try again.");
+        } finally {
+            setConfirmLoading(false);
+        }
+    };
+    const placeOrder = async (feeData: any) => {
+        if ( !amount) return;
+
+        try {
+            const adsId = adDetail?.id;
+            const amountValue = parseFloat(amount);
+
+            const response = await Bisatsfetch(
+                `/api/v1/user/${userId}/ads/${adsId}/order`,
+                {
+                    method: "POST",
+                    body: JSON.stringify({
+                        userId: userId,
+                        amount: amountValue,
+                        networkFee: feeData.networkFee,
+                        transactionFee: feeData.transactionFee,
+                    }),
+                }
+            );
+
+            console.log("Place Order API Response:", response);
+
+            if (response.status) {
+                return { success: true, data: response.data };
+            } else {
+                setOrderError(response.message);
+                return { success: false, message: response.message };
+            }
+        } catch (err) {
+            console.error("Error placing order:", err);
+            setOrderError("Failed to place order. Please try again.");
+            return { success: false, message: "Failed to place order." };
+        }
+    };
+    const calculateFee = () => {
+            if (!amount || parseFloat(amount) <= 0) return "0";
+            const feePercentage = bisats_charges.crypto_buy;
+            return (parseFloat(amount) * feePercentage).toFixed(2);
+        };
+
+    const getCurrencyName = () =>
+        adDetail?.orderType === "buy" ? adDetail?.asset : "xNGN";
+    const calculateReceiveAmount = useMemo(() => {
+            const inputAmount = parseFloat(amount);
+            const price = adDetail?.price??0;
+            
+    
+            if (adDetail?.orderType=== "buy") {
+                // Buy
+                const amount = tokenPrice ? convertNairaToAsset(adDetail?.asset as keyof typeof assets, inputAmount, price, tokenPrice) : null 
+                return amount !== null ? amount.toFixed(2) : "0.00";
+            } else {
+                // Sell
+                const amount = tokenPrice ?convertAssetToNaira(adDetail?.asset as keyof typeof assets, inputAmount, price, tokenPrice): null 
+                return amount !== null ? amount.toFixed(2) : "0.00";
+            }
+    
+        },[adDetail?.asset, adDetail?.orderType, adDetail?.price, amount, tokenPrice])
     return (
         <div>
-            <p className={`${type === typeofSwam.Buy ? "text-[#17A34A]" : "text-[#DC2625]"} text-[14px] font-[600] my-3`}> {type === typeofSwam.Buy ? "You’re Buying from" : "You’re Selling to"}</p>
+            <p className={`${type === "buy" ? "text-[#17A34A]" : "text-[#DC2625]"} text-[14px] font-[600] my-3`}> {type === "buy" ? "You’re Buying from" : "You’re Selling to"}</p>
 
             <h1 className='text-[28px] md:text-[34px] text-[#0A0E12] font-[600] leading-[40px] my-3'>Chinex exchanger</h1>
 
-            <p className='text-[#515B6E] text-[14px] font-[400] my-2'><span>1 USDT</span>  ≈ <span>1,661.66166 xNGN</span> <span className='text-[#17A34A] text-[12px] font-[600] bg-[#F5FEF8]'> 30 s</span></p>
+            <p className='text-[#515B6E] text-[14px] font-[400] my-2'><span>1 USDT</span>  ≈ <span>{adDetail?.price} xNGN</span>
+                {/* <span className='text-[#17A34A] text-[12px] font-[600] bg-[#F5FEF8]'> 30 s</span> */}
+            </p>
             <div className='flex items-center my-1 w-2/3 justify-between'>
                 <div className='text-[12px] text-[#515B6E]'>
                     <h2 className='font-[600]'>Available</h2>
-                    <p>565.5 USDT</p>
+                    <p>{adDetail?.amountAvailable} {adDetail?.asset }</p>
                 </div>
                 <div className='text-[12px] text-[#515B6E]'>
                     <h2 className='font-[600]'>Limit</h2>
-                    <p>50,000 - 1,000,000 NGN</p>
+                    <p>{adDetail?.minimumLimit} - {adDetail?.maximumLimit} NGN</p>
                 </div>
             </div>
+            {
+                type === "buy" ?
+                    <div>
+                        <div className='relative'>
+                            <PrimaryInput css={'w-full h-[64px]'} label={'Amount'} error={undefined} touched={undefined}
+                            
+                                min={adDetail?.minimumLimit}
+                                max={adDetail?.maximumLimit}
+                                value={amount}
+                                onChange={handleAmountChange}
+                            />
+                            <div className='absolute right-3 top-10'>
 
-            <div>
-                <div className='relative'>
-                    <PrimaryInput css={'w-full h-[64px]'} label={'Amount'} error={undefined} touched={undefined} />
-                    <div className='absolute right-3 top-10'>
+                                <button
 
-                        <button
+                                    className={`text-[#515B6E] p-2.5 px-4 bg-gradient-to-r from-[#FFFFFF] to-[#EEEFF2] border border-[#E2E4E8] h-[48px] rounded-[8px] rounded inline-flex items-center w-[120px] flex justify-between font-[600] text-[14px] leading-[24px] `}
+                                    type="button"
+                                >
+                                    {/* <Typography.Text> */}
+                                    {TokenData[0].tokenLogo}
 
-                            className={`text-[#515B6E] p-2.5 px-4 bg-gradient-to-r from-[#FFFFFF] to-[#EEEFF2] border border-[#E2E4E8] h-[48px] rounded-[8px] rounded inline-flex items-center w-[120px] flex justify-between font-[600] text-[14px] leading-[24px] `}
-                            type="button"
-                        >
-                            {/* <Typography.Text> */}
-                            {TokenData[1].tokenLogo}
+                                    <div className="mx-3">
 
-                            <div className="mx-3">
+                                        {TokenData[0].tokenName}
+                                    </div>
+                                    {/* </Typography.Text> */}
 
-                                {TokenData[1].tokenName}
+                                </button>
+                                {/* <CryptoFilter error={undefined} touched={undefined} handleChange={() => console.log("mms")} /> */}
                             </div>
-                            {/* </Typography.Text> */}
+                            <small className='text-[#606C82] text-[12px] font-[400]'>Balance: {walletState?.wallet?.xNGN} xNGN</small>
+                        </div>
+                        {/* <p className="text-[#FFCCCB] text-[12px] font-[400] mt-2">{amount></p> */}
+
+
+                        <div className='relative my-10'>
+                            <PrimaryInput css={'w-full h-[64px]'}
+                                label={'You’ll receive at least'}
+                                error={undefined}
+                                touched={undefined}
+                                readOnly
+                                value={calculateReceiveAmount}
+                            
+                            />
+                            <div className='absolute right-3 top-10'>
+
+                                <button
+
+                                    className={`text-[#515B6E] p-2.5 px-4 bg-gradient-to-r from-[#FFFFFF] to-[#EEEFF2] border border-[#E2E4E8] h-[48px] rounded-[8px] rounded inline-flex items-center w-[120px] flex justify-between font-[600] text-[14px] leading-[24px] `}
+                                    type="button"
+                                >
+                                    {/* <Typography.Text> */}
+                                    {TokenData?.[assetIndexMap?.[adDetail?.asset??"BTC"]]?.tokenLogo}
+
+                                    <div className="mx-3">
+
+                                        {TokenData?.[assetIndexMap?.[adDetail?.asset ?? "BTC"]]?.tokenName}
+                                    </div>
+                                    {/* </Typography.Text> */}
 
 
 
-                        </button>
-                        {/* <CryptoFilter error={undefined} touched={undefined} handleChange={() => console.log("mms")} /> */}
-                    </div>
-                    <small className='text-[#606C82] text-[12px] font-[400]'>Balance: 20,000 xNGN</small>
-                </div>
-
-                <div className='relative my-10'>
-                    <PrimaryInput css={'w-full h-[64px]'} label={'You’ll receive at least'} error={undefined} touched={undefined} />
-                    <div className='absolute right-3 top-10'>
-
-                        <button
-
-                            className={`text-[#515B6E] p-2.5 px-4 bg-gradient-to-r from-[#FFFFFF] to-[#EEEFF2] border border-[#E2E4E8] h-[48px] rounded-[8px] rounded inline-flex items-center w-[120px] flex justify-between font-[600] text-[14px] leading-[24px] `}
-                            type="button"
-                        >
-                            {/* <Typography.Text> */}
-                            {TokenData[0].tokenLogo}
-
-                            <div className="mx-3">
-
-                                {TokenData[0].tokenName}
+                                </button>
+                                {/* <CryptoFilter error={undefined} touched={undefined} handleChange={() => console.log("mms")} /> */}
                             </div>
-                            {/* </Typography.Text> */}
+                        </div>
 
 
+                    </div> :
+                    <div>
+                        <div className='relative'>
+                            <PrimaryInput css={'w-full h-[64px]'} label={'Quanity'} error={undefined} touched={undefined}
+                                value={amount}
+                                onChange={handleAmountChange}/>
+                            <div className='absolute right-3 top-10'>
 
-                        </button>
-                        {/* <CryptoFilter error={undefined} touched={undefined} handleChange={() => console.log("mms")} /> */}
+                                <button
+
+                                    className={`text-[#515B6E] p-2.5 px-4 bg-gradient-to-r from-[#FFFFFF] to-[#EEEFF2] border border-[#E2E4E8] h-[48px] rounded-[8px] rounded inline-flex items-center w-[120px] flex justify-between font-[600] text-[14px] leading-[24px] `}
+                                    type="button"
+                                >
+                                    {/* <Typography.Text> */}
+                                    {TokenData[assetIndexMap?.[adDetail?.asset ?? "BTC"]].tokenLogo}
+
+                                    <div className="mx-3">
+
+                                        {TokenData[assetIndexMap?.[adDetail?.asset ?? "BTC"]].tokenName}
+                                    </div>
+                                    {/* </Typography.Text> */}
+
+                                </button>
+                                {/* <CryptoFilter error={undefined} touched={undefined} handleChange={() => console.log("mms")} /> */}
+                            </div>
+                            {/* <small className='text-[#606C82] text-[12px] font-[400]'>Balance: 20,000 xNGN</small> */}
+                        </div>
+
+                        <div className='relative my-10'>
+                            <PrimaryInput css={'w-full h-[64px]'} label={'You’ll receive at least'} error={undefined} touched={undefined}
+                            
+                                readOnly
+                                value={calculateReceiveAmount}
+                            />
+                            <div className='absolute right-3 top-10'>
+
+                                <button
+
+                                    className={`text-[#515B6E] p-2.5 px-4 bg-gradient-to-r from-[#FFFFFF] to-[#EEEFF2] border border-[#E2E4E8] h-[48px] rounded-[8px] rounded inline-flex items-center w-[120px] flex justify-between font-[600] text-[14px] leading-[24px] `}
+                                    type="button"
+                                >
+                                    {/* <Typography.Text> */}
+                                    {TokenData[0].tokenLogo}
+
+                                    <div className="mx-3">
+
+                                        {TokenData[0].tokenName}
+                                    </div>
+                                    {/* </Typography.Text> */}
+                                </button>
+                                {/* <CryptoFilter error={undefined} touched={undefined} handleChange={() => console.log("mms")} /> */}
+                            </div>
+                        </div>
+
+
                     </div>
-                </div>
-
-
-            </div>
-            <PrimaryButton text={`${typeofSwam[type]} ${TokenData[1].tokenName}`} loading={false} css='w-full' />
-
+}
+            
+            <PrimaryButton text={`${type} ${TokenData?.[assetIndexMap?.[adDetail?.asset ?? "BTC"]]?.tokenName}`} loading={false} css='w-full capitalize' onClick={() => setShowConfirmation(true)}
+ />
+            {showConfirmation && (
+                <SwapConfirmation
+                    close={() => setShowConfirmation(false)}
+                    type={adDetail?.orderType === "buy" ? typeofSwam.Buy : typeofSwam.Sell}
+                    amount={amount}
+                    receiveAmount={calculateReceiveAmount}
+                    fee={calculateFee()}
+                    token={adDetail?.orderType === "buy" ? "xNGN" : adDetail?.asset}
+                    currency={getCurrencyName()}
+                    loading={confirmLoading}
+                    onConfirm={handleConfirmTransaction}
+                    networkFee={networkFee}
+                    transactionFee={transactionFee}
+                    error={orderError}
+                />
+            )}
         </div>
     )
 }

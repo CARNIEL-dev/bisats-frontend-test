@@ -2,7 +2,7 @@ import TokenSelect from "../../../components/Inputs/TokenSelect"
 import Head from "../Head"
 import { MultiSelectDropDown } from "../../../components/Inputs/MultiSelectInput"
 import { TokenData } from "../../../data"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { PrimaryButton } from "../../../components/buttons/Buttons"
 import PrimaryInput from "../../../components/Inputs/PrimaryInput"
 import { useFormik } from "formik"
@@ -11,26 +11,33 @@ import { UserState } from "../../../redux/reducers/userSlice"
 import { TopUpSchema } from "../../../formSchemas"
 import { DepositTranscBreakDown, TopUpNGNBalance } from "../../../redux/actions/walletActions"
 import Toast from "../../../components/Toast"
-import { useNavigate } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import { APP_ROUTES } from "../../../constants/app_route"
 import { setDepositTranscBreakDown } from "../../../helpers"
 import KycRouteGuard from "../../../components/KycGuard"
 import { ACTIONS } from "../../../utils/transaction_limits"
+import { WalletState } from "../../../redux/reducers/walletSlice"
+import { assets } from "../../../utils/conversions"
+import { handleCopy } from "../../../redux/actions/generalActions"
 
 export type TNetwork = {
     label: string,
     value: string
 }
 const DepositPage = () => {
+    const location = useLocation();
+    
+    const linkedAsset = location.state?.asset;
     const [isLoading, setIsLoading] = useState(false)
-    const [selectedToken, setSelectedToken] = useState<string>()
+    const [selectedToken, setSelectedToken] = useState<string>(linkedAsset)
     const [networks, setNetworks] = useState<TNetwork[]>([])
     const [selectedNetwork, setSelectedNetworks] = useState<string>()
     const [paymentOption, setPaymentOption] = useState<string>("")
     const navigate = useNavigate()
 
     const user: UserState = useSelector((state: any) => state.user);
-
+    const walletState: WalletState = useSelector((state: any) => state.wallet);
+    const wallet= walletState?.wallet
 
     useEffect(() => {
         for (let token of TokenData) {
@@ -39,6 +46,7 @@ const DepositPage = () => {
                 return
             }
         }
+        console.log(selectedToken,assets["BTC"])
     }, [selectedToken])
 
     const formik = useFormik({
@@ -65,6 +73,25 @@ const DepositPage = () => {
         },
     });
 
+    const getAddress = useMemo(() => {
+        if (selectedToken === assets["USDT"]) return wallet?.trxAddress 
+        else if (selectedToken === assets["BTC"]) return wallet?.btcAddress 
+        else if (selectedToken === assets["SOL"]) return wallet?.solAddress 
+        else if (selectedToken === assets["ETH"]) return wallet?.ethAddress
+        else return "Please select a network"
+    }
+   
+        , [selectedToken, wallet?.btcAddress, wallet?.ethAddress, wallet?.solAddress, wallet?.trxAddress])
+    
+    const handleCopyToClip = async(prop: string) => {
+        const result = await handleCopy(prop);
+        console.log(result)
+        if (result.status) {
+            Toast.info(result.message, "");
+        } else {
+            Toast.error(result.message, "")
+        }
+    }
     return (
         <KycRouteGuard requiredAction={ACTIONS.DEPOSIT}
             fallbackRedirect={APP_ROUTES.DASHBOARD}
@@ -73,20 +100,20 @@ const DepositPage = () => {
             <Head header={"Make a Deposit"} subHeader={"Securely deposit fiat or crypto to fund your account and start trading."} />
 
             <form className="mt-10" onSubmit={formik.handleSubmit}>
-                <TokenSelect title={"Select option"} label={"Select Asset"} error={undefined} touched={undefined} handleChange={(e) => { setSelectedToken(e); setSelectedNetworks(""); setPaymentOption("") }} />
+                <TokenSelect title={selectedToken??"Select option"}  label={"Select Asset"} error={undefined} touched={undefined} handleChange={(e) => { setSelectedToken(e); setSelectedNetworks(""); setPaymentOption("") }} />
 
-                {
+                {/* {
                     selectedToken &&
 
                     <div className="my-4">
                         {
-                                selectedToken !== "ngn"
+                                selectedToken !== "xNGN"
                                 && <MultiSelectDropDown parentId={""} title={"Select"} choices={networks} error={undefined} touched={undefined} label={"Select Network"} handleChange={(e) => setSelectedNetworks(e)} />
 
                         }
                     </div>
-                }
-                {selectedToken === "ngn" &&
+                } */}
+                {selectedToken === "xNGN" &&
                     <div>
                         <PrimaryInput css={"w-full p-2.5 mb-7"} label={"Amount"} placeholder="Enter amount" name="amount" error={formik.errors.amount} value={formik.values.amount} touched={formik.touched.amount} onChange={(e) => {
                             const value = e.target.value;
@@ -97,15 +124,15 @@ const DepositPage = () => {
                         <PrimaryButton css={"w-full"} text={"Proceed"} loading={isLoading} />
                     </div>}
                 {
-                    ((selectedNetwork)) && (
-
-
+                    ((selectedToken &&selectedToken!=="xNGN")) && (
                             <div>
-                                <div className="lg:h-[84px] rounded border border-dashed  border-[#F59E0C] bg-[#FFFBEB] rounded-[12px] py-1 lg:py-3 px-2 lg:px-5">
+                                <div className="lg:h-[84px] rounded border border-dashed  border-[#F59E0C] bg-[#FFFBEB] rounded-[12px] py-1 lg:py-3 px-2 lg:px-5 mt-3">
                                     <h1 className="text-[#2B313B] text-[14px] leading-[24px] font-[600]">Wallet Address</h1>
                                     <div className="flex  flex-wrap lg:flex-nowrap text-wrap items-center justify-between mt-2">
-                                        <p className="text-[#515B6E] text-[14px] leading-[24px] font-[400] break-all">0x8708bcabde9d58fedcd164ebf0d3742486284b90</p>
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <p className="text-[#515B6E] text-[12px] lg:text-[14px] leading-[24px] font-[400] break-all">
+                                        {getAddress}
+                                        </p>
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="cursor-pointer" onClick={()=>handleCopyToClip(getAddress)}>
                                             <path d="M16 12.9V17.1C16 20.6 14.6 22 11.1 22H6.9C3.4 22 2 20.6 2 17.1V12.9C2 9.4 3.4 8 6.9 8H11.1C14.6 8 16 9.4 16 12.9Z" stroke="#515B6E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                                             <path d="M22 6.9V11.1C22 14.6 20.6 16 17.1 16H16V12.9C16 9.4 14.6 8 11.1 8H8V6.9C8 3.4 9.4 2 12.9 2H17.1C20.6 2 22 3.4 22 6.9Z" stroke="#515B6E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                                         </svg>
@@ -119,8 +146,8 @@ const DepositPage = () => {
                                         <path d="M7.99609 10.667H8.00208" stroke="#858FA5" stroke-linecap="round" stroke-linejoin="round" />
                                     </svg>
 
-                                    <p className="text-[#606C82] text-[12px] leading-[16px] font-[400] ml-2">Please confirm that you are depositing<span className="fomt-600">{selectedToken}</span> to this address on the <span className="fomt-600">Arbitrum One</span>  network.
-                                        <br />
+                                    <p className="text-[#606C82] text-[12px] leading-[16px] font-[400] ml-2">Please confirm that you are depositing<span className="font-[600] ml-2">{selectedToken}</span> to this address on the <span className="font-[600] ml-1">{selectedToken==="USDT"?"Trx":selectedToken}</span>  network.
+                                        <br className="mb-2" />
                                         Mismatched address indivation may result in the permanent loss of your assets.</p>
 
                                 </div>
