@@ -352,7 +352,7 @@ export const GetSearchAds= async (payload: TAddSearchRequest) => {
     const response = await Bisatsfetch(
       `/api/v1/user/${payload.userId}${
         BACKEND_URLS?.P2P.ADS.SEARCH_ADS
-      }?asset=${payload.asset}&amount${payload.amount}&type=${
+      }?asset=${payload.asset}&type=${
         payload.type === "buy" ? "sell" : "buy"
       }&limit=10&skip=0`,
       {
