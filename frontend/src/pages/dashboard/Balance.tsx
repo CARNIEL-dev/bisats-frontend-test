@@ -292,19 +292,19 @@ const Balance: React.FC = () => {
 				</div>
 			</div>
 			<div>
-				<KycManager
+				{/* <KycManager
 					action={ACTIONS.DEPOSIT}
 					func={() => navigate(APP_ROUTES.WALLET.DEPOSIT)}
 				>
-					{(validateAndExecute) => (
+					{(validateAndExecute) => ( */}
 						<PrimaryButton
 							text={"Deposit"}
 							loading={isLoading}
 							css="w-full"
-							onClick={validateAndExecute}
+							onClick={() => navigate(APP_ROUTES.WALLET.DEPOSIT)}
 						/>
-					)}
-				</KycManager>
+					{/* )}
+				</KycManager> */}
 			</div>
 		</div>
 	);

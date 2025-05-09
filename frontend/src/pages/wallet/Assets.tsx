@@ -78,7 +78,7 @@ const Table: React.FC<TableProps> = ({ data, livePrices }) => {
                             </div>
                         </td>
                         <td className='px-4 py-3 flex justify-end'>
-                                            <Link to="/wallet/deposit" state={{asset:row.Asset}} >
+                              <Link to="/wallet/deposit" state={{asset:row.Asset}} >
                                 <button style={{ backgroundColor: "#FEF8E5", color: "#624B00" }} className='px-[12px] py-[6px] w-[108px] font-semibold mr-2'>Deposit</button>
                             </Link>
                             <Link to="/wallet/withdrawal" state={{ asset: row.Asset }} >
@@ -107,31 +107,31 @@ const Assets: React.FC = () => {
     
     const defaultAssets = useMemo(() => [
         {
-            Asset: 'BTC',
+            Asset: assets.BTC,
             name: 'Bitcoin',
             Balance: wallet?.BTC ?? 0,
             Rate: tokenLivePrices?.BTC ?? 0
         },
         {
-            Asset: 'ETH',
+            Asset: assets.ETH,
             name: 'Ethereum',
             Balance: wallet?.ETH ?? 0,
             Rate: tokenLivePrices?.ETH ?? 0
         },
         {
-            Asset: 'SOL',
+            Asset: assets.SOL,
             name: 'Solana',
             Balance: wallet?.SOL ?? 0,
             Rate: tokenLivePrices?.SOL ?? 0
         },
         {
-            Asset: 'USDT',
+            Asset: assets.USDT,
             name: 'Tether USD',
             Balance: wallet?.USDT ?? 0,
             Rate: tokenLivePrices?.USDT ?? 0
         },
         {
-            Asset: 'xNGN',
+            Asset: assets.xNGN,
             name: 'Naira on Bisats',
             Balance: wallet?.xNGN ?? 0,
             Rate: tokenLivePrices?.xNGN ?? 0

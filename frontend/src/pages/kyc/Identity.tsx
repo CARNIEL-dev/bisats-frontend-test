@@ -10,7 +10,7 @@ import { getUser } from "../../helpers"
 import Toast from "../../components/Toast"
 import { useFormik } from "formik"
 import { IdentificationSchema } from "../../formSchemas/KYC"
-import { PostIdentity_KYC, GetUserDetails } from "../../redux/actions/userActions"
+import { PostIdentity_KYC, GetUserDetails, rehydrateUser } from "../../redux/actions/userActions"
 import { APP_ROUTES } from "../../constants/app_route"
 import { useNavigate } from "react-router-dom"
 import { useSelector } from "react-redux"
@@ -154,10 +154,12 @@ const Identity = () => {
             }
             console.log(payloadd)
             const response = await PostIdentity_KYC(payloadd)
-            console.log(response)
+            
             if (response.statusCode === 200) {
                 Toast.success("Success", response.message)
+                rehydrateUser()
                 navigate(APP_ROUTES.DASHBOARD)
+
             } else {
                 setIsLoading(false)
                 Toast.error("Error", response.message)

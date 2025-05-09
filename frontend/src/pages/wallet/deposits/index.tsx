@@ -26,7 +26,6 @@ export type TNetwork = {
 }
 const DepositPage = () => {
     const location = useLocation();
-    
     const linkedAsset = location.state?.asset;
     const [isLoading, setIsLoading] = useState(false)
     const [selectedToken, setSelectedToken] = useState<string>(linkedAsset)
@@ -34,7 +33,6 @@ const DepositPage = () => {
     const [selectedNetwork, setSelectedNetworks] = useState<string>()
     const [paymentOption, setPaymentOption] = useState<string>("")
     const navigate = useNavigate()
-
     const user: UserState = useSelector((state: any) => state.user);
     const walletState: WalletState = useSelector((state: any) => state.wallet);
     const wallet= walletState?.wallet
@@ -93,9 +91,9 @@ const DepositPage = () => {
         }
     }
     return (
-        <KycRouteGuard requiredAction={ACTIONS.DEPOSIT}
-            fallbackRedirect={APP_ROUTES.DASHBOARD}
-        >
+        // <KycRouteGuard requiredAction={ACTIONS.DEPOSIT}
+        //     fallbackRedirect={APP_ROUTES.DASHBOARD}
+        // >
         <div>
             <Head header={"Make a Deposit"} subHeader={"Securely deposit fiat or crypto to fund your account and start trading."} />
 
@@ -159,7 +157,7 @@ const DepositPage = () => {
             </form>
 
             </div>
-        </KycRouteGuard>
+        // </KycRouteGuard>
 
     )
 }
