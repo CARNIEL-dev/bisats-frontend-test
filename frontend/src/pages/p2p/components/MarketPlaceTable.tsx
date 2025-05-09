@@ -49,15 +49,15 @@ const MarketPlaceContent = ({
 	];
 console.log(ads)
 	return (
-		<div>
+		<div className="w-full">
 			{ads.length === 0 ? (
 				<Empty />
 			) : (
-				<div>
+				<div className="w-full">
 					<div className="hidden md:flex">
 						<P2PMPTable fields={fields} data={ads} type={type} />
 					</div>
-					<div className="md:hidden">
+					<div className="md:hidden  w-full">
 						<MobileP2PMP data={ads} type={type} />
 					</div>
 				</div>

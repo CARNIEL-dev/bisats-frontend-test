@@ -32,7 +32,7 @@ const MarketPlace = () => {
 	const [adsParam, setAdsParam] = useState({
 			asset: "USDT",
 			type: "buy",
-			amount:"10"
+			amount:""
 		})
 	const [pagination, setPagination] = useState({
 		limit: 10,
@@ -53,13 +53,13 @@ const MarketPlace = () => {
 
 				setSearchAds(res)
 			}
-			if (adsParam?.amount && parseFloat(adsParam?.amount) > 0) {
-			const debounceTimer = setTimeout(() => {
+			// if (adsParam?.amount && parseFloat(adsParam?.amount) > 0) {
+			// const debounceTimer = setTimeout(() => {
 				FetchAds()
-			}, 500); 
+			// }, 500); 
 
-			return () => clearTimeout(debounceTimer);
-		}
+		// 	return () => clearTimeout(debounceTimer);
+		// }
 		},[ adsParam, userId])
 
 	const handleTokenChange = (tokenId: string): void => {
@@ -103,7 +103,7 @@ const MarketPlace = () => {
 				</p>
 			</div>
 
-			<div className="flex items-end w-3/5 lg:w-1/4">
+			<div className="flex items-end w-full lg:w-1/4">
 				<CryptoFilter
 					error={undefined}
 					touched={undefined}
@@ -142,7 +142,7 @@ const MarketPlace = () => {
 				</button>
 			</div>
 
-			<div className="my-10">
+			<div className="my-10 w-full">
 				<p style={{ fontSize: "15px" }} className="mb-2 md:mb-3">
 					<span
 						style={{ fontWeight: "600", color: "#0A0E12" }}

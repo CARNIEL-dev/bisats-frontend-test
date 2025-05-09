@@ -13,12 +13,14 @@ import { IdentificationSchema } from "../../formSchemas/KYC"
 import { PostIdentity_KYC, GetUserDetails } from "../../redux/actions/userActions"
 import { APP_ROUTES } from "../../constants/app_route"
 import { useNavigate } from "react-router-dom"
+import { useSelector } from "react-redux"
+import { UserState } from "../../redux/reducers/userSlice"
 const Identity = () => {
     const navigate = useNavigate()
     const [isLoading, setIsLoading] = useState(false)
 
     const [capturedImage, setCapturedImage] = useState<string | null>(null);
-    const user = getUser()
+    const user = useSelector((state: { user: UserState }) => state.user);
     const [identityInfo] = useState({
         docType: "",
         identificationNo: "",
@@ -46,7 +48,7 @@ const Identity = () => {
 
 
     useEffect(() => {
-        if (user?.kyc.identificationVerified) {
+        if (user?.user?.kyc.identificationVerified) {
             navigate(APP_ROUTES.KYC.BVNVERIFICATION)
         }
     }, [user])
@@ -148,7 +150,7 @@ const Identity = () => {
             const { ...payload } = values
             const payloadd = {
                 ...payload,
-                userId: user.userId
+                userId: user?.user?.userId
             }
             console.log(payloadd)
             const response = await PostIdentity_KYC(payloadd)

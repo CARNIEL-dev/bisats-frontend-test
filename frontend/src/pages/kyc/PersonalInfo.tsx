@@ -11,6 +11,8 @@ import { PostPersonalInformation_KYC, GetUserDetails } from "../../redux/actions
 import { getUser } from "../../helpers"
 import Toast from "../../components/Toast"
 import { APP_ROUTES } from "../../constants/app_route"
+import { UserState } from "../../redux/reducers/userSlice"
+import { useSelector } from "react-redux"
 
 const PersonalInfo = () => {
     const [isLoading, setIsLoading] = useState(false)
@@ -24,10 +26,9 @@ const PersonalInfo = () => {
         address: ""
     })
     const navigate = useNavigate()
-    const user = getUser()
-
+    const user = useSelector((state: { user: UserState }) => state.user);
     useEffect(() => {
-        if (user?.kyc.personalInformationVerified) {
+        if (user?.kyc?.personalInformationVerified) {
             navigate(APP_ROUTES.KYC.IDENTITY)
         }
     }, [user])
@@ -40,14 +41,14 @@ const PersonalInfo = () => {
             const { ...payload } = values
             const payloadd = {
                 ...payload,
-                userId: user.userId
+                userId: user?.user?.userId
             }
             const response = await PostPersonalInformation_KYC(payloadd)
             setIsLoading(false)
             if (response.statusCode === 200) {
                 Toast.success(response.message, "Success")
                 GetUserDetails()
-                navigate(APP_ROUTES.KYC.POA)
+                navigate(APP_ROUTES.KYC.IDENTITY)
                 return
             } else {
                 Toast.error(response.message, "Error")
