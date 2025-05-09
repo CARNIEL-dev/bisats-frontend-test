@@ -73,10 +73,10 @@ const Dashboard = () => {
 
 							{/* For sm screens and up: normal grid with no scroll */}
 							<div className="hidden sm:grid sm:grid-cols-2 gap-4">
-								<div>
+								<div className="h-full">
 									<Balance />
 								</div>
-								<div>
+								<div className="h-full">
 									<MarketRate />
 								</div>
 							</div>
