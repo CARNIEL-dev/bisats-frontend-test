@@ -1,8 +1,35 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { GetLivePrice, GetWallet } from "../../redux/actions/walletActions";
-import { useSelector } from "react-redux";
-import { WalletState } from "../../redux/reducers/walletSlice";
+import { useDispatch, useSelector } from "react-redux";
+import Bisatsfetch from "../../redux/fetchWrapper";
+
+interface WalletData {
+	id: string;
+	userId: string;
+	xNGN: number;
+	SOL: number;
+	BTC: number;
+	USDT_ETH: number;
+	USDT_TRX: number;
+	USDT_SOL: number;
+	ETH: number;
+	TRX: number;
+}
+
+interface CryptoRates {
+	bitcoin?: { usd: number; ngn: number };
+	ethereum?: { usd: number; ngn: number };
+	solana?: { usd: number; ngn: number };
+	tron?: { usd: number; ngn: number };
+	usd?: { usd: number; ngn: number };
+}
+
+interface WalletState {
+	wallet: WalletData | null;
+	loading: boolean;
+	error: string | null;
+}
 
 interface RootState {
 	wallet: WalletState;
@@ -10,73 +37,119 @@ interface RootState {
 
 const Balance: React.FC = () => {
 	const tokenUsdtValues = GetLivePrice();
+	const dispatch = useDispatch();
 	const [showBalance, setShowBalance] = useState(true);
 	const [currency, setCurrency] = useState<"USD" | "NGN">("USD");
 	const [showCurrencyDropdown, setShowCurrencyDropdown] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
+	const [cryptoRates, setCryptoRates] = useState<CryptoRates | null>(null);
+	const [totalBalance, setTotalBalance] = useState<number | null>(null);
 
 	const walletData = useSelector((state: RootState) => state.wallet.wallet);
+	const walletLoading = useSelector((state: RootState) => state.wallet.loading);
+	const walletError = useSelector((state: RootState) => state.wallet.error);
 
-	const conversionRates = {
-		USD: 1,
-		NGN: 1500,
-	};
+	// Fetch wallet data
 	useEffect(() => {
 		const fetchWalletData = async () => {
-			setIsLoading(true);
 			try {
-				await GetWallet();
-				setIsLoading(false);
+				await dispatch(GetWallet() as any);
 			} catch (err) {
 				console.error("Error fetching wallet:", err);
-				setError("Failed to load wallet data");
-				setIsLoading(false);
 			}
 		};
 
 		fetchWalletData();
-	}, []);
+	}, [dispatch]);
 
-	const getWalletBalance = () => {
-		return walletData?.balance || 0;
-	};
+	// Fetch crypto rates when wallet data is available
+	useEffect(() => {
+		const fetchCryptoRates = async () => {
+			try {
+				const response = await fetch(
+					"https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,tron,usd&vs_currencies=usd,ngn"
+				);
 
-	const getDailyGain = () => {
-		return walletData?.dailyGain || 0;
-	};
+				if (response.ok) {
+					const data = await response.json();
+					setCryptoRates(data);
+				}
+			} catch (err) {
+				console.error("Error fetching crypto rates:", err);
+			}
+		};
 
-	const getPercentageGain = () => {
-		return walletData?.percentageGain || 0;
+		if (walletData && !cryptoRates) {
+			fetchCryptoRates();
+		}
+	}, [walletData, cryptoRates]);
+
+	// Calculate total balance when rates are available
+	useEffect(() => {
+		if (walletData && cryptoRates) {
+			calculateTotalBalance();
+		}
+	}, [walletData, cryptoRates, currency]);
+
+	// Simple function to calculate the total balance
+	const calculateTotalBalance = () => {
+		if (!walletData || !cryptoRates) return;
+
+		const currencyKey = currency.toLowerCase() as "usd" | "ngn";
+		let total = 0;
+
+		// Bitcoin
+		if (walletData.BTC && cryptoRates.bitcoin) {
+			total += walletData.BTC * cryptoRates.bitcoin[currencyKey];
+		}
+
+		// Ethereum
+		if (walletData.ETH && cryptoRates.ethereum) {
+			total += walletData.ETH * cryptoRates.ethereum[currencyKey];
+		}
+
+		// Solana
+		if (walletData.SOL && cryptoRates.solana) {
+			total += walletData.SOL * cryptoRates.solana[currencyKey];
+		}
+
+		// Tron
+		if (walletData.TRX && cryptoRates.tron) {
+			total += walletData.TRX * cryptoRates.tron[currencyKey];
+		}
+
+		// USDT (all types)
+		const usdtTotal =
+			(walletData.USDT_ETH || 0) +
+			(walletData.USDT_TRX || 0) +
+			(walletData.USDT_SOL || 0);
+
+		if (usdtTotal > 0 && cryptoRates.usd) {
+			total += usdtTotal * cryptoRates.usd[currencyKey];
+		}
+
+		// xNGN
+		if (walletData.xNGN) {
+			if (currency === "NGN") {
+				total += walletData.xNGN;
+			} else if (cryptoRates.usd && cryptoRates.usd.ngn) {
+				// Convert NGN to USD
+				total += walletData.xNGN / cryptoRates.usd.ngn;
+			}
+		}
+
+		console.log(`Total balance in ${currency}:`, total);
+		setTotalBalance(total);
 	};
 
 	const formatBalance = () => {
-		const balance = getWalletBalance();
-		if (currency === "USD") {
-			return balance.toLocaleString("en-US", {
-				minimumFractionDigits: 2,
-				maximumFractionDigits: 2,
-			});
-		} else {
-			const balanceNGN = balance * conversionRates.NGN;
-			return balanceNGN.toLocaleString("en-US", {
-				minimumFractionDigits: 2,
-				maximumFractionDigits: 2,
-			});
-		}
-	};
+		if (totalBalance === null) return "0.00";
 
-	const formatDailyGain = () => {
-		const dailyGain = getDailyGain();
-		if (currency === "USD") {
-			return `+$${dailyGain.toFixed(2)}`;
-		} else {
-			const gainNGN = dailyGain * conversionRates.NGN;
-			return `+₦${gainNGN.toLocaleString("en-US", {
-				minimumFractionDigits: 2,
-				maximumFractionDigits: 2,
-			})}`;
-		}
+		return totalBalance.toLocaleString("en-US", {
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2,
+		});
 	};
 
 	const toggleBalanceVisibility = () => {
@@ -95,6 +168,9 @@ const Balance: React.FC = () => {
 	const getCurrencySymbol = () => {
 		return currency === "USD" ? "$" : "₦";
 	};
+
+	// const isLoading = walletLoading || (!cryptoRates && !walletError);
+
 
 	return (
 		<div

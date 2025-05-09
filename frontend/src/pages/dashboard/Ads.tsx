@@ -98,7 +98,8 @@ const Ads: React.FC = () => {
 						  }))
 						: [];
 
-					setOpenAds(transformedAds);
+					// Only take the first 3 items from the transformedAds array
+					setOpenAds(transformedAds.slice(0, 3));
 				} else {
 					console.error("API returned error status:", response);
 					setError(`Error: ${response?.message || "Failed to load ads"}`);

@@ -125,8 +125,7 @@ const Orders: React.FC = () => {
 								};
 						  })
 						: [];
-
-					setOrders(transformedOrders);
+					setOrders(transformedOrders.slice(0, 4));
 				} else if (response.message !== "No orders found") {
 					console.error("API returned error status:", response);
 					setError(`Error: ${response?.message || "Failed to load orders"}`);
