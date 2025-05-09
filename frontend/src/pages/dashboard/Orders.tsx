@@ -35,33 +35,6 @@ const Orders: React.FC = () => {
 	const [loading, setLoading] = useState<boolean>(true);
 	const [error, setError] = useState<string | null>(null);
 
-	const dummyOrders: IOrder[] = [
-		{
-			"Order type": "Buy",
-			"Date & Time": "05/07/2025 14:30:22",
-			Reference: "ORD-12345-ABCDE",
-			Quantity: 0.25,
-			Amount: 12500,
-			Status: "Completed",
-		},
-		{
-			"Order type": "Sell",
-			"Date & Time": "05/06/2025 09:15:45",
-			Reference: "ORD-67890-FGHIJ",
-			Quantity: 0.15,
-			Amount: 7250,
-			Status: "Pending",
-		},
-		{
-			"Order type": "Buy",
-			"Date & Time": "05/05/2025 16:42:12",
-			Reference: "ORD-24680-KLMNO",
-			Quantity: 0.5,
-			Amount: 24800,
-			Status: "Cancelled",
-		},
-	];
-
 	useEffect(() => {
 		fetchUserOrders();
 	}, []);

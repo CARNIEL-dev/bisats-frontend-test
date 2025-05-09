@@ -13,7 +13,7 @@ const Wallet = () => {
 						<Balance />
 					</div>
 					<div
-						className="border-[1px] h-[432px] m-[15px] p-[24px]"
+						className="sm:border-[1px] sm:m-[16px] sm:p-6 p-4"
 						style={{ borderRadius: "12px", borderColor: "#D6DAE1" }}
 					>
 						<div className="mb-[12px]">
@@ -42,7 +42,7 @@ const Wallet = () => {
 						<Assets />
 					</div>
 					<div
-						className="sm:border-[1px] sm:h-[288px] m-[16px] sm:p-[24px]"
+						className="sm:border-[1px] m-[16px] sm:p-[24px]"
 						style={{ borderRadius: "12px", borderColor: "#D6DAE1" }}
 					>
 						<div className="mb-[12px]">

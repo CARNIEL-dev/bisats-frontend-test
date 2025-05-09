@@ -62,10 +62,10 @@ const Dashboard = () => {
 							{/* For mobile: horizontal scroll carousel */}
 							<div className="sm:hidden overflow-x-auto">
 								<div className="flex w-max gap-4 pb-2">
-									<div className="w-3/4">
+									<div className="w-[85%]">
 										<Balance />
 									</div>
-									<div className="w-3/4">
+									<div className="w-[85%]">
 										<MarketRate />
 									</div>
 								</div>
@@ -83,7 +83,7 @@ const Dashboard = () => {
 						</div>
 
 						<div
-							className="sm:border-[1px] m-[15px] sm:p-[24px]"
+							className="sm:border-[1px] m-[16px] sm:p-[24px]"
 							style={{ borderRadius: "12px", borderColor: "#D6DAE1" }}
 						>
 							<div className="mb-[12px]">
@@ -112,7 +112,7 @@ const Dashboard = () => {
 							<Ads />
 						</div>
 						<div
-							className="sm:border-[1px] m-[15px] sm:p-[24px]"
+							className="sm:border-[1px] m-[16px] sm:p-[24px]"
 							style={{ borderRadius: "12px", borderColor: "#D6DAE1" }}
 						>
 							<div className="mb-[12px]">

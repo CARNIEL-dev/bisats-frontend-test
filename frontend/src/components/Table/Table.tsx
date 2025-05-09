@@ -92,6 +92,8 @@ const Table: React.FC<TableProps> = ({ fields, data }) => {
 		</table>
 	);
 
+	
+
 	// Mobile layout with stacked fields - organized in specific order
 	const renderMobileTable = () => (
 		<div className="sm:hidden w-full">
