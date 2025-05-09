@@ -48,7 +48,7 @@ const Table: React.FC<TableProps> = ({ fields, data }) => {
 	// Standard table for sm screens and above
 	const renderDesktopTable = () => (
 		<table
-			className="hidden sm:table table-auto w-full"
+			className="hidden sm:table table-auto w-full h-full"
 			style={{ color: "#515B6E" }}
 		>
 			<thead className="text-justify">
