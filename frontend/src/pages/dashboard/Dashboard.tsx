@@ -46,7 +46,7 @@ const Dashboard = () => {
 	return (
 		<div>
 			<Header currentPage="Dashboard" />
-			<div className="w-full md:w-[70%] mx-auto lg:pt-5">
+			<div className="w-full md:max-w-[70%] mx-auto lg:pt-5">
 				<div>{openKycModal && <KycBanner />}</div>
 				<div className="w-full flex justify-center mt-[30px]">
 					<div className="w-full">
@@ -57,20 +57,33 @@ const Dashboard = () => {
 							Hello, {user?.firstName}
 						</h2>
 
-						<div className="w-full overflow-x-auto md:overflow-visible">
-							<div className="flex w-max sm:w-full m-4 gap-4 sm:justify-between">
-								<div className="w-3/4 sm:w-1/2 flex-shrink-0">
+						{/* Balance and MarketRate section - carousel on mobile, grid on sm+ */}
+						<div className="mx-4 my-4">
+							{/* For mobile: horizontal scroll carousel */}
+							<div className="sm:hidden overflow-x-auto">
+								<div className="flex w-max gap-4 pb-2">
+									<div className="w-[85%]">
+										<Balance />
+									</div>
+									<div className="w-[85%]">
+										<MarketRate />
+									</div>
+								</div>
+							</div>
+
+							{/* For sm screens and up: normal grid with no scroll */}
+							<div className="hidden sm:grid sm:grid-cols-2 gap-4">
+								<div className="h-full">
 									<Balance />
 								</div>
-
-								<div className="w-3/4 sm:w-1/2 flex-shrink-0">
+								<div className="h-full">
 									<MarketRate />
 								</div>
 							</div>
 						</div>
 
 						<div
-							className="sm:border-[1px] m-[15px] sm:p-[24px]"
+							className="sm:border-[1px] m-[16px] sm:p-[24px]"
 							style={{ borderRadius: "12px", borderColor: "#D6DAE1" }}
 						>
 							<div className="mb-[12px]">
@@ -99,7 +112,7 @@ const Dashboard = () => {
 							<Ads />
 						</div>
 						<div
-							className="sm:border-[1px] m-[15px] sm:p-[24px]"
+							className="sm:border-[1px] m-[16px] sm:p-[24px]"
 							style={{ borderRadius: "12px", borderColor: "#D6DAE1" }}
 						>
 							<div className="mb-[12px]">
@@ -130,7 +143,7 @@ const Dashboard = () => {
 					</div>
 				</div>
 			</div>
-			<Footer/>
+			<Footer />
 		</div>
 	);
 };
