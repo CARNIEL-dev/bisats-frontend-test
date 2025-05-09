@@ -11,6 +11,7 @@ import SecurityVerification from "../../components/Modals/SecurityVerification";
 import { GetWallet } from "../../redux/actions/walletActions";
 import { APP_ROUTES } from "../../constants/app_route";
 import { useNavigate } from "react-router-dom";
+import { Footer } from "../../components/Footer";
 
 const Dashboard = () => {
 	const [openKycModal, setKycModalOpen] = useState(false);
@@ -129,7 +130,7 @@ const Dashboard = () => {
 					</div>
 				</div>
 			</div>
-			{/* <SecurityVerification func={() => console.log("ddyjjjj")} close={()=>console.log("ddf")}/> */}
+			<Footer/>
 		</div>
 	);
 };

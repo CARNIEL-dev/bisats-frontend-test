@@ -7,10 +7,12 @@ interface IMultiSelectDropDownProps {
     error: string | undefined | null,
     touched: boolean | undefined,
     handleChange: (prop: string) => void,
+    removexNGN?: boolean
+
 
 }
 
-const CryptoFilter = ({ parentId, error, touched, handleChange }: IMultiSelectDropDownProps) => {
+const CryptoFilter = ({ parentId, error, touched, handleChange,removexNGN }: IMultiSelectDropDownProps) => {
     const [isDropdownOpen, setDropdownOpen] = useState(false);
     const [selected, setSelected] = useState(TokenData[1]);
 
@@ -53,14 +55,25 @@ const CryptoFilter = ({ parentId, error, touched, handleChange }: IMultiSelectDr
                     aria-labelledby={`tokenSelectBtn`}
                 >
                     <div className=" w-full gap-4 px-3 ">
-                        {TokenData.map((token) => (
-                            <div className="flex items-center my-5 cursor-pointer" onClick={() => {
-                                toggleDropdown(); setSelected(token); handleChange(token.id)
-                            }}>
-                                <div className="w-[20px] h-[20px] rounded-full mr-2">{token.tokenLogo}</div>
-                                <p className="mx-2">{token.tokenName}</p>
-                            </div>
-                        ))}
+                        {
+                            !removexNGN ? TokenData.map((token) => (
+                                <div className="flex items-center my-5 cursor-pointer" onClick={() => {
+                                    toggleDropdown(); setSelected(token); handleChange(token.id)
+                                }}>
+                                    <div className="w-[20px] h-[20px] rounded-full mr-2">{token.tokenLogo}</div>
+                                    <p className="mx-2">{token.tokenName}</p>
+                                </div>
+                            )) :
+                                TokenData.slice(1).map((token) => (
+                                    <div className="flex items-center my-5 cursor-pointer" onClick={() => {
+                                        toggleDropdown(); setSelected(token); handleChange(token.id)
+                                    }}>
+                                        <div className="w-[20px] h-[20px] rounded-full mr-2">{token.tokenLogo}</div>
+                                        <p className="mx-2">{token.tokenName}</p>
+                                    </div>
+                                ))
+
+                        }
                     </div>
                 </ul>
             </div>

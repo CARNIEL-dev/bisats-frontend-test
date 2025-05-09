@@ -5,6 +5,7 @@ import { Link, Outlet } from "react-router-dom"
 import { useState } from "react"
 import Header from "../components/Header"
 import { APP_ROUTES } from "../constants/app_route"
+import { Footer } from "../components/Footer"
 
 const P2PLayOut = () => {
     const [activePage, setActivePage] = useState(0)
@@ -100,7 +101,6 @@ const P2PLayOut = () => {
             <div className="w-full py-10 lg:py-20">
                 <Outlet />
             </div>
-
         </div>
     )
 }

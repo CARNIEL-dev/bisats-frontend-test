@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { APP_ROUTES } from '../constants/app_route'
 import Header from '../components/Header'
 import { Link, Outlet } from 'react-router-dom'
+import { Footer } from '../components/Footer'
 
 const SettingsLayOut = () => {
     const [activePage, setActivePage] = useState(0)
@@ -40,10 +41,6 @@ const SettingsLayOut = () => {
                             )
                         }
                     </div>
-
-
-
-
 
                     <div className='py-10 w-2/3 mx-auto'>
                         <Outlet />

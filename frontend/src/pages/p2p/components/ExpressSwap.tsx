@@ -99,6 +99,7 @@ const ExpressSwap = () => {
 		}, []);
 	useEffect(() => {
 		const FetchAds = async () => {
+			setLoading(true)
 			
 			const res = await GetExpressAds({ ...adsParam, userId: userId })
 		
@@ -107,6 +108,8 @@ const ExpressSwap = () => {
 			} else {
 				setError(null)
 			}
+			setLoading(false)
+
 			setExpressAds(res)
 		}
 
@@ -300,6 +303,7 @@ const ExpressSwap = () => {
 					Sell
 				</p>
 			</div>
+			
 			{
 				adsParam.type === "buy" ?
 					<div>
@@ -413,9 +417,10 @@ const ExpressSwap = () => {
 							)}
 						</div>
 					</div>}
+			
 			<PrimaryButton
 				text={`${adsParam.type==="buy"? "Buy" : "Sell"} ${adsParam?.asset}`}
-				loading={loading}
+				loading={false}
 				css="w-full"
 				onClick={() => setShowConfirmation(true)}
 				disabled={error||(adsParam?.amount)==="0"?true:false}
