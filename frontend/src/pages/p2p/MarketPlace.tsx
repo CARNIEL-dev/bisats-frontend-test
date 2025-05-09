@@ -8,6 +8,7 @@ import { GetSearchAds } from "../../redux/actions/walletActions";
 import { UserState } from "../../redux/reducers/userSlice";
 import { AdSchema } from "./components/ExpressSwap";
 import PrimaryInput from "../../components/Inputs/PrimaryInput";
+import PreLoader from "../../layouts/PreLoader";
 
 interface RootState {
 	user: {
@@ -26,7 +27,6 @@ const MarketPlace = () => {
 	const user = useSelector((state: { user: UserState }) => state.user);
 	const userId = user?.user?.userId || "";
 	const [searchAds, setSearchAds] = useState<AdSchema[]>([]);
-	const [active, setActive] = useState(0);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [adsParam, setAdsParam] = useState({
@@ -42,14 +42,15 @@ const MarketPlace = () => {
 
 		useEffect(() => {
 			const FetchAds = async () => {
-
+              setLoading(true)
 				const res = await GetSearchAds({ ...adsParam, userId: userId }) ?? []
-				console.log(res)
 				if (res?.length <= 0 || !res) {
 					setError("Could not find any express ad at this moment")
 				} else {
 					setError(null)
 				}
+				setLoading(false)
+
 				setSearchAds(res)
 			}
 			if (adsParam?.amount && parseFloat(adsParam?.amount) > 0) {
@@ -102,15 +103,15 @@ const MarketPlace = () => {
 				</p>
 			</div>
 
-			<div className="flex items-center w-3/5 lg:w-1/4">
+			<div className="flex items-end w-3/5 lg:w-1/4">
 				<CryptoFilter
 					error={undefined}
 					touched={undefined}
 					handleChange={handleTokenChange}
+					removexNGN={true}
+					
 				/>
-				<div>
-					<PrimaryInput css={""} label={""} error={undefined} touched={undefined} className="w-[208px] " />
-				</div>
+					<PrimaryInput css={"h-[48px] mx-2 "} placeholder="Amount in xNGN"  label={""} error={undefined} touched={undefined} onChange={(e)=>setAdsParam({...adsParam, amount:e.target.value})}  />
 
 				<button className="border-[1px] border-[#D6DAE1] rounded-[6px] w-[120px] px-4 flex justify-between items-center h-[48px] text-[#515B6E] text-[14px]" onClick={() => setAdsParam({ ...adsParam })}>
 					Filter
@@ -151,12 +152,15 @@ const MarketPlace = () => {
 					</span>
 				</p>
 
-				<MarketPlaceContent
-					type={adsParam.type==="buy" ? "Buy" : "Sell"}
-					ads={searchAds}
-					pagination={pagination}
-					setPagination={setPagination}
-				/>
+				{
+					loading ? <PreLoader /> :
+				
+						<MarketPlaceContent
+							type={adsParam.type === "buy" ? "Buy" : "Sell"}
+							ads={searchAds}
+							pagination={pagination}
+							setPagination={setPagination}
+						/>}
 			</div>
 		</div>
 	);

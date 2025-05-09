@@ -32,7 +32,7 @@ const MobileP2PMP: React.FC<TableProps> = ({ data, type }) => {
                                 </div>
                                     <Link to={row?.orderType === "buy" ? APP_ROUTES.P2P.BUY : APP_ROUTES.P2P.SELL} state={{ adDetail: row }}>
                                 
-                                    <PrimaryButton text={type} loading={false} css='w-[100px] h-[36px] flex items-center' />
+                                    <PrimaryButton text={type} loading={false} css='w-[100px] h-[36px] flex items-center justify-end' />
                                     </Link>
                             </div>
                         </div>

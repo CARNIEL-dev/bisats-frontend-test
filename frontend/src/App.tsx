@@ -37,6 +37,7 @@ import BVNVerification from './pages/kyc/BVNVerification';
 import Level3Verification from './pages/kyc/Level3Verification';
 import CreateAd from  './pages/p2p/ads/Ad';
 import OrderHistory from './pages/p2p/OrderHistory';
+import { Footer } from './components/Footer';
 
 
 
@@ -110,6 +111,7 @@ const App: React.FC = () => {
 
         </>
       </Routes>
+      <Footer/>
       <ToastContainer
         position="top-right"
         autoClose={5000}

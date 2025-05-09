@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 import OtherSide from "./auth/OtherSide";
 import Header from "../components/Header";
+import { Footer } from "../components/Footer";
 
 const KycLayOut = () => {
     return (
@@ -21,7 +22,7 @@ const KycLayOut = () => {
                     </div>
                 </div>
             </div>
-            </div>
+            </div>  
         </div>
     )
 }

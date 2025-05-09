@@ -1,9 +1,10 @@
 import { Outlet } from "react-router-dom";
 import Header from "../components/Header";
+import { Footer } from "../components/Footer";
 const TranscLayOut = () => {
     return (
         <div>
-            <Header currentPage={""} />
+            <Header currentPage={"Wallet"} />
             <div className={`bg-white bg-no-repeat bg-cover h-full w-full py-20`}>
                 <div className="w-full lg:w-1/3 mx-auto h-full  lg:items-center ">
 
