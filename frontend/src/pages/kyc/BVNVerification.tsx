@@ -63,6 +63,7 @@ const BVNVerification = () => {
             setIsLoading(false)
             if (response?.status ) {
                 setIsSuccess(true)
+                navigate(APP_ROUTES?.DASHBOARD)
             } else {
                 Toast.error(response.message,"Failed")
             }          

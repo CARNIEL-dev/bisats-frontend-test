@@ -215,7 +215,8 @@ const WithdrawalPage = () => {
                                 >
                                     {(validateAndExecute) => (
                                         <PrimaryButton css={"w-full"} text={"Withdraw"} loading={false} onClick={validateAndExecute} />)}
-                                </KycManager>                            </div>
+                                </KycManager>
+                            </div>
                             :
                             <div>
 

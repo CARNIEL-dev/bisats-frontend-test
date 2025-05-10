@@ -6,7 +6,7 @@ import Toast from "../Toast";
 import { TwoFactorAuth } from "../../redux/actions/walletActions";
 import { UserState } from "../../redux/reducers/userSlice";
 import { useSelector } from "react-redux";
-import { Set_PIN, UPDATE_PIN } from "../../redux/actions/userActions";
+import { rehydrateUser, Set_PIN, UPDATE_PIN } from "../../redux/actions/userActions";
 
 interface Props {
     close: () => void;
@@ -42,7 +42,9 @@ const SetPinModal: React.FC<Props> = ({ close, type }) => {
             }) )
         setLoading(false)
         if (response?.status) {
-            Toast.success(response.message, type==="create"? "PIN Created":"PIN Updated")
+            Toast.success(response.message, type === "create" ? "PIN Created" : "PIN Updated")
+                  rehydrateUser()
+            
             // close()
         } else {
             Toast.error(response.message, "Failed")

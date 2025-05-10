@@ -30,7 +30,7 @@ const SettingsLayOut = () => {
             <div className="w-full">
                 <Header currentPage={""} />
 
-                <div className='w-2/3 mx-auto py-10 lg:pt-20'>
+                <div className='w-11/12 lg:w-2/3 mx-auto py-10 lg:pt-20'>
                     <h1 className='text-[28px] lg:text-[34px] leading-[40px] font-[600] text-[#0A0E12] mr-4 '>Settings</h1>
 
                 </div>
@@ -42,7 +42,7 @@ const SettingsLayOut = () => {
                         }
                     </div>
 
-                    <div className='py-10 w-2/3 mx-auto'>
+                    <div className='py-10 w-11/12 lg:w-2/3 mx-auto'>
                         <Outlet />
 
                     </div>

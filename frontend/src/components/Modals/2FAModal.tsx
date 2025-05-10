@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import ModalTemplate from "./ModalTemplate"
-import { Generate2FA_QRCODE, UpdateTwoFactorAuth, VerifyTwoFactorAuth } from "../../redux/actions/userActions";
+import { Generate2FA_QRCODE, rehydrateUser, UpdateTwoFactorAuth, VerifyTwoFactorAuth } from "../../redux/actions/userActions";
 import { UserState } from "../../redux/reducers/userSlice";
 import { useSelector } from "react-redux";
 import { PrimaryButton, WhiteTransparentButton } from "../buttons/Buttons";
@@ -49,6 +49,7 @@ const TwoFactorAuthModal: React.FC<Props> = ({ close }) => {
         Toast.success(verificationResponse.message,"2FA Enabled")
       }
       setLoading(false)
+      rehydrateUser()
       close()
     } catch (error) {
       setLoading(false)

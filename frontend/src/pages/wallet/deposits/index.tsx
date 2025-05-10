@@ -19,6 +19,7 @@ import { ACTIONS } from "../../../utils/transaction_limits"
 import { WalletState } from "../../../redux/reducers/walletSlice"
 import { assets } from "../../../utils/conversions"
 import { handleCopy } from "../../../redux/actions/generalActions"
+import KycManager from "../../kyc/KYCManager"
 
 export type TNetwork = {
     label: string,
@@ -97,7 +98,9 @@ const DepositPage = () => {
         <div>
             <Head header={"Make a Deposit"} subHeader={"Securely deposit fiat or crypto to fund your account and start trading."} />
 
-            <form className="mt-10" onSubmit={formik.handleSubmit}>
+            <form className="mt-10"
+                onSubmit={formik.handleSubmit}
+            >
                 <TokenSelect title={selectedToken??"Select option"}  label={"Select Asset"} error={undefined} touched={undefined} handleChange={(e) => { setSelectedToken(e); setSelectedNetworks(""); setPaymentOption("") }} />
 
                 {/* {
@@ -119,7 +122,11 @@ const DepositPage = () => {
                                 formik.setFieldValue('amount', value);
                             }
                         }} />
-                        <PrimaryButton css={"w-full"} text={"Proceed"} loading={isLoading} />
+                        <KycManager action={ACTIONS.DEPOSIT_NGN} func={formik.handleSubmit }>
+                            {(validateAndExecute) => (
+                                <PrimaryButton css={"w-full"} text={"Proceed"} loading={isLoading} onClick={validateAndExecute} />
+                            )}
+                        </KycManager>
                     </div>}
                 {
                     ((selectedToken &&selectedToken!=="xNGN")) && (

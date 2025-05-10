@@ -34,7 +34,7 @@ const KycManager: React.FC<TKycManager> = ({ action, func, children }) => {
 
 
         if (!rules?.allowedActions.includes(action)) {
-            console.log(action)
+            console.log(action,userKycLevel)
             setModal(userKycLevel===1?"level_2":"level_3");
             return;
         }

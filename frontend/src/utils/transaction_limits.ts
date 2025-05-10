@@ -60,6 +60,7 @@ export const KYC_LEVELS = {
 
 export const ACTIONS = {
   DEPOSIT: "deposit",
+  SWAP:"swap",
   WITHDRAW:"withdraw",
   DEPOSIT_NGN: "deposit_ngn",
   WITHDRAW_NGN: "withdraw_ngn",
@@ -83,8 +84,8 @@ export const KYC_RULES = {
       // ACTIONS.SELL_CRYPTO,
       ACTIONS.BUY_CRYPTO,
       ACTIONS.DEPOSIT_CRYPTO,
-      // ACTIONS.WITHDRAW_CRYPTO,
-      // ACTIONS.WITHDRAW_NGN,
+      ACTIONS.WITHDRAW_CRYPTO,
+      ACTIONS.WITHDRAW_NGN,
       ACTIONS.SET_2FA,
     ],
     limits: {
@@ -93,7 +94,8 @@ export const KYC_RULES = {
   },
   [KYC_LEVELS.LEVEL_2]: {
     allowedActions: [
-      ACTIONS.DEPOSIT_NGN,
+      // ACTIONS.DEPOSIT_NGN,
+      ACTIONS.SWAP,
       ACTIONS.BUY_CRYPTO,
       ACTIONS.WITHDRAW_NGN,
       ACTIONS.SELL_CRYPTO,
@@ -116,6 +118,7 @@ export const KYC_RULES = {
       ACTIONS.WITHDRAW_CRYPTO,
       ACTIONS.SET_2FA,
       ACTIONS.DEPOSIT,
+      ACTIONS.SWAP
     ],
     limits: {
       transactionAmount: Infinity,
@@ -126,7 +129,7 @@ export const KYC_RULES = {
 // Define which actions need 2FA
 export const ACTIONS_REQUIRING_2FA = [
   ACTIONS.WITHDRAW_NGN,
-  // ACTIONS.DEPOSIT,
+  // ACTIONS.DEPOSIT_NGN,
   ACTIONS.SELL_CRYPTO,
   // ACTIONS.BUY_CRYPTO,
   ACTIONS.WITHDRAW_CRYPTO,

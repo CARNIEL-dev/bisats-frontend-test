@@ -46,7 +46,7 @@ const Dashboard = () => {
 	return (
 		<div>
 			<Header currentPage="Dashboard" />
-			<div className="w-full md:w-[70%] mx-auto lg:pt-5">
+			<div className="w-full md:w-[70%] mx-auto lg:py-5 pb-10">
 				<div>{openKycModal && <KycBanner />}</div>
 				<div className="w-full flex justify-center mt-[30px]">
 					<div className="w-full">
@@ -58,12 +58,12 @@ const Dashboard = () => {
 						</h2>
 
 						<div className="w-full overflow-x-auto md:overflow-visible">
-							<div className="flex w-max sm:w-full m-4 gap-4 sm:justify-between">
-								<div className="w-3/4 sm:w-1/2 flex-shrink-0">
+							<div className="flex  w-full flex-shrink-0 sm:w-full m-4 gap-2 sm:justify-between">
+								<div className="w-1/2  ">
 									<Balance />
 								</div>
 
-								<div className="w-3/4 sm:w-1/2 flex-shrink-0">
+								<div className="w-1/2  ">
 									<MarketRate />
 								</div>
 							</div>
