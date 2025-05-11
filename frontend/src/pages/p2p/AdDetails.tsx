@@ -1,6 +1,6 @@
 const AdDetails = () => {
     return (
-        <div className="w-full lg:w-2/3 mx-auto px-3">
+        <div className="w-full max-w-[1024px] mx-auto px-3">
             <div>
                 <h2 className="font-semibold" style={{color: "#0A0E12", fontSize: "34px" }}>Ad details</h2>
             </div>

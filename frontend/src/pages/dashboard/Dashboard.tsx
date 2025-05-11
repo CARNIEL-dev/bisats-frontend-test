@@ -46,7 +46,7 @@ const Dashboard = () => {
 	return (
 		<div>
 			<Header currentPage="Dashboard" />
-			<div className="w-full md:max-w-[70%] mx-auto lg:pt-5">
+			<div className="w-full max-w-[1024px] mx-auto lg:pt-5">
 				<div>{openKycModal && <KycBanner />}</div>
 				<div className="w-full flex justify-center mt-[30px]">
 					<div className="w-full">
@@ -83,7 +83,7 @@ const Dashboard = () => {
 						</div>
 
 						<div
-							className="sm:border-[1px] m-[16px] sm:p-[24px]"
+							className="lg:border-[1px] m-[16px] sm:p-[24px]"
 							style={{ borderRadius: "12px", borderColor: "#D6DAE1" }}
 						>
 							<div className="mb-[12px]">
@@ -112,7 +112,7 @@ const Dashboard = () => {
 							<Ads />
 						</div>
 						<div
-							className="sm:border-[1px] m-[16px] sm:p-[24px]"
+							className="lg:border-[1px] m-[16px] sm:p-[24px]"
 							style={{ borderRadius: "12px", borderColor: "#D6DAE1" }}
 						>
 							<div className="mb-[12px]">

@@ -74,7 +74,7 @@ const MarketPlace = () => {
 	};
 
 	return (
-		<div className="w-full lg:w-2/3 mx-auto px-3">
+		<div className="w-full ax-w-[1024px] mx-auto px-3">
 			<div>
 				<Header
 					text="P2P Market"
@@ -84,18 +84,18 @@ const MarketPlace = () => {
 
 			<div className="flex items-center w-1/2 lg:w-1/4 justify-between my-5">
 				<p
-					onClick={() => setAdsParam({ ...adsParam, type: "buy", })}
+					onClick={() => setAdsParam({ ...adsParam, type: "buy" })}
 					className={`cursor-pointer text-[#515B6E] text-[18px] font-[18px] pb-1 px-5 ${
-						adsParam?.type==="buy" &&
+						adsParam?.type === "buy" &&
 						"border-b-[4px] rounded-x-[2px] border-[#49DE80] text-[#17A34A]"
 					}`}
 				>
 					Buy
 				</p>
 				<p
-					onClick={() => setAdsParam({ ...adsParam, type: "sell", })}
+					onClick={() => setAdsParam({ ...adsParam, type: "sell" })}
 					className={`cursor-pointer text-[#515B6E] text-[18px] font-[18px] pb-1 px-5 ${
-						adsParam?.type==="sell" &&
+						adsParam?.type === "sell" &&
 						"border-b-[4px] rounded-x-[2px] border-[#F87171] text-[#DC2625]"
 					}`}
 				>
@@ -109,11 +109,20 @@ const MarketPlace = () => {
 					touched={undefined}
 					handleChange={handleTokenChange}
 					removexNGN={true}
-					
 				/>
-					<PrimaryInput css={"h-[48px] mx-2 "} placeholder="Amount in xNGN"  label={""} error={undefined} touched={undefined} onChange={(e)=>setAdsParam({...adsParam, amount:e.target.value})}  />
+				<PrimaryInput
+					css={"h-[48px] mx-2 "}
+					placeholder="Amount in xNGN"
+					label={""}
+					error={undefined}
+					touched={undefined}
+					onChange={(e) => setAdsParam({ ...adsParam, amount: e.target.value })}
+				/>
 
-				<button className="border-[1px] border-[#D6DAE1] rounded-[6px] w-[120px] px-4 flex justify-between items-center h-[48px] text-[#515B6E] text-[14px]" onClick={() => setAdsParam({ ...adsParam })}>
+				<button
+					className="border-[1px] border-[#D6DAE1] rounded-[6px] w-[120px] px-4 flex justify-between items-center h-[48px] text-[#515B6E] text-[14px]"
+					onClick={() => setAdsParam({ ...adsParam })}
+				>
 					Filter
 					<svg
 						width="18"
@@ -152,15 +161,16 @@ const MarketPlace = () => {
 					</span>
 				</p>
 
-				{
-					loading ? <PreLoader /> :
-				
-						<MarketPlaceContent
-							type={adsParam.type === "buy" ? "Buy" : "Sell"}
-							ads={searchAds}
-							pagination={pagination}
-							setPagination={setPagination}
-						/>}
+				{loading ? (
+					<PreLoader />
+				) : (
+					<MarketPlaceContent
+						type={adsParam.type === "buy" ? "Buy" : "Sell"}
+						ads={searchAds}
+						pagination={pagination}
+						setPagination={setPagination}
+					/>
+				)}
 			</div>
 		</div>
 	);

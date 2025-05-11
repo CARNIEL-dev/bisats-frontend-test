@@ -295,7 +295,7 @@ const OrderHistory = () => {
 	};
 
 	return (
-		<div className="w-full xl:w-3/4 lg:w-5/6 mx-auto px-6">
+		<div className="w-full max-w-[1024px] mx-auto px-4">
 			<div className="mb-6">
 				<h2
 					className="font-semibold"
