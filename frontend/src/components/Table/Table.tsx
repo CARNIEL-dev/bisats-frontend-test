@@ -48,7 +48,7 @@ const Table: React.FC<TableProps> = ({ fields, data }) => {
 	// Standard table for sm screens and above
 	const renderDesktopTable = () => (
 		<table
-			className="hidden sm:table table-auto w-full h-full"
+			className="hidden lg:table table-auto w-full h-full"
 			style={{ color: "#515B6E" }}
 		>
 			<thead className="text-justify">
@@ -94,7 +94,7 @@ const Table: React.FC<TableProps> = ({ fields, data }) => {
 
 	// Mobile layout with stacked fields - organized in specific order
 	const renderMobileTable = () => (
-		<div className="sm:hidden w-full">
+		<div className="lg:hidden w-full">
 			{data.map((row, rowIndex) => (
 				<div
 					key={rowIndex}

@@ -11,13 +11,14 @@ export enum Fields {
     Asset = "Asset",
     Balance = "Balance",
     Empty = "",
+
 }
 
 export interface Asset {
-    Asset: string;
-    Balance: number;
-    name: string;
-    Rate: number;
+	Asset: string;
+	Balance: number;
+	name: string;
+	Rate: number;
 }
 
 interface TableProps {
@@ -131,6 +132,30 @@ const Table: React.FC<TableProps> = ({ data, livePrices }) => {
             </tbody>
         </table>
     );
+<div className="flex justify-end">
+								<Link to="/wallet/deposit" state={{ asset: row.Asset }}>
+									<button
+										style={{ backgroundColor: "#FEF8E5", color: "#624B00" }}
+										className="px-[12px] py-[6px] w-[108px] font-semibold mr-2"
+									>
+										Deposit
+									</button>
+								</Link>
+								<Link to="/wallet/withdrawal" state={{ asset: row.Asset }}>
+									<button
+										style={{ backgroundColor: "#FEF8E5", color: "#624B00" }}
+										className="px-[12px] py-[6px] w-[108px] font-semibold"
+									>
+										Withdraw
+									</button>
+								</Link>
+							</div>
+						</td>
+					</tr>
+				))}
+			</tbody>
+		</table>
+	);
 };
 
 // Mobile version of the table for smaller screens
@@ -264,6 +289,7 @@ const Assets: React.FC = () => {
             )}
         </div>
     );
+
 };
 
 export default Assets;

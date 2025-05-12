@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import Table from "../../components/Table/Table";
 import Empty from "../../components/Empty";
 import { getUser } from "../../helpers";
 import Bisatsfetch from "../../redux/fetchWrapper";
+import Table from "../../components/Table/TransactionHistory";
 
 export enum Fields {
 	TransactionType = "Trx type",
@@ -101,6 +101,7 @@ const Transactions: React.FC = () => {
 						  })
 						: [];
 
+					console.log("Transformed transactions:", transformedTransactions);
 					setTransactions(transformedTransactions);
 				} else if (response.message !== "No orders found") {
 					console.error("API returned error status:", response);
