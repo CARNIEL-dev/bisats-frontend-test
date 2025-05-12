@@ -168,7 +168,7 @@ const MyAds = () => {
 	};
 
 	return (
-		<div className="w-full lg:w-2/3 mx-auto px-3">
+		<div className="w-full max-w-[1024px] mx-auto px-3">
 			<div className="flex flex-col sm:flex-row justify-start sm:justify-between sm:items-center space-y-2 bg-gray-100 mb-6 sm:mb-12">
 				<Header
 					text="My Ads"

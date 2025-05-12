@@ -2,7 +2,7 @@ import ExpressSwap from "./components/ExpressSwap";
 
 const Express = () => {
 	return (
-		<div className="w-full lg:w-1/3 mx-auto px-[16px]">
+		<div className="w-full max-w-[1024px] mx-auto px-3">
 			<ExpressSwap />
 		</div>
 	);
