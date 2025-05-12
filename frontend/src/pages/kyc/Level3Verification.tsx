@@ -102,7 +102,7 @@ const Level3Verification = () => {
         const response = await PostPOA_KYC({ userId: user?.user?.userId, file: file1 }) as APIResponseType
         setIsLoading1(false)
         if (response.statusCode === 200) {
-            Toast.success(response.message, "Success")
+            Toast.success("Proof of address uploaded successfully", "Success")
             return true
         } else {
             Toast.error(response.message, "Error")
@@ -119,7 +119,7 @@ const Level3Verification = () => {
         const response = await Post_Proof_of_Wealth_KYC({ userId: user?.user?.userId, file: file1 }) as APIResponseType
         setIsLoading1(false)
         if (response.statusCode === 200) {
-            Toast.success(response.message, "Success")
+            Toast.success("Source of wealth uploaded successfully", "Success")
             return true
         } else {
             Toast.error(response.message, "Error")
@@ -136,7 +136,7 @@ const Level3Verification = () => {
         const response = await Post_Proof_of_Profile_KYC({ userId: user?.user?.userId, file: file1 }) as APIResponseType
         setIsLoading1(false)
         if (response.statusCode === 200) {
-            Toast.success(response.message, "Success")
+            Toast.success("Proof of profile uploaded successfully", "Success")
             return true
         } else {
             Toast.error(response.message, "Error")

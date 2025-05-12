@@ -57,13 +57,23 @@ const Dashboard = () => {
 							Hello, {user?.firstName}
 						</h2>
 
-						<div className="w-full overflow-x-auto md:overflow-visible">
-							<div className="flex  w-full flex-shrink-0 sm:w-full m-4 gap-2 sm:justify-between">
-								<div className="w-1/2  ">
+						<div className="mx-4 my-4 w-full">
+							<div className="sm:hidden overflow-x-auto">
+								<div className="flex w-max gap-4 pb-2">
+									<div className="w-[85%]">
+										<Balance />
+									</div>
+									<div className="w-[85%]">
+										<MarketRate />
+									</div>
+								</div>
+							</div>
+
+							<div className="hidden sm:grid sm:grid-cols-2 gap-4">
+								<div className="h-full w-full">
 									<Balance />
 								</div>
-
-								<div className="w-1/2  ">
+								<div className="h-full">
 									<MarketRate />
 								</div>
 							</div>

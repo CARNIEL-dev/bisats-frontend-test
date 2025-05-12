@@ -271,7 +271,7 @@ const Balance: React.FC = () => {
 				</p>
 			</div>
 			<div>
-				<div>
+				{/* <div>
 					<p style={{ color: "#515B6E" }} className="mb-[25px]">
 						<span style={{ fontSize: "12px", fontWeight: 600 }}>+$100.45</span>
 						<span
@@ -281,7 +281,7 @@ const Balance: React.FC = () => {
 							0.11%
 						</span>
 					</p>
-				</div>
+				</div> */}
 			</div>
 			<div>
 				{/* <KycManager
@@ -292,7 +292,7 @@ const Balance: React.FC = () => {
 						<PrimaryButton
 							text={"Deposit"}
 							loading={isLoading}
-							css="w-full"
+							css="w-full mt-10"
 							onClick={() => navigate(APP_ROUTES.WALLET.DEPOSIT)}
 						/>
 					{/* )}
