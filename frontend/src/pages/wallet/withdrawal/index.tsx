@@ -15,9 +15,11 @@ import AddWithdrawalBankAccount from "../../../components/Modals/AddWithdrawalBa
 import Toast from "../../../components/Toast"
 import { APP_ROUTES } from "../../../constants/app_route"
 import { useLocation, useNavigate } from "react-router-dom";
-import { AccountLevel, bisats_limit } from "../../../utils/transaction_limits"
+import { AccountLevel, ACTIONS, bisats_limit } from "../../../utils/transaction_limits"
 import { PriceData } from "../Assets"
 import { assets, convertUSDToAsset } from "../../../utils/conversions"
+import KycRouteGuard from "../../../components/KycGuard"
+import KycManager from "../../kyc/KYCManager"
 
 
 export type TNetwork = {
@@ -140,6 +142,9 @@ const WithdrawalPage = () => {
 
 
     return (
+        // <KycRouteGuard requiredAction={ACTIONS.WITHDRAW}
+        //     fallbackRedirect={APP_ROUTES.DASHBOARD}
+        // >
         <div>
             <Head header={"Make a Withdrawal"} subHeader={"Securely withdraw fiat or crypto from your account."} />
 
@@ -204,7 +209,13 @@ const WithdrawalPage = () => {
                                         <p className="text-[#606C82]  font-[600]">{`${(Number(withdrwalAmount ?? 0)) + userTransactionLimits?.charge_on_single_withdrawal_fiat}`||"-"} xNGN</p>
                                     </div>
                                 </div>
-                                <PrimaryButton css={"w-full"} text={"Withdraw"} loading={false} onClick={() => setWithDrawalModal(true)} />
+                                <KycManager
+                                    action={ACTIONS.WITHDRAW_NGN}
+                                    func={() => setWithDrawalModal(true)}
+                                >
+                                    {(validateAndExecute) => (
+                                        <PrimaryButton css={"w-full"} text={"Withdraw"} loading={false} onClick={validateAndExecute} />)}
+                                </KycManager>
                             </div>
                             :
                             <div>
@@ -253,7 +264,13 @@ const WithdrawalPage = () => {
                                         </p>
                                     </div>
                                 </div>
-                                <PrimaryButton css={"w-full"} text={"Withdraw"} loading={false} onClick={() => setWithDrawalModal(true)} />
+                                    <KycManager
+                                                    action={ACTIONS.WITHDRAW_CRYPTO}
+                                    func={() => setWithDrawalModal(true)}
+                                                >
+                                    {(validateAndExecute) => (
+                                        <PrimaryButton css={"w-full"} text={"Withdraw"} loading={false} onClick={validateAndExecute} />)}
+                                </KycManager>
                             </div>)
                 }
 
@@ -270,7 +287,8 @@ const WithdrawalPage = () => {
             {/* {verificationModal && <SecurityVerification close={() => setVerificationModal(false)} />} */}
             {addBankModal &&<AddWithdrawalBankAccount close={()=>setAddBankModal(false)}/>}
 
-        </div>
+            </div>
+            // </KycRouteGuard>
     )
 }
 

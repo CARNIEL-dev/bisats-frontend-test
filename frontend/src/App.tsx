@@ -38,12 +38,27 @@ import Level3Verification from './pages/kyc/Level3Verification';
 import CreateAd from  './pages/p2p/ads/Ad';
 import OrderHistory from './pages/p2p/OrderHistory';
 import { Footer } from './components/Footer';
-
+import { requestPermission } from './utils/firebaseNotification';
+import { messaging,onMessage } from './firebase';
+import Support from './pages/settings/Support';
 
 
 const App: React.FC = () => {
   const userState: UserState = useSelector((state: any) => state.user);
+
+  
   useEffect(() => { rehydrateUser() }, [])
+
+  useEffect(() => {
+    onMessage(messaging, (payload) => {
+      console.log("Message received. ", payload);
+      // You can show a toast or in-app notification here
+    });
+  }, []);
+
+  useEffect(() => {
+   requestPermission()
+  }, []);
   return (
 
     <Router>
@@ -93,6 +108,8 @@ const App: React.FC = () => {
               <Route path={APP_ROUTES.SETTINGS.PROFILE} element={<UserInfo />} />
               <Route path={APP_ROUTES.SETTINGS.SECURITY} element={<Security />} />
               <Route path={APP_ROUTES.SETTINGS.PAYMENT} element={<Payment />} />
+              <Route path={APP_ROUTES.SETTINGS.SUPPORT} element={<Support />} />
+
             </Route>
             <Route path={APP_ROUTES.DASHBOARD} element={<Dashboard />} />
             <Route path={APP_ROUTES.WALLET.HOME} element={<Wallet />} />

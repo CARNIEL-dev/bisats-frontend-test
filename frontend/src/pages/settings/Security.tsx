@@ -9,8 +9,6 @@ import TwoFactorAuthModal from '../../components/Modals/2FAModal';
 const Security = () => {
     const userState: UserState = useSelector((state: any) => state.user);
     const user = userState.user
-
-    console.log(user)
     const [openResetPasswordModal, setOpenResetPasswordModal] = useState(false);
     const [pinModal, setPinModal] = useState(false);
     const [twoFAModal, setTwoFaModal] = useState(false);

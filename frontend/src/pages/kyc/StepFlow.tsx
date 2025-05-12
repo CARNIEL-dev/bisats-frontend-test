@@ -1,7 +1,7 @@
 const StepFlow = ({ step }: { step: number }) => {
     return (
         <div>
-            <div className="flex w-full items-center">
+            <div className="flex w-full items-center justify-between">
                 <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-[48px] h-[48px]">
                     <circle cx="24" cy="24" r="24" fill="#FDF1CC" />
                     <circle cx="24" cy="24" r="20" fill="#F5BB00" />

@@ -22,7 +22,6 @@ const KycManager: React.FC<TKycManager> = ({ action, func, children }) => {
             1 : user.user?.accountLevel === "level_2" ?
                 2 : user.user?.accountLevel === "level_3" ? 3 : 10
 
-console.log(userKycLevel)
     const validateAndExecute = () => {
         const rules = KYC_RULES[userKycLevel];
         console.log(rules,userKycLevel,KYC_RULES)
@@ -35,7 +34,7 @@ console.log(userKycLevel)
 
 
         if (!rules?.allowedActions.includes(action)) {
-            console.log(action)
+            console.log(action,userKycLevel)
             setModal(userKycLevel===1?"level_2":"level_3");
             return;
         }

@@ -10,10 +10,11 @@ import { WalletState } from '../../../redux/reducers/walletSlice'
 import SwapConfirmation from '../../../components/Modals/SwapConfirmation'
 import { GetLivePrice } from '../../../redux/actions/walletActions'
 import { PriceData } from '../../wallet/Assets'
-import { bisats_charges } from '../../../utils/transaction_limits'
+import { ACTIONS, bisats_charges } from '../../../utils/transaction_limits'
 import Toast from '../../../components/Toast'
 import Bisatsfetch from '../../../redux/fetchWrapper'
 import { UserState } from '../../../redux/reducers/userSlice'
+import KycManager from '../../kyc/KYCManager'
 // assets = isDev ? TestAssets : LiveAssets
 
 export const assetIndexMap: Record<string, number> = Object.values(assets).reduce((acc, asset, index) => {
@@ -346,9 +347,14 @@ const Swap = ({ type, adDetail }: { type: "buy" | "sell", adDetail?: AdSchema | 
 
                     </div>
 }
-            
-            <PrimaryButton text={`${type} ${TokenData?.[assetIndexMap?.[adDetail?.asset ?? "BTC"]]?.tokenName}`} loading={false} css='w-full capitalize' onClick={() => setShowConfirmation(true)}
- />
+            <KycManager
+                action={ACTIONS.SWAP}
+                func={() => setShowConfirmation(true)}
+            >
+                {(validateAndExecute) => (
+                    <PrimaryButton text={`${type} ${TokenData?.[assetIndexMap?.[adDetail?.asset ?? "BTC"]]?.tokenName}`} loading={false} css='w-full capitalize' onClick={validateAndExecute}
+                    />)}
+                </KycManager>
             {showConfirmation && (
                 <SwapConfirmation
                     close={() => setShowConfirmation(false)}

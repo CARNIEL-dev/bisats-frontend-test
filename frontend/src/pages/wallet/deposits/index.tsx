@@ -19,6 +19,7 @@ import { ACTIONS } from "../../../utils/transaction_limits"
 import { WalletState } from "../../../redux/reducers/walletSlice"
 import { assets } from "../../../utils/conversions"
 import { handleCopy } from "../../../redux/actions/generalActions"
+import KycManager from "../../kyc/KYCManager"
 
 export type TNetwork = {
     label: string,
@@ -26,7 +27,6 @@ export type TNetwork = {
 }
 const DepositPage = () => {
     const location = useLocation();
-    
     const linkedAsset = location.state?.asset;
     const [isLoading, setIsLoading] = useState(false)
     const [selectedToken, setSelectedToken] = useState<string>(linkedAsset)
@@ -34,7 +34,6 @@ const DepositPage = () => {
     const [selectedNetwork, setSelectedNetworks] = useState<string>()
     const [paymentOption, setPaymentOption] = useState<string>("")
     const navigate = useNavigate()
-
     const user: UserState = useSelector((state: any) => state.user);
     const walletState: WalletState = useSelector((state: any) => state.wallet);
     const wallet= walletState?.wallet
@@ -93,13 +92,15 @@ const DepositPage = () => {
         }
     }
     return (
-        <KycRouteGuard requiredAction={ACTIONS.DEPOSIT}
-            fallbackRedirect={APP_ROUTES.DASHBOARD}
-        >
+        // <KycRouteGuard requiredAction={ACTIONS.DEPOSIT}
+        //     fallbackRedirect={APP_ROUTES.DASHBOARD}
+        // >
         <div>
             <Head header={"Make a Deposit"} subHeader={"Securely deposit fiat or crypto to fund your account and start trading."} />
 
-            <form className="mt-10" onSubmit={formik.handleSubmit}>
+            <form className="mt-10"
+                onSubmit={formik.handleSubmit}
+            >
                 <TokenSelect title={selectedToken??"Select option"}  label={"Select Asset"} error={undefined} touched={undefined} handleChange={(e) => { setSelectedToken(e); setSelectedNetworks(""); setPaymentOption("") }} />
 
                 {/* {
@@ -121,7 +122,11 @@ const DepositPage = () => {
                                 formik.setFieldValue('amount', value);
                             }
                         }} />
-                        <PrimaryButton css={"w-full"} text={"Proceed"} loading={isLoading} />
+                        <KycManager action={ACTIONS.DEPOSIT_NGN} func={formik.handleSubmit }>
+                            {(validateAndExecute) => (
+                                <PrimaryButton css={"w-full"} text={"Proceed"} loading={isLoading} onClick={validateAndExecute} />
+                            )}
+                        </KycManager>
                     </div>}
                 {
                     ((selectedToken &&selectedToken!=="xNGN")) && (
@@ -159,7 +164,7 @@ const DepositPage = () => {
             </form>
 
             </div>
-        </KycRouteGuard>
+        // </KycRouteGuard>
 
     )
 }

@@ -13,9 +13,10 @@ import SingleToken from "../../../components/Inputs/SingleToken";
 import { PriceData } from "../../wallet/Assets";
 import { convertAssetToNaira, convertNairaToAsset } from "../../../utils/conversions";
 import { WalletState } from "../../../redux/reducers/walletSlice";
-import { bisats_charges } from "../../../utils/transaction_limits";
+import { ACTIONS, bisats_charges } from "../../../utils/transaction_limits";
 import Toast from "../../../components/Toast";
 import Header from "./Header";
+import KycManager from "../../kyc/KYCManager";
 
 export interface AdSchema {
 	id: string;
@@ -418,13 +419,25 @@ const ExpressSwap = () => {
 						</div>
 					</div>}
 			
-			<PrimaryButton
-				text={`${adsParam.type==="buy"? "Buy" : "Sell"} ${adsParam?.asset}`}
-				loading={false}
-				css="w-full"
-				onClick={() => setShowConfirmation(true)}
-				disabled={error||(adsParam?.amount)==="0"?true:false}
-			/>
+			
+			{
+				adsParam.type === "sell" ?
+					<KycManager
+						action={ACTIONS.SELL_CRYPTO}
+						func={() => setShowConfirmation(true)}
+					>
+						{(validateAndExecute) => (
+							<PrimaryButton css={"w-full"} text={"Sell"} loading={false} onClick={validateAndExecute} />)}
+					</KycManager>  
+					:
+					<PrimaryButton
+						text={`${adsParam.type === "buy" ? "Buy" : "Sell"} ${adsParam?.asset}`}
+						loading={false}
+						css="w-full"
+						onClick={() => setShowConfirmation(true)}
+						disabled={error || (adsParam?.amount) === "0" ? true : false}
+					/>
+			}
 
 			{showConfirmation && (
 				<SwapConfirmation

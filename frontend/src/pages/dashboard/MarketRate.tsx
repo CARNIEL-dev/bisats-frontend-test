@@ -149,6 +149,7 @@ const MarketRate: React.FC = () => {
 
 	return (
 		<div
+
 			className="border-[1px] h-full w-full p-3 md:p-[16px]"
 			style={{ borderRadius: "12px", borderColor: "#D6DAE1" }}
 		>

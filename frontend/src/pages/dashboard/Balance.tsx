@@ -174,7 +174,7 @@ const Balance: React.FC = () => {
 
 	return (
 		<div
-			className="border-[1px] h-full w-full py-3 px-3 md:py-[24px] md:px-[34px]"
+			className="border-[1px] h-full w-full py-3 px-3 md:py-6 md:px-6"
 			style={{ borderRadius: "12px", borderColor: "#D6DAE1" }}
 		>
 			<div className="m-[2px]">
@@ -209,30 +209,23 @@ const Balance: React.FC = () => {
 						>
 							Error loading balance
 						</span>
-					) : showBalance ? (
+					) : (
 						<>
 							<span
-								style={{ fontWeight: 600 }}
-								className="mr-[0.5px] text-[28px] md:text-[34px]"
+										style={{ fontWeight: 600 }}
+										className={`mr-[0.5px] text-[28px] md:text-[34px] ${!showBalance &&"blur"}`}
 							>
 								{getCurrencySymbol()}
 								{formatBalance().split(".")[0]}
 							</span>
 							<span
 								style={{ fontWeight: 600 }}
-								className="mr-[4px] text-[18px] md:text-[22px]"
+								className={`mr-[4px] text-[18px] md:text-[22px] ${!showBalance &&"blur"}`}
 							>
 								.{formatBalance().split(".")[1]}
 							</span>
 						</>
-					) : (
-						<span
-							style={{ fontWeight: 600 }}
-							className="text-[18px] md:text-[22px]"
-						>
-							{getCurrencySymbol()}***.**
-						</span>
-					)}
+					) }
 					<span
 						className="cursor-pointer relative"
 						tabIndex={0}
@@ -248,27 +241,26 @@ const Balance: React.FC = () => {
 							{currency}
 						</span>
 						<img
-							className="inline h-[16px] w-[16px]"
+							className="inline h-[16px] w-[16px] cursor-pointer"
 							src="/Icon/Arrow-down-Fill.png"
 							alt="currency dropdown"
 						/>
 						{showCurrencyDropdown && (
 							<div
-								className="absolute top-full left-0 mt-1 bg-white border-[1px] border-gray-200 rounded shadow-lg z-10"
+								className="absolute text-[12px] top-full left-8 mt-1 bg-white border-[1px] border-gray-200 rounded shadow-lg z-10 px-2 pr-4 gap-y-2 py-1"
 								style={{
 									borderRadius: "12px",
 									borderColor: "#D6DAE1",
-									minWidth: "80px",
 								}}
 							>
 								<div
-									className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+									className=" hover:bg-gray-100 cursor-pointer"
 									onClick={() => changeCurrency("USD")}
 								>
 									USD
 								</div>
 								<div
-									className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+									className=" hover:bg-gray-100 cursor-pointer"
 									onClick={() => changeCurrency("NGN")}
 								>
 									NGN
@@ -279,7 +271,7 @@ const Balance: React.FC = () => {
 				</p>
 			</div>
 			<div>
-				<div>
+				{/* <div>
 					<p style={{ color: "#515B6E" }} className="mb-[25px]">
 						<span style={{ fontSize: "12px", fontWeight: 600 }}>+$100.45</span>
 						<span
@@ -289,22 +281,22 @@ const Balance: React.FC = () => {
 							0.11%
 						</span>
 					</p>
-				</div>
+				</div> */}
 			</div>
 			<div>
-				<KycManager
+				{/* <KycManager
 					action={ACTIONS.DEPOSIT}
 					func={() => navigate(APP_ROUTES.WALLET.DEPOSIT)}
 				>
-					{(validateAndExecute) => (
+					{(validateAndExecute) => ( */}
 						<PrimaryButton
 							text={"Deposit"}
 							loading={isLoading}
-							css="w-full"
-							onClick={validateAndExecute}
+							css="w-full mt-10"
+							onClick={() => navigate(APP_ROUTES.WALLET.DEPOSIT)}
 						/>
-					)}
-				</KycManager>
+					{/* )}
+				</KycManager> */}
 			</div>
 		</div>
 	);
