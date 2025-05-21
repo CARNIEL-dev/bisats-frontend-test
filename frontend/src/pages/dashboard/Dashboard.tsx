@@ -47,7 +47,7 @@ const Dashboard = () => {
 		<div>
 			<Header currentPage="Dashboard" />
 
-			<div className="w-full max-w-[1024px] mx-auto lg:pt-5">
+			<div className="w-full max-w-[1024px] h-fit mx-auto lg:pb-5 lg:mb-10">
 				<div>{openKycModal && <KycBanner />}</div>
 				<div className="w-full flex justify-center mt-[30px]">
 					<div className="w-full">
@@ -63,10 +63,10 @@ const Dashboard = () => {
 							{/* For mobile: horizontal scroll carousel */}
 							<div className="sm:hidden overflow-x-auto">
 								<div className="flex w-max gap-4 pb-2">
-									<div className="w-[85%]">
+									<div className="w-[73%] shrink-0 h-[200px]">
 										<Balance />
 									</div>
-									<div className="w-[85%]">
+									<div className="w-[85%] shrink-0 h-[200px]">
 										<MarketRate />
 									</div>
 								</div>
@@ -97,7 +97,7 @@ const Dashboard = () => {
 										}}
 										className="mr-[8px] text-[18px] sm:text-[16px]"
 									>
-										Open ads
+										My Open ads
 									</span>
 									<button
 										onClick={handleViewAllAds}

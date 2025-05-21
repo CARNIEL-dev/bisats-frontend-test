@@ -4,7 +4,7 @@ import { APP_ROUTES } from '../constants/app_route';
 import { useNavigate } from 'react-router-dom';
 import { Home, MakeDeposit, P2PMC, Profile, Settings, SignOut, Support, Wallet } from '../assets/icons/header-dropdown-icons';
 import LogOutModal from './Modals/LogOut';
-import { GetWallet } from '../redux/actions/walletActions';
+import { GetLivePrice, GetWallet } from '../redux/actions/walletActions';
 
 interface HeaderProps {
     currentPage: string;
@@ -17,7 +17,8 @@ const Header: React.FC<HeaderProps> = ({ currentPage }) => {
     const navigate = useNavigate()
 
      useEffect(() => {
-            GetWallet()
+         GetWallet()
+         GetLivePrice()
         }, [])
 
     const navDropDowLinks = {

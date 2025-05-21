@@ -4,7 +4,6 @@ import { getToken, getRefreshToken } from "../helpers";
 import { BACKEND_URLS } from "../utils/backendUrls";
 import { TUser } from "../types/user";
 import { refreshAccessToken } from "./actions/userActions";
-import Toast from "../components/Toast";
 
 const Bisatsfetch = async (
   url: string,

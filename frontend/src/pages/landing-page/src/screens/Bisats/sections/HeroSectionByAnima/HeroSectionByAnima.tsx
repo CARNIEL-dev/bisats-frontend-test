@@ -7,7 +7,7 @@ import { Input } from "../../../../components/ui/input";
 import NavBar from "../../../../../../../components/NavBar";
 import PrimaryInput from "../../../../../../../components/Inputs/PrimaryInput";
 import { TokenData } from "../../../../../../../data";
-import { PrimaryButton } from "../../../../../../../components/buttons/Buttons";
+import { PrimaryButton, WhiteTransparentButton } from "../../../../../../../components/buttons/Buttons";
 import coinss from "../../../../../../../assets/icons/coinss.png"
 
 export const HeroSectionByAnima = (): JSX.Element => {
@@ -30,79 +30,32 @@ export const HeroSectionByAnima = (): JSX.Element => {
   ];
 
   return (
-    <section className="relative w-full bg-[#0A0E12] h-[100vh]">
+    <section className="relative w-full h-[85vh]">
       <div className="relative">
         {/* Background gradient */}
-        <div className="absolute w-full h-full top-0 left-0 bg-[#0A0E12] opacity-30" />
-       
         {/* Main content */}
-        <div className="flex flex-wrap justify-between py-20 px-5 lg:px-20 lg:py-48 relative z-10">
+        <div className="flex flex-wrap justify-between items-center py-20 px-5 lg:px-20 lg:py-2 relative z-10">
           {/* Left content */}
-          <div className="flex flex-col text-center lg:text-left  lg:w-[740px] items-start gap-4">
-            <h1 className="text-[22px] leading-[32px] font-[600] lg:text-[54px] font-[700] text-[#FFFFFF] lg:leading-[64px]">
-              Seamlessly Convert Between Fiat and Crypto – <span className="text-[#F5BB00]">Fast, Simple, Secure</span>
+          <div className="flex flex-col text-center lg:text-left lg:w-[740px] items-start gap-4">
+            <img src={coinss} alt="logo-cluster" className="h-[24px] mx-auto lg:mx-0" />
+            <h1 className="text-[22px] leading-[32px] font-[600] lg:text-[64px] font-[500] text-[#0A0E12] lg:leading-[72px]">
+            Trade, Rest, and <br/> Stay Happy 
             </h1>
-            <p className="w-full lg:w-[541px] text-[14px] leading-[24px]  lg:text-[18px] lg:leading-[32px] font-desktop-body-2 text-[#ADB5C3]">
+            <p className="w-full lg:w-[541px] text-[14px] leading-[24px]  lg:text-[20px] lg:leading-[32px] font-[400] text-[#515B6E]">
               With Bisats, you can say goodbye to your struggles with crypto
               peer-to-peer exchanges
             </p>
-            <img src={coinss} alt="logo-cluster" className="h-[24px] mx-auto lg:mx-0"/>
 
-           
+            <div className="flex items-center w-4/6 ">
+              <PrimaryButton text={"Create an Account"} loading={false} css="w-1/2 mr-3" />
+              <WhiteTransparentButton text={"Sign In"} loading={false} css="border-[1px] w-1/2 border-[#F3F4F6] bg-[#F6F7F8] text-[#181300]" />
+              
+           </div>
           </div>
 
           {/* Exchange card */}
-          <div className="w-full mt-10 lg:mt-0 lg:w-[453px] p-3 lg:p-6 pb-2 h-fit rounded-xl border-[1px] border-[#121A21] backdrop-blur-[3px] backdrop-brightness-[100%] [-webkit-backdrop-filter:blur(3px)_brightness(100%)] [background:linear-gradient(136deg,rgba(18,26,33,0.05)_0%,rgba(74,108,135,0.05)_100%)] border">
-            <div>
-              <div className='relative'>
-                <PrimaryInput css={'w-full h-[48px] lg:h-[64px] bg-[#10161E] border-[1px] border-[#23272F]'} label={'You’re selling'} error={undefined} touched={undefined} />
-                <div className='absolute right-3 top-8 lg:top-10'>
-
-                  <button
-
-                    className={`text-[#515B6E] p-2.5 px-4 bg-[#10161E]  border border-[#23272F] h-[48px] rounded-[8px] rounded inline-flex items-center lg:w-[120px] flex justify-between font-[600] text-[14px] leading-[24px] `}
-                    type="button"
-                  >
-                    {/* <Typography.Text> */}
-                    {TokenData[1].tokenLogo}
-
-                    <div className="mx-3">
-
-                      {TokenData[1].tokenName}
-                    </div>
-                    {/* </Typography.Text> */}
-                  </button>
-                  {/* <CryptoFilter error={undefined} touched={undefined} handleChange={() => console.log("mms")} /> */}
-                </div>
-              </div>
-              <div className='relative my-5'>
-                <PrimaryInput css={'w-full h-[48px] lg:h-[64px] bg-[#10161E] border-[1px] border-[#23272F]'} label={'You’ll receive'} error={undefined} touched={undefined} />
-                <div className='absolute right-3 top-8 lg:top-10'>
-
-                  <button
-
-                    className={`text-[#515B6E] p-2.5 px-4 bg-[#10161E]  border border-[#23272F] h-[48px] rounded-[8px] rounded inline-flex items-center lg:w-[120px] flex justify-between font-[600] text-[14px] leading-[24px] `}
-                    type="button"
-                  >
-                    {/* <Typography.Text> */}
-                    {TokenData[0].tokenLogo}
-
-                    <div className="mx-3">
-
-                      {TokenData[0].tokenName}
-                    </div>
-                    {/* </Typography.Text> */}
-
-
-                  </button>
-                  {/* <CryptoFilter error={undefined} touched={undefined} handleChange={() => console.log("mms")} /> */}
-                </div>
-                <p className='text-[#515B6E] text-[14px] font-[400] my-5'><span>1 USDT</span>  ≈ <span>1,661.66166 xNGN</span> <span className='text-[#17A34A] text-[12px] font-[600] bg-[#EFFEF41A]  border p-[0.6px] rounded border-[#EFFEF41A]'> 30 s</span></p>
-
-                {/* <small className='text-[#606C82] text-[12px] font-[400]'>Balance: 20,000 xNGN</small> */}
-                <PrimaryButton text={"Exchange"} loading={false} css="w-full "/>
-              </div>
-            </div>
+          <div className="w-full mt-10 lg:mt-0 lg:w-[539px] p-3 lg:p-6 pb-2 h-fit lg:h-[614px] rounded-xl ">
+            <img alt='hero-phone-image' src="/HeroPhone.png" />
           </div>
         </div>
       </div>

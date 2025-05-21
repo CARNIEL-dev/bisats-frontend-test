@@ -6,7 +6,7 @@ const Buy = () => {
 	const adDetail = location.state?.adDetail;
 	return (
 		<div className="w-full">
-			<div className="w-full max-w-[1024px] mx-auto px-3">
+			<div className="w-full lg:w-3/5 mx-auto px-3">
 				<Swap type={"buy"} adDetail={adDetail} />
 			</div>
 		</div>

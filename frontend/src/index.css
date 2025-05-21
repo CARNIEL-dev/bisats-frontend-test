@@ -251,3 +251,14 @@
   background-repeat: no-repeat; 
   
 }
+
+.bg-mobile-app {
+  background-image: url("./assets/landingPage/bg-boxes.png");
+  background-size: cover;
+
+}
+
+.bottom-blur{
+  background: linear-gradient(to bottom, transparent, #0A0E12);
+  filter: blur(10px); 
+}

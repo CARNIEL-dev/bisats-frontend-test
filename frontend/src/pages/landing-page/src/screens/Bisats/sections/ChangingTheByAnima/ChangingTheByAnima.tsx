@@ -7,33 +7,29 @@ import LogoPulse from "../../../../../../../assets/icons/bisats logo.png"
 // Feature card data for mapping
 const featureCards = [
   {
-    title: "Fast",
-    description:
-      "Time is money, and we value yours. Our platform is optimized for speed, ensuring that trades are completed seamlessly and without delays.",
+    title: "Speedy Transactions",
+    description:"Time is money, and we value yours. Our platform helps you trade faster while you enjoy seamless experience.",
     icon: (
       <ZapIcon className="w-[98px] h-[98px] text-primaryprimary-5 opacity-50" />
     ),
   },
   {
     title: "Fraud proof",
-    description:
-      "Experience worry-free trading with our escrow protection, and verified user processes ensure every transaction is genuine and secure.",
+    description:"We know the pain in the crypto market. So we beat other platforms through our escrow protection and thorough verification processes. We ensure that every profile is genuine, validated, and secured for transaction.",
     icon: (
       <ShieldIcon className="w-[98px] h-[98px] text-primaryprimary-5 opacity-50" />
     ),
   },
   {
     title: "Regulatory Compliant",
-    description:
-      "Stay confident in every transaction with a platform that adheres to the highest legal and regulatory standards.",
+    description: "We don’t just give you our words; we adhere strictly to legal policies and regulatory standard both locally and internationally.Bisats is that platform you use with confidence.",
     icon: (
       <BuildingIcon className="w-[137px] h-[137px] text-primaryprimary-5 opacity-50" />
     ),
   },
   {
     title: "Secure",
-    description:
-      "Your safety is our top priority. With advanced encryption and secure wallets, we ensure that your assets and data are protected at all times.",
+    description: "Protecting your assets is our top priority. With our advanced encryption and secured wallets, you experience zero market risk or losses.",
     icon: (
       <LockIcon className="w-[98px] h-[98px] text-primaryprimary-5 opacity-50" />
     ),
@@ -45,17 +41,11 @@ export const ChangingTheByAnima = (): JSX.Element => {
     <section className="w-full py-20 bg-white w-[98%] mx-auto">
       <div className="container mx-auto">
         <h2 className="mb-16 font-['Geist',Helvetica] text-[42px] leading-[56px]">
-          <span className="text-[#2b303a] font-semibold">Changing the </span>
-          <span className="font-desktop-header3 font-semibold text-[#f5bb00]">
-            Peer
-          </span>
-          <span className="text-[#2b303a] font-semibold">-</span>
-          <span className="font-semibold text-[#515b6e]">to</span>
-          <span className="text-[#2b303a] font-semibold">-</span>
-          <span className="font-desktop-header3 font-semibold text-[#0a0e12]">
-            Peer
-          </span><br/>
-          <span className="text-[#2b303a] font-semibold block"> experience</span>
+          <span className="text-[#2B313B] font-semibold">Bettering the peer-to-peer experience-<br />
+            </span>
+          <span className="font-desktop-header3 font-semibold text-[#C49600]">
+          How Bisats Dominate Others          </span>
+         
         </h2>
 
         <div className="relative ">
@@ -91,14 +81,14 @@ export const ChangingTheByAnima = (): JSX.Element => {
             {featureCards.map((card, index) => (
               <Card
                 key={index}
-                className="w-[356px] h-[150px] rounded-xl border border-solid border-[#f3f3f6] [background:linear-gradient(135deg,rgba(255,255,255,1)_0%,rgba(246,247,248,1)_100%)]"
+                className="w-[356px] h-[180px] rounded-xl border border-solid border-[#f3f3f6] [background:linear-gradient(135deg,rgba(255,255,255,1)_0%,rgba(246,247,248,1)_100%)]"
               >
                 <CardContent className="p-4 flex flex-col gap-2 h-full relative">
                   {/* <div className="absolute top-[41px] right-4">{card.icon}</div> */}
                   <h3 className="font-desktop-header6 font-semibold text-primaryprimary-9 text-[22px] leading-[32px]">
                     {card.title}
                   </h3>
-                  <p className="font-desktop-body-4 text-greysgrey-9 text-[14px] leading-[24px]">
+                  <p className="font-[400] text-greysgrey-9 text-[12.5px] leading-[24px]">
                     {card.description}
                   </p>
                 </CardContent>

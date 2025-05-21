@@ -12,13 +12,15 @@ export const Bisats = (): JSX.Element => {
     <div className="bg-white flex flex-col items-center w-full">
       <div className="w-full max-w-[1440px]">
         <div className="flex flex-col w-full">
-           <NavBar/>
-          <HeroSectionByAnima />
+          <div className="bg-[#fff]">
+            <NavBar />
+            <HeroSectionByAnima />
+          </div>
           <HowItWorksByAnima />
           <ChangingTheByAnima />
-          <ChangingThePpByAnima />
+          {/* <ChangingThePpByAnima /> */}
           <MobileAppByAnima />
-          <Footer/>
+          {/* <Footer/> */}
         </div>
       </div>
     </div>

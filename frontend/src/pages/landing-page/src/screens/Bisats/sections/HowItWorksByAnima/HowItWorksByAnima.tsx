@@ -1,8 +1,8 @@
-import React from "react";
 import { Card, CardContent } from "../../../../components/ui/card";
 import DepositIcon from "../../../../../../../assets/icons/deposit 1.png"
 import Alter from "../../../../../../../assets/icons/alter 1.png"
 import Withdraw from "../../../../../../../assets/icons/withdraw 1.png"
+
 
 
 export const HowItWorksByAnima = (): JSX.Element => {
@@ -11,6 +11,7 @@ export const HowItWorksByAnima = (): JSX.Element => {
     {
       id: 1,
       title: "Make a deposit",
+      image:"/landingpage/deposit.png",
       description: "Fund your wallets with cash or crypto",
       iconAlt: "Deposit",
       iconSrc: DepositIcon, // Assuming the original had an image here
@@ -20,6 +21,7 @@ export const HowItWorksByAnima = (): JSX.Element => {
       title: "Exchange your asset",
       description: "Make a p2p swap on Bisats, fast and easy",
       iconAlt: "Alter",
+      image: "/landingpage/exchange.png",
       iconSrc: Alter, // Assuming the original had an image here
     },
     {
@@ -27,21 +29,21 @@ export const HowItWorksByAnima = (): JSX.Element => {
       title: "Make a withdrawal",
       description: "Make Withdrawals to your bank or cypto wallet.",
       iconAlt: "Withdraw",
+      image: "/landingpage/withdrawal.png",
       iconSrc: Withdraw, // Assuming the original had an image here
     },
   ];
 
   return (
-    <section className="w-full py-20 px-5 lg:py-28 bg-[#fcfcfc]">
+    <section className="w-full py-20 px-5 lg:py-28 bg-[#FDFDFC]">
       <div className="container mx-auto">
         <div className="flex flex-col items-center gap-1 mb-12">
-          <h2 className="text-[28px] lg:text-[42px] text-center leading-[56px]">
-            <span className="text-[#0a0e12] font-semibold">How </span>
-            <span className="font-semibold text-[#f5bb00]">Bisats</span>
-            <span className="text-[#0a0e12] font-semibold"> Works</span>
+          <h2 className="text-[28px] text-[#0A0E12] lg:text-[42px] text-center leading-[56px] lg:w-3/5">
+            At Bisats, you start and end every transactions with peace of mind.        
+
           </h2>
-          <p className="font-normal text-greysgrey-8 text-base text-center leading-6">
-            Use Bisats in 3 easy steps
+          <p className="font-[400] text-[#606C82] text-[16px] text-center leading-[28px]">
+            Transact in 3 Simple Steps:
           </p>
         </div>
 
@@ -49,12 +51,11 @@ export const HowItWorksByAnima = (): JSX.Element => {
           {steps.map((step) => (
             <Card
               key={step.id}
-              className="w-full lg:w-[356px] h-[150px] rounded-xl border border-solid border-[#f3f3f6] [background:linear-gradient(135deg,rgba(255,255,255,1)_0%,rgba(246,247,248,1)_100%)] relative overflow-hidden"
+              className="w-full lg:w-[356px] h-[504px] rounded-xl border border-solid border-[#f3f3f6] [background:linear-gradient(135deg,rgba(255,255,255,1)_0%,rgba(246,247,248,1)_100%)] relative overflow-hidden"
             >
               <CardContent className="flex flex-col h-full items-start  lg:gap-2 p-4">
-                <div className="absolute top-[71px] right-[16px] opacity-10 font-desktop-header2 text-accent-dark-blue text-[54px] leading-[64px]">
-                  {step.id}
-                </div>
+                <img className="w-full h-[300px] mb-3" src={step.image} alt={step.iconAlt} />
+                
 
                 <img
                   className="w-12 h-12 object-cover"

@@ -10,16 +10,32 @@ const footerData = {
     title: "SITE",
     links: [
       { name: "Home", url: "#" },
+      { name: "Terms and Conditions", url: "#" },
+
+      { name: "T&C for Merchants", url: "#" },
+
+      { name: "Policy", url: "#" },
+
       { name: "Blog", url: "#" },
+
+      { name: "FAQs", url: "#" },
     ],
   },
   connect: {
     title: "CONNECT",
-    links: [{ name: "Twitter", url: "#" }],
+    links: [
+      { name: "X (Twitter)", url: "#" },
+      { name: "Instagram", url: "#" },
+
+      { name: "Facebook", url: "#" },
+
+
+
+    ],
   },
   contact: {
     title: "Contact",
-    links: [{ name: "hello@Bisats.org", url: "mailto:hello@Bisats.org" }],
+    links: [{ name: "support@bisats.com", url: "mailto:hello@Bisats.org" }],
   },
 };
 

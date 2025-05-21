@@ -109,23 +109,16 @@ const App: React.FC = () => {
               <Route path={APP_ROUTES.SETTINGS.SECURITY} element={<Security />} />
               <Route path={APP_ROUTES.SETTINGS.PAYMENT} element={<Payment />} />
               <Route path={APP_ROUTES.SETTINGS.SUPPORT} element={<Support />} />
-
             </Route>
             <Route path={APP_ROUTES.DASHBOARD} element={<Dashboard />} />
             <Route path={APP_ROUTES.WALLET.HOME} element={<Wallet />} />
             <Route path={APP_ROUTES.PROFILE} element={<Profile />} />
-
-
             <Route path={APP_ROUTES?.KYC.PHONEVERIFICATION} Component={PhoneVerifcation} />
             <Route path={APP_ROUTES?.KYC.BVNVERIFICATION} Component={BVNVerification} />
             <Route path={APP_ROUTES?.KYC.LEVEL3VERIFICATION} Component={Level3Verification} />
-
-
           </Route>
-
           <Route path="*" element={<Navigate to="/404" />} />
           <Route path="/" element={<Bisats/>} />
-
         </>
       </Routes>
       <Footer/>

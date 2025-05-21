@@ -1,7 +1,7 @@
 /** @format */
 
 import { useSelector } from "react-redux";
-import { getToken, getUser } from "../../helpers";
+import { getToken, getUser, setLivePrices } from "../../helpers";
 import { T2FARequest, TAddSearchRequest, TCreateAdsRequest, TCryptoWithdrawalRequest, TDeleteWithdrawalRequest, TTopUpNGN, TWithdrawalBankAccount, TWithdrawalRequest } from "../../types/wallet";
 import { BACKEND_URLS } from "../../utils/backendUrls";
 import dispatchWrapper from "../../utils/dispatchWrapper";
@@ -91,27 +91,49 @@ export const GetLivePrice = async () => {
   try {
     const response = await fetch(endpoint);
     const data = await response.json();
-
-    return {
+    const prices = {
       xNGN: data.tether.ngn, // NGN price of USDT
       BTC: data.bitcoin.usd, // USD price of Bitcoin
       SOL: data.solana.usd, // USD price of Solana
       ETH: data.ethereum.usd, // USD price of Ethereum
       USDT: data.tether.usd, // USD price of Tether (USDT)
-       BTC_TEST: 0,
-    SOL_TEST: 0,
-    ETH_TEST5: 0,
-    USDT_ETH_TEST5_KDZ7: 0,
-    TRX_TEST: 0,
-    USDT_TRX_TEST: 0,
-    USDT_SOL_TEST: 0,
-    USDT_TRC20: 0,
-    USDT_SOL: 0,
-    TRX: 0,
-    USDT_TRX: 0,
+      BTC_TEST: 0,
+      SOL_TEST: 0,
+      ETH_TEST5: 0,
+      USDT_ETH_TEST5_KDZ7: 0,
+      TRX_TEST: 0,
+      USDT_TRX_TEST: 0,
+      USDT_SOL_TEST: 0,
+      USDT_TRC20: 0,
+      USDT_SOL: 0,
+      TRX: 0,
+      USDT_TRX: 0,
     };
+    setLivePrices(JSON.stringify(prices))
+    return prices
   } catch (error) {
     console.error("Failed to fetch live prices:", error);
+    setLivePrices(
+      JSON.stringify({
+        xNGN: 1500,
+        BTC: 96336,
+        SOL: 171.44,
+        ETH: 2808,
+        USDT: 1.002,
+        BTC_TEST: 0,
+        SOL_TEST: 0,
+        ETH_TEST5: 0,
+        USDT_ETH_TEST5_KDZ7: 0,
+        TRX_TEST: 0,
+        USDT_TRX_TEST: 0,
+        USDT_SOL_TEST: 0,
+        USDT_TRC20: 0,
+        USDT_SOL: 0,
+        TRX: 0,
+        USDT_TRX: 0,
+      })
+    );
+
     return {
       xNGN: 1500,
       BTC: 96336,

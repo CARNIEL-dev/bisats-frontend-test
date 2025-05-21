@@ -5,6 +5,10 @@ export const setToken = (token: string) => {
     localStorage.setItem("token", token);
 };
 
+export const setLivePrices = (livePrices: string) => {
+    localStorage.setItem("bsts_live_prices", livePrices);
+};
+
 export const setUser = (user: TUser) => {
     localStorage.setItem("_user", JSON.stringify(user));
 };
@@ -17,6 +21,17 @@ export const getUser = () => {
     const user = localStorage.getItem("_user");
     if (user) {
         return JSON.parse(localStorage.getItem("_user") ?? "");
+    }
+};
+
+export const getLivePrice = () => {
+    if (typeof window === "undefined") return undefined;
+
+    if (!localStorage.getItem("bsts_live_prices")) return undefined;
+
+    const liveprices = localStorage.getItem("bsts_live_prices");
+    if (liveprices) {
+        return JSON.parse(localStorage.getItem("bsts_live_prices") ?? "");
     }
 };
 

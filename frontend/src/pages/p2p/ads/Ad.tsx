@@ -200,7 +200,7 @@ const CreateAd = () => {
     });
 
     return (
-        <div className="w-full lg:w-1/3 mx-auto h-full lg:items-center px-4">
+        <div className="w-full lg:w-2/3 mx-auto h-full lg:items-center px-4">
             <Head header="Create an Ad" subHeader="Buy or sell assets with your own preferred price." />
             <HeaderTabs activePage={stage} setActivePage={setStage }/>
 
