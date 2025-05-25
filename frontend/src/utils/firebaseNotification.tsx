@@ -1,5 +1,6 @@
 import Toast from "../components/Toast";
 import { messaging,getToken } from "../firebase";
+import { UpdateUserName } from "../redux/actions/userActions";
 export const requestPermission = async () => {
     const env = process.env
 
@@ -7,12 +8,14 @@ export const requestPermission = async () => {
         const permission = await Notification.requestPermission();
 
         if (permission === "granted") {
+            console.log("permision graned", env.REACT_APP_FIREBASE_VAPIDID)
             const token = await getToken(messaging, {
                 vapidKey: env.REACT_APP_FIREBASE_VAPIDID // get this from Firebase console
             });
 
             console.log("FCM Token:", token);
-            // Send this token to your backend dev to send messages to this client
+            UpdateUserName({deviceToken:token})
+           
         } else {
             Toast.error("Permission not granted for notifications.","Permission denied");
         }

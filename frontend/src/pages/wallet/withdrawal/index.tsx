@@ -177,12 +177,12 @@ const WithdrawalPage = () => {
                                     type="number"
                                     min={0}
                                     max={300}
-                                    error={Number(withdrwalAmount) >userTransactionLimits?.withdrawal_per_transaction_fiat?true:false}
-                                    touched={Number(withdrwalAmount) > userTransactionLimits?.withdrawal_per_transaction_fiat ? true : false}
+                                    error={Number(withdrwalAmount) >userTransactionLimits?.maximum_fiat_withdrawal?true:false}
+                                    touched={Number(withdrwalAmount) > userTransactionLimits?.maximum_fiat_withdrawal ? true : false}
                                     value={withdrwalAmount}
                                     onChange={(e) => {
                                         let value = e.target.value.replace(/\D/g, '');
-                                        const max = userTransactionLimits?.withdrawal_per_transaction_fiat;
+                                        const max = userTransactionLimits?.maximum_fiat_withdrawal;
 
                                         if (max && Number(value) > max) {
                                             value = max.toString();
@@ -198,7 +198,7 @@ const WithdrawalPage = () => {
                                     </div>
                                     <div className="flex justify-between items-center mb-2">
                                         <p className="text-[#424A59] font-[400]">Transaction fee:</p>
-                                        <p className="text-[#606C82]  font-[600]">{ userTransactionLimits?.charge_on_single_withdrawal_fiat} xNGN</p>
+                                        <p className="text-[#606C82]  font-[600]">{ userTransactionLimits?.charge_on_single_withdrawal_fiat } xNGN</p>
                                     </div>
                                     <div className="flex justify-between items-center mb-2">
                                         <p className="text-[#424A59] font-[400]">Withdrawal amount:</p>
@@ -226,8 +226,10 @@ const WithdrawalPage = () => {
                                     value={cryptoWithdrwalAddress}
                                     onChange={(e)=>setCryptoWithdrwalAddress(e.target.value)}
                                     touched={undefined} />
-                                <PrimaryInput css={"w-full p-2.5 mb-7"} label={"Amount"}
+                                <PrimaryInput css={"w-full p-2.5 mb-7"} label={`Amount (Min-${userTransactionLimits?.minimum_fiat_withdrawal} Max-${userTransactionLimits?.maximum_fiat_withdrawal})`}
                                     placeholder="Enter amount"
+                                    min={userTransactionLimits?.minimum_fiat_withdrawal}
+                                    max={userTransactionLimits?.maximum_fiat_withdrawal}
                                     value={cryptoWithdrwalAmount}
                                     onChange={(e) => setCryptoWithdrwalAmount(e.target.value)}
                                     error={undefined}

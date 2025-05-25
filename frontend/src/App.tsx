@@ -50,6 +50,8 @@ const App: React.FC = () => {
   useEffect(() => { rehydrateUser() }, [])
 
   useEffect(() => {
+    console.log("message")
+
     onMessage(messaging, (payload) => {
       console.log("Message received. ", payload);
       // You can show a toast or in-app notification here
@@ -57,6 +59,7 @@ const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    console.log("request permission")
    requestPermission()
   }, []);
   return (

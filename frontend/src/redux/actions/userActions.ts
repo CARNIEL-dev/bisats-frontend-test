@@ -362,9 +362,10 @@ export const GetUserDetails = async () => {
 };
 
 export const UpdateUserName = async (payload: {
-  firstName: string;
-  lastName: string;
-  userName: string;
+  firstName?: string;
+  lastName?: string;
+  userName?: string;
+  deviceToken?:string
 }) => {
   const user = getUser();
   try {
@@ -372,7 +373,7 @@ export const UpdateUserName = async (payload: {
       `/api/v1/user/${user.userId}/update-profile`,
       {
         method: "PUT",
-       
+
         body: JSON.stringify(payload),
       }
     );
