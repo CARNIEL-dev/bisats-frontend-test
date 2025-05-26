@@ -84,9 +84,10 @@ const Swap = ({ type, adDetail }: { type: "buy" | "sell", adDetail?: AdSchema | 
 
 
             if (response.status) {
+                console.log(response)
                 setNetworkFee(response?.data?.networkFee);
                 setTransactionFee(response?.data?.transactionFee);
-                return response.data;
+                return response;
             } else {
                 setError("Failed to fetch network fee: " + response.message);
                 return response;
@@ -117,6 +118,7 @@ const Swap = ({ type, adDetail }: { type: "buy" | "sell", adDetail?: AdSchema | 
 
         try {
             const feeData = await fetchNetworkFee();
+            console.log(feeData)
             if (!feeData.status) {
                 setOrderError(feeData?.message);
                 Toast.error(feeData?.message, "Failed")
@@ -215,7 +217,10 @@ const Swap = ({ type, adDetail }: { type: "buy" | "sell", adDetail?: AdSchema | 
             <div className='flex items-center my-1 w-2/3 justify-between'>
                 <div className='text-[12px] text-[#515B6E]'>
                     <h2 className='font-[600]'>Available</h2>
-                    <p>{adDetail?.amountAvailable} {adDetail?.asset }</p>
+                    {type === "buy" ?
+                        <p>{adDetail?.amountAvailable} {adDetail?.asset}</p> :
+                        <p>{adDetail?.amountAvailable} NGN</p> 
+                    }
                 </div>
                 <div className='text-[12px] text-[#515B6E]'>
                     <h2 className='font-[600]'>Limit</h2>

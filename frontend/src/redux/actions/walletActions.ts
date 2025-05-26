@@ -1,7 +1,7 @@
 /** @format */
 
 import { useSelector } from "react-redux";
-import { getToken, getUser } from "../../helpers";
+import { getToken, getUser, setLivePrices, setUserTokenData } from "../../helpers";
 import { T2FARequest, TAddSearchRequest, TCreateAdsRequest, TCryptoWithdrawalRequest, TDeleteWithdrawalRequest, TTopUpNGN, TWithdrawalBankAccount, TWithdrawalRequest } from "../../types/wallet";
 import { BACKEND_URLS } from "../../utils/backendUrls";
 import dispatchWrapper from "../../utils/dispatchWrapper";
@@ -25,6 +25,8 @@ export const GetWallet = async () => {
         type: WalletActionypes.GET_WALLET,
         payload: data,
       });
+      const asset_list =  transformAssets(data?.cryptoAssests);
+      setUserTokenData(asset_list)
       return data;
     } else {
       // logoutUser();
@@ -91,27 +93,49 @@ export const GetLivePrice = async () => {
   try {
     const response = await fetch(endpoint);
     const data = await response.json();
-
-    return {
+    const prices = {
       xNGN: data.tether.ngn, // NGN price of USDT
       BTC: data.bitcoin.usd, // USD price of Bitcoin
       SOL: data.solana.usd, // USD price of Solana
       ETH: data.ethereum.usd, // USD price of Ethereum
       USDT: data.tether.usd, // USD price of Tether (USDT)
-       BTC_TEST: 0,
-    SOL_TEST: 0,
-    ETH_TEST5: 0,
-    USDT_ETH_TEST5_KDZ7: 0,
-    TRX_TEST: 0,
-    USDT_TRX_TEST: 0,
-    USDT_SOL_TEST: 0,
-    USDT_TRC20: 0,
-    USDT_SOL: 0,
-    TRX: 0,
-    USDT_TRX: 0,
+      BTC_TEST: 0,
+      SOL_TEST: 0,
+      ETH_TEST5: 0,
+      USDT_ETH_TEST5_KDZ7: 0,
+      TRX_TEST: 0,
+      USDT_TRX_TEST: 0,
+      USDT_SOL_TEST: 0,
+      USDT_TRC20: 0,
+      USDT_SOL: 0,
+      TRX: 0,
+      USDT_TRX: 0,
     };
+    setLivePrices(JSON.stringify(prices))
+    return prices
   } catch (error) {
     console.error("Failed to fetch live prices:", error);
+    setLivePrices(
+      JSON.stringify({
+        xNGN: 1500,
+        BTC: 96336,
+        SOL: 171.44,
+        ETH: 2808,
+        USDT: 1.002,
+        BTC_TEST: 0,
+        SOL_TEST: 0,
+        ETH_TEST5: 0,
+        USDT_ETH_TEST5_KDZ7: 0,
+        TRX_TEST: 0,
+        USDT_TRX_TEST: 0,
+        USDT_SOL_TEST: 0,
+        USDT_TRC20: 0,
+        USDT_SOL: 0,
+        TRX: 0,
+        USDT_TRX: 0,
+      })
+    );
+
     return {
       xNGN: 1500,
       BTC: 96336,
@@ -270,6 +294,7 @@ export const Withdraw_xNGN = async (
 };
 
 export const Withdraw_Crypto = async (payload: TCryptoWithdrawalRequest) => {
+  
   try {
     const response = await Bisatsfetch(
       `/api/v1/user/${payload.userId}${BACKEND_URLS.WALLET.WITHDRAW_CRYPTO}`,
@@ -367,6 +392,53 @@ export const GetSearchAds= async (payload: TAddSearchRequest) => {
     }
   } catch (error) {
  
+    return error;
+  }
+};
+function transformAssets(data: any[]) {
+  const result: { id: string; tokenName: string; networks: { value: string; label: string; address: string; }[]; }[] = [];
+
+  data.forEach(({ asset, network, address }) => {
+    let existing = result.find(item => item.id === asset);
+
+    const networkObj = {
+      value: network,
+      label: network,
+      address
+    };
+
+    if (existing) {
+      // Avoid duplicate networks
+      if (!existing.networks.some(n => n.value === network)) {
+        existing.networks.push(networkObj);
+      }
+    } else {
+      result.push({
+        id: asset,
+        tokenName: asset,
+        networks: [networkObj]
+      });
+    }
+  });
+
+  return result;
+}
+
+
+export const Fetch_CryptoAssets = async (payload:string) => {
+  try {
+    const response = await Bisatsfetch(
+      `/api/v1/user/${payload}/crypto-data`,
+      {
+        method: "POST",
+        body: JSON.stringify(payload),
+      }
+    );
+    const data = response;
+    console.log(data)
+    return data;
+  } catch (error) {
+    // throw handleApiError(error);
     return error;
   }
 };

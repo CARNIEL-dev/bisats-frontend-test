@@ -4,14 +4,15 @@ import ModalTemplate from "./ModalTemplate";
 
 interface Props {
     close: () => void;
-    asset: keyof PriceData;
+    asset: string;
+    network?: string;
     address: string;
     amount: string;
     livePricesData: any;
     submit: () => void;
     isLoading:boolean
 }
-const WithdrawalConfirmationCrypto: React.FC<Props> = ({ close,asset,address,amount,livePricesData,submit,isLoading }) => {
+const WithdrawalConfirmationCrypto: React.FC<Props> = ({ close,asset,address,amount,livePricesData,submit,isLoading,network }) => {
     return (
         <ModalTemplate onClose={close}>
             <div className="flex flex-col justify-center w-full text-center mx-auto">
@@ -24,7 +25,7 @@ const WithdrawalConfirmationCrypto: React.FC<Props> = ({ close,asset,address,amo
                     </div>
                     <div className="flex justify-between items-center mb-2">
                         <p className="text-[#424A59] font-[400]">Network:</p>
-                        <p className="text-[#606C82]  font-[600]">{ asset}</p>
+                        <p className="text-[#606C82]  font-[600]">{ network}</p>
                     </div>
                     <div className="flex justify-between items-center mb-2">
                         <p className="text-[#424A59] font-[400]">Withdrawal amount:</p>

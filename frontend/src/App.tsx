@@ -5,7 +5,7 @@ import KycLayOut from './layouts/KycLayOut';
 import { LogIn, SignUp, ForgotPassword, VerifyEmail, OTP, ResetPassword } from './pages/auth';
 import './App.css';
 import { APP_ROUTES } from './constants/app_route';
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Identity, POA, PersonalInformation } from './pages/kyc';
 import Dashboard from './pages/dashboard/Dashboard';
@@ -41,6 +41,8 @@ import { Footer } from './components/Footer';
 import { requestPermission } from './utils/firebaseNotification';
 import { messaging,onMessage } from './firebase';
 import Support from './pages/settings/Support';
+import Toast from './components/Toast';
+import { GetWallet } from './redux/actions/walletActions';
 
 
 const App: React.FC = () => {
@@ -50,13 +52,21 @@ const App: React.FC = () => {
   useEffect(() => { rehydrateUser() }, [])
 
   useEffect(() => {
+    console.log("message")
+
     onMessage(messaging, (payload) => {
       console.log("Message received. ", payload);
+      if (payload) {
+        Toast.success(payload?.notification?.body ?? "", payload?.notification?.title ?? "")
+        rehydrateUser()
+        GetWallet()
+      }
       // You can show a toast or in-app notification here
     });
   }, []);
 
   useEffect(() => {
+    console.log("request permission")
    requestPermission()
   }, []);
   return (
@@ -109,23 +119,16 @@ const App: React.FC = () => {
               <Route path={APP_ROUTES.SETTINGS.SECURITY} element={<Security />} />
               <Route path={APP_ROUTES.SETTINGS.PAYMENT} element={<Payment />} />
               <Route path={APP_ROUTES.SETTINGS.SUPPORT} element={<Support />} />
-
             </Route>
             <Route path={APP_ROUTES.DASHBOARD} element={<Dashboard />} />
             <Route path={APP_ROUTES.WALLET.HOME} element={<Wallet />} />
             <Route path={APP_ROUTES.PROFILE} element={<Profile />} />
-
-
             <Route path={APP_ROUTES?.KYC.PHONEVERIFICATION} Component={PhoneVerifcation} />
             <Route path={APP_ROUTES?.KYC.BVNVERIFICATION} Component={BVNVerification} />
             <Route path={APP_ROUTES?.KYC.LEVEL3VERIFICATION} Component={Level3Verification} />
-
-
           </Route>
-
           <Route path="*" element={<Navigate to="/404" />} />
           <Route path="/" element={<Bisats/>} />
-
         </>
       </Routes>
       <Footer/>

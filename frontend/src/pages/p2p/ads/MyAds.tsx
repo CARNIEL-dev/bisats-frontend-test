@@ -8,6 +8,8 @@ import { GetAds } from "../../../redux/actions/adActions";
 import { UserState } from "../../../redux/reducers/userSlice";
 import Empty from "../../../components/Empty";
 import Header from "../components/Header";
+import KycManager from "../../kyc/KYCManager";
+import { ACTIONS } from "../../../utils/transaction_limits";
 
 export interface IAd {
 	id?: string;
@@ -176,11 +178,15 @@ const MyAds = () => {
 				/>
 
 				<div>
-					<PrimaryButton
-						text="Create Ad"
-						loading={false}
-						onClick={() => navigate("/p2p/ad/create")}
-					/>
+					<KycManager action={ACTIONS.DEPOSIT_NGN} func={() => navigate("/p2p/ad/create")}>
+						{(validateAndExecute) => (
+							<PrimaryButton
+								text="Create Ad"
+								loading={false}
+								onClick={validateAndExecute}
+							/>
+						)}
+						</KycManager>
 				</div>
 			</div>
 

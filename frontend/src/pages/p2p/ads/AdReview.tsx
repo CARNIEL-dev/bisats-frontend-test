@@ -134,7 +134,7 @@ const AdReview:  React.FC<AdsProps>  = ({ formik, setStage }) => {
                 <h1 className="text-[#2B313B] text-[14px] leading-[24px] font-[600]">Summary</h1>
 
                 <p className="text-[#606C82] text-[13px] leading-[24px] font-[400]">
-                    You are about to create an ad to <span className="font-[600]">Buy {formik.values.amount} {formik.values.asset} at {formik.values.priceType?.toLowerCase() === "static" ? `${formik.values.price} NGN/USDT.` : ` a margin of ${formik.values.priceMargin}% ${formik.values.type?.toLowerCase() === "buy" ? "price increase" : "price decrease"} at the current market price during fulfiment of the ad`}</span> <br />
+                    You are about to create an ad to  <span className="font-[600]">{formik.values.type.toLowerCase() === "buy" ? `Buy ${formik.values.amount} NGN worth of ${formik.values.asset}` : `Sell ${formik.values.amount} ${formik.values.asset}`} at {formik.values.priceType?.toLowerCase() === "static" ? `${formik.values.price} NGN/USDT.` : ` a margin of ${formik.values.priceMargin}% ${formik.values.type?.toLowerCase() === "buy" ? "price increase" : "price decrease"} at the current market price during fulfiment of the ad`}</span> <br />
                     Your ad will be paused if market price goes higher than {formik.values.priceUpperLimit} NGN or Lower than {formik.values.priceLowerLimit} NGN.
                     Your ad expires on {formik.values.expiryDate} by {formik.values.expiryTime}
                 </p>

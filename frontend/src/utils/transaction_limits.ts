@@ -8,46 +8,66 @@ export const bisats_limit = {
     fiat_currency: "ngn",
     daily_withdrawal_limit_crypto: 500000,
     crypto_currency: "usd",
-    withdrawal_per_transaction_fiat: 20000000,
-    charge_on_single_withdrawal_fiat: 100,
-    charge_on_single_withdrawal_crypto: 2,
-    deposit_per_transaction_fiat: 100000000,
+    charge_on_single_withdrawal_fiat: 53.75,
+    charge_on_single_withdrawal_crypto: 0,
+    max_deposit_per_transaction_fiat: 100000000,
     charge_on_single_deposit_fiat: 1500,
     charge_on_single_deposit_crypto: 0,
+    minimum_fiat_withdrawal: 15000,
+    maximum_fiat_withdrawal: 10000000,
+    upper_limit_sell_ad: 0,
+    lower_limit_sell_ad: 0,
+    upper_limit_buy_ad: 0,
+    lower_limit_buy_ad: 0,
   },
   level_2: {
     kyc_level: "level_2",
-    daily_withdrawal_limit_fiat: 300000000,
+    daily_withdrawal_limit_fiat: 500000000,
     fiat_currency: "ngn",
-    daily_withdrawal_limit_crypto: 500000,
+    daily_withdrawal_limit_crypto: 1000000,
     crypto_currency: "usd",
-    withdrawal_per_transaction_fiat: 20000000,
-    charge_on_single_withdrawal_fiat: 100,
-    charge_on_single_withdrawal_crypto: 2,
+    charge_on_single_withdrawal_fiat: 53.75,
+    charge_on_single_withdrawal_crypto: 0,
     deposit_per_transaction_fiat: 100000000,
     charge_on_single_deposit_fiat: 1500,
     charge_on_single_deposit_crypto: 0,
+    minimum_fiat_withdrawal: 15000,
+    maximum_fiat_withdrawal: 10000000,
+    charge_on_buy_ad: 0.0002,
+    charge_on_sell_ad: 0,
+    upper_limit_sell_ad: 23000000,
+    lower_limit_sell_ad: 15000,
+    upper_limit_buy_ad: 5000000,
+    lower_limit_buy_ad: 15000,
   },
   level_3: {
     kyc_level: "level_3",
-    daily_withdrawal_limit_fiat: 300000000,
+    daily_withdrawal_limit_fiat: 30000000000000,
     fiat_currency: "ngn",
-    daily_withdrawal_limit_crypto: 500000,
+    daily_withdrawal_limit_crypto: 3000000,
     crypto_currency: "usd",
     withdrawal_per_transaction_fiat: 20000000,
-    charge_on_single_withdrawal_fiat: 100,
-    charge_on_single_withdrawal_crypto: 2,
+    charge_on_single_withdrawal_fiat: 53.75,
+    charge_on_single_withdrawal_crypto: 0,
     deposit_per_transaction_fiat: 100000000,
     charge_on_single_deposit_fiat: 1500,
     charge_on_single_deposit_crypto: 0,
+    minimum_fiat_withdrawal: 15000,
+    maximum_fiat_withdrawal: 10000000,
+    charge_on_buy_ad: 0.0002,
+    charge_on_sell_ad: 0,
+    upper_limit_sell_ad: 100000000,
+    lower_limit_sell_ad: 15000,
+    upper_limit_buy_ad: 100000000,
+    lower_limit_buy_ad: 15000,
   },
 };
 
 export const bisats_charges = {
-  crypto_buy: 0.02,
-  crypto_sell: 0.015,
-  ad_creation_sell:0.02
-}
+  crypto_buy: 0.0002,
+  crypto_sell: 0,
+  ad_creation_sell: 0,
+};
 
 /// kycRules.js
 
@@ -87,6 +107,7 @@ export const KYC_RULES = {
       ACTIONS.WITHDRAW_CRYPTO,
       ACTIONS.WITHDRAW_NGN,
       ACTIONS.SET_2FA,
+      
     ],
     limits: {
       transactionAmount: 1000, // $1000 max per transaction
@@ -103,6 +124,7 @@ export const KYC_RULES = {
       ACTIONS.WITHDRAW_CRYPTO,
       ACTIONS.SET_2FA,
       ACTIONS.DEPOSIT,
+      ACTIONS.CREATE_AD,
     ],
     limits: {
       transactionAmount: 10000,
@@ -118,7 +140,8 @@ export const KYC_RULES = {
       ACTIONS.WITHDRAW_CRYPTO,
       ACTIONS.SET_2FA,
       ACTIONS.DEPOSIT,
-      ACTIONS.SWAP
+      ACTIONS.SWAP,
+      ACTIONS.CREATE_AD,
     ],
     limits: {
       transactionAmount: Infinity,
@@ -134,5 +157,5 @@ export const ACTIONS_REQUIRING_2FA = [
   // ACTIONS.BUY_CRYPTO,
   ACTIONS.WITHDRAW_CRYPTO,
   // ACTIONS.DEPOSIT_CRYPTO,
-  // ACTIONS.CREATE_AD,
+  ACTIONS.CREATE_AD,
 ];

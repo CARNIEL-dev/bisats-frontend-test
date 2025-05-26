@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { LiveAssets, TestAssets } from "./assets";
 import { PriceData } from "../pages/wallet/Assets";
+import { getLivePrice } from "../helpers";
 
 /** @format */
 const isDev = process.env.REACT_APP_NODE_ENV === "development";
@@ -32,17 +33,19 @@ export function convertNairaToAsset(
   asset: keyof typeof assets,
     nairaAmount: number,
   adPrice:number,
-  prices: Prices
+  prices?: Prices
 ): number | null {
-  const usdPriceOfAsset = prices[asset];
+    const pricces = getLivePrice() as Prices
+  const usdPriceOfAsset = pricces[asset];
   const ngnToUsdRate = adPrice;
 
+    console.log(ngnToUsdRate,usdPriceOfAsset)
   if (!usdPriceOfAsset || !ngnToUsdRate || asset === "xNGN") return null;
 
   const amountInUsd = nairaAmount / ngnToUsdRate;
   const assetAmount = amountInUsd / usdPriceOfAsset;
 
-  return Number(assetAmount.toFixed(6));
+  return Number(assetAmount.toFixed(2));
 }
 
 export function convertAssetToNaira(
@@ -51,6 +54,7 @@ export function convertAssetToNaira(
   adPrice: number,
   prices: Prices
 ): number | null {
+    console.log(asset,assetAmount,adPrice,prices)
   const usdPriceOfAsset = prices[asset];
   const ngnToUsdRate = adPrice;
   if (!usdPriceOfAsset || !ngnToUsdRate || asset === "xNGN") return null;
@@ -60,6 +64,8 @@ export function convertAssetToNaira(
 
   return Math.round(valueInNaira);
 }
+
+
 
 
 export function convertAssetToUSD(

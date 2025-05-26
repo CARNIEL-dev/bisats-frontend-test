@@ -105,7 +105,7 @@ const MyAds = () => {
 					text="My Ads"
 					subtext="Create, view and manage your ads on Bisats here"
 				/>
-				<PrimaryButton text="Create Ad" loading={false} />
+				<PrimaryButton text="Create Ad"  loading={false} css="w-full lg:w-fit" />
 			</div>
 
 			{loading ? (

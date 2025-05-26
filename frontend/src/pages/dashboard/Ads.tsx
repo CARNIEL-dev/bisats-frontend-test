@@ -92,14 +92,13 @@ const Ads: React.FC = () => {
 									? ad.asset.replace(/_TEST\d*|_TEST|_KDZ\d*$/i, "")
 									: "Unknown",
 								Price: ad.price || 0,
-								Amount: ad.amountFilled || 0,
+								Amount: ad.amount || 0,
 								id: ad.id,
 								status: ad.status,
 						  }))
 						: [];
 
-					// Only take the first 3 items from the transformedAds array
-					setOpenAds(transformedAds.slice(0, 3));
+					setOpenAds(transformedAds);
 				} else {
 					console.error("API returned error status:", response);
 					setError(`Error: ${response?.message || "Failed to load ads"}`);

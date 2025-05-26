@@ -28,7 +28,6 @@ const AuthLayout = () => {
                 </div>
             </div>
             </div>
-            <Footer/>
         </GoogleOAuthProvider>
     );
 };

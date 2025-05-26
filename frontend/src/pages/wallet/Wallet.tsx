@@ -4,6 +4,7 @@ import Assets from "./Assets";
 import Transactions from "./Transaction";
 
 const Wallet = () => {
+	
 	return (
 		<div>
 			<Header currentPage="Wallet" />

@@ -1,4 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { convertAssetToNaira, convertNairaToAsset } from "../../utils/conversions";
+import { PriceData } from "../../pages/wallet/Assets";
+import { GetLivePrice } from "../../redux/actions/walletActions";
 
 interface TableProps {
 	fields: Array<any>;
@@ -6,13 +9,14 @@ interface TableProps {
 }
 
 const Table: React.FC<TableProps> = ({ fields, data }) => {
+    
 	// Helper function to check field types regardless of case
 	const isFieldType = (field: string, type: string): boolean => {
 		return field.toLowerCase() === type.toLowerCase();
 	};
 
 	// Helper function to render field value with appropriate styling
-	const renderFieldValue = (field: string, value: any) => {
+    const renderFieldValue = (field: string, value: any, ) => {
 		if (isFieldType(field, "Status")) {
 			return (
 				<span
@@ -29,7 +33,7 @@ const Table: React.FC<TableProps> = ({ fields, data }) => {
 				</span>
 			);
 		} else if (isFieldType(field, "Amount")) {
-			return <span className="font-semibold">{value}</span>;
+            return <span className="font-semibold">{value}</span>;
 		} else if (isFieldType(field, "status")) {
 			// Handle lowercase "status" field from ads data
 			return (
@@ -82,20 +86,29 @@ const Table: React.FC<TableProps> = ({ fields, data }) => {
 										? "text-right font-semibold px-4 py-3 text-[14px]"
 										: "text-left px-4 py-2 text-[14px]"
 								}
-							>
-								{renderFieldValue(field, row[field])}
+                            >
+                                {field === "Amount" ?
+                                    `${row?.Asset}${convertNairaToAsset(row?.Asset, row?.Amount, row?.Price)?.toFixed(2) }`
+                                        // row["Order Type"] === "Buy" ? `xNGN ${row["Amount"]}` : `${row?.Asset}${convertNairaToAsset(row?.Asset, row?.Amount, row?.Price)}`
+                                                                        
+                                    :
+                                renderFieldValue(field, row[field])}
+
+                                
 							</td>
 						))}
 					</tr>
 				))}
 			</tbody>
 		</table>
-	);
+    );
+    
 
 	// Mobile layout with stacked fields - organized in specific order
 	const renderMobileTable = () => (
 		<div className="lg:hidden w-full">
-			{data.map((row, rowIndex) => (
+            {data.map((row, rowIndex) => (
+                
 				<div
 					key={rowIndex}
 					className="mb-4 p-3 rounded"
@@ -197,7 +210,7 @@ const Table: React.FC<TableProps> = ({ fields, data }) => {
 											{statusField}
 										</span>
 										<span className="text-right font-semibold text-[14px]">
-											{renderFieldValue(statusField, row[statusField])}
+                                            {renderFieldValue(statusField, row[statusField])}
 										</span>
 									</div>
 								);
@@ -207,14 +220,21 @@ const Table: React.FC<TableProps> = ({ fields, data }) => {
 								const amountField = fields.find((f) =>
 									isFieldType(f, "Amount")
 								);
-								if (amountField) {
+                                if (amountField) {
+                                    console.log(amountField,row["Order Type"])
 									return (
 										<div className="flex flex-col">
 											<span className="text-[12px] text-gray-500 mb-1 text-right">
 												{amountField}
 											</span>
-											<span className="text-right font-semibold text-[14px]">
-												{renderFieldValue(amountField, row[amountField])}
+                                            <span className="text-right font-semibold text-[14px]">
+                                                {
+                                                    `${row?.Asset}${convertNairaToAsset(row?.Asset, row?.Amount, row?.Price)?.toFixed(2)}`
+
+                                                    // row["Order Type"] === "Buy" ? `xNGN ${row["Amount"]}` : `${row?.Asset}${convertNairaToAsset(row?.Asset, row?.Amount, row?.Price)}`
+                                                }
+
+                                                {/* {renderFieldValue(amountField, row[amountField], )} */}
 											</span>
 										</div>
 									);

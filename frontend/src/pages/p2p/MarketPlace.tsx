@@ -74,7 +74,7 @@ const MarketPlace = () => {
 	};
 
 	return (
-		<div className="w-full ax-w-[1024px] mx-auto px-3">
+		<div className="w-full max-w-[1024px] lg:w-full mx-auto px-3">
 			<div>
 				<Header
 					text="P2P Market"
@@ -103,15 +103,16 @@ const MarketPlace = () => {
 				</p>
 			</div>
 
-			<div className="flex items-end w-full lg:w-1/4">
+			<div className="flex flex-wrap lg:flex-nowrap items-end w-full lg:w-1/4">
 				<CryptoFilter
 					error={undefined}
 					touched={undefined}
 					handleChange={handleTokenChange}
 					removexNGN={true}
+					
 				/>
 				<PrimaryInput
-					css={"h-[48px] mx-2 "}
+					css={"h-[48px] lg:mx-2 w-full lg:w-fit "}
 					placeholder="Amount in xNGN"
 					label={""}
 					error={undefined}
@@ -120,7 +121,7 @@ const MarketPlace = () => {
 				/>
 
 				<button
-					className="border-[1px] border-[#D6DAE1] rounded-[6px] w-[120px] px-4 flex justify-between items-center h-[48px] text-[#515B6E] text-[14px]"
+					className="border-[1px] border-[#D6DAE1] rounded-[6px] w-full mt-2 lg:w-[120px] px-4 flex justify-between items-center h-[48px] text-[#515B6E] text-[14px]"
 					onClick={() => setAdsParam({ ...adsParam })}
 				>
 					Filter

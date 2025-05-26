@@ -9,6 +9,9 @@ import DateInput from "../../../components/Inputs/DateInput";
 import DateTimePicker from "../../../components/Inputs/DateTimePicker";
 import TimePicker from "../../../components/Inputs/TimePicker";
 import { useMemo, useState } from "react";
+import { AccountLevel, bisats_limit } from "../../../utils/transaction_limits"
+import { UserState } from "../../../redux/reducers/userSlice";
+import { useSelector } from "react-redux";
 // import DateInput from "../../../components/Inputs/DateInput";
 
 const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage,wallet }) => {
@@ -18,7 +21,11 @@ const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage,wallet }) => {
     const loading = false;
     const walletData = wallet?.wallet
 
-    console.log(wallet)
+    const userState: UserState= useSelector((state: any) => state.user);
+    const user = userState.user
+   const account_level=user?.accountLevel as AccountLevel
+    const userTransactionLimits = bisats_limit[account_level]
+
     const type = [
         { value: "Buy", label: "Buy" },
         { value: "Sell", label: "Sell" }
@@ -103,9 +110,10 @@ const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage,wallet }) => {
                 <div className="flex justify-between mb-[1px]">
                     <PrimaryInput
                         css="w-[98%] p-2.5 mr-1"
-                        label="Minimum"
+                        label={`Minimum (xNGN${formik.values.type === "buy" ? userTransactionLimits?.lower_limit_buy_ad : userTransactionLimits?.lower_limit_sell_ad})`}
                         placeholder="0"
                         name="minimumLimit"
+                        min={formik.values.type === "buy" ? userTransactionLimits?.lower_limit_buy_ad : userTransactionLimits?.lower_limit_sell_ad}
                         error={formik.errors.minimumLimit}
                         value={formik.values.minimumLimit}
                         touched={formik.touched.minimumLimit}
@@ -118,9 +126,10 @@ const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage,wallet }) => {
                     />
                     <PrimaryInput
                         css="w-[100%] p-2.5"
-                        label="Maximum"
+                        label={`Maximum (xNGN  ${formik.values.type==="buy"? userTransactionLimits?.upper_limit_buy_ad:userTransactionLimits?.upper_limit_sell_ad})`}
                         placeholder="0"
                         name="maximumLimit"
+                        max={formik.values.type === "buy" ? userTransactionLimits?.upper_limit_buy_ad : userTransactionLimits?.upper_limit_sell_ad}
                         error={formik.errors.maximumLimit}
                         value={formik.values.maximumLimit}
                         touched={formik.touched.maximumLimit}

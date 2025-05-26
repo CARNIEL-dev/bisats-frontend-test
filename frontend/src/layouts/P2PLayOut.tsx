@@ -98,7 +98,7 @@ const P2PLayOut = () => {
                 </div>
             </div>
 
-            <div className="w-full py-10 lg:py-20">
+            <div className="w-full lg:w-2/3 mx-auto py-10 lg:py-20">
                 <Outlet />
             </div>
         </div>
