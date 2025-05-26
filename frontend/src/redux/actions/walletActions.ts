@@ -1,7 +1,7 @@
 /** @format */
 
 import { useSelector } from "react-redux";
-import { getToken, getUser, setLivePrices } from "../../helpers";
+import { getToken, getUser, setLivePrices, setUserTokenData } from "../../helpers";
 import { T2FARequest, TAddSearchRequest, TCreateAdsRequest, TCryptoWithdrawalRequest, TDeleteWithdrawalRequest, TTopUpNGN, TWithdrawalBankAccount, TWithdrawalRequest } from "../../types/wallet";
 import { BACKEND_URLS } from "../../utils/backendUrls";
 import dispatchWrapper from "../../utils/dispatchWrapper";
@@ -25,6 +25,8 @@ export const GetWallet = async () => {
         type: WalletActionypes.GET_WALLET,
         payload: data,
       });
+      const asset_list =  transformAssets(data?.cryptoAssests);
+      setUserTokenData(asset_list)
       return data;
     } else {
       // logoutUser();
@@ -292,6 +294,7 @@ export const Withdraw_xNGN = async (
 };
 
 export const Withdraw_Crypto = async (payload: TCryptoWithdrawalRequest) => {
+  
   try {
     const response = await Bisatsfetch(
       `/api/v1/user/${payload.userId}${BACKEND_URLS.WALLET.WITHDRAW_CRYPTO}`,
@@ -389,6 +392,53 @@ export const GetSearchAds= async (payload: TAddSearchRequest) => {
     }
   } catch (error) {
  
+    return error;
+  }
+};
+function transformAssets(data: any[]) {
+  const result: { id: string; tokenName: string; networks: { value: string; label: string; address: string; }[]; }[] = [];
+
+  data.forEach(({ asset, network, address }) => {
+    let existing = result.find(item => item.id === asset);
+
+    const networkObj = {
+      value: network,
+      label: network,
+      address
+    };
+
+    if (existing) {
+      // Avoid duplicate networks
+      if (!existing.networks.some(n => n.value === network)) {
+        existing.networks.push(networkObj);
+      }
+    } else {
+      result.push({
+        id: asset,
+        tokenName: asset,
+        networks: [networkObj]
+      });
+    }
+  });
+
+  return result;
+}
+
+
+export const Fetch_CryptoAssets = async (payload:string) => {
+  try {
+    const response = await Bisatsfetch(
+      `/api/v1/user/${payload}/crypto-data`,
+      {
+        method: "POST",
+        body: JSON.stringify(payload),
+      }
+    );
+    const data = response;
+    console.log(data)
+    return data;
+  } catch (error) {
+    // throw handleApiError(error);
     return error;
   }
 };

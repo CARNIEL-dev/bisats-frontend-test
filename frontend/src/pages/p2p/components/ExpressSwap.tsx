@@ -177,7 +177,7 @@ const ExpressSwap = () => {
 			if (response.status) {
 				setNetworkFee(response?.data?.networkFee);
 				setTransactionFee(response?.data?.transactionFee);
-				return response.data;
+				return response;
 			} else {
 				setError("Failed to fetch network fee: " + response.message);
 				return response;

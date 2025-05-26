@@ -5,7 +5,7 @@ import KycLayOut from './layouts/KycLayOut';
 import { LogIn, SignUp, ForgotPassword, VerifyEmail, OTP, ResetPassword } from './pages/auth';
 import './App.css';
 import { APP_ROUTES } from './constants/app_route';
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Identity, POA, PersonalInformation } from './pages/kyc';
 import Dashboard from './pages/dashboard/Dashboard';
@@ -41,6 +41,8 @@ import { Footer } from './components/Footer';
 import { requestPermission } from './utils/firebaseNotification';
 import { messaging,onMessage } from './firebase';
 import Support from './pages/settings/Support';
+import Toast from './components/Toast';
+import { GetWallet } from './redux/actions/walletActions';
 
 
 const App: React.FC = () => {
@@ -54,6 +56,11 @@ const App: React.FC = () => {
 
     onMessage(messaging, (payload) => {
       console.log("Message received. ", payload);
+      if (payload) {
+        Toast.success(payload?.notification?.body ?? "", payload?.notification?.title ?? "")
+        rehydrateUser()
+        GetWallet()
+      }
       // You can show a toast or in-app notification here
     });
   }, []);

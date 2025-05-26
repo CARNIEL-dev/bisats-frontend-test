@@ -8,12 +8,10 @@ export const requestPermission = async () => {
         const permission = await Notification.requestPermission();
 
         if (permission === "granted") {
-            console.log("permision graned", env.REACT_APP_FIREBASE_VAPIDID)
             const token = await getToken(messaging, {
                 vapidKey: env.REACT_APP_FIREBASE_VAPIDID // get this from Firebase console
             });
 
-            console.log("FCM Token:", token);
             UpdateUserName({deviceToken:token})
            
         } else {

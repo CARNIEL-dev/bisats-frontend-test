@@ -13,25 +13,38 @@ import { useSelector } from "react-redux"
 import { UserState } from "../../../redux/reducers/userSlice"
 import AddWithdrawalBankAccount from "../../../components/Modals/AddWithdrawalBankAccount"
 import Toast from "../../../components/Toast"
-import { APP_ROUTES } from "../../../constants/app_route"
 import { useLocation, useNavigate } from "react-router-dom";
 import { AccountLevel, ACTIONS, bisats_limit } from "../../../utils/transaction_limits"
 import { PriceData } from "../Assets"
 import { assets, convertUSDToAsset } from "../../../utils/conversions"
 import KycRouteGuard from "../../../components/KycGuard"
 import KycManager from "../../kyc/KYCManager"
+import { getUserTokenData } from "../../../helpers"
+import { WalletState } from "../../../redux/reducers/walletSlice"
 
 
 export type TNetwork = {
     label: string,
     value: string
 }
+
+export type TCryptoAssets = {
+    address: string,
+    asset:string,
+    assetId:string,
+    id:string,
+    network:string
+  
+}
 const WithdrawalPage = () => {
     const userState: UserState = useSelector((state: any) => state.user);
+        const walletState: WalletState = useSelector((state: any) => state.wallet);
+    const wallet = walletState?.wallet
     const user = userState.user
     const location = useLocation();
 
     const linkedAsset = location.state?.asset;
+    const [cryptoAssets, setCryptoAssets] = useState<TCryptoAssets[]>()
 
     const [selectedToken, setSelectedToken] = useState<string>(linkedAsset)
     const [withdrwalAmount, setWithdrwalAmount] = useState<string>()
@@ -72,13 +85,20 @@ const WithdrawalPage = () => {
         }, [ addBankModal])
     
     useEffect(() => {
-        for (let token of TokenData) {
-            if (token.id === selectedToken) {
+        const tokenList = getUserTokenData()
+        for (let token of tokenList) {
+            if (token.tokenName === selectedToken) {
                 setNetworks(token.networks)
                 return
             }
         }
     }, [selectedToken])
+    useEffect(() => {
+        if (wallet) {
+            console.log(wallet?.cryptoAssests            )
+            setCryptoAssets(wallet?.cryptoAssests            )
+        }
+    },[wallet])
 
     const handleSelectToken = (prop: string) => {
         setSelectedToken(prop);
@@ -106,6 +126,16 @@ const WithdrawalPage = () => {
         }
     }
 
+    const getCryptoAssetId = () => {
+
+        if (cryptoAssets) {
+            for (let i of cryptoAssets) {
+                console.log(selectedNetwork,i)
+                if (selectedNetwork === i.network) return i.assetId
+            }
+        }
+        console.log(cryptoAssets)
+    }
 
     const handleCryptoWithdrawal = async () => {
         setIsLoading(true)
@@ -113,10 +143,9 @@ const WithdrawalPage = () => {
             userId: `${user?.userId}`,
             amount: Number(cryptoWithdrwalAmount),
             address: cryptoWithdrwalAddress ?? "",
-            asset: selectedToken as keyof typeof assets,
+            asset: getCryptoAssetId()??"",
         })
         setIsLoading(false)
-        console.log(response)
         if (response?.ok) {
 
             Toast.success(response.message, "Withdrawal Initiated")
@@ -156,14 +185,17 @@ const WithdrawalPage = () => {
 
                     <div className="my-4">
                         {
-                            selectedToken === "xNGN" &&
+                            selectedToken === "xNGN" ?
                                 // <MultiSelectDropDown parentId={""} title={"Select option"} choices={networks} error={undefined} touched={undefined} label={"Select Network"} handleChange={(e) => setSelectedNetworks(e)} />
 
                                     
                                     <div>
                                         <MultiSelectDropDown parentId={""} title={"Select"} choices={bankList} error={undefined} touched={undefined} label={"Select Bank"} handleChange={(e) => setbankAccountId(e)} />
                                         
-                                        </div>
+                                    </div>
+                                    :
+                                <MultiSelectDropDown parentId={""} title={"Select option"} choices={networks} error={undefined} touched={undefined} label={"Select Network"} handleChange={(e) => setSelectedNetworks(e)} />
+
 
                         }
                     </div>
@@ -173,10 +205,13 @@ const WithdrawalPage = () => {
                     ((bankAccountId) || selectedToken) && (
                         selectedToken === "xNGN" ?
                             <div>
-                                <PrimaryInput css={"w-full p-2.5 mb-7"} label={"Amount"} placeholder="Enter amount"
+                                <PrimaryInput css={"w-full p-2.5 mb-7"}
+                                    
+                                    label={`Amount (Min-xNGN${userTransactionLimits?.minimum_fiat_withdrawal} Max-xNGN${userTransactionLimits?.maximum_fiat_withdrawal})`}
+                                    placeholder="Enter amount"
                                     type="number"
-                                    min={0}
-                                    max={300}
+                                    min={userTransactionLimits?.minimum_fiat_withdrawal}
+                                    max={userTransactionLimits?.maximum_fiat_withdrawal}
                                     error={Number(withdrwalAmount) >userTransactionLimits?.maximum_fiat_withdrawal?true:false}
                                     touched={Number(withdrwalAmount) > userTransactionLimits?.maximum_fiat_withdrawal ? true : false}
                                     value={withdrwalAmount}
@@ -226,10 +261,10 @@ const WithdrawalPage = () => {
                                     value={cryptoWithdrwalAddress}
                                     onChange={(e)=>setCryptoWithdrwalAddress(e.target.value)}
                                     touched={undefined} />
-                                <PrimaryInput css={"w-full p-2.5 mb-7"} label={`Amount (Min-${userTransactionLimits?.minimum_fiat_withdrawal} Max-${userTransactionLimits?.maximum_fiat_withdrawal})`}
+                                <PrimaryInput css={"w-full p-2.5 mb-7"}
+                                    label={`Amount`}
                                     placeholder="Enter amount"
-                                    min={userTransactionLimits?.minimum_fiat_withdrawal}
-                                    max={userTransactionLimits?.maximum_fiat_withdrawal}
+                                 
                                     value={cryptoWithdrwalAmount}
                                     onChange={(e) => setCryptoWithdrwalAmount(e.target.value)}
                                     error={undefined}
@@ -285,7 +320,7 @@ const WithdrawalPage = () => {
                 total={`${Number(withdrwalAmount ?? 0) + userTransactionLimits?.charge_on_single_withdrawal_fiat}`}
                 submit={handleWithdrawal}
                 isLoading={isLoading} /> :
-                <WithdrawalConfirmationCrypto close={() => setWithDrawalModal(false)} isLoading={isLoading}  amount={cryptoWithdrwalAmount ?? "0"} address={cryptoWithdrwalAddress ?? '-'} livePricesData={tokenPrice} submit={() => handleCryptoWithdrawal()} asset={selectedToken as keyof typeof assets } />)}
+                <WithdrawalConfirmationCrypto close={() => setWithDrawalModal(false)} isLoading={isLoading}  amount={cryptoWithdrwalAmount ?? "0"} address={cryptoWithdrwalAddress ?? '-'} livePricesData={tokenPrice} submit={() => handleCryptoWithdrawal()} asset={selectedToken} network={selectedNetwork} />)}
             {/* {verificationModal && <SecurityVerification close={() => setVerificationModal(false)} />} */}
             {addBankModal &&<AddWithdrawalBankAccount close={()=>setAddBankModal(false)}/>}
 
