@@ -59,16 +59,17 @@ import About from "./pages/landing-page/src/screens/Bisats/About";
 import TermsAndCondition from "./pages/landing-page/src/screens/TermsAndCondition";
 import Policy from "./pages/landing-page/src/screens/Policy";
 import FAQs from "./pages/landing-page/src/screens/FAQs";
+import { GetNotification } from "./redux/actions/generalActions";
 
 const App: React.FC = () => {
 	const userState: UserState = useSelector((state: any) => state.user);
 
 	useEffect(() => {
-		rehydrateUser();
+    rehydrateUser();
+    GetNotification()
 	}, []);
 
 	useEffect(() => {
-		console.log("message");
 
 		onMessage(messaging, (payload) => {
 			console.log("Message received. ", payload);
@@ -78,7 +79,9 @@ const App: React.FC = () => {
 					payload?.notification?.title ?? ""
 				);
 				rehydrateUser();
-				GetWallet();
+        GetWallet();
+        GetNotification()
+
 			}
 			// You can show a toast or in-app notification here
 		});
@@ -173,7 +176,7 @@ const App: React.FC = () => {
 						<Route
 							path={APP_ROUTES?.KYC.PHONEVERIFICATION}
 							Component={PhoneVerifcation}
-						/>
+            />
 						<Route
 							path={APP_ROUTES?.KYC.BVNVERIFICATION}
 							Component={BVNVerification}

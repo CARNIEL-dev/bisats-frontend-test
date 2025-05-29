@@ -21,6 +21,22 @@ export const setLivePrices = (livePrices: string) => {
     localStorage.setItem("bsts_live_prices", livePrices);
 };
 
+export const setUserId = (id:string) => {
+    localStorage.setItem("_uid", JSON.stringify(id));
+};
+
+export const getUserId = () => {
+    if (typeof window === "undefined") return undefined;
+
+    if (!localStorage.getItem("_uid")) return undefined;
+
+    const user = localStorage.getItem("_uid");
+    if (user) {
+        return JSON.parse(localStorage.getItem("_uid") ?? "");
+    }
+};
+
+
 export const setUser = (user: TUser) => {
     localStorage.setItem("_user", JSON.stringify(user));
 };
