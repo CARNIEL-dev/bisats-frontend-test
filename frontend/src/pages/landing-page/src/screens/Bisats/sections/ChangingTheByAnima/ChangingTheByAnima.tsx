@@ -1,7 +1,7 @@
 import { BuildingIcon, LockIcon, ShieldIcon, ZapIcon } from "lucide-react";
-import React from "react";
 import { Card, CardContent } from "../../../../components/ui/card";
 import LogoPulse from "../../../../../../../assets/icons/bisats logo.png"
+import Mobile_Features from "../../../../../../../assets/landingPage/mobile_features.png"
 
 
 // Feature card data for mapping
@@ -38,17 +38,17 @@ const featureCards = [
 
 export const ChangingTheByAnima = (): JSX.Element => {
   return (
-    <section className="w-full py-20 bg-white w-[98%] mx-auto">
+    <section className="w-full py-10 px-5 bg-white w-[98%] mx-auto h-full">
       <div className="container mx-auto">
-        <h2 className="mb-16 font-['Geist',Helvetica] text-[42px] leading-[56px]">
-          <span className="text-[#2B313B] font-semibold">Bettering the peer-to-peer experience-<br />
+        <h2 className="mb-8 lg:mb-16 text-[#2B313B] font-[500] text-[28px] lg:text-[42px] leading-[40px] lg:leading-[56px]">
+          <span className="">Bettering the peer-to-peer experience-<br />
             </span>
-          <span className="font-desktop-header3 font-semibold text-[#C49600]">
+          <span className=" text-[#C49600]">
           How Bisats Dominate Others          </span>
          
         </h2>
 
-        <div className="relative ">
+        <div className="relative hidden lg:block">
           {/* Vector connecting lines */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <img
@@ -95,6 +95,10 @@ export const ChangingTheByAnima = (): JSX.Element => {
               </Card>
             ))}
           </div>
+        </div>
+        <div className="flex lg:hidden ">
+          <img alt="" src={ Mobile_Features} className="h-fit w-full " />
+
         </div>
       </div>
     </section>
