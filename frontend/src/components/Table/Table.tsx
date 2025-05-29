@@ -89,7 +89,7 @@ const Table: React.FC<TableProps> = ({ fields, data }) => {
                             >
 								{field === "Amount" ?
 									// renderFieldValue(field, row[field])
-									row["Order Type"] === "Buy" ? `xNGN ${row["Amount"]}` : `${row?.Asset} ${row["Amount"]}`
+									row["Order Type"] === "Buy" ? `xNGN ${row["Amount"]}` : `${row?.Asset??"xNGN"} ${row["Amount"]}`
 
                                     // `${row?.Asset}${convertNairaToAsset(row?.Asset, row?.Amount, row?.Price)?.toFixed(2) }`
                                         // row["Order Type"] === "Buy" ? `xNGN ${row["Amount"]}` : `${row?.Asset}${convertNairaToAsset(row?.Asset, row?.Amount, row?.Price)}`
@@ -232,8 +232,10 @@ const Table: React.FC<TableProps> = ({ fields, data }) => {
 												{amountField}
 											</span>
                                             <span className="text-right font-semibold text-[14px]">
-                                                {
-                                                    `${row?.Asset}${convertNairaToAsset(row?.Asset, row?.Amount, row?.Price)?.toFixed(2)}`
+												{
+													row["Order Type"] === "Buy" ? `xNGN ${row["Amount"]}` : `${row?.Asset ?? "xNGN"} ${row["Amount"]}`
+
+                                                    // `${row?.Asset}${convertNairaToAsset(row?.Asset, row?.Amount, row?.Price)?.toFixed(2)}`
 
                                                     // row["Order Type"] === "Buy" ? `xNGN ${row["Amount"]}` : `${row?.Asset}${convertNairaToAsset(row?.Asset, row?.Amount, row?.Price)}`
                                                 }

@@ -50,7 +50,7 @@ const Ads: React.FC = () => {
 				return;
 			}
 			const response = await Bisatsfetch(
-				`/api/v1/user/${user.userId}/ads/get-user-ads`,
+				`/api/v1/user/${user.userId}/ads/get-user-ads?status=active`,
 				{ method: "GET" }
 			);
 
@@ -59,7 +59,7 @@ const Ads: React.FC = () => {
 					const adsData = response.data || [];
 
 					const transformedAds: Ad[] = Array.isArray(adsData)
-						? adsData.map((ad: any) => ({
+						? adsData.slice(0,4).map((ad: any) => ({
 								"Order Type": ad.type
 									? ad.type.charAt(0).toUpperCase() + ad.type.slice(1)
 									: "Unknown",
