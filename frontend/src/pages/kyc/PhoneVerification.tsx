@@ -110,7 +110,7 @@ const PhoneVerifcation = () => {
     return (
         <div className="">
             <Header currentPage={""} />
-            <div className="lg:w-[442px] mx-auto py-24">
+            <div className="lg:w-[442px] mx-auto py-24 px-5">
                 <OtherSide
                     header="Verify your Phone number"
                     subHeader="We need your phone number to authenticate your details and secure your account"

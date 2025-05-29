@@ -60,7 +60,7 @@ const POA = () => {
     }
 
     return (
-        <div className="w-full p-3">
+        <div className="w-full py-3 px-5">
             <StepFlow step={2} />
             <form onSubmit={SubmitFile}>
                 <div className="py-4">

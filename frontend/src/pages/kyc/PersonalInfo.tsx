@@ -58,7 +58,7 @@ const PersonalInfo = () => {
     });
     return (
         <div>
-            <div className="w-full p-3">
+            <div className="w-full py-3 px-5">
                 <StepFlow step={1} />
                 <form onSubmit={formik.handleSubmit}>
                 <div className="my-4">
