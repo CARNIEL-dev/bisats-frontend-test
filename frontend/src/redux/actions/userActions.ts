@@ -22,6 +22,7 @@ import {
   setUser,
   getToken,
   getUser,
+  setUserId,
 } from "../../helpers";
 import { UserActionTypes, GeneralTypes } from "../types";
 import dispatchWrapper from "../../utils/dispatchWrapper";
@@ -35,6 +36,7 @@ export const Login = async (payload: TLogin) => {
     const data = response.data;
     dispatchWrapper({ type: UserActionTypes.LOG_IN_SUCCESS, payload: data });
     setUser(data);
+    setUserId(data?.userId);
     setToken(data.token);
     setRefreshToken(data.refreshToken);
     return response;
@@ -350,6 +352,9 @@ export const GetUserDetails = async () => {
           userId: user?.userId,
         },
       });
+      console.log(data,"rehydrate user")
+      setUserId(user?.userId);
+
       return data;
     } else {
       logoutUser();

@@ -24,7 +24,9 @@ export enum UserActionTypes {
 export enum WalletActionypes {
 	GET_WALLET = "getwallet",
 }
-
+export enum NotificationsActionypes {
+  GET_NOTIFICATIONS = "getNotifications",
+}
 export enum AdvertsActionTypes {
 	FETCH_ADVERTS = "adverts/fetchAdverts",
 	ADD_ADVERT = "adverts/addAdvert",

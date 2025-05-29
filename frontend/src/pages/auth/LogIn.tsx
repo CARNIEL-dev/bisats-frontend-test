@@ -57,7 +57,7 @@ const LogIn = () => {
                     <PrimaryInput
                         type="email"
                             name="email"
-                            label="email"
+                            label="Email"
                             css="w-full h-[48px] px-3 outline-none "
                             error={formik.errors.email}
                             touched={formik.touched.email}

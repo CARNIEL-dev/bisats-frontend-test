@@ -13,12 +13,12 @@ const footerData = {
         title: "Pages",
         links: [
             { name: "Home", url: "#" },
-            { name: "Terms and Conditions", url: "#" },
+            { name: "Terms and Conditions", url: "/terms&condition" },
 
-            { name: "T&C for Merchants", url: "#" },
-            { name: "Policy", url: "#" },
+            { name: "T&C for Merchants", url: "/terms&condition" },
+            { name: "Policy", url: "/policy" },
             { name: "Blog", url: "#" },
-            { name: "FAQs", url: "#" },
+            { name: "FAQs", url: "/faqs" },
 
 
         ],

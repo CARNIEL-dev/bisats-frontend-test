@@ -1,13 +1,11 @@
 /** @format */
 
-import { useSelector } from "react-redux";
 import { getToken, getUser, setLivePrices, setUserTokenData } from "../../helpers";
 import { T2FARequest, TAddSearchRequest, TCreateAdsRequest, TCryptoWithdrawalRequest, TDeleteWithdrawalRequest, TTopUpNGN, TWithdrawalBankAccount, TWithdrawalRequest } from "../../types/wallet";
 import { BACKEND_URLS } from "../../utils/backendUrls";
 import dispatchWrapper from "../../utils/dispatchWrapper";
 import Bisatsfetch from "../fetchWrapper";
 import { WalletActionypes } from "../types";
-import { UserState } from "../reducers/userSlice";
 
 export const GetWallet = async () => {
   const user = getUser();
@@ -294,7 +292,7 @@ export const Withdraw_xNGN = async (
 };
 
 export const Withdraw_Crypto = async (payload: TCryptoWithdrawalRequest) => {
-  
+
   try {
     const response = await Bisatsfetch(
       `/api/v1/user/${payload.userId}${BACKEND_URLS.WALLET.WITHDRAW_CRYPTO}`,
