@@ -1,7 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { convertAssetToNaira, convertNairaToAsset } from "../../utils/conversions";
-import { PriceData } from "../../pages/wallet/Assets";
-import { GetLivePrice } from "../../redux/actions/walletActions";
+
+import { formatNumber } from '../../utils/numberFormat';
 
 interface TableProps {
 	fields: Array<any>;
@@ -89,7 +87,7 @@ const Table: React.FC<TableProps> = ({ fields, data }) => {
                             >
 								{field === "Amount" ?
 									// renderFieldValue(field, row[field])
-									row["Order Type"] === "Buy" ? `xNGN ${row["Amount"]}` : `${row?.Asset??"xNGN"} ${row["Amount"]}`
+									row["Order Type"] === "Buy" ? `xNGN ${formatNumber(row["Amount"])}` : `${row?.Asset ?? "xNGN"} ${formatNumber(row["Amount"])}`
 
                                     // `${row?.Asset}${convertNairaToAsset(row?.Asset, row?.Amount, row?.Price)?.toFixed(2) }`
                                         // row["Order Type"] === "Buy" ? `xNGN ${row["Amount"]}` : `${row?.Asset}${convertNairaToAsset(row?.Asset, row?.Amount, row?.Price)}`
@@ -233,7 +231,7 @@ const Table: React.FC<TableProps> = ({ fields, data }) => {
 											</span>
                                             <span className="text-right font-semibold text-[14px]">
 												{
-													row["Order Type"] === "Buy" ? `xNGN ${row["Amount"]}` : `${row?.Asset ?? "xNGN"} ${row["Amount"]}`
+													row["Order Type"] === "Buy" ? `xNGN ${formatNumber(row["Amount"])}` : `${row?.Asset ?? "xNGN"} ${formatNumber(row["Amount"])}`
 
                                                     // `${row?.Asset}${convertNairaToAsset(row?.Asset, row?.Amount, row?.Price)?.toFixed(2)}`
 

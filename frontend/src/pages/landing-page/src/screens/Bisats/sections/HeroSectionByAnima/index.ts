@@ -1,2 +1,2 @@
 export { HeroSectionByAnima } from "./HeroSectionByAnima";
-export { HeroSectionByIfeanyi } from "./HeroSectionByIfeanyi";
+export { HeroSectionAbout } from "./HeroSectionByAbout";

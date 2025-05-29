@@ -6,6 +6,7 @@ import PrimaryInput from "../../../components/Inputs/PrimaryInput"
 import { PrimaryButton } from "../../../components/buttons/Buttons";
 import { AdsProps } from "./Ad";
 import Toast from "../../../components/Toast";
+import { formatNumber } from "../../../utils/numberFormat";
 
 const CreateAdPricing: React.FC<AdsProps> = ({ formik, setStage,liveRate }) => {
     const [pricingType, setPricingType] = useState("Static")
@@ -142,7 +143,7 @@ const CreateAdPricing: React.FC<AdsProps> = ({ formik, setStage,liveRate }) => {
                 ) : <></>
             }
             
-            <p className="text-[#515B6E] text-xs font-light mb-4">Market Price: 1 USDT ≈ { liveRate?.xNGN} xNGN</p>
+            <p className="text-[#515B6E] text-xs font-light mb-4">Market Price: 1 USDT ≈ {formatNumber( liveRate?.xNGN??0)} xNGN</p>
 
             <div className="mb-4">
                 <div className="flex justify-between mb-[1px]">
