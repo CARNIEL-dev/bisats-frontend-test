@@ -90,7 +90,7 @@ const BVNVerification = () => {
     return (
         <div className="">
             <Header currentPage={""} />
-            <div className="lg:w-[442px] mx-auto py-24">
+            <div className="lg:w-[442px] mx-auto py-24 px-5">
                 <OtherSide
                     header="Upgrade your account"
                     subHeader={<p className="text-[#515B6E] text-[14px]">Upgrade to <span className="text-[#17A34A]"> Level 2 </span>to unlock more access to your Bisats account</p>}

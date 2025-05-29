@@ -168,7 +168,7 @@ const Identity = () => {
     });
 
     return (
-        <div className="p-3">
+        <div className="py-3 px-5">
             <div className="w-full">
                 <StepFlow step={3} />
             </div>
