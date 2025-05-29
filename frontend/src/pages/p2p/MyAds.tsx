@@ -7,6 +7,7 @@ import Bisatsfetch from "../../redux/fetchWrapper";
 import { useSelector } from "react-redux";
 import { BACKEND_URLS } from "../../utils/backendUrls";
 import Header from "./components/Header";
+import Switch from "../../components/Switch";
 
 interface Ad {
 	id: string;
@@ -28,7 +29,6 @@ interface RootState {
 	};
 }
 
-// Format price with commas
 interface FormatPriceParams {
 	price: number | undefined;
 }
@@ -38,24 +38,21 @@ const MyAds = () => {
 	const user = useSelector((state: RootState) => state.user.user);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
+	const [updatingAdId, setUpdatingAdId] = useState<string | null>(null);
 
-	// Fetch user's ads on component mount
 	useEffect(() => {
 		if (user?.userId) {
 			fetchUserAds();
 		}
 	}, [user?.userId]);
 
-	// Function to fetch user ads
 	const fetchUserAds = async () => {
 		setLoading(true);
 		setError(null);
 
 		try {
-			// Construct the correct API URL with userId parameter
 			const endpoint = `/api/v1/user/${user?.userId}/ads/get-user-ads`;
 
-			// Log the endpoint for debugging
 			console.log("Fetching ads using endpoint:", endpoint);
 
 			const response = await Bisatsfetch(endpoint, {
@@ -80,15 +77,62 @@ const MyAds = () => {
 		}
 	};
 
-	// Filter active and closed ads
-	const activeAds = userAds.filter((ad) => ad.status === "active");
-	const closedAds = userAds.filter((ad) => ad.status !== "active");
+	const updateAdStatus = async (adId: string, newStatus: string) => {
+		console.log("🔄 Starting updateAdStatus:", { adId, newStatus });
+		setUpdatingAdId(adId);
+
+		try {
+			const endpoint = `/api/v1/user/${user?.userId}/ads/${adId}/update-ads-status`;
+
+			console.log("Updating ad status:", { adId, newStatus, endpoint });
+
+			const response = await Bisatsfetch(endpoint, {
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					status: newStatus,
+				}),
+			});
+
+			console.log("Update status response:", response);
+
+			if (response.status) {
+				setUserAds((prevAds) =>
+					prevAds.map((ad) =>
+						ad.id === adId ? { ...ad, status: newStatus } : ad
+					)
+				);
+				console.log("✅ Ad status updated successfully");
+			} else {
+				console.error("❌ Failed to update ad status:", response.message);
+				alert(response.message || "Failed to update ad status");
+			}
+		} catch (err) {
+			console.error("Error updating ad status:", err);
+			alert("Failed to update ad status. Please try again.");
+		} finally {
+			setUpdatingAdId(null);
+		}
+	};
+
+	const handleStatusToggle = (ad: Ad) => {
+		console.log(
+			"🎯 Switch clicked for ad:",
+			ad.id,
+			"current status:",
+			ad.status
+		);
+		const newStatus = ad.status === "active" ? "disabled" : "active";
+		console.log("🔀 Toggling to new status:", newStatus);
+		updateAdStatus(ad.id, newStatus);
+	};
 
 	const formatPrice = ({ price }: FormatPriceParams): string => {
 		return price?.toLocaleString() || "0";
 	};
 
-	// Format date function for better display
 	const formatDate = (dateString?: string): string => {
 		if (!dateString) return "N/A";
 		try {
@@ -105,7 +149,7 @@ const MyAds = () => {
 					text="My Ads"
 					subtext="Create, view and manage your ads on Bisats here"
 				/>
-				<PrimaryButton text="Create Ad"  loading={false} css="w-full lg:w-fit" />
+				<PrimaryButton text="Create Ad" loading={false} css="w-full lg:w-fit" />
 			</div>
 
 			{loading ? (
@@ -126,7 +170,7 @@ const MyAds = () => {
 										}}
 										className="mr-[8px]"
 									>
-										Active ads
+										All ads
 									</span>
 								</p>
 							</div>
@@ -147,8 +191,8 @@ const MyAds = () => {
 									</tr>
 								</thead>
 								<tbody>
-									{activeAds.length > 0 ? (
-										activeAds.map((ad) => (
+									{userAds.length > 0 ? (
+										userAds.map((ad) => (
 											<tr key={ad.id}>
 												<td className="text-left px-4 py-2 font-semibold">
 													<span
@@ -177,16 +221,45 @@ const MyAds = () => {
 												<td className="text-right px-4 py-3">
 													{formatDate(ad.createdAt)}
 												</td>
-												<td className="text-right space-x-2">
-													<span>Active</span>
-													<ToggleRight
-														className="inline cursor-pointer"
-														fill="#22C55D"
-														color="#22C55D"
-														strokeWidth={1}
-													>
-														<circle cx="17" cy="12" r="5" fill="white" />
-													</ToggleRight>
+												<td className="text-right px-4 py-3">
+													<div className="flex items-center justify-end space-x-3">
+														<span
+															className={`text-sm font-medium ${
+																ad.status === "active"
+																	? "text-green-600"
+																	: "text-gray-500"
+															}`}
+														>
+															{ad.status === "active" ? "Active" : "Inactive"}
+														</span>
+														{updatingAdId === ad.id ? (
+															<div className="w-5 h-5 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin"></div>
+														) : (
+															<div
+																onClick={() => {
+																	console.log(
+																		"🖱️ Switch container clicked for ad:",
+																		ad.id
+																	); // Debug log
+																	handleStatusToggle(ad);
+																}}
+																className="cursor-pointer"
+															>
+																<Switch
+																	checked={ad.status === "active"}
+																	onCheckedChange={() => {
+																		console.log(
+																			"🎛️ onCheckedChange triggered for ad:",
+																			ad.id
+																		); // Debug log
+																		handleStatusToggle(ad);
+																	}}
+																	disabled={updatingAdId === ad.id}
+																	className="data-[state=checked]:bg-green-600"
+																/>
+															</div>
+														)}
+													</div>
 												</td>
 												<td className="text-right px-4 py-3 relative">
 													<TableActionMenu />
@@ -196,85 +269,7 @@ const MyAds = () => {
 									) : (
 										<tr>
 											<td colSpan={8} className="text-center py-4">
-												No active ads found
-											</td>
-										</tr>
-									)}
-								</tbody>
-							</table>
-						</div>
-					</div>
-					<div>
-						<div className="h-auto m-[15px] p-[24px]">
-							<div className="mb-[12px]">
-								<p style={{ fontSize: "15px" }}>
-									<span
-										style={{
-											fontSize: "18px",
-											fontWeight: "600",
-											color: "#0A0E12",
-										}}
-										className="mr-[8px]"
-									>
-										Closed ads
-									</span>
-								</p>
-							</div>
-							<table
-								className="table-auto w-full"
-								style={{ color: "#515B6E", fontSize: "14px" }}
-							>
-								<thead className="text-justify">
-									<tr style={{ backgroundColor: "#F9F9FB" }}>
-										<th className="text-left px-4 py-4">Type</th>
-										<th className="text-left px-4 py-4">Asset</th>
-										<th className="text-left px-4 py-4">Price</th>
-										<th className="text-left px-4 py-4">Quantity</th>
-										<th className="text-right px-4 py-3">Created</th>
-										<th className="text-right px-4 py-3">Closed</th>
-										<th className="text-right px-4 py-3">Action</th>
-									</tr>
-								</thead>
-								<tbody>
-									{closedAds.length > 0 ? (
-										closedAds.map((ad) => (
-											<tr key={ad.id}>
-												<td className="text-left px-4 py-2 font-semibold">
-													<span
-														style={{
-															color:
-																ad.type.toLowerCase() === "sell"
-																	? "#DC2625"
-																	: "#17A34A",
-														}}
-													>
-														{ad.type.charAt(0).toUpperCase() + ad.type.slice(1)}
-													</span>
-												</td>
-												<td className="text-left px-4 py-2 font-semibold">
-													{ad.asset}
-												</td>
-												<td className="text-left px-4 py-2">
-													{formatPrice({ price: ad.price })}
-												</td>
-												<td className="text-left px-4 py-2">
-													{ad.quantity || "N/A"}
-												</td>
-												<td className="text-right px-4 py-2">
-													{formatDate(ad.createdAt)}
-												</td>
-												<td className="text-right px-4 py-3">
-													{formatDate(ad.closedAt)}
-												</td>
-												<td className="text-right px-4 py-3 relative">
-													<TableActionMenu />
-												</td>
-											</tr>
-										))
-									) : (
-										<tr>
-											<td colSpan={7} className="text-center py-4">
-												No closed ads found
+												No ads found
 											</td>
 										</tr>
 									)}

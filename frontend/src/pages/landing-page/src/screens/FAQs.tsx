@@ -1,169 +1,165 @@
 import React, { useState } from "react";
 import { HeroSectionByIfeanyi } from "./Bisats/sections/HeroSectionByAnima";
 import NavBar from "../../../../components/NavBar";
+import { parseText, renderParsedText } from "../../../../utils/textParser";
 
 const FAQs = (): JSX.Element => {
 	const [activeQuestion, setActiveQuestion] = useState<number>(0);
 
-	const parseAnswer = (answer: string) => {
-		const parts = answer.split(/(?=\s*[•*-]\s)|(?:\n\s*\n)/);
-
-		return parts
-			.map((part, index) => {
-				const trimmedPart = part.trim();
-				if (!trimmedPart) return null;
-
-				const isBulletPoint = /^[•*-]\s/.test(trimmedPart);
-
-				if (isBulletPoint) {
-					const text = trimmedPart.replace(/^[•*-]\s/, "");
-					return {
-						type: "bullet",
-						content: text,
-						index,
-					};
-				} else {
-					return {
-						type: "paragraph",
-						content: trimmedPart,
-						index,
-					};
-				}
-			})
-			.filter(Boolean);
-	};
-
 	const renderAnswer = (answer: string, isMobile: boolean = false) => {
-		const parsedContent = parseAnswer(answer);
-
-		return parsedContent.map((item) => {
-			if (!item) return null;
-
-			if (item.type === "bullet") {
-				return (
-					<li
-						key={item.index}
-						className={`
-							${isMobile ? "ml-3 mb-2 text-[14px]" : "ml-4 mb-2 text-[16px]"}
-							text-[#606C82] font-[400] leading-relaxed
-							list-disc list-inside
-						`}
-					>
-						{item.content}
-					</li>
-				);
-			} else if (item.type === "paragraph") {
-				return (
-					<p
-						key={item.index}
-						className={`
-							${isMobile ? "mb-3 text-[14px]" : "mb-3 text-[16px]"}
-							text-[#606C82] font-[400] leading-relaxed
-						`}
-					>
-						{item.content}
-					</p>
-				);
-			}
-
-			return null;
+		const parsedContent = parseText(answer, {
+			detectHeadings: true,
+			detectCodeBlocks: true,
+			detectQuotes: true,
+			detectCommaLists: true,
+			minCommaListItems: 2,
 		});
+
+		return renderParsedText(parsedContent, "", isMobile);
 	};
 
 	const faqData = [
 		{
 			id: 1,
 			question: "How can I create an account?",
-			answer: `Click “Sign Up” or “Create Account”
-			Enter Your Basic Information:
+			answer: `Account Creation Process
 
+Click "Sign Up" or "Create Account" and follow these steps:
+
+Required Information:
 • Full name
 • Email address or phone number
 • Password (use a strong, unique password)
 
-Verify Your Email or Phone Number
-
-•  You'll receive a verification code via SMS or email
-•  Enter this code to confirm your identity.
+Verification Process:
+• You'll receive a verification code via SMS or email
+• Enter this code to confirm your identity
 
 Simply contact our support team to initiate a return, and we'll guide you through the entire process.`,
 		},
 		{
 			id: 2,
 			question: "What is KYC, and why is it required?",
-			answer: `Shipping times vary based on your selected option:
+			answer: `Know Your Customer (KYC) is a verification process required by financial regulations.
 
-• Standard shipping: 3-5 business days (Continental US)
-• Express shipping: 1-2 business days
-• Overnight shipping: Next business day delivery
-• International shipping: 7-14 business days (varies by destination)
+Why KYC is Important:
+1. Compliance with international regulations
+2. Prevention of money laundering
+3. Protection against fraud
+4. Enhanced account security
 
-All domestic orders placed before 2 PM EST ship the same day. Weekend orders are processed on Monday.`,
+Required Documents:
+Government-issued ID, proof of address, selfie verification
+
+The process typically takes 24-48 hours to complete.`,
 		},
 		{
 			id: 3,
 			question: "How can I deposit or withdraw crypto?",
-			answer: `Yes, we ship worldwide to over 50 countries with the following details:
+			answer: `Deposit Process:
+1. Navigate to your wallet
+2. Select the cryptocurrency
+3. Copy your deposit address
+4. Send funds from your external wallet
 
-• Shipping costs vary by destination and package weight
-• Delivery times typically range from 7-14 business days
-• All packages include tracking and insurance
-• Customs duties and taxes are the recipient's responsibility
-• Some restrictions may apply to certain products or countries
+Withdrawal Process:
+• Enter recipient address
+• Specify amount
+• Confirm transaction
+• Wait for network confirmation
 
-Check our shipping calculator at checkout for exact rates to your location.`,
+Important: Always double-check addresses before sending crypto. Transactions are irreversible.
+
+Supported cryptocurrencies: Bitcoin, Ethereum, USDT, BNB, and 50+ others`,
 		},
 		{
 			id: 4,
 			question: "How do I deposit and withdraw in-app tokens?",
-			answer: `Tracking your order is easy with multiple options:
+			answer: `In-app tokens can be managed through the following methods:
 
-• Automatic email confirmation with tracking number upon shipment
-• Real-time tracking updates via email and SMS
-• Track directly on our website using your order number
-• Mobile-friendly tracking page with detailed status updates
-• Customer service assistance available for tracking issues
+Deposit Options:
+• Bank transfer (ACH, wire)
+• Credit/debit card
+• P2P trading
+• Crypto conversion
 
-You'll receive notifications at every major milestone until delivery is confirmed.`,
+Withdrawal Methods:
+Bank account, PayPal, Skrill, local payment methods
+
+Processing times: Deposits are instant, withdrawals take 1-3 business days
+
+Fees:
+Deposits: Free for bank transfers, 2.5% for cards
+Withdrawals: $2.50 flat fee for bank transfers`,
 		},
 		{
 			id: 5,
 			question: "How do I secure my account?",
-			answer: `We accept a wide variety of secure payment methods:
+			answer: `Security Best Practices
 
-• All major credit cards (Visa, MasterCard, American Express, Discover)
-• Digital wallets: PayPal, Apple Pay, Google Pay, Shop Pay
-• Buy now, pay later options available at checkout
-• Bank transfers for large orders (contact sales team)
-• Gift cards and store credit
+Two-Factor Authentication (2FA):
+1. Download an authenticator app
+2. Scan the QR code in your security settings
+3. Enter the verification code
+4. Save your backup codes
 
-All transactions are protected with SSL encryption and fraud detection systems.`,
+Additional Security Measures:
+• Use a unique, strong password
+• Enable email notifications for logins
+• Set up withdrawal whitelisting
+• Regular security checkups
+
+Never share your credentials or 2FA codes with anyone.
+
+Biometric options: Fingerprint, Face ID (mobile app only)`,
 		},
 		{
 			id: 6,
-			question: "How do I trade my crypto on Bisat’s P2P?",
-			answer: `Order changes are possible within specific timeframes:
+			question: "How do I trade my crypto on Bisat's P2P?",
+			answer: `P2P Trading Guide
 
-• Orders can be cancelled or modified within 1 hour of placement
-• Changes not possible once items enter fulfillment process
-• Automatic cancellation available for orders not yet processed
-• Partial cancellations may be possible for multi-item orders
-• Rush processing available for urgent modifications
+Creating a Trade Ad:
+1. Go to P2P trading section
+2. Click "Create Ad"
+3. Set your price and payment methods
+4. Add trading terms and conditions
+5. Publish your ad
 
-Contact our customer service immediately if you need to make changes to your order.`,
+Making a Trade:
+• Browse available offers
+• Select preferred payment method
+• Initiate trade with seller/buyer
+• Follow escrow process
+• Confirm payment completion
+
+Supported payment methods: Bank transfer, PayPal, Wise, cash, mobile money
+
+Safety Tips:
+Trade only with verified users, use platform's escrow service, never share personal banking details outside the platform`,
 		},
 		{
 			id: 7,
-			question: "How to set a crypto ads on Bisats",
-			answer: `Our dedicated support team is here to help:
+			question: "How to set up crypto ads on Bisats",
+			answer: `Ad Creation Steps:
 
-• Live chat: Available 24/7 on our website
-• Phone support: Monday-Friday, 9 AM to 6 PM EST
-• Email support: Response within 24 hours
-• Help center with comprehensive FAQs and guides
-• Video tutorials for product setup and troubleshooting
+1. Choose Ad Type: Buy or Sell
+2. Select Cryptocurrency: Bitcoin, Ethereum, USDT, etc.
+3. Set Price: Fixed price or percentage margin
+4. Payment Methods: Select preferred options
+5. Trading Limits: Minimum and maximum amounts
+6. Terms & Conditions: Add specific requirements
 
-We pride ourselves on providing exceptional customer service at every step of your journey.`,
+Ad Management:
+• Monitor ad performance
+• Update pricing dynamically
+• Pause/resume ads as needed
+• Respond to trade requests promptly
+
+Pro tip: Competitive pricing and fast response times lead to higher trading volumes.
+
+Example pricing formula:
+Market Price + (2-5% margin) = Your selling price
+Market Price - (1-3% margin) = Your buying price`,
 		},
 	];
 
