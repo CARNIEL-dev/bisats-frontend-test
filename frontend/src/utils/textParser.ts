@@ -46,7 +46,7 @@ export const parseText = (
 	const config = { ...defaultOptions, ...options };
 
 	// Split text into chunks while preserving structure
-	const chunks = text.split(
+	const chunks = text?.split(
 		/(?=\s*[•*-]\s)|(?=\s*\d+\.\s)|(?:\n\s*\n)|(?=\s*#{1,6}\s)|(?=\s*```)|(?=\s*>\s)/
 	);
 
@@ -153,7 +153,7 @@ const detectCommaList = (text: string, minItems: number): string[] | null => {
 
 	// Split by commas and clean up
 	const items = text
-		.split(",")
+		?.split(",")
 		.map((item) => item.replace(/^\s*(?:and|or)\s*/, "").trim())
 		.filter((item) => item.length > 0);
 

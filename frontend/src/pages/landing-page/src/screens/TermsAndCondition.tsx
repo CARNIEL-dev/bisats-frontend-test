@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { HeroSectionByIfeanyi } from "./Bisats/sections/HeroSectionByAnima";
+import {  HeroSectionAbout } from "./Bisats/sections/HeroSectionByAnima";
 import NavBar from "../../../../components/NavBar";
 import PlatformTerms from "./Bisats/sections/TermsAndConditions/PlatformTerms";
 import MerchantTerms from "./Bisats/sections/TermsAndConditions/MerchantTerms";
@@ -11,13 +11,17 @@ const TermsAndCondition = (): JSX.Element => {
 
 	return (
 		<div>
-			<NavBar />
-			<HeroSectionByIfeanyi
+			<div className="bg-[#0A0E12]">
+				<div className="bg-[#0A0E12] w-full fixed z-[400] top-0 w-full ">
+					<NavBar />
+				</div>
+				<HeroSectionAbout
 				title="Terms and Conditions"
 				desc="Please review the terms carefully before using our peer-to-peer services. By accessing or using the platform, you agree to be bound by these conditions"
 				image="/landingpage/T&C-hero-image.png"
 			/>
 
+				</div>
 			<div className="max-w-[835px] w-full mx-auto py-[64px] lg:py-[88px] px-[20px]">
 				<div className="">
 					<nav

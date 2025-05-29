@@ -1,14 +1,14 @@
-interface HeroSectionByIfeanyiProps {
+interface HeroSectionAboutProps {
 	title: string;
 	desc?: string;
 	image: string;
 }
 
-export const HeroSectionByIfeanyi = ({
+export const HeroSectionAbout = ({
 	title,
 	desc,
 	image,
-}: HeroSectionByIfeanyiProps): JSX.Element => {
+}: HeroSectionAboutProps): JSX.Element => {
 	const titleAlignment = desc ? "text-left" : "text-center lg:text-left";
 	const descAlignment = desc ? "text-left" : "";
 

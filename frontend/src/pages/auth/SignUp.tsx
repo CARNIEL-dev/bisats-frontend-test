@@ -48,8 +48,8 @@ const SignUp = () => {
                     <div className="w-full mb-2">
                     <PrimaryInput
                             type="email"
-                            name="Email"
-                        label="email"
+                            name="email"
+                        label="Email"
                         css="w-full h-[48px] px-3 outline-none "
                             error={formik.errors.email}
                             touched={formik.touched.email}

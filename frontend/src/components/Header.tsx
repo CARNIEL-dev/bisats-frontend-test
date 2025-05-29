@@ -92,7 +92,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage }) => {
             <nav className="container mx-auto flex justify-between items-center relative border-b-[#F3F4F6]" style={{ borderBottomColor: "#F3F4F6", borderBottom: "1px" }}>
                 <div className="font-bold">
 
-                    <Link to="/dashboards" className='cursor-pointer'>
+                    <Link to="/dashboard" className='cursor-pointer'>
                         <img src="/logo-dash.png" alt="Logo" className="w-[80px] h-[20px] md:w-[100px] md:h-[24px]" />
 
                     </Link>

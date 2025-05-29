@@ -12,6 +12,7 @@ import { useMemo, useState } from "react";
 import { AccountLevel, bisats_limit } from "../../../utils/transaction_limits"
 import { UserState } from "../../../redux/reducers/userSlice";
 import { useSelector } from "react-redux";
+import { formatNumber } from "../../../utils/numberFormat";
 // import DateInput from "../../../components/Inputs/DateInput";
 
 const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage,wallet }) => {
@@ -55,9 +56,9 @@ const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage,wallet }) => {
    
     const calculateDisplayWalletBallance = useMemo(() => {
         if (adType.toLowerCase() === "buy") {
-            return `${walletData?.xNGN} xNGN`
+            return `${formatNumber(walletData?.xNGN)} xNGN`
         } else {
-            return walletData? `${walletData?.[token]} ${token}`:"-"
+            return walletData? `${formatNumber( walletData?.[token])} ${token}`:"-"
         }
     },[adType, token, walletData])
     return (
@@ -102,7 +103,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage,wallet }) => {
                         }
                     }}
                 />
-                <p className="text-[#515B6E] text-xs font-light">Wallet Balance: {calculateDisplayWalletBallance}</p>
+                <p className="text-[#515B6E] text-xs font-light">Wallet Balance: { (calculateDisplayWalletBallance)}</p>
             </div>
 
             <div className="mb-4">
@@ -110,7 +111,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage,wallet }) => {
                 <div className="flex justify-between mb-[1px]">
                     <PrimaryInput
                         css="w-[98%] p-2.5 mr-1"
-                        label={`Minimum (xNGN${formik.values.type === "buy" ? userTransactionLimits?.lower_limit_buy_ad : userTransactionLimits?.lower_limit_sell_ad})`}
+                        label={`Minimum (xNGN${formik.values.type === "buy" ? formatNumber(userTransactionLimits?.lower_limit_buy_ad) : formatNumber(userTransactionLimits?.lower_limit_sell_ad)})`}
                         placeholder="0"
                         name="minimumLimit"
                         min={formik.values.type === "buy" ? userTransactionLimits?.lower_limit_buy_ad : userTransactionLimits?.lower_limit_sell_ad}
@@ -126,7 +127,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage,wallet }) => {
                     />
                     <PrimaryInput
                         css="w-[100%] p-2.5"
-                        label={`Maximum (xNGN  ${formik.values.type==="buy"? userTransactionLimits?.upper_limit_buy_ad:userTransactionLimits?.upper_limit_sell_ad})`}
+                        label={`Maximum (xNGN  ${formatNumber(formik.values.type==="buy"? userTransactionLimits?.upper_limit_buy_ad:userTransactionLimits?.upper_limit_sell_ad)})`}
                         placeholder="0"
                         name="maximumLimit"
                         max={formik.values.type === "buy" ? userTransactionLimits?.upper_limit_buy_ad : userTransactionLimits?.upper_limit_sell_ad}

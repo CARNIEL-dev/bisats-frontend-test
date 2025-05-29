@@ -55,7 +55,7 @@ const VerifyEmail = () => {
         <div className="lg:w-[442px] mx-auto">
             <OtherSide
                 header="Verify your account"
-                subHeader="An VerifyEmail has been sent to your registered email. Enter the code below to verify your account."
+                subHeader="An verification code has been sent to your registered email. Enter the code below to verify your account."
                 upperSubHeader={<></>} />
             <form onSubmit={formik.handleSubmit}>
 

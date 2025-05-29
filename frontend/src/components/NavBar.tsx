@@ -7,7 +7,7 @@ import Logo from "../assets/logo/blackTextLogo.png"
 const NavBar = () => {
     const [toggleMenu, setToggleMenu]=useState(false)
     const navLinks = [
-        { title: "More", href: "#" },
+        { title: "About us", href: "/about" },
         { title: "Blog", href: "#" },
         { title: "Contact", href: "#" },
         // { title: "Sign In", href: "/auth/login" },
