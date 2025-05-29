@@ -36,6 +36,7 @@ export const HeroSectionByAnima = (): JSX.Element => {
           {/* Exchange card */}
           <div className="w-full mt-5 lg:mt-0 lg:w-[539px] p-2 lg:p-6 pb-2 h-[404px] lg:h-[614px] rounded-xl ">
             <img alt='hero-phone-image' src={HeroImage} />
+
           </div>
         </div>
       </div>
