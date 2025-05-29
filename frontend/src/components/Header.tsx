@@ -73,7 +73,11 @@ const Header: React.FC<HeaderProps> = ({ currentPage }) => {
         <header className="px-4 md:px-8 lg:px-[120px] pt-[16px] pb-2 border-b-[1px] border-[#F3F4F6] ">
             <nav className="container mx-auto flex justify-between items-center relative border-b-[#F3F4F6]" style={{ borderBottomColor: "#F3F4F6", borderBottom: "1px" }}>
                 <div className="font-bold">
-                    <img src="/logo-dash.png" alt="Logo" className="w-[80px] h-[20px] md:w-[100px] md:h-[24px]" />
+
+                    <Link to="/dashboards" className='cursor-pointer'>
+                        <img src="/logo-dash.png" alt="Logo" className="w-[80px] h-[20px] md:w-[100px] md:h-[24px]" />
+
+                    </Link>
                 </div>
                 
                 {/* Navigation links - hidden on medium screens and below */}

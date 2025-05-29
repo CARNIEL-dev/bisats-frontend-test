@@ -11,8 +11,10 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   // <React.StrictMode>
-    <Provider store={store}>
+  <Provider store={store}>
+    <div className='max-w-[1500px] mx-auto'>
       <App />
+      </div>
     </Provider>
   // </React.StrictMode>
 );

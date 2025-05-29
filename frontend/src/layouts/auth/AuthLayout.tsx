@@ -11,7 +11,10 @@ import { Footer } from "../../components/Footer";
 const AuthLayout = () => {
     return (
         <GoogleOAuthProvider clientId={GOOGLE.CLIENT_ID ?? ""}>
-            <NavBar />
+            <div className="lg:bg-[#fff] w-full fixed z-[400] top-0 w-full ">
+
+                <NavBar />
+                </div>
 
         <div className={`bg-white bg-no-repeat bg-cover h-[100vh] w-full`}>
             <div className="w-full h-full flex flex-col-reverse lg:flex-row lg:justify-start lg:items-center p-6">

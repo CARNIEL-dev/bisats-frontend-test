@@ -38,7 +38,7 @@ export const HowItWorksByAnima = (): JSX.Element => {
     <section className="w-full py-20 px-5 lg:py-28 bg-[#FDFDFC]">
       <div className="container mx-auto">
         <div className="flex flex-col items-center gap-1 mb-12">
-          <h2 className="text-[28px] text-[#0A0E12] lg:text-[42px] text-center leading-[56px] lg:w-3/5">
+          <h2 className="text-[28px] text-[#0A0E12] lg:text-[42px] text-center leading-[40px] lg:leading-[56px] lg:w-3/5">
             At Bisats, you start and end every transactions with peace of mind.        
 
           </h2>
@@ -51,12 +51,10 @@ export const HowItWorksByAnima = (): JSX.Element => {
           {steps.map((step) => (
             <Card
               key={step.id}
-              className="w-full lg:w-[356px] h-[504px] rounded-xl border border-solid border-[#f3f3f6] [background:linear-gradient(135deg,rgba(255,255,255,1)_0%,rgba(246,247,248,1)_100%)] relative overflow-hidden"
+              className="w-full lg:w-[356px] h-[464px] lg:h-[504px] rounded-xl border border-solid border-[#f3f3f6] [background:linear-gradient(135deg,rgba(255,255,255,1)_0%,rgba(246,247,248,1)_100%)] relative overflow-hidden"
             >
               <CardContent className="flex flex-col h-full items-start  lg:gap-2 p-4">
                 <img className="w-full h-[300px] mb-3" src={step.image} alt={step.iconAlt} />
-                
-
                 <img
                   className="w-12 h-12 object-cover"
                   alt={step.iconAlt}

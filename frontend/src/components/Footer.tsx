@@ -10,26 +10,39 @@ import { UserState } from "../redux/reducers/userSlice";
 const footerData = {
 
     site: {
-        title: "SITE",
+        title: "Pages",
         links: [
             { name: "Home", url: "#" },
+            { name: "Terms and Conditions", url: "#" },
+
+            { name: "T&C for Merchants", url: "#" },
+            { name: "Policy", url: "#" },
             { name: "Blog", url: "#" },
+            { name: "FAQs", url: "#" },
+
+
         ],
     },
     connect: {
         title: "CONNECT",
-        links: [{ name: "Twitter", url: "#" }],
+        links: [
+            { name: "X (Twitter)", url: "#" },
+            { name: "Instagram", url: "#" },
+            { name: "Facebook", url: "#" },
+
+
+        ],
     },
     contact: {
         title: "Contact",
-        links: [{ name: "hello@Bisats.org", url: "mailto:hello@Bisats.org" }],
+        links: [{ name: "support@Bisats.org", url: "mailto:support@Bisats.org" }],
     },
 };
 
 const LoggedInLinks = [
     {
         title:"Support",
-        link: "",
+        link: "mailto:support@Bisats.org",
     },
       {
           title: "FAQs",
@@ -166,7 +179,7 @@ export const Footer = (): JSX.Element => {
 
                         {/* Copyright Section */}
                         <hr className="border-t border-[#624a00]" />
-                        <div className="flex items-center justify-center gap-2 py-5">
+                        <div className="flex items-center justify-center gap-2 py-3">
                             <img className="w-6 h-6" alt="Copyright" src="/icons8-copyright.svg" />
                             <p className="font-desktop-body-4 text-[#ADB5C3] text-[14px] text-center leading-6">
                                 2025, Bisats. All Rights Reserved

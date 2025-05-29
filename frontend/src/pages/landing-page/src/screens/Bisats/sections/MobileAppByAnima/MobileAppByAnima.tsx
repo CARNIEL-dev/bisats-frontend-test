@@ -32,7 +32,7 @@ export const MobileAppByAnima = (): JSX.Element => {
   return (
     <section className="relative w-full py-28 bg-[#0A0E12] bg-mobile-app">
       <div className="container flex flex- md:flex-col relative items-center justify-between w-[90%] flex items-center justify-between mx-auto">
-        <div className="bottom-blur h-[20px] border w-full border-[#fff] absolute -bottom-5 left-0">
+        <div className="bottom-blur h-[20px] border w-full border-[#fff] absolute  -bottom-24 lg:-bottom-28 lg:left-0">
 
             </div>
         <div className="flex lg:hidden">
