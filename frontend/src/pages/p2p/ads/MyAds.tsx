@@ -10,6 +10,8 @@ import Empty from "../../../components/Empty";
 import Header from "../components/Header";
 import KycManager from "../../kyc/KYCManager";
 import { ACTIONS } from "../../../utils/transaction_limits";
+import Bisatsfetch from "../../../redux/fetchWrapper";
+import Switch from "../../../components/Switch";
 
 export interface IAd {
 	id?: string;
@@ -30,6 +32,7 @@ const MyAds = () => {
 	const navigate = useNavigate();
 	const [ads, setAds] = useState<Array<IAd>>([]);
 	const [loading, setLoading] = useState<boolean>(true);
+	const [updatingAdId, setUpdatingAdId] = useState<string | null>(null);
 
 	const userState: UserState = useSelector((state: any) => state.user);
 	const user = userState.user;
@@ -74,6 +77,67 @@ const MyAds = () => {
 		fetchAds();
 	}, [userId]);
 
+	// Function to update ad status
+	const updateAdStatus = async (adId: string, newStatus: string) => {
+		console.log("🔄 Starting updateAdStatus:", { adId, newStatus });
+		setUpdatingAdId(adId);
+
+		try {
+			const endpoint = `/api/v1/user/${userId}/ads/${adId}/update-ads-status`;
+
+			console.log("Updating ad status:", { adId, newStatus, endpoint });
+
+			const response = await Bisatsfetch(endpoint, {
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					status: newStatus,
+				}),
+			});
+
+			console.log("Update status response:", response);
+
+			if (response.status) {
+				// Update the local state to reflect the change
+				setAds((prevAds) =>
+					prevAds.map((ad) =>
+						ad.id === adId ? { ...ad, status: newStatus } : ad
+					)
+				);
+				console.log("✅ Ad status updated successfully");
+			} else {
+				console.error("❌ Failed to update ad status:", response.message);
+				alert(response.message || "Failed to update ad status");
+			}
+		} catch (err) {
+			console.error("Error updating ad status:", err);
+			alert("Failed to update ad status. Please try again.");
+		} finally {
+			setUpdatingAdId(null);
+		}
+	};
+
+	// Handle toggle switch click
+	const handleStatusToggle = (ad: IAd) => {
+		if (!ad.id) {
+			console.error("Ad ID is missing");
+			return;
+		}
+
+		console.log(
+			"🎯 Switch clicked for ad:",
+			ad.id,
+			"current status:",
+			ad.status
+		);
+		const newStatus =
+			ad.status.toLowerCase() === "active" ? "disabled" : "active";
+		console.log("🔀 Toggling to new status:", newStatus);
+		updateAdStatus(ad.id, newStatus);
+	};
+
 	// Split ads into active and inactive based on status
 	const activeAds = ads.filter(
 		(ad) =>
@@ -91,6 +155,10 @@ const MyAds = () => {
 
 	// Mobile row renderer component for both tables
 	const MobileAdRow = ({ ad, index }: { ad: IAd; index: number }) => {
+		const isActive =
+			ad.status.toLowerCase() === "active" ||
+			ad.status.toLowerCase() === "open";
+
 		return (
 			<div
 				className={`flex flex-col p-4 mb-6 ${
@@ -122,7 +190,7 @@ const MyAds = () => {
 				<div className="flex justify-between mb-3">
 					<div className="flex flex-col">
 						<span style={{ color: "#515B6E", fontSize: "14px" }}>Price</span>
-						<span>{formatPrice(ad.price)}</span>d
+						<span>{formatPrice(ad.price)}</span>
 					</div>
 					<div className="flex flex-col items-end">
 						<span style={{ color: "#515B6E", fontSize: "14px" }}>
@@ -142,24 +210,28 @@ const MyAds = () => {
 					</div>
 					<div className="flex flex-col items-end">
 						<span style={{ color: "#515B6E", fontSize: "14px" }}>Status</span>
-						<div className="flex items-center">
+						<div className="flex items-center space-x-2">
 							<span className="capitalize">{ad.status}</span>
-							{ad.status.toLowerCase() === "active" && (
-								<ToggleRight
-									className="ml-1 inline cursor-pointer"
-									fill="#22C55D"
-									color="#22C55D"
-									strokeWidth={1}
-								>
-									<circle cx="17" cy="12" r="5" fill="white" />
-								</ToggleRight>
+							{isActive && (
+								<>
+									{updatingAdId === ad.id ? (
+										<div className="w-5 h-5 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin"></div>
+									) : (
+										<Switch
+											checked={ad.status.toLowerCase() === "active"}
+											onCheckedChange={() => handleStatusToggle(ad)}
+											disabled={updatingAdId === ad.id}
+											className="data-[state=checked]:bg-green-600"
+										/>
+									)}
+								</>
 							)}
 						</div>
 					</div>
 				</div>
 
 				{/* Fourth row - Action */}
-				<div className="flex flex-col justify-bewteen items-end">
+				<div className="flex flex-col justify-between items-end">
 					<span style={{ color: "#515B6E", fontSize: "14px" }} className="mr-2">
 						Action
 					</span>
@@ -178,7 +250,10 @@ const MyAds = () => {
 				/>
 
 				<div>
-					<KycManager action={ACTIONS.DEPOSIT_NGN} func={() => navigate("/p2p/ad/create")}>
+					<KycManager
+						action={ACTIONS.DEPOSIT_NGN}
+						func={() => navigate("/p2p/ad/create")}
+					>
 						{(validateAndExecute) => (
 							<PrimaryButton
 								text="Create Ad"
@@ -186,7 +261,7 @@ const MyAds = () => {
 								onClick={validateAndExecute}
 							/>
 						)}
-						</KycManager>
+					</KycManager>
 				</div>
 			</div>
 
@@ -257,16 +332,20 @@ const MyAds = () => {
 												<td className="text-right px-4 py-2">
 													{ad.amountFilled}
 												</td>
-												<td className="text-right space-x-2">
-													<span className="capitalize">{ad.status}</span>
-													<ToggleRight
-														className="inline cursor-pointer"
-														fill="#22C55D"
-														color="#22C55D"
-														strokeWidth={1}
-													>
-														<circle cx="17" cy="12" r="5" fill="white" />
-													</ToggleRight>
+												<td className="text-right px-4 py-3">
+													<div className="flex items-center justify-end space-x-3">
+														<span className="capitalize">{ad.status}</span>
+														{updatingAdId === ad.id ? (
+															<div className="w-5 h-5 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin"></div>
+														) : (
+															<Switch
+																checked={ad.status.toLowerCase() === "active"}
+																onCheckedChange={() => handleStatusToggle(ad)}
+																disabled={updatingAdId === ad.id}
+																className="data-[state=checked]:bg-green-600"
+															/>
+														)}
+													</div>
 												</td>
 												<td className="text-right px-4 py-3 relative">
 													<TableActionMenu />
