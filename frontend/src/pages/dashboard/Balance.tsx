@@ -41,6 +41,7 @@ interface RootState {
 const Balance: React.FC = () => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
+	
 	const [showBalance, setShowBalance] = useState(true);
 	const [currency, setCurrency] = useState<"USD" | "NGN">("USD");
 	const [showCurrencyDropdown, setShowCurrencyDropdown] = useState(false);
@@ -200,7 +201,7 @@ const Balance: React.FC = () => {
 			<div className="m-[2px]">
 				<p style={{ color: "#0A0E12" }}>
 					{isLoading ? (
-						<span style={{ fontSize: "22px", fontWeight: 400 }}>
+						<span style={{ fontSize: "16px", fontWeight: 400 }}>
 							Loading...
 						</span>
 					) : walletError ? (

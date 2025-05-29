@@ -31,32 +31,7 @@ const Ads: React.FC = () => {
 	const [loading, setLoading] = useState<boolean>(true);
 	const [error, setError] = useState<string | null>(null);
 
-	const dummyAds: Ad[] = [
-		{
-			"Order Type": "Buy",
-			Asset: "BTC",
-			Price: 52450.75,
-			Amount: 0.15,
-			id: "ad-123456",
-			status: "active",
-		},
-		{
-			"Order Type": "Sell",
-			Asset: "ETH",
-			Price: 3210.25,
-			Amount: 2.5,
-			id: "ad-234567",
-			status: "active",
-		},
-		{
-			"Order Type": "Buy",
-			Asset: "USDT",
-			Price: 1.01,
-			Amount: 5000,
-			id: "ad-345678",
-			status: "active",
-		},
-	];
+
 
 	useEffect(() => {
 		fetchUserAds();
@@ -75,7 +50,7 @@ const Ads: React.FC = () => {
 				return;
 			}
 			const response = await Bisatsfetch(
-				`/api/v1/user/${user.userId}/ads/get-user-ads`,
+				`/api/v1/user/${user.userId}/ads/get-user-ads?status=active`,
 				{ method: "GET" }
 			);
 
@@ -84,7 +59,7 @@ const Ads: React.FC = () => {
 					const adsData = response.data || [];
 
 					const transformedAds: Ad[] = Array.isArray(adsData)
-						? adsData.map((ad: any) => ({
+						? adsData.slice(0,4).map((ad: any) => ({
 								"Order Type": ad.type
 									? ad.type.charAt(0).toUpperCase() + ad.type.slice(1)
 									: "Unknown",

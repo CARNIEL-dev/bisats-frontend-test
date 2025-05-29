@@ -8,7 +8,6 @@ import { PersonalInformationSchema } from "../../formSchemas/KYC"
 import { useNavigate } from "react-router-dom"
 import { useEffect, useState } from "react"
 import { PostPersonalInformation_KYC, GetUserDetails } from "../../redux/actions/userActions"
-import { getUser } from "../../helpers"
 import Toast from "../../components/Toast"
 import { APP_ROUTES } from "../../constants/app_route"
 import { UserState } from "../../redux/reducers/userSlice"
@@ -86,7 +85,6 @@ const PersonalInfo = () => {
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
                                 />
-
                         </div>
                             <div className="w-full lg:w-full">
                                 <PrimaryInput

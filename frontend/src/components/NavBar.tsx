@@ -15,7 +15,7 @@ const NavBar = () => {
     const navigate=useNavigate()
 
   return (
-      <div className='bg-[#fff] lg:bg-[transparent] '>
+      <div className='bg-[#fff] lg:bg-[transparent] w-full'>
           <header className="flex items-center justify-between px-5 lg:px-20 py-4 lg:py-4 relative z-10">
             <Link to="/" className='cursor-pointer'>
               
