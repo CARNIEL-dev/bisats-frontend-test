@@ -7,7 +7,6 @@ import { useEffect, useState } from "react";
 import KycBanner from "../../components/KycBanner";
 import { useSelector } from "react-redux";
 import { UserState } from "../../redux/reducers/userSlice";
-import SecurityVerification from "../../components/Modals/SecurityVerification";
 import { GetWallet } from "../../redux/actions/walletActions";
 import { APP_ROUTES } from "../../constants/app_route";
 import { useNavigate } from "react-router-dom";

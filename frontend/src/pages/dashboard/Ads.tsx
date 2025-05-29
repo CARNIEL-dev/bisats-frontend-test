@@ -31,32 +31,7 @@ const Ads: React.FC = () => {
 	const [loading, setLoading] = useState<boolean>(true);
 	const [error, setError] = useState<string | null>(null);
 
-	const dummyAds: Ad[] = [
-		{
-			"Order Type": "Buy",
-			Asset: "BTC",
-			Price: 52450.75,
-			Amount: 0.15,
-			id: "ad-123456",
-			status: "active",
-		},
-		{
-			"Order Type": "Sell",
-			Asset: "ETH",
-			Price: 3210.25,
-			Amount: 2.5,
-			id: "ad-234567",
-			status: "active",
-		},
-		{
-			"Order Type": "Buy",
-			Asset: "USDT",
-			Price: 1.01,
-			Amount: 5000,
-			id: "ad-345678",
-			status: "active",
-		},
-	];
+
 
 	useEffect(() => {
 		fetchUserAds();

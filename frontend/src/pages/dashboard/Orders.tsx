@@ -61,7 +61,6 @@ const Orders: React.FC = () => {
 			);
 
 			// Handle the response
-			console.log("Orders API response:", response);
 			if (response) {
 				if (response.message === "No orders found") {
 					setOrders([]);

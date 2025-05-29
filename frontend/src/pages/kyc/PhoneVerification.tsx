@@ -132,13 +132,9 @@ const PhoneVerifcation = () => {
                                 onChange={formik1.handleChange}
                                 onBlur={formik1.handleBlur}
                             />
-
                             <div className="w-full my-3">
                                 <PrimaryButton css={"w-full"} text={"Enter code"} loading={isLoading} type="submit" />
                             </div>
-
-
-
                             <div className="flex items-center justify-between">
                                 <p className="text-[14px] text-[#515B6E] leading-[24px] font-[400] text-left">00:31</p>
                                 <span className="text-[#C49600] text-[14px] leading-[24px] font-[600] " onClick={()=>resendOTP()}>{resendLoading?"loading...":"Resend OTP"}</span>

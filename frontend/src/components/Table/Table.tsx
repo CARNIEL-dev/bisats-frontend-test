@@ -87,12 +87,16 @@ const Table: React.FC<TableProps> = ({ fields, data }) => {
 										: "text-left px-4 py-2 text-[14px]"
 								}
                             >
-                                {field === "Amount" ?
-                                    `${row?.Asset}${convertNairaToAsset(row?.Asset, row?.Amount, row?.Price)?.toFixed(2) }`
+								{field === "Amount" ?
+									// renderFieldValue(field, row[field])
+									row["Order Type"] === "Buy" ? `xNGN ${row["Amount"]}` : `${row?.Asset} ${row["Amount"]}`
+
+                                    // `${row?.Asset}${convertNairaToAsset(row?.Asset, row?.Amount, row?.Price)?.toFixed(2) }`
                                         // row["Order Type"] === "Buy" ? `xNGN ${row["Amount"]}` : `${row?.Asset}${convertNairaToAsset(row?.Asset, row?.Amount, row?.Price)}`
                                                                         
                                     :
-                                renderFieldValue(field, row[field])}
+									renderFieldValue(field, row[field])
+								}
 
                                 
 							</td>
