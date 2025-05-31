@@ -1,5 +1,7 @@
 /** @format */
 
+import { GET_ACTIVITY_SUMMARY, GET_WITHDRAWAL_LIMIT } from "../redux/actions/userActions";
+
 export const BACKEND_URLS = {
   BASE_URL:
     process.env.REACT_APP_NODE_ENV !== "production"
@@ -21,6 +23,9 @@ export const BACKEND_URLS = {
     ADD_PHONE: "/add-change-phone-number",
     VERIFY_PHONE: "/verify-phone-number",
     RESEND_PHONE_OTP: "/resend-phone-verification-otp",
+
+    GET_ACTIVITY_SUMMARY: "/profile/activity-summary",
+    GET_WITHDRAWAL_LIMIT:"/get-withdrawal-limits",
 
     SET_PIN: "/wallet/set-pin",
     UPDATE_PIN: "/wallet/change-pin",

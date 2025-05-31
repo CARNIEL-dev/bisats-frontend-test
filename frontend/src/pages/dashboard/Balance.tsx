@@ -41,7 +41,7 @@ interface RootState {
 const Balance: React.FC = () => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
-	
+
 	const [showBalance, setShowBalance] = useState(true);
 	const [currency, setCurrency] = useState<"USD" | "NGN">("USD");
 	const [showCurrencyDropdown, setShowCurrencyDropdown] = useState(false);
@@ -213,20 +213,20 @@ const Balance: React.FC = () => {
 					) : (
 						<>
 							<span
-										style={{ fontWeight: 600 }}
-										className={`mr-[0.5px] text-[28px] md:text-[34px] ${!showBalance &&"blur"}`}
+								style={{ fontWeight: 600 }}
+								className={`mr-[0.5px] text-[28px] md:text-[34px] ${!showBalance && "blur"}`}
 							>
 								{getCurrencySymbol()}
 								{formatBalance().split(".")[0]}
 							</span>
 							<span
 								style={{ fontWeight: 600 }}
-								className={`mr-[4px] text-[18px] md:text-[22px] ${!showBalance &&"blur"}`}
+								className={`mr-[4px] text-[18px] md:text-[22px] ${!showBalance && "blur"}`}
 							>
 								.{formatBalance().split(".")[1]}
 							</span>
 						</>
-					) }
+					)}
 					<span
 						className="cursor-pointer relative"
 						tabIndex={0}
@@ -290,13 +290,13 @@ const Balance: React.FC = () => {
 					func={() => navigate(APP_ROUTES.WALLET.DEPOSIT)}
 				>
 					{(validateAndExecute) => ( */}
-						<PrimaryButton
-							text={"Deposit"}
-							loading={isLoading}
-							css="w-full mt-10"
-							onClick={() => navigate(APP_ROUTES.WALLET.DEPOSIT)}
-						/>
-					{/* )}
+				<PrimaryButton
+					text={"Deposit"}
+					loading={isLoading}
+					css="w-full mt-10"
+					onClick={() => navigate(APP_ROUTES.WALLET.DEPOSIT)}
+				/>
+				{/* )}
 				</KycManager> */}
 			</div>
 		</div>

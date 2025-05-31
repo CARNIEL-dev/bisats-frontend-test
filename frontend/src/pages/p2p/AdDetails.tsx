@@ -1,4 +1,19 @@
+import { useLocation } from "react-router-dom";
+import { formatNumber } from "../../utils/numberFormat";
+
 const AdDetails = () => {
+        const location = useLocation();
+    
+    const adDetail = location.state?.adDetail;
+    const formatDate = (dateString?: string): string => {
+        if (!dateString) return "N/A";
+        try {
+            return new Date(dateString).toLocaleDateString();
+        } catch (e) {
+            return "N/A";
+        }
+    };
+
     return (
         <div className="w-full max-w-[1024px] mx-auto px-3">
             <div>
@@ -15,12 +30,12 @@ const AdDetails = () => {
                     </thead>
                     <tbody>
                     <tr className="">
-                        <td className="p-1 w-1/6 font-semibold text-[#17A34A]">Buy</td>
-                        <td className="p-1 w-1/6">USDT</td>
-                        <td className="p-1 w-1/6">10/11/25 12:45</td>
-                        <td className="p-1 w-1/6">12/11/25 12:45</td>
-                        <td className="p-1 w-1/6">10,000 USDT</td>
-                        <td className="p-1 w-1/6">2,450 USDT</td>
+                            <td className="p-1 w-1/6 font-semibold text-[#17A34A]">{ adDetail?.type}</td>
+                            <td className="p-1 w-1/6">{adDetail?.asset}</td>
+                            <td className="p-1 w-1/6">{ formatDate( adDetail?.createdAt)}</td>
+                            <td className="p-1 w-1/6">{ formatDate(adDetail?.closedAt)??"Still On"}</td>
+                            <td className="p-1 w-1/6">{formatNumber( adDetail?.amount)}</td>
+                            <td className="p-1 w-1/6">{formatNumber( adDetail?.amountFilled)} </td>
                     </tr>
                     </tbody>
                 </table>
@@ -35,11 +50,11 @@ const AdDetails = () => {
                     </thead>
                     <tbody>
                     <tr className="text-black">
-                        <td className="p-1 w-1/6">Static</td>
-                        <td className="p-1 w-1/6">1640.44 NGN</td>
-                        <td className="p-1 w-1/6">1,000,000.99 NGN</td>
-                        <td className="p-1 w-1/6">1,000.99 NGN</td>
-                        <td className="p-1 w-1/6">2 days, 0 hrs, 0 mins</td>
+                            <td className="p-1 w-1/6">{ adDetail?.priceType}</td>
+                            <td className="p-1 w-1/6">{ formatNumber(adDetail?.price)} NGN</td>
+                        <td className="p-1 w-1/6">-</td>
+                        <td className="p-1 w-1/6">-</td>
+                        <td className="p-1 w-1/6">-</td>
                         <td className="p-1 w-1/6"></td>
                     </tr>
                     </tbody>
@@ -83,7 +98,10 @@ const AdDetails = () => {
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody>
+                        <tbody>
+                            <tr>
+                                
+                            </tr>
                             <tr>
                                     <td className={`text-left px-4 py-2 font-semibold`}>
                                         {/* <span style={"Buy" === "Buy" ? {color: "#DC2625"} : {color: "#17A34A"}}> */}

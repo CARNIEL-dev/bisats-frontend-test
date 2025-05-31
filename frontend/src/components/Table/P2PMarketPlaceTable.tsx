@@ -2,6 +2,7 @@ import React from 'react';
 import { PrimaryButton } from '../buttons/Buttons';
 import { Link } from 'react-router-dom';
 import { APP_ROUTES } from '../../constants/app_route';
+import { formatNumber } from '../../utils/numberFormat';
 
 interface TableProps {
     fields: Array<any>;
@@ -35,12 +36,12 @@ const P2PMPTable: React.FC<TableProps> = ({ fields, data, type }) => {
 
                                     </td>
                                     <td className={'text-left px-4 py-2 h-[96px]'}>
-                                        NGN {row?.price}
+                                        NGN {formatNumber(row?.price)}
 
                                     </td>
                                     <td className={'text-left text-[#515B6E] font- px-4 py-2 h-[96px] '}>
-                                        <p>{row?.amountAvailable} {row?.asset}</p>
-                                        <p>{row?.minimumLimit} - {row?.maximumLimit} xNGN</p>
+                                        <p>{row?.orderType === "buy"?row?.amountAvailable:formatNumber(Number(row?.amount)/Number(row?.price))} {row?.asset}</p>
+                                        <p>{formatNumber(row?.minimumLimit)} - {formatNumber(row?.maximumLimit)} xNGN</p>
                                     </td>
 
                                     <td className={'text-right px-4 py-3 flex justify-end '}>

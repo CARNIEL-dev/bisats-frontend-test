@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { FormikProps, useFormik } from "formik"
 import { useSelector } from "react-redux"
 import * as Yup from 'yup'
@@ -17,6 +17,8 @@ import { WalletState } from "../../../redux/reducers/walletSlice"
 import HeaderTabs from "./HeaderTabs"
 import { useNavigate } from "react-router-dom"
 import { APP_ROUTES } from "../../../constants/app_route"
+import { AccountLevel, bisats_limit } from "../../../utils/transaction_limits"
+import { formatNumber } from "../../../utils/numberFormat"
 
 export type TNetwork = {
     label: string,
@@ -30,6 +32,7 @@ export interface IAdRequest {
     priceMargin: number,
     asset: string,
     amount: number,
+    amountToken:number,
     price: number,
     minimumLimit: number,
     maximumLimit: number,
@@ -44,6 +47,7 @@ const initialAd: IAdRequest = {
     type: "Buy",
     asset: "",
     amount: 0,
+    amountToken:0,
     priceType: "Static",
     price: 0,
     currency: "NGN",
@@ -64,78 +68,126 @@ export interface AdsProps {
     wallet?:WalletState
 }
 
-const AdSchema = Yup.object().shape({
-    type: Yup.string().required('Transaction type is required'),
-    asset: Yup.string().required('Asset selection is required'),
-    amount: Yup.number()
-        .min(1, 'Amount must be greater than 0')
-        .required('Amount is required'),
-    priceType: Yup.string().required('Pricing type is required'),
-    currency: Yup.string().required('Currency selection is required'),
-    // //decimal margin
-    // priceMargin: Yup.number()
-    //     .typeError('Margin must be a number')
-    //     .transform((value, originalValue) =>
-    //         originalValue === '' || originalValue === null ? null : Number(originalValue)
-    //     )
-    //     .nullable()
-    //     .min(0, 'Margin must be at least 0')
-    //     .max(1, 'Margin cannot be more than 1'),
-
-    //for % margin
-    priceMargin: Yup.number()
-        .nullable()
-        .min(0, 'Margin must be at least 0%')
-        .max(100, 'Margin cannot be more than 100%'),
-    
-    price: Yup.number()
-        .min(1, 'Price must be greater than 0')
-        .required('Price is required'),
-    
-    
-    minimumLimit: Yup.number()
-        .min(1, 'Minimum must be greater than 0')
-        // .when('amount', (amount, schema) =>
-        //     schema.max(Number(amount), 'Minimum must be less than or equal to amount')
-        // )
-        .required('Minimum is required'),
-
-    maximumLimit: Yup.number()
-        .when(['minimumLimit', 'amount'], ([min, amount], schema) =>
-            schema
-                .min(Number(min) + 1, 'Maximum limit must be greater than minimum limit')
-                // .max(Number(amount), 'Maximum must be less than or equal to amount')
-        )
-        .required('Maximum limit is required'),
-  
-    priceLowerLimit: Yup.number()
-        .min(1, 'Lower Price Limit must be greater than 0')
-        // .when('price', (price, schema) =>
-        //     schema.max(Number(price), 'Lower price must be less than or equal to amount')
-        // )
-        .required('Lower price is required'),
-    priceUpperLimit: Yup.number()
-        .when(['priceLowerLimit', 'price'], ([priceLowerLimit, price], schema) =>
-            schema
-                .min(Number(priceLowerLimit) + 1, 'Upper price limit must be greater than minimum limit')
-        )
-        .required('Upper limit price is required'),
-    expiryDate: Yup.date().required('Expiry date is required'),
-    expiryTime: Yup.string().required('Expiry time is required')
-
-});
+const toke_100_ngn = {
+    BTC: 0.55,
+    USDT: 60000,
+    SOL: 370,
+    ETH:20
+}
 
 const CreateAd = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [stage, setStage] = useState("details")
     const [fetching, setIsFetching] = useState(true)
+      const user: UserState= useSelector((state: any) => state.user);
+        const userr = user.user
+       const account_level=userr?.accountLevel as AccountLevel
+        const userTransactionLimits = bisats_limit[account_level]
+    
     const navigate= useNavigate()
 
     const [tokenLivePrices, setTokenLivePrices] = useState<PriceData>()
     const walletState: WalletState = useSelector((state: any) => state.wallet);
-    const user: UserState = useSelector((state: any) => state.user);
 
- 
+    const AdSchema = Yup.object().shape({
+        type: Yup.string().required('Transaction type is required'),
+        asset: Yup.string().oneOf(['BTC', 'USDT', 'SOL', 'ETH']).required('Asset selection is required'),
+        // amount: Yup.number()
+        //     .min(1, 'Amount must be greater than 0')
+        //     .required('Amount is required'),
+        priceType: Yup.string().required('Pricing type is required'),
+        currency: Yup.string().required('Currency selection is required'),
+        // //decimal margin
+        // priceMargin: Yup.number()
+        //     .typeError('Margin must be a number')
+        //     .transform((value, originalValue) =>
+        //         originalValue === '' || originalValue === null ? null : Number(originalValue)
+        //     )
+        //     .nullable()
+        //     .min(0, 'Margin must be at least 0')
+        //     .max(1, 'Margin cannot be more than 1'),
+
+        //for % margin
+        priceMargin: Yup.number()
+            .nullable()
+            .min(0, 'Margin must be at least 0%')
+            .max(100, 'Margin cannot be more than 100%'),
+
+        price: Yup.number()
+            .min(1, 'Price must be greater than 0')
+            .required('Price is required'),
+        amount: Yup.number()
+            .min(1, 'Amount must be greater than 0')
+            .max(userTransactionLimits?.maximum_ad_creation_amount, `Amount must not exceed ${formatNumber(userTransactionLimits?.maximum_ad_creation_amount)} xNGN`) 
+            .test(
+                'max-wallet-balance',
+                'Amount cannot exceed your current wallet balance',
+                function (value) {
+                    if (typeof value !== 'number') return false; // or return true if you want to skip
+                    return value <= calculateDisplayWalletBallance;
+                }
+        ).when('type', {
+            is: (val: string) => val?.toLowerCase() === 'buy',
+            then: schema => schema.required('Amount is required'),
+            otherwise: schema => schema.notRequired(),
+              }),
+        amountToken: Yup.number()
+            .min(1, 'Token amount must be greater than 0')
+            .when(['asset'], (assetValue, schema) => {
+                // Safely type asset as one of the known keys
+                const asset = assetValue as unknown as keyof typeof toke_100_ngn;
+
+                const maxAmount = toke_100_ngn?.[asset] ?? 0;;
+                console.log(maxAmount)
+                return schema.max(
+                    maxAmount,
+                    `Amount must not exceed ₦100,000,000 worth of ${asset}`
+                );
+            })
+            .when('type', {
+                is: (val: string) => val?.toLowerCase() === 'sell',
+                then: schema => schema.required('Token amount is required'),
+                otherwise: schema => schema.notRequired(),
+              })
+            .test(
+                'max-wallet-balance',
+                'Amount cannot exceed your current wallet balance',
+                function (value) {
+                    return value !== undefined && value <= calculateDisplayWalletBallance;
+                }
+            ),
+    
+        minimumLimit: Yup.number()
+            .min(15000, 'Minimum must be greater than 15,000 xNGN')
+            .max(23000000, 'Price must not exceed 23,000,000 xNGN').required()
+
+            // .when('amount', (amount, schema) =>
+            //     schema.max(Number(amount), 'Minimum must be less than or equal to amount')
+            // )
+            .required('Minimum is required'),
+
+        maximumLimit: Yup.number()
+            .min(15000, 'Maximum must be greater than Minimum')
+            .max(23000000, 'Price must not exceed 23,000,000 xNGN').required(),
+
+        priceLowerLimit: Yup.number()
+            .min(1, 'Lower Price Limit must be greater than 0')
+            // .when('price', (price, schema) =>
+            //     schema.max(Number(price), 'Lower price must be less than or equal to amount')
+            // )
+            .required('Lower price is required'),
+        priceUpperLimit: Yup.number()
+            .when(['priceLowerLimit', 'price'], ([priceLowerLimit, price], schema) =>
+                schema
+                    .min(Number(priceLowerLimit) + 1, 'Upper price limit must be greater than minimum limit')
+            )
+            .required('Upper limit price is required'),
+        expiryDate: Yup.date().required('Expiry date is required'),
+        expiryTime: Yup.string().required('Expiry time is required')
+
+    });
+    const [currentSchema, setCurrentSchema] = useState<Yup.ObjectSchema<any>>(AdSchema);
+
     useEffect(() => {
         if (!user.loading && !walletState.loading) {
             setIsFetching(false)
@@ -154,11 +206,12 @@ const CreateAd = () => {
     }, []);
     const formik = useFormik<IAdRequest>({
         initialValues: { ...initialAd, agree: false  },
-        validationSchema: AdSchema,
+        validationSchema: currentSchema,
         onSubmit: async (values) => {
+            console.log(values);
+
             const expiryTimestamp = combineDateAndTimeToISO(values.expiryDate, values.expiryTime);
 
-            console.log(values);
             if (!values.agree) {
                 Toast.error("Agree to the terms of use", "Agree to the terms")
                 return
@@ -170,7 +223,7 @@ const CreateAd = () => {
                     userId: user?.user?.userId??"",
                     asset: values.asset,
                     type: values.type.toLowerCase(),
-                    amount: Number(values.amount),
+                    amount: Number(values.type.toLowerCase()==="buy"?values.amount:values?.amountToken),
                     minimumLimit: Number(values.minimumLimit),
                     maximumLimit: Number(values.maximumLimit),
                     expiryDate: expiryTimestamp,
@@ -198,7 +251,16 @@ const CreateAd = () => {
             }
         },
     });
-
+    const walletData = walletState?.wallet
+    const calculateDisplayWalletBallance: number  = useMemo(() => {
+        if (formik.values.type.toLowerCase() === "buy") {
+            return walletData?.xNGN;
+        } else {
+            return walletData ? walletData[formik.values.asset] : 0;
+        }
+    }, [walletData, formik.values.type, formik.values.asset]);
+ 
+    
     return (
         <div className="w-full lg:w-2/3 mx-auto h-full lg:items-center px-4">
             <Head header="Create an Ad" subHeader="Buy or sell assets with your own preferred price." />
@@ -217,7 +279,16 @@ const CreateAd = () => {
                                 ) : (
                                     <>
                                         <AdReview formik={formik} setStage={setStage} />
-                                        <PrimaryButton css="w-full disabled" type="button" text="PublishAd" loading={isLoading} onClick={() => formik.handleSubmit()} />
+                                                <PrimaryButton css="w-full disabled" type="button" text="PublishAd" loading={isLoading}
+                                                    onClick={() => {
+                                                        const newSchema = formik.values.type.toLowerCase() === "buy"
+                                                            ? AdSchema.omit(['amountToken'])
+                                                            : AdSchema.omit(['amount']);
+                                                        setCurrentSchema(newSchema);
+                                                        formik.validateForm(); // force validation with new schema
+                                                        formik.handleSubmit();
+                  }}
+                                                />
                                     </>
                                 )
                             )

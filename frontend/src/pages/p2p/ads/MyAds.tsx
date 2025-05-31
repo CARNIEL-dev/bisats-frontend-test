@@ -235,7 +235,7 @@ const MyAds = () => {
 					<span style={{ color: "#515B6E", fontSize: "14px" }} className="mr-2">
 						Action
 					</span>
-					<TableActionMenu />
+					<TableActionMenu adDetail={ ad} />
 				</div>
 			</div>
 		);
@@ -348,7 +348,7 @@ const MyAds = () => {
 													</div>
 												</td>
 												<td className="text-right px-4 py-3 relative">
-													<TableActionMenu />
+													<TableActionMenu adDetail={ad} />
 												</td>
 											</tr>
 										))}
@@ -442,7 +442,7 @@ const MyAds = () => {
 													{ad.status}
 												</td>
 												<td className="text-right px-4 py-3 relative">
-													<TableActionMenu />
+													<TableActionMenu adDetail={ad} />
 												</td>
 											</tr>
 										))}

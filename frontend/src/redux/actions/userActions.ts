@@ -674,3 +674,41 @@ export const UpdateTwoFactorAuth = async (payload: TUpdate2FAStatus) => {
 //     return error;
 //   }
 // };
+
+export const GET_ACTIVITY_SUMMARY = async (payload: string) => {
+  try {
+    const response = await Bisatsfetch(
+      `/api/v1/user/${payload}${BACKEND_URLS.AUTH.GET_ACTIVITY_SUMMARY}`,
+      {
+        method: "GET",
+      }
+    );
+    const data = response;
+    if (response.status) {
+      return data;
+    }
+  } catch (error) {
+    logoutUser();
+    // throw handleApiError(error);
+    return error;
+  }
+};
+
+export const GET_WITHDRAWAL_LIMIT = async (payload: string) => {
+  try {
+    const response = await Bisatsfetch(
+      `/api/v1/user/${payload}${BACKEND_URLS.AUTH.GET_WITHDRAWAL_LIMIT}`,
+      {
+        method: "GET",
+      }
+    );
+    const data = response;
+    if (response.status) {
+      return data;
+    }
+  } catch (error) {
+    logoutUser();
+    // throw handleApiError(error);
+    return error;
+  }
+};

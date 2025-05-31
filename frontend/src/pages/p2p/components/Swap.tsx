@@ -15,6 +15,7 @@ import Toast from '../../../components/Toast'
 import Bisatsfetch from '../../../redux/fetchWrapper'
 import { UserState } from '../../../redux/reducers/userSlice'
 import KycManager from '../../kyc/KYCManager'
+import { formatNumber } from '../../../utils/numberFormat'
 // assets = isDev ? TestAssets : LiveAssets
 
 export const assetIndexMap: Record<string, number> = Object.values(assets).reduce((acc, asset, index) => {
@@ -35,17 +36,10 @@ const Swap = ({ type, adDetail }: { type: "buy" | "sell", adDetail?: AdSchema | 
     const [error, setError] = useState<string | null>(null);
 
 
-
-
-
     const walletState: WalletState = useSelector((state: any) => state.wallet);
     const user = useSelector((state: { user: UserState }) => state.user);
-    const userId = user?.user?.userId || "";
-
-    
-    
+    const userId = user?.user?.userId || "";    
     const navigate = useNavigate()
-   
     useEffect(() => {
         if (!adDetail) navigate(-1);
 
@@ -204,14 +198,29 @@ const Swap = ({ type, adDetail }: { type: "buy" | "sell", adDetail?: AdSchema | 
                 return amount !== null ? amount.toFixed(2) : "0.00";
             }
     
-        },[adDetail?.asset, adDetail?.orderType, adDetail?.price, amount, tokenPrice])
+    }, [adDetail?.asset, adDetail?.orderType, adDetail?.price, amount, tokenPrice])
+    
+    const sellError = useMemo(() => {
+        if (((adDetail?.minimumLimit??0)/(adDetail?.price ?? 0)) > Number(amount)) return "Not within Limit"
+        if (((adDetail?.maximumLimit??0) / (adDetail?.price ?? 0)) < Number(amount)) return "Not within Limit"
+
+        if (amount > walletState?.wallet?.[adDetail?.asset??"USDT"]) return "Insufficient wallet balance"
+        if (Number(calculateReceiveAmount) > (adDetail?.amountAvailable??0)) return "Available amount exceeded"
+    }, [adDetail?.amountAvailable, adDetail?.maximumLimit, adDetail?.minimumLimit, amount, calculateReceiveAmount, walletState?.wallet?.xNGN])
+    const buyError = useMemo(() => {
+        if ((adDetail?.minimumLimit ?? 0) > Number(amount)) return "Not within Limit"
+        if ((adDetail?.maximumLimit ?? 0) < Number(amount)) return "Not within Limit"
+
+        if (amount > walletState?.wallet?.xNGN) return "Insufficient wallet balance"
+        if (Number(calculateReceiveAmount) > (adDetail?.amountAvailable ?? 0)) return "Available amount exceeded"
+    },[adDetail?.amountAvailable, adDetail?.maximumLimit, adDetail?.minimumLimit, amount, calculateReceiveAmount, walletState?.wallet?.xNGN])
     return (
         <div>
             <p className={`${type === "buy" ? "text-[#17A34A]" : "text-[#DC2625]"} text-[14px] font-[600] my-3`}> {type === "buy" ? "You’re Buying from" : "You’re Selling to"}</p>
 
             <h1 className='text-[28px] md:text-[34px] text-[#0A0E12] font-[600] leading-[40px] my-3'>Chinex exchanger</h1>
 
-            <p className='text-[#515B6E] text-[14px] font-[400] my-2'><span>1 USDT</span>  ≈ <span>{adDetail?.price} xNGN</span>
+            <p className='text-[#515B6E] text-[14px] font-[400] my-2'><span>1 USDT</span>  ≈ <span>{formatNumber(Number(adDetail?.price))} xNGN</span>
                 {/* <span className='text-[#17A34A] text-[12px] font-[600] bg-[#F5FEF8]'> 30 s</span> */}
             </p>
             <div className='flex items-center my-1 w-2/3 justify-between'>
@@ -219,20 +228,21 @@ const Swap = ({ type, adDetail }: { type: "buy" | "sell", adDetail?: AdSchema | 
                     <h2 className='font-[600]'>Available</h2>
                     {type === "buy" ?
                         <p>{adDetail?.amountAvailable} {adDetail?.asset}</p> :
-                        <p>{adDetail?.amountAvailable} NGN</p> 
+                        <p>{adDetail && formatNumber(adDetail?.amountAvailable / adDetail?.price)} {adDetail?.asset}</p> 
                     }
                 </div>
                 <div className='text-[12px] text-[#515B6E]'>
                     <h2 className='font-[600]'>Limit</h2>
-                    <p>{adDetail?.minimumLimit} - {adDetail?.maximumLimit} NGN</p>
+                    <p>{formatNumber(Number(adDetail?.minimumLimit))} - {formatNumber(Number(adDetail?.maximumLimit))} NGN</p>
                 </div>
             </div>
             {
                 type === "buy" ?
                     <div>
                         <div className='relative'>
-                            <PrimaryInput css={'w-full h-[64px]'} label={'Amount'} error={undefined} touched={undefined}
-                            
+                            <PrimaryInput css={'w-full h-[64px]'} label={'Amount'}
+                                error={buyError}
+                                touched={undefined}
                                 min={adDetail?.minimumLimit}
                                 max={adDetail?.maximumLimit}
                                 value={amount}
@@ -298,9 +308,10 @@ const Swap = ({ type, adDetail }: { type: "buy" | "sell", adDetail?: AdSchema | 
                     </div> :
                     <div>
                         <div className='relative'>
-                            <PrimaryInput css={'w-full h-[64px]'} label={'Quanity'} error={undefined} touched={undefined}
+                            <PrimaryInput css={'w-full h-[64px]'} label={'Quanity'} error={sellError} touched={undefined}
                                 value={amount}
-                                onChange={handleAmountChange}/>
+                                onChange={handleAmountChange} />
+                            
                             <div className='absolute right-3 top-10'>
 
                                 <button
@@ -320,7 +331,7 @@ const Swap = ({ type, adDetail }: { type: "buy" | "sell", adDetail?: AdSchema | 
                                 </button>
                                 {/* <CryptoFilter error={undefined} touched={undefined} handleChange={() => console.log("mms")} /> */}
                             </div>
-                            {/* <small className='text-[#606C82] text-[12px] font-[400]'>Balance: 20,000 xNGN</small> */}
+                            <small className='text-[#606C82] text-[12px] font-[400]'>Balance: {walletState?.wallet?.[adDetail?.asset ?? "USDT"]} {adDetail?.asset }</small>
                         </div>
 
                         <div className='relative my-10'>
@@ -357,8 +368,18 @@ const Swap = ({ type, adDetail }: { type: "buy" | "sell", adDetail?: AdSchema | 
                 func={() => setShowConfirmation(true)}
             >
                 {(validateAndExecute) => (
-                    <PrimaryButton text={`${type} ${TokenData?.[assetIndexMap?.[adDetail?.asset ?? "BTC"]]?.tokenName}`} loading={false} css='w-full capitalize' onClick={validateAndExecute}
-                    />)}
+                    type==='buy'?
+                    <PrimaryButton text={`${type} ${TokenData?.[assetIndexMap?.[adDetail?.asset ?? "BTC"]]?.tokenName}`} loading={false} css='w-full capitalize'
+                        disabled={buyError?true:false}
+
+                        onClick={validateAndExecute}
+                        />:
+                        <PrimaryButton text={`${type} ${TokenData?.[assetIndexMap?.[adDetail?.asset ?? "BTC"]]?.tokenName}`} loading={false} css='w-full capitalize'
+                            disabled={ sellError ? true : false}
+
+                            onClick={validateAndExecute}
+                        />
+                    )}
                 </KycManager>
             {showConfirmation && (
                 <SwapConfirmation

@@ -6,9 +6,22 @@ import { useSelector } from "react-redux";
 import { AccountLevel, bisats_limit } from "../../utils/transaction_limits";
 import { useNavigate } from "react-router-dom";
 import { APP_ROUTES } from "../../constants/app_route";
+import { formatNumber } from "../../utils/numberFormat";
+import { useEffect, useState } from "react";
+import { GET_ACTIVITY_SUMMARY } from "../../redux/actions/userActions";
 
+type TActivitySummary = {
+	currentActiveAds: number
+	totalAdsCreated: number
+	totalAdsCreatedIn30d: number
+	totalOrderCompleted: number
+	totalOrderCompletedIn30d: number
+	totalOrderVolume: number
+	totalOrderVolumeIn30d: number
+}
 
 const Profile = () => {
+	const [activitySummary, setActivitySummary]=useState<TActivitySummary>()
     const userState: UserState = useSelector((state: any) => state.user);
     const user = userState.user
     const account_level = user?.accountLevel ?? "level_1"
@@ -50,57 +63,67 @@ const Profile = () => {
     const Limits = [
         {
             limit: "Daily Fiat Withdrawal Limit",
-            amount: `${limits?.daily_withdrawal_limit_fiat} NGN`
+			amount: `${limits?.daily_withdrawal_limit_fiat > 500000000 ? "Unlimited" : limits?.daily_withdrawal_limit_fiat} NGN`
         },
         {
             limit: "Daily Crypto Withdrawal Limit",
-            amount: `${limits?.daily_withdrawal_limit_crypto} USD`
+            amount: `${formatNumber(limits?.daily_withdrawal_limit_crypto)} USD`
         },
         {
             limit: "Sell Ad Limit",
-            amount: "N/A"
+            amount: `${formatNumber(limits.maximum_ad_creation_amount)} NGN`
         },
         {
             limit: "Buy Ad limit",
-            amount: "N/A"
+			amount: `${formatNumber(limits.maximum_ad_creation_amount)} NGN`
         },
     ]
 
     const ActivitySummary = [
         {
             type: "Volume Traded (30d)",
-            value: "1,001,710 NGN"
+			value: `${formatNumber(activitySummary?.totalOrderVolumeIn30d??0)} xNGN`
         },
         {
             type: "Ads Created (30d) ",
-            value: "5"
+			value: `${formatNumber(activitySummary?.totalAdsCreatedIn30d ??0)} `
         },
         {
             type: "Completed Orders (30d)",
-            value: "20"
+			value: `${formatNumber(activitySummary?.totalOrderCompletedIn30d ?? 0)} `
         },
 
         {
             type: "Current Running Ads",
-            value: "2"
+			value: `${formatNumber(activitySummary?.currentActiveAds ?? 0)} `
         },
         {
             type: "Total Volume Traded",
-            value: "10,000,620 NGN"
+			value: `${formatNumber(activitySummary?.totalOrderVolume ??0)} xNGN`
         },
         {
             type: "Total Ads Created",
-            value: "15"
+			value: `${formatNumber(activitySummary?.totalAdsCreated ?? 0)} `
         },
         {
             type: "Total Completed Orders",
-            value: "211"
-        },
-        {
-            type: "Total of Ads Created",
-            value: "10"
-        },
-    ]
+			value: `${formatNumber(activitySummary?.totalOrderCompleted ?? 0)} `
+		},
+		{
+			type: "Total Ads Created",
+			value: `${formatNumber(activitySummary?.totalAdsCreated ?? 0)} `
+		},
+      
+	]
+	
+	useEffect( () => {
+		const GetSummary = async() => {
+			const summary = await GET_ACTIVITY_SUMMARY(user?.userId)
+			console.log(summary)
+			setActivitySummary(summary?.data)
+		}
+		GetSummary()
+	},[user?.userId])
     return (
 			<div>
 				<Header currentPage="Wallet" />
@@ -138,7 +161,7 @@ const Profile = () => {
 					</div>
 
 					<div
-						className="border-[1px] border-[#F3F4F6] rounded-[12px] bg-linear-to-r from-[#FFFFFF] to-[#F6F7F8] w-full mx-3"
+						className="border-[1px] border-[#F3F4F6] p-3 lg:p-5 rounded-[12px] bg-linear-to-r from-[#FFFFFF] to-[#F6F7F8] w-full mx-3"
 						style={{
 							background:
 								"linear-gradient(103.09deg, #FFFFFF 7.36 %, #F6F7F8 95.14 %)",
@@ -195,7 +218,7 @@ const Profile = () => {
 							))}
 						</div>
 
-						<div className="flex flex-wrap items-center justify-between">
+						<div className="flex flex-wrap items-center justify-between mt-5 ">
 							{Limits?.map((item, idx) => (
 								<div
 									key={idx}
@@ -214,7 +237,7 @@ const Profile = () => {
 					</div>
 
 					<div
-						className="border-[1px] border-[#F3F4F6] rounded-[12px] bg-linear-to-r from-[#FFFFFF] to-[#F6F7F8] w-full mx-3"
+					className="border-[1px] border-[#F3F4F6] rounded-[12px] p-3 lg:p-5 bg-linear-to-r from-[#FFFFFF] to-[#F6F7F8] w-full mx-3"
 						style={{
 							background:
 								"linear-gradient(103.09deg, #FFFFFF 7.36 %, #F6F7F8 95.14 %)",

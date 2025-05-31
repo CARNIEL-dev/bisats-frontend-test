@@ -2,6 +2,7 @@ import React from "react";
 import ModalTemplate from "./ModalTemplate";
 import { PrimaryButton } from "../buttons/Buttons";
 import { typeofSwam } from "../../pages/p2p/components/Swap";
+import { formatNumber } from "../../utils/numberFormat";
 
 interface Props {
 	close: () => void;
@@ -47,31 +48,32 @@ const SwapConfirmation: React.FC<Props> = ({
 						<div className="flex justify-between items-center mb-1">
 							<p className="text-[#424A59] font-[400]">Amount:</p>
 							<p className="text-[#606C82] font-[600]">
-								{amount} {token}
+								{formatNumber(amount)} {token}
 							</p>
 						</div>
 						<div className="flex justify-between items-center mb-1">
 							<p className="text-[#424A59] font-[400]">You'll receive:</p>
 							<p className="text-[#606C82] font-[600]">
-								{receiveAmount} {currency}
+								{formatNumber(receiveAmount)} {currency}
 							</p>
 						</div>
-						<div className="flex justify-between items-center mb-1.5">
-							<p className="text-[#424A59] font-[400]">Fee:</p>
-							<p className="text-[#606C82] font-[600]">
-								{fee} {token}
-							</p>
-						</div>
+						{type === (typeofSwam.Buy) &&
+							<div className="flex justify-between items-center mb-1.5">
+								<p className="text-[#424A59] font-[400]">Fee:</p>
+								<p className="text-[#606C82] font-[600]">
+									{fee} {token}
+								</p>
+							</div>}
 						{networkFee && (
 							<div className="flex justify-between items-center mb-1.5">
 								<p className="text-[#424A59] font-[400]">Network Fee:</p>
-								<p className="text-[#606C82] font-[600]">{networkFee}</p>
+								<p className="text-[#606C82] font-[600]">{formatNumber(networkFee)}</p>
 							</div>
 						)}
-						{transactionFee && (
+						{transactionFee &&  (
 							<div className="flex justify-between items-center mb-1.5">
 								<p className="text-[#424A59] font-[400]">Transaction Fee:</p>
-								<p className="text-[#606C82] font-[600]">{transactionFee}</p>
+								<p className="text-[#606C82] font-[600]">{formatNumber(transactionFee)}</p>
 							</div>
 						)}
 					</div>
