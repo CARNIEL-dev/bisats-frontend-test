@@ -6,7 +6,6 @@ import { PrimaryButton } from "../../../components/buttons/Buttons";
 import { AdsProps, } from "./Ad";
 import Toast from "../../../components/Toast";
 import DateInput from "../../../components/Inputs/DateInput";
-import DateTimePicker from "../../../components/Inputs/DateTimePicker";
 import TimePicker from "../../../components/Inputs/TimePicker";
 import { useMemo, useState } from "react";
 import { AccountLevel, bisats_limit } from "../../../utils/transaction_limits"
@@ -38,15 +37,19 @@ const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage,wallet }) => {
             let errors = await formik.validateForm();
             console.log('errors', errors)
             const requiredFields = ["type", "asset", "amount", "minimumLimit", "maximumLimit", "expiryDate", "expiryTime"];
+            const requiredFieldsForToken = ["type", "asset", "amountToken", "minimumLimit", "maximumLimit", "expiryDate", "expiryTime"];
+
             let updatedErrors = Object.keys(errors).filter(field => {
-                return requiredFields.includes(field);
+                return formik.values.type.toLowerCase() === "buy" ? requiredFields.includes(field) : requiredFieldsForToken.includes(field);
             });
             console.log('errors', errors,updatedErrors)
             if (updatedErrors.length === 0) {
                 setStage("pricing");
             } else {
-                Toast.error(`Please fill all required fields`, "ERROR" );                
-                formik.setTouched(requiredFields.reduce((acc, field) => ({ ...acc, [field]: true }), {}));
+                Toast.error(`Please fill all required fields`, "ERROR");    
+                formik.values.type.toLowerCase() === "buy" ?
+                    formik.setTouched(requiredFields.reduce((acc, field) => ({ ...acc, [field]: true }), {})):
+                formik.setTouched(requiredFieldsForToken.reduce((acc, field) => ({ ...acc, [field]: true }), {}));
             }
         } catch (err) {
             console.error("Validation failed", err);
@@ -91,15 +94,18 @@ const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage,wallet }) => {
                     css="w-full p-2.5"
                     label="Amount to be deposited in Ad Escrow"
                     placeholder="0"
-                    name="amount"
-                    error={formik.errors.amount}
-                    value={formik.values.amount}
-                    touched={formik.touched.amount}
+                    name={formik.values.type.toLowerCase() === "buy" ? "amount":"amountToken"}
+                    error={formik.values.type.toLowerCase() === "buy" ? formik.errors.amount : formik.errors.amountToken}
+                    value={formik.values.type.toLowerCase() === "buy" ? formik.values.amount : formik.values.amountToken}
+                    touched={formik.values.type.toLowerCase() === "buy" ? formik.touched.amount : formik.touched.amountToken}
+                    maxFnc={() =>
+                        formik.values.type.toLowerCase() === "buy" ? formik.setFieldValue('amount', walletData?.xNGN === '' ? 0 : Number(walletData?.xNGN)) :
+                        formik.setFieldValue('amountToken', walletData?.token === '' ? 0 : Number(walletData?.token))}
                     onChange={(e) => {
                         const value = e.target.value;
                         if (/^\d*$/.test(value)) {
                             console.log(value)
-                            formik.setFieldValue('amount', value === '' ? 0 : Number(value));
+                            formik.setFieldValue(formik.values.type.toLowerCase() === "buy" ? 'amount':'amountToken', value === '' ? 0 : Number(value));
                         }
                     }}
                 />
@@ -118,6 +124,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage,wallet }) => {
                         error={formik.errors.minimumLimit}
                         value={formik.values.minimumLimit}
                         touched={formik.touched.minimumLimit}
+
                         onChange={(e) => {
                             const value = e.target.value;
                             if (/^\d*$/.test(value)) {
@@ -134,6 +141,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage,wallet }) => {
                         error={formik.errors.maximumLimit}
                         value={formik.values.maximumLimit}
                         touched={formik.touched.maximumLimit}
+                        maxFnc={() => formik.setFieldValue('maximumLimit', userTransactionLimits?.upper_limit_buy_ad)}
                         onChange={(e) => {
                             const value = e.target.value;
                             if (/^\d*$/.test(value)) {

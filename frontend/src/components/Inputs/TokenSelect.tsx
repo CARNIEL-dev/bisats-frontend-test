@@ -39,8 +39,8 @@ const TokenSelect = ({ title, label, error, touched, handleChange,removexNGN,hid
     };
 
      const calculateCurrentWalletBallance = useMemo(() => {
-           
-                return walletData ? `${walletData?.[selected?.id??"xNGN"]} ${selected?.id}` : "-"
+           console.log(walletData,selected)
+                return walletData ? `${formatNumber( walletData[selected?.id??"xNGN"] )} ${selected?.id}`: 0
             
         }, [selected?.id, walletData])
     return (
@@ -69,7 +69,7 @@ const TokenSelect = ({ title, label, error, touched, handleChange,removexNGN,hid
                     }
                 </div>
             </button>
-            {selected && <p className="text-[#606C82] text-[12px] leading-[16px] font-[400] mt-2.5">Current Balance: <span className="font-[600] text-[#515B6E]">{formatNumber( calculateCurrentWalletBallance??0)}</span></p>
+            {selected && <p className="text-[#606C82] text-[12px] leading-[16px] font-[400] mt-2.5">Current Balance: <span className="font-[600] text-[#515B6E]">{( calculateCurrentWalletBallance??0)}</span></p>
             }
             {
                 !hideDropdown &&

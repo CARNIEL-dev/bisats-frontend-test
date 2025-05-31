@@ -37,8 +37,8 @@ export const countryDataForPhone = [
 
 export const account_level_features = {
   level_2: [
-    "Create sell ads (max 23M NGN in crypto assets)",
-    "Create buy ads (max 23M NGN in crypto assets)",
+    "Create sell ads (max 50M xNGN in crypto assets)",
+    "Create buy ads (max 50M NGN in crypto assets)",
     "Max daily limit for withdrawal is 500m NGN and 1m USD in crypto assets",
   ],
   level_3: [

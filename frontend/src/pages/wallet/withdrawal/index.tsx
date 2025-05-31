@@ -21,6 +21,7 @@ import KycRouteGuard from "../../../components/KycGuard"
 import KycManager from "../../kyc/KYCManager"
 import { getUserTokenData } from "../../../helpers"
 import { WalletState } from "../../../redux/reducers/walletSlice"
+import { GET_WITHDRAWAL_LIMIT } from "../../../redux/actions/userActions"
 
 
 export type TNetwork = {
@@ -59,7 +60,12 @@ const WithdrawalPage = () => {
     const [verificationModal, setVerificationModal] = useState(false)
     const [bankList, setBankList] = useState([])
     const [isLoading, setIsLoading] = useState(false)
-    const [tokenPrice,setTokenPrice]=useState<PriceData>()
+    const [tokenPrice, setTokenPrice] = useState<PriceData>()
+    const [usedUpLimit, setUsedUpLimit] = useState<{
+        totalUsedAmountFiat: number,
+        totalUsedAmountCrypto:number
+    }>()
+
     
 
     
@@ -98,7 +104,20 @@ const WithdrawalPage = () => {
             console.log(wallet?.cryptoAssests            )
             setCryptoAssets(wallet?.cryptoAssests            )
         }
-    },[wallet])
+    }, [wallet])
+    
+
+        useEffect( () => {
+            const GetWithdrawalLimit = async() => {
+                const summary = await GET_WITHDRAWAL_LIMIT(user?.userId)
+                console.log(summary)
+                setUsedUpLimit({
+                    totalUsedAmountFiat: summary?.totalUsedAmountFiat,
+                    totalUsedAmountCrypto: summary?.totalUsedAmountCrypto
+                })
+            }
+            GetWithdrawalLimit()
+        },[user?.userId])
 
     const handleSelectToken = (prop: string) => {
         setSelectedToken(prop);
@@ -207,7 +226,7 @@ const WithdrawalPage = () => {
                             <div>
                                 <PrimaryInput css={"w-full p-2.5 mb-7"}
                                     
-                                    label={`Amount (Min-xNGN${userTransactionLimits?.minimum_fiat_withdrawal} Max-xNGN${userTransactionLimits?.maximum_fiat_withdrawal})`}
+                                    label={`Amount `}
                                     placeholder="Enter amount"
                                     type="number"
                                     min={userTransactionLimits?.minimum_fiat_withdrawal}
@@ -229,11 +248,11 @@ const WithdrawalPage = () => {
                                 <div className="h-fit rounded border border  border-[#F3F4F6] bg-[#F9F9FB] rounded-[12px] py-3 px-5  my-5 text-[14px] leading-[24px] ">
                                     <div className="flex justify-between items-center mb-2">
                                         <p className="text-[#424A59] font-[400]">Daily remaining limit:</p>
-                                        <p className="text-[#606C82]  font-[600]">NGN {userTransactionLimits?.daily_withdrawal_limit_fiat - 0}</p>
+                                        <p className="text-[#606C82]  font-[600]">NGN {userTransactionLimits?.daily_withdrawal_limit_fiat > 500000000 ? "Unlimited" : userTransactionLimits?.daily_withdrawal_limit_fiat - (usedUpLimit?.totalUsedAmountFiat??0)}</p>
                                     </div>
                                     <div className="flex justify-between items-center mb-2">
                                         <p className="text-[#424A59] font-[400]">Transaction fee:</p>
-                                        <p className="text-[#606C82]  font-[600]">{ userTransactionLimits?.charge_on_single_withdrawal_fiat } xNGN</p>
+                                        <p className="text-[#606C82]  font-[600]">{!withdrwalAmount?"-": userTransactionLimits?.charge_on_single_withdrawal_fiat } xNGN</p>
                                     </div>
                                     <div className="flex justify-between items-center mb-2">
                                         <p className="text-[#424A59] font-[400]">Withdrawal amount:</p>
@@ -241,7 +260,7 @@ const WithdrawalPage = () => {
                                     </div>
                                     <div className="flex justify-between items-center mb-2">
                                         <p className="text-[#424A59] font-[400]">Total:</p>
-                                        <p className="text-[#606C82]  font-[600]">{`${(Number(withdrwalAmount ?? 0)) + userTransactionLimits?.charge_on_single_withdrawal_fiat}`||"-"} xNGN</p>
+                                        <p className="text-[#606C82]  font-[600]">{`${!withdrwalAmount ? "-" : (Number(withdrwalAmount ?? 0)) + userTransactionLimits?.charge_on_single_withdrawal_fiat}`||"-"} xNGN</p>
                                     </div>
                                 </div>
                                 <KycManager
@@ -275,7 +294,7 @@ const WithdrawalPage = () => {
                                 <div className="h-fit rounded border border  border-[#F3F4F6] bg-[#F9F9FB] rounded-[12px] py-3 px-5 my-5 text-[14px] leading-[24px] ">
                                     <div className="flex justify-between items-center mb-2">
                                         <p className="text-[#424A59] font-[400]">Daily remaining limit:</p>
-                                        <p className="text-[#606C82]  font-[600]"> {userTransactionLimits?.daily_withdrawal_limit_crypto} {selectedToken}</p>
+                                        <p className="text-[#606C82]  font-[600]"> {userTransactionLimits?.daily_withdrawal_limit_crypto-(usedUpLimit?.totalUsedAmountCrypto??0)} {selectedToken}</p>
                                     </div>
                                     <div className="flex justify-between items-center mb-2">
                                         <p className="text-[#424A59] font-[400]">Transaction fee:</p>

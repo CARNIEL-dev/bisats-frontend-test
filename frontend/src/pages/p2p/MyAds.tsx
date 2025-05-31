@@ -1,11 +1,8 @@
-import { ToggleRight } from "lucide-react";
 import { PrimaryButton } from "../../components/buttons/Buttons";
 import TableActionMenu from "../../components/Modals/TableActionMenu";
 import { useEffect, useState } from "react";
-import { getUser } from "../../helpers";
 import Bisatsfetch from "../../redux/fetchWrapper";
 import { useSelector } from "react-redux";
-import { BACKEND_URLS } from "../../utils/backendUrls";
 import Header from "./components/Header";
 import Switch from "../../components/Switch";
 
@@ -15,10 +12,14 @@ interface Ad {
 	asset: string;
 	price: number;
 	quantity?: number;
-	amountFilled?: number;
+	amountFilled: number;
 	status: string;
 	createdAt?: string;
 	closedAt?: string;
+	priceType: string;
+	priceMargin: number;
+
+
 }
 
 interface RootState {
@@ -39,7 +40,14 @@ const MyAds = () => {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const [updatingAdId, setUpdatingAdId] = useState<string | null>(null);
-
+	const formattedDate=(prop: string | number | Date) => new Date(prop).toLocaleString("en-US", {
+			month: "2-digit",
+			day: "2-digit",
+			hour: "2-digit",
+			minute: "2-digit",
+			hour12: false,
+		})
+		
 	useEffect(() => {
 		if (user?.userId) {
 			fetchUserAds();
@@ -262,7 +270,7 @@ const MyAds = () => {
 													</div>
 												</td>
 												<td className="text-right px-4 py-3 relative">
-													<TableActionMenu />
+													<TableActionMenu adDetail={ad}/>
 												</td>
 											</tr>
 										))

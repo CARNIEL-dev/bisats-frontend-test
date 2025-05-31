@@ -19,6 +19,7 @@ export const bisats_limit = {
     lower_limit_sell_ad: 0,
     upper_limit_buy_ad: 0,
     lower_limit_buy_ad: 0,
+    maximum_ad_creation_amount: 0,
   },
   level_2: {
     kyc_level: "level_2",
@@ -37,8 +38,9 @@ export const bisats_limit = {
     charge_on_sell_ad: 0,
     upper_limit_sell_ad: 23000000,
     lower_limit_sell_ad: 15000,
-    upper_limit_buy_ad: 5000000,
+    upper_limit_buy_ad: 23000000,
     lower_limit_buy_ad: 15000,
+    maximum_ad_creation_amount: 50000000,
   },
   level_3: {
     kyc_level: "level_3",
@@ -56,10 +58,11 @@ export const bisats_limit = {
     maximum_fiat_withdrawal: 10000000,
     charge_on_buy_ad: 0.0002,
     charge_on_sell_ad: 0,
-    upper_limit_sell_ad: 100000000,
+    upper_limit_sell_ad: 23000000,
     lower_limit_sell_ad: 15000,
-    upper_limit_buy_ad: 100000000,
+    upper_limit_buy_ad: 23000000,
     lower_limit_buy_ad: 15000,
+    maximum_ad_creation_amount: 100000000,
   },
 };
 
