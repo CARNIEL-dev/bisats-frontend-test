@@ -47,7 +47,7 @@ const Dashboard = () => {
 			<Header currentPage="Dashboard" />
 
 			<div className="w-full max-w-[1024px] h-fit mx-auto lg:pb-5 lg:mb-10">
-				<div>{openKycModal && <KycBanner />}</div>
+				<div className="px-4">{openKycModal && <KycBanner />}</div>
 				<div className="w-full flex justify-center mt-[30px]">
 					<div className="w-full">
 						<h2
@@ -70,7 +70,6 @@ const Dashboard = () => {
 									</div>
 								</div>
 							</div>
-
 
 							{/* For sm screens and up: normal grid with no scroll */}
 							<div className="hidden sm:grid sm:grid-cols-2 gap-4">
