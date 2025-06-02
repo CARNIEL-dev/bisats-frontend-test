@@ -4,17 +4,14 @@ import { HeroSectionAbout } from "./sections/HeroSectionByAnima";
 
 const About = (): JSX.Element => {
 	return (
-		<div >
+		<div>
 			<div className="bg-[#0A0E12]">
-				<div className=" bg-[#0A0E12] w-full fixed z-[400] top-0 w-full ">
-					<NavBar />
-				</div>
+				<NavBar />
 				<HeroSectionAbout
 					title="With a drive to innovate, we bring speed, security and safety to our users"
 					image="/landingpage/About-hero-image.png"
 				/>
 			</div>
-
 
 			<div className="py-[64px] lg:py-[88px] flex flex-col items-center justify-center px-[20px]">
 				<h2 className="text-[28px] lg:text-[42px] font-[500] text-[#0A0E12] lg-[8px] lg:mb-[24px]">

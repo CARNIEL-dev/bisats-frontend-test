@@ -138,26 +138,56 @@ const MyAds = () => {
 		updateAdStatus(ad.id, newStatus);
 	};
 
-	// Split ads into active and inactive based on status
-	const activeAds = ads.filter(
-		(ad) =>
-			ad.status.toLowerCase() === "active" || ad.status.toLowerCase() === "open"
-	);
+	// Updated filtering logic - Active ads include both active and disabled (user-created ads)
+	// Only permanently closed/completed ads go to closed section
+	const activeAds = ads.filter((ad) => {
+		const status = ad.status.toLowerCase();
+		return status === "active" || status === "disabled" || status === "open";
+	});
 
-	const closedAds = ads.filter(
-		(ad) =>
-			ad.status.toLowerCase() !== "active" && ad.status.toLowerCase() !== "open"
-	);
+	const closedAds = ads.filter((ad) => {
+		const status = ad.status.toLowerCase();
+		return (
+			status === "closed" ||
+			status === "completed" ||
+			status === "cancelled" ||
+			status === "expired"
+		);
+	});
 
 	const formatPrice = (price: number) => {
 		return new Intl.NumberFormat("en-US").format(price);
 	};
 
+	// Helper function to get status display text and color
+	const getStatusInfo = (status: string) => {
+		const statusLower = status.toLowerCase();
+		if (statusLower === "active" || statusLower === "open") {
+			return { text: "Active", color: "#17A34A" };
+		} else if (statusLower === "disabled") {
+			return { text: "Inactive", color: "#F59E0B" };
+		} else {
+			return { text: status, color: "#DC2625" };
+		}
+	};
+
 	// Mobile row renderer component for both tables
-	const MobileAdRow = ({ ad, index }: { ad: IAd; index: number }) => {
-		const isActive =
-			ad.status.toLowerCase() === "active" ||
-			ad.status.toLowerCase() === "open";
+	const MobileAdRow = ({
+		ad,
+		index,
+		showToggle = true,
+	}: {
+		ad: IAd;
+		index: number;
+		showToggle?: boolean;
+	}) => {
+		const isToggleable =
+			showToggle &&
+			(ad.status.toLowerCase() === "active" ||
+				ad.status.toLowerCase() === "disabled" ||
+				ad.status.toLowerCase() === "open");
+
+		const statusInfo = getStatusInfo(ad.status);
 
 		return (
 			<div
@@ -211,8 +241,8 @@ const MyAds = () => {
 					<div className="flex flex-col items-end">
 						<span style={{ color: "#515B6E", fontSize: "14px" }}>Status</span>
 						<div className="flex items-center space-x-2">
-							<span className="capitalize">{ad.status}</span>
-							{isActive && (
+							<span style={{ color: statusInfo.color }}>{statusInfo.text}</span>
+							{isToggleable && (
 								<>
 									{updatingAdId === ad.id ? (
 										<div className="w-5 h-5 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin"></div>
@@ -235,7 +265,7 @@ const MyAds = () => {
 					<span style={{ color: "#515B6E", fontSize: "14px" }} className="mr-2">
 						Action
 					</span>
-					<TableActionMenu adDetail={ ad} />
+					<TableActionMenu adDetail={ad} />
 				</div>
 			</div>
 		);
@@ -306,52 +336,72 @@ const MyAds = () => {
 										</tr>
 									</thead>
 									<tbody>
-										{activeAds.map((ad, index) => (
-											<tr key={ad.id || index}>
-												<td className="text-left px-4 py-2 font-semibold">
-													<span
-														style={
-															ad.type.toLowerCase() === "sell"
-																? { color: "#DC2625" }
-																: { color: "#17A34A" }
-														}
-													>
-														{ad.type.charAt(0).toUpperCase() + ad.type.slice(1)}
-													</span>
-												</td>
-												<td className="text-left px-4 py-2 font-semibold">
-													{ad.asset}
-												</td>
-												<td className="text-left px-4 py-2">
-													{formatPrice(ad.price)}
-												</td>
-												<td className="text-left px-4 py-2">
-													{ad.priceType.charAt(0).toUpperCase() +
-														ad.priceType.slice(1)}
-												</td>
-												<td className="text-right px-4 py-2">
-													{ad.amountFilled}
-												</td>
-												<td className="text-right px-4 py-3">
-													<div className="flex items-center justify-end space-x-3">
-														<span className="capitalize">{ad.status}</span>
-														{updatingAdId === ad.id ? (
-															<div className="w-5 h-5 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin"></div>
-														) : (
-															<Switch
-																checked={ad.status.toLowerCase() === "active"}
-																onCheckedChange={() => handleStatusToggle(ad)}
-																disabled={updatingAdId === ad.id}
-																className="data-[state=checked]:bg-green-600"
-															/>
-														)}
-													</div>
-												</td>
-												<td className="text-right px-4 py-3 relative">
-													<TableActionMenu adDetail={ad} />
-												</td>
-											</tr>
-										))}
+										{activeAds.map((ad, index) => {
+											const isToggleable =
+												ad.status.toLowerCase() === "active" ||
+												ad.status.toLowerCase() === "disabled" ||
+												ad.status.toLowerCase() === "open";
+
+											const statusInfo = getStatusInfo(ad.status);
+
+											return (
+												<tr key={ad.id || index}>
+													<td className="text-left px-4 py-2 font-semibold">
+														<span
+															style={
+																ad.type.toLowerCase() === "sell"
+																	? { color: "#DC2625" }
+																	: { color: "#17A34A" }
+															}
+														>
+															{ad.type.charAt(0).toUpperCase() +
+																ad.type.slice(1)}
+														</span>
+													</td>
+													<td className="text-left px-4 py-2 font-semibold">
+														{ad.asset}
+													</td>
+													<td className="text-left px-4 py-2">
+														{formatPrice(ad.price)}
+													</td>
+													<td className="text-left px-4 py-2">
+														{ad.priceType.charAt(0).toUpperCase() +
+															ad.priceType.slice(1)}
+													</td>
+													<td className="text-right px-4 py-2">
+														{ad.amountFilled}
+													</td>
+													<td className="text-right px-4 py-3">
+														<div className="flex items-center justify-end space-x-3">
+															<span style={{ color: statusInfo.color }}>
+																{statusInfo.text}
+															</span>
+															{isToggleable && (
+																<>
+																	{updatingAdId === ad.id ? (
+																		<div className="w-5 h-5 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin"></div>
+																	) : (
+																		<Switch
+																			checked={
+																				ad.status.toLowerCase() === "active"
+																			}
+																			onCheckedChange={() =>
+																				handleStatusToggle(ad)
+																			}
+																			disabled={updatingAdId === ad.id}
+																			className="data-[state=checked]:bg-green-600"
+																		/>
+																	)}
+																</>
+															)}
+														</div>
+													</td>
+													<td className="text-right px-4 py-3 relative">
+														<TableActionMenu adDetail={ad} />
+													</td>
+												</tr>
+											);
+										})}
 									</tbody>
 								</table>
 							</div>
@@ -360,7 +410,12 @@ const MyAds = () => {
 							<div className="md:hidden">
 								<div className="rounded overflow-hidden">
 									{activeAds.map((ad, index) => (
-										<MobileAdRow key={ad.id || index} ad={ad} index={index} />
+										<MobileAdRow
+											key={ad.id || index}
+											ad={ad}
+											index={index}
+											showToggle={true}
+										/>
 									))}
 								</div>
 							</div>
@@ -412,40 +467,48 @@ const MyAds = () => {
 										</tr>
 									</thead>
 									<tbody>
-										{closedAds.map((ad, index) => (
-											<tr key={ad.id || index}>
-												<td className="text-left px-4 py-2 font-semibold">
-													<span
-														style={
-															ad.type.toLowerCase() === "sell"
-																? { color: "#DC2625" }
-																: { color: "#17A34A" }
-														}
+										{closedAds.map((ad, index) => {
+											const statusInfo = getStatusInfo(ad.status);
+
+											return (
+												<tr key={ad.id || index}>
+													<td className="text-left px-4 py-2 font-semibold">
+														<span
+															style={
+																ad.type.toLowerCase() === "sell"
+																	? { color: "#DC2625" }
+																	: { color: "#17A34A" }
+															}
+														>
+															{ad.type.charAt(0).toUpperCase() +
+																ad.type.slice(1)}
+														</span>
+													</td>
+													<td className="text-left px-4 py-2 font-semibold">
+														{ad.asset}
+													</td>
+													<td className="text-left px-4 py-2">
+														{formatPrice(ad.price)}
+													</td>
+													<td className="text-left px-4 py-2">
+														{ad.priceType.charAt(0).toUpperCase() +
+															ad.priceType.slice(1)}
+													</td>
+													<td className="text-right px-4 py-2">
+														{ad.amountFilled}
+													</td>
+													<td
+														className="text-right px-4 py-3 capitalize"
+														style={{ color: statusInfo.color }}
 													>
-														{ad.type.charAt(0).toUpperCase() + ad.type.slice(1)}
-													</span>
-												</td>
-												<td className="text-left px-4 py-2 font-semibold">
-													{ad.asset}
-												</td>
-												<td className="text-left px-4 py-2">
-													{formatPrice(ad.price)}
-												</td>
-												<td className="text-left px-4 py-2">
-													{ad.priceType.charAt(0).toUpperCase() +
-														ad.priceType.slice(1)}
-												</td>
-												<td className="text-right px-4 py-2">
-													{ad.amountFilled}
-												</td>
-												<td className="text-right px-4 py-3 capitalize">
-													{ad.status}
-												</td>
-												<td className="text-right px-4 py-3 relative">
-													<TableActionMenu adDetail={ad} />
-												</td>
-											</tr>
-										))}
+														{statusInfo.text}
+													</td>
+													<td className="text-right px-4 py-3 relative">
+														<TableActionMenu adDetail={ad} />
+													</td>
+												</tr>
+											);
+										})}
 									</tbody>
 								</table>
 							</div>
@@ -454,7 +517,12 @@ const MyAds = () => {
 							<div className="md:hidden">
 								<div className="rounded overflow-hidden">
 									{closedAds.map((ad, index) => (
-										<MobileAdRow key={ad.id || index} ad={ad} index={index} />
+										<MobileAdRow
+											key={ad.id || index}
+											ad={ad}
+											index={index}
+											showToggle={false}
+										/>
 									))}
 								</div>
 							</div>

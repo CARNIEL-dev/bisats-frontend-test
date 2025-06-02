@@ -14,7 +14,7 @@ export const HeroSectionAbout = ({
 
 	return (
 		<div
-			className="h-[80vh] w-full bg-[#0A0E12] bg-cover bg-center bg-no-repeat relative overflow-hidden"
+			className="h-[80vh] lg:max-h-[624px] w-full bg-[#0A0E12] bg-cover bg-center bg-no-repeat relative overflow-hidden"
 			style={{
 				backgroundImage: "url('/landingpage/Background-pattern.png')",
 			}}
