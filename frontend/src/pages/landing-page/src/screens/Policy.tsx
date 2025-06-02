@@ -6,15 +6,13 @@ const Policy = (): JSX.Element => {
 	return (
 		<div>
 			<div className="bg-[#0A0E12]">
-				<div className=" w-full fixed z-[400] top-0 w-full ">
-					<NavBar />
-				</div>
+				<NavBar />
 				<HeroSectionAbout
-				title="Our Policy"
-				desc="Please review the terms carefully before using our peer-to-peer services. By accessing or using the platform, you agree to be bound by these conditions"
-				image="/landingpage/Policy-hero-image.png"
+					title="Our Policy"
+					desc="Please review the terms carefully before using our peer-to-peer services. By accessing or using the platform, you agree to be bound by these conditions"
+					image="/landingpage/Policy-hero-image.png"
 				/>
-				</div>
+			</div>
 
 			<div className="py-[64px] lg:py-[88px] flex flex-col justify-center w-full max-w-[835px] mx-auto px-[20px]">
 				<h2 className="text-[34px] font-[500] text-[#2B313B] mb-[24px]">

@@ -170,15 +170,13 @@ Market Price - (1-3% margin) = Your buying price`,
 	return (
 		<div>
 			<div className="bg-[#0A0E12]">
-				<div className=" w-full fixed z-[400] top-0 w-full ">
-					<NavBar />
-				</div>
-			<HeroSectionAbout
-				title="FAQs"
-				desc="Got Questions? We've Got Answers"
-				image="/landingpage/FAQs-hero-image.png"
-			/>
-</div>
+				<NavBar />
+				<HeroSectionAbout
+					title="FAQs"
+					desc="Got Questions? We've Got Answers"
+					image="/landingpage/FAQs-hero-image.png"
+				/>
+			</div>
 			<div className="w-full py-[64px] lg:py-[80px] px-[20px] bg-white lg:bg-[#F7F7F7]">
 				<div className="max-w-[835px] w-full hidden lg:flex gap-[38px] mx-auto">
 					<div className="w-1/2 space-y-[16px] bg-white p-[16px] rounded-[12px]">
