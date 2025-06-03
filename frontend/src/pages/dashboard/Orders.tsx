@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import Table from "../../components/Table/Table";
 import Empty from "../../components/Empty";
 import { getUser } from "../../helpers";
 import Bisatsfetch from "../../redux/fetchWrapper";
+import OrderTable, { IOrder } from "../../components/Table/OrderTable";
 
 export enum Fields {
 	OrderType = "Order type",
@@ -13,24 +13,7 @@ export enum Fields {
 	Status = "Status",
 }
 
-export interface IOrder {
-	"Order type": string;
-	"Date & Time": string;
-	Reference: string;
-	Quantity: number;
-	Amount: number;
-	Status: string;
-}
-
 const Orders: React.FC = () => {
-	const fields: Fields[] = [
-		Fields.OrderType,
-		Fields.Date,
-		Fields.Reference,
-		Fields.Quantity,
-		Fields.Amount,
-		Fields.Status,
-	];
 	const [orders, setOrders] = useState<Array<IOrder>>([]);
 	const [loading, setLoading] = useState<boolean>(true);
 	const [error, setError] = useState<string | null>(null);
@@ -60,7 +43,6 @@ const Orders: React.FC = () => {
 				}
 			);
 
-			// Handle the response
 			if (response) {
 				if (response.message === "No orders found") {
 					setOrders([]);
@@ -119,10 +101,15 @@ const Orders: React.FC = () => {
 		fetchUserOrders();
 	};
 
+	const handleOrderClick = (order: IOrder) => {
+		console.log("Order clicked:", order);
+	};
+
 	if (loading) {
 		return (
 			<div className="flex justify-center items-center h-32">
-				Loading orders...
+				<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+				<span className="ml-2">Loading orders...</span>
 			</div>
 		);
 	}
@@ -133,7 +120,7 @@ const Orders: React.FC = () => {
 				<div className="text-red-500 text-center mb-4">{error}</div>
 				<button
 					onClick={handleRetry}
-					className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+					className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
 				>
 					Retry
 				</button>
@@ -141,14 +128,17 @@ const Orders: React.FC = () => {
 		);
 	}
 
-	// If we get here, we've fetched data successfully but it might be empty
+	if (!orders || orders.length === 0) {
+		return <Empty />;
+	}
+
 	return (
 		<div>
-			{orders.length === 0 ? (
-				<Empty />
-			) : (
-				<Table fields={fields} data={orders} />
-			)}
+			<OrderTable
+				orders={orders}
+				onRowClick={handleOrderClick}
+				className="w-full"
+			/>
 		</div>
 	);
 };

@@ -1,43 +1,29 @@
 import React, { useState, useEffect } from "react";
-import Table from "../../components/Table/Table";
 import Empty from "../../components/Empty";
 import { getUser } from "../../helpers";
 import Bisatsfetch from "../../redux/fetchWrapper";
+import AdsTable, { IAd } from "../../components/Table/AdsTable";
 
 export enum Fields {
-	OrderType = "Order Type",
-	Asset = "Asset",
-	Price = "Price",
+	OrderType = "Order type",
+	Date = "Date & Time",
+	Reference = "Reference",
+	Quantity = "Quantity",
 	Amount = "Amount",
-}
-
-export interface Ad {
-	"Order Type": string;
-	Asset: string;
-	Price: number;
-	Amount: number;
-	id?: string;
-	status?: string;
+	Status = "Status",
 }
 
 const Ads: React.FC = () => {
-	const fields: Fields[] = [
-		Fields.OrderType,
-		Fields.Asset,
-		Fields.Price,
-		Fields.Amount,
-	];
-	const [openAds, setOpenAds] = useState<Array<Ad>>([]);
+	const [ads, setAds] = useState<Array<IAd>>([]);
 	const [loading, setLoading] = useState<boolean>(true);
 	const [error, setError] = useState<string | null>(null);
-
-
 
 	useEffect(() => {
 		fetchUserAds();
 	}, []);
 
 	const fetchUserAds = async () => {
+		console.log("Fetching ads...");
 		try {
 			setLoading(true);
 			setError(null);
@@ -49,32 +35,55 @@ const Ads: React.FC = () => {
 				setLoading(false);
 				return;
 			}
+
 			const response = await Bisatsfetch(
 				`/api/v1/user/${user.userId}/ads/get-user-ads?status=active`,
-				{ method: "GET" }
+				{
+					method: "GET",
+				}
 			);
 
 			if (response) {
-				if (response.statusCode === 200) {
+				if (response.message === "No ads found") {
+					setAds([]);
+				} else if (response.statusCode === 200 && response.data) {
 					const adsData = response.data || [];
 
-					const transformedAds: Ad[] = Array.isArray(adsData)
-						? adsData.slice(0,4).map((ad: any) => ({
-								"Order Type": ad.type
-									? ad.type.charAt(0).toUpperCase() + ad.type.slice(1)
-									: "Unknown",
-								Asset: ad.asset
-									? ad.asset.replace(/_TEST\d*|_TEST|_KDZ\d*$/i, "")
-									: "Unknown",
-								Price: ad.price || 0,
-								Amount: ad.amount || 0,
-								id: ad.id,
-								status: ad.status,
-						  }))
-						: [];
+					const transformedAds: IAd[] = Array.isArray(adsData)
+						? adsData.map((ad: any) => {
+								const adDate = new Date(ad.createdAt || new Date());
+								const formattedDate = adDate
+									.toLocaleString("en-US", {
+										year: "numeric",
+										month: "2-digit",
+										day: "2-digit",
+										hour: "2-digit",
+										minute: "2-digit",
+										second: "2-digit",
+										hour12: false,
+									})
+									.replace(",", "");
 
-					setOpenAds(transformedAds);
-				} else {
+								return {
+									type: ad.type || "Unknown",
+									amount: ad.amountFilled || 0,
+									price: ad.price || 0,
+									asset: ad.asset || "Unknown",
+									"Order type": ad.type
+										? ad.type.charAt(0).toUpperCase() + ad.type.slice(1)
+										: "Unknown",
+									"Date & Time": formattedDate,
+									Reference: ad.id || "N/A",
+									Quantity: ad.amountFilled || 0,
+									Amount: ad.price || 0,
+									Status: ad.status
+										? ad.status.charAt(0).toUpperCase() + ad.status.slice(1)
+										: "Unknown",
+								};
+						  })
+						: [];
+					setAds(transformedAds.slice(0, 4));
+				} else if (response.message !== "No ads found") {
 					console.error("API returned error status:", response);
 					setError(`Error: ${response?.message || "Failed to load ads"}`);
 				}
@@ -95,10 +104,15 @@ const Ads: React.FC = () => {
 		fetchUserAds();
 	};
 
+	const handleAdClick = (ad: IAd) => {
+		console.log("Ad clicked:", ad);
+	};
+
 	if (loading) {
 		return (
 			<div className="flex justify-center items-center h-32">
-				Loading ads...
+				<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+				<span className="ml-2">Loading ads...</span>
 			</div>
 		);
 	}
@@ -109,7 +123,7 @@ const Ads: React.FC = () => {
 				<div className="text-red-500 text-center mb-4">{error}</div>
 				<button
 					onClick={handleRetry}
-					className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+					className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
 				>
 					Retry
 				</button>
@@ -117,15 +131,13 @@ const Ads: React.FC = () => {
 		);
 	}
 
+	if (!ads || ads.length === 0) {
+		return <Empty />;
+	}
+
 	return (
 		<div>
-			{/* <Table fields={fields} data={dummyAds} /> */}
-
-			{openAds.length === 0 ? (
-				<Empty />
-			) : (
-				<Table fields={fields} data={openAds} />
-			)}
+			<AdsTable ads={ads} onRowClick={handleAdClick} className="w-full" />
 		</div>
 	);
 };
