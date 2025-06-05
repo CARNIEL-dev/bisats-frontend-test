@@ -11,6 +11,7 @@ import KycManager from "../../kyc/KYCManager";
 import { ACTIONS } from "../../../utils/transaction_limits";
 import Bisatsfetch from "../../../redux/fetchWrapper";
 import Switch from "../../../components/Switch";
+import Toast from "../../../components/Toast";
 
 export interface IAd {
 	id?: string;
@@ -93,11 +94,11 @@ const MyAds = () => {
 					)
 				);
 			} else {
-				alert(response.message || "Failed to update ad status");
+				Toast.error(response.message || "Failed to update ad status","Failed");
 			}
 		} catch (err) {
 			console.error("Error updating ad status:", err);
-			alert("Failed to update ad status. Please try again.");
+			Toast.error("Failed to update ad status. Please try again.","Failed");
 		} finally {
 			setUpdatingAdId(null);
 		}

@@ -393,6 +393,29 @@ export const GetSearchAds= async (payload: TAddSearchRequest) => {
     return error;
   }
 };
+
+export const GetUserAd = async (payload: TAddSearchRequest) => {
+  try {
+    const response = await Bisatsfetch(
+      `/api/v1/user/${payload.userId}${
+        BACKEND_URLS?.P2P.ADS.SEARCH_ADS
+      }?asset=${payload.asset}&type=${
+        payload.type === "buy" ? "sell" : "buy"
+      }&limit=10&skip=0`,
+      {
+        method: "GET",
+      }
+    );
+    const data = response.data;
+    console.log(response);
+    if (response.status) {
+      return data;
+    } else {
+    }
+  } catch (error) {
+    return error;
+  }
+};
 function transformAssets(data: any[]) {
   const result: { id: string; tokenName: string; networks: { value: string; label: string; address: string; }[]; }[] = [];
 

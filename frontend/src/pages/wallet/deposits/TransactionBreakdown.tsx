@@ -9,6 +9,7 @@ import { APP_ROUTES } from '../../../constants/app_route'
 import { useSelector } from 'react-redux'
 import { UserState } from '../../../redux/reducers/userSlice'
 import Toast from '../../../components/Toast'
+import { formatNumber } from '../../../utils/numberFormat'
 
 type TBank = {
     id: string,
@@ -105,28 +106,28 @@ const TransactionBreakdown = () => {
                         <div className='py-5'>
                             <div className="flex justify-between items-center mb-3">
                                 <p className="text-[#424A59] font-[400]">Amount:</p>
-                                <p className="text-[#606C82]  font-[600]">NGN {TransBreakDown?.amount}</p>
+                                <p className="text-[#606C82]  font-[600]">NGN {formatNumber(TransBreakDown?.amount)}</p>
                             </div>
-                            <div className="flex justify-between items-center mb-3">
+                            {/* <div className="flex justify-between items-center mb-3">
                                 <p className="text-[#424A59] font-[400]">Stamp Duty:</p>
                                 <p className="text-[#606C82]  font-[600]">NGN {TransBreakDown?.stampDuty}</p>
-                            </div>
+                            </div> */}
                             <div className="flex justify-between items-center mb-3">
                                 <p className="text-[#424A59] font-[400]">Processing Charge:</p>
-                                <p className="text-[#606C82]  font-[600]">NGN {TransBreakDown?.processingCharge}</p>
+                                <p className="text-[#606C82]  font-[600]">NGN {formatNumber(TransBreakDown?.processingCharge)}</p>
                             </div>
-                            <div className="flex justify-between items-center mb-3">
+                            {/* <div className="flex justify-between items-center mb-3">
                                 <p className="text-[#424A59] font-[400]">VAT:</p>
                                 <p className="text-[#606C82]  font-[600]">NGN {TransBreakDown?.vat}</p>
-                            </div>
-                            <div className="flex justify-between items-center mb-3">
+                            </div> */}
+                            {/* <div className="flex justify-between items-center mb-3">
                                 <p className="text-[#424A59] font-[400]">Commission:</p>
                                 <p className="text-[#606C82]  font-[600]">NGN {TransBreakDown?.commission}</p>
-                            </div>
+                            </div> */}
 
                             <div className="flex justify-between items-center border-t-[0.5px] border-[#606C82] pt-5">
                                 <p className="text-[#424A59] font-[400]">Total:</p>
-                                <p className="text-[#606C82]  font-[600]">NGN {TransBreakDown?.totalAmount}</p>
+                                <p className="text-[#606C82]  font-[600]">NGN {formatNumber(TransBreakDown?.totalAmount)}</p>
                             </div>
                         </div>
                         <div className="h-fit rounded border border  border-[#F3F4F6] bg-[#F9F9FB] rounded-[12px] p-2  my-5 text-[14px] leading-[24px] ">

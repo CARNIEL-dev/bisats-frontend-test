@@ -27,20 +27,25 @@ export const assetIndexMap: Record<string, number> = Object.values(assets).reduc
 export enum typeofSwam { "Buy", "Sell" }
 const Swap = ({ type, adDetail }: { type: "buy" | "sell", adDetail?: AdSchema | undefined }) => {
     const [showConfirmation, setShowConfirmation] = useState(false);
-    const [amount, setAmount] = useState("0")
+    // const [amount, setAmount] = useState("0.00")
+    // const [otherAmount, setOtherAmount] = useState("0.00")
+
+    const [amount, setAmount] = useState("");
+    const [otherAmount, setOtherAmount] = useState("");
+    const [focusedField, setFocusedField] = useState<"amount" | "otherAmount" | null>(null);
+
     const [tokenPrice, setTokenPrice] = useState<PriceData>()
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [orderError, setOrderError] = useState<string | null>(null);
     const [networkFee, setNetworkFee] = useState<string | null>(null);
     const [transactionFee, setTransactionFee] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
-
-
     const walletState: WalletState = useSelector((state: any) => state.wallet);
     const user = useSelector((state: { user: UserState }) => state.user);
     const userId = user?.user?.userId || "";    
     const navigate = useNavigate()
     useEffect(() => {
+
         if (!adDetail) navigate(-1);
 
     },[])
@@ -57,6 +62,11 @@ const Swap = ({ type, adDetail }: { type: "buy" | "sell", adDetail?: AdSchema | 
     const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         // setAmount(e.target.value);
         setAmount( e.target.value )
+    };
+
+    const handleOtherAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        // setAmount(e.target.value);
+        setOtherAmount(e.target.value)
     };
     const fetchNetworkFee = async () => {
         if ( !amount) return null;
@@ -183,44 +193,79 @@ const Swap = ({ type, adDetail }: { type: "buy" | "sell", adDetail?: AdSchema | 
 
     const getCurrencyName = () =>
         adDetail?.orderType === "buy" ? adDetail?.asset : "xNGN";
-    const calculateReceiveAmount = useMemo(() => {
-            const inputAmount = parseFloat(amount);
-            const price = adDetail?.price??0;
-            
+    // const calculateReceiveAmount = useMemo(() => {
+    //         const inputAmount = parseFloat(amount??0);
+    //         const price = adDetail?.price??0;
+    //         if (adDetail?.orderType=== "buy") {
+    //             // Buy
+    //             const amount = inputAmount / price
+    //             return amount !== null ? amount.toFixed(2) : "0.00";
+    //         } else if (adDetail?.orderType === "sell") {
+    //             // Sell
+    //             const amount = inputAmount * price
+    //             return amount !== null ? amount.toFixed(2) : "0.00";
+    //         } else return "0.00"
     
-            if (adDetail?.orderType=== "buy") {
-                // Buy
-                const amount = tokenPrice ? convertNairaToAsset(adDetail?.asset as keyof typeof assets, inputAmount, price, tokenPrice) : null 
-                return amount !== null ? amount.toFixed(2) : "0.00";
-            } else {
-                // Sell
-                const amount = tokenPrice ?convertAssetToNaira(adDetail?.asset as keyof typeof assets, inputAmount, price, tokenPrice): null 
-                return amount !== null ? amount.toFixed(2) : "0.00";
+    // }, [adDetail?.orderType, adDetail?.price, amount])
+    // const calculateDepositAmount = useMemo(() => {
+    //     const inputAmount = parseFloat(otherAmount??0);
+    //     const price = adDetail?.price ?? 0;
+
+    //     if (adDetail?.orderType === "buy") {
+    //         // Buy
+    //         const amount = inputAmount * price
+    //         return amount !== null ? amount.toFixed(2) : "0.00";
+    //     } else if (adDetail?.orderType === "sell") {
+    //         // Sell
+    //         const amount = inputAmount/price
+    //         return amount !== null ? amount.toFixed(2) : "0.00";
+    //     }else return"0.00"
+
+    // }, [adDetail?.orderType, adDetail?.price, otherAmount])
+    useEffect(() => {
+        const price = adDetail?.price ?? 0;
+
+        if (!price) return;
+
+        const amt = parseFloat(amount);
+        const oth = parseFloat(otherAmount);
+
+        if (focusedField === "amount" && !isNaN(amt)) {
+            if (adDetail?.orderType === "buy") {
+                setOtherAmount((amt / price).toFixed(2));
+            } else if (adDetail?.orderType === "sell") {
+                setOtherAmount((amt * price).toFixed(2));
             }
-    
-    }, [adDetail?.asset, adDetail?.orderType, adDetail?.price, amount, tokenPrice])
-    
+        } else if (focusedField === "otherAmount" && !isNaN(oth)) {
+            if (adDetail?.orderType === "buy") {
+                setAmount((oth * price).toFixed(2));
+            } else if (adDetail?.orderType === "sell") {
+                setAmount((oth / price).toFixed(2));
+            }
+        }
+    }, [amount, otherAmount, adDetail?.orderType, adDetail?.price, focusedField]);
+      
     const sellError = useMemo(() => {
         if (((adDetail?.minimumLimit??0)/(adDetail?.price ?? 0)) > Number(amount)) return "Not within Limit"
         if (((adDetail?.maximumLimit??0) / (adDetail?.price ?? 0)) < Number(amount)) return "Not within Limit"
 
         if (amount > walletState?.wallet?.[adDetail?.asset??"USDT"]) return "Insufficient wallet balance"
-        if (Number(calculateReceiveAmount) > (adDetail?.amountAvailable??0)) return "Available amount exceeded"
-    }, [adDetail?.amountAvailable, adDetail?.maximumLimit, adDetail?.minimumLimit, amount, calculateReceiveAmount, walletState?.wallet?.xNGN])
+        if (Number(amount) > (adDetail?.amountAvailable??0)) return "Available amount exceeded"
+    }, [adDetail?.amountAvailable, adDetail?.asset, adDetail?.maximumLimit, adDetail?.minimumLimit, adDetail?.price, amount, walletState?.wallet])
     const buyError = useMemo(() => {
         if ((adDetail?.minimumLimit ?? 0) > Number(amount)) return "Not within Limit"
         if ((adDetail?.maximumLimit ?? 0) < Number(amount)) return "Not within Limit"
 
         if (amount > walletState?.wallet?.xNGN) return "Insufficient wallet balance"
-        if (Number(calculateReceiveAmount) > (adDetail?.amountAvailable ?? 0)) return "Available amount exceeded"
-    },[adDetail?.amountAvailable, adDetail?.maximumLimit, adDetail?.minimumLimit, amount, calculateReceiveAmount, walletState?.wallet?.xNGN])
+        if (Number(amount)/Number(adDetail?.price) > (adDetail?.amountAvailable ?? 0)) return "Available amount exceeded"
+    },[adDetail?.amountAvailable, adDetail?.maximumLimit, adDetail?.minimumLimit, adDetail?.price, amount, walletState?.wallet?.xNGN])
     return (
         <div>
             <p className={`${type === "buy" ? "text-[#17A34A]" : "text-[#DC2625]"} text-[14px] font-[600] my-3`}> {type === "buy" ? "You’re Buying from" : "You’re Selling to"}</p>
 
-            <h1 className='text-[28px] md:text-[34px] text-[#0A0E12] font-[600] leading-[40px] my-3'>Chinex exchanger</h1>
+            <h1 className='text-[28px] md:text-[34px] text-[#0A0E12] font-[600] leading-[40px] my-3'>{adDetail?.user?.userName}</h1>
 
-            <p className='text-[#515B6E] text-[14px] font-[400] my-2'><span>1 USDT</span>  ≈ <span>{formatNumber(Number(adDetail?.price))} xNGN</span>
+            <p className='text-[#515B6E] text-[14px] font-[400] my-2'><span>1 {type==="buy"?"USDT":adDetail?.asset}</span>  ≈ <span>{formatNumber(Number(adDetail?.price))} xNGN</span>
                 {/* <span className='text-[#17A34A] text-[12px] font-[600] bg-[#F5FEF8]'> 30 s</span> */}
             </p>
             <div className='flex items-center my-1 w-2/3 justify-between'>
@@ -240,14 +285,26 @@ const Swap = ({ type, adDetail }: { type: "buy" | "sell", adDetail?: AdSchema | 
                 type === "buy" ?
                     <div>
                         <div className='relative'>
-                            <PrimaryInput css={'w-full h-[64px]'} label={'Amount'}
+                            {/* <PrimaryInput css={'w-full h-[64px]'} label={'Amount'}
                                 error={buyError}
                                 touched={undefined}
                                 min={adDetail?.minimumLimit}
                                 max={adDetail?.maximumLimit}
-                                value={amount}
+                                value={calculateDepositAmount==="0.00"? amount:calculateDepositAmount}
                                 onChange={handleAmountChange}
-                            />
+                                maxFnc={() => setAmount(`${(adDetail?.maximumLimit ?? 0)}`)}
+
+                            /> */}
+                            <PrimaryInput
+                                css="w-full h-[64px]"
+                                label="Amount"
+                                error={buyError}
+                                min={adDetail?.minimumLimit}
+                                max={adDetail?.maximumLimit}
+                                value={amount}
+                                onFocus={() => setFocusedField("amount")}
+                                onChange={(e) => setAmount(e.target.value)}
+                                maxFnc={() => setAmount(`${adDetail?.maximumLimit ?? 0}`)} touched={undefined}                            />
                             <div className='absolute right-3 top-10'>
 
                                 <button
@@ -273,18 +330,22 @@ const Swap = ({ type, adDetail }: { type: "buy" | "sell", adDetail?: AdSchema | 
 
 
                         <div className='relative my-10'>
-                            <PrimaryInput css={'w-full h-[64px]'}
+                            {/* <PrimaryInput css={'w-full h-[64px]'}
                                 label={'You’ll receive at least'}
                                 error={undefined}
                                 touched={undefined}
-                                readOnly
-                                value={calculateReceiveAmount}
-                            
-                            />
+                                onChange={handleOtherAmountChange}
+                                value={calculateReceiveAmount==="0.00"? otherAmount:calculateReceiveAmount}
+                            /> */}
+                            <PrimaryInput
+                                css="w-full h-[64px]"
+                                label="You’ll receive at least"
+                                value={otherAmount}
+                                onFocus={() => setFocusedField("otherAmount")}
+                                onChange={(e) => setOtherAmount(e.target.value)} error={undefined}
+                                touched={undefined} />
                             <div className='absolute right-3 top-10'>
-
                                 <button
-
                                     className={`text-[#515B6E] p-2.5 px-4 bg-gradient-to-r from-[#FFFFFF] to-[#EEEFF2] border border-[#E2E4E8] h-[48px] rounded-[8px] rounded inline-flex items-center w-[120px] flex justify-between font-[600] text-[14px] leading-[24px] `}
                                     type="button"
                                 >
@@ -296,9 +357,6 @@ const Swap = ({ type, adDetail }: { type: "buy" | "sell", adDetail?: AdSchema | 
                                         {TokenData?.[assetIndexMap?.[adDetail?.asset ?? "BTC"]]?.tokenName}
                                     </div>
                                     {/* </Typography.Text> */}
-
-
-
                                 </button>
                                 {/* <CryptoFilter error={undefined} touched={undefined} handleChange={() => console.log("mms")} /> */}
                             </div>
@@ -308,9 +366,14 @@ const Swap = ({ type, adDetail }: { type: "buy" | "sell", adDetail?: AdSchema | 
                     </div> :
                     <div>
                         <div className='relative'>
-                            <PrimaryInput css={'w-full h-[64px]'} label={'Quanity'} error={sellError} touched={undefined}
+                            <PrimaryInput css={'w-full h-[64px]'} label={'Quanity'}
+                                error={sellError}
+                                touched={undefined}
                                 value={amount}
-                                onChange={handleAmountChange} />
+                                onChange={handleAmountChange}
+                                maxFnc={()=>setAmount(`${Number(adDetail?.amount??0)/Number(adDetail?.price??0)}`)}
+                            
+                            />
                             
                             <div className='absolute right-3 top-10'>
 
@@ -335,11 +398,17 @@ const Swap = ({ type, adDetail }: { type: "buy" | "sell", adDetail?: AdSchema | 
                         </div>
 
                         <div className='relative my-10'>
-                            <PrimaryInput css={'w-full h-[64px]'} label={'You’ll receive at least'} error={undefined} touched={undefined}
+                            {/* <PrimaryInput css={'w-full h-[64px]'} label={'You’ll receive at least'} error={undefined} touched={undefined}
                             
                                 readOnly
                                 value={calculateReceiveAmount}
-                            />
+                            /> */}
+                            <PrimaryInput
+                                css="w-full h-[64px]"
+                                label="You’ll receive at least"
+                                value={otherAmount}
+                                onFocus={() => setFocusedField("otherAmount")}
+                                onChange={(e) => setOtherAmount(e.target.value)} error={undefined} touched={undefined}                            />
                             <div className='absolute right-3 top-10'>
 
                                 <button
@@ -386,7 +455,7 @@ const Swap = ({ type, adDetail }: { type: "buy" | "sell", adDetail?: AdSchema | 
                     close={() => setShowConfirmation(false)}
                     type={adDetail?.orderType === "buy" ? typeofSwam.Buy : typeofSwam.Sell}
                     amount={amount}
-                    receiveAmount={calculateReceiveAmount}
+                    receiveAmount={amount??"0"}
                     fee={calculateFee()}
                     token={adDetail?.orderType === "buy" ? "xNGN" : adDetail?.asset}
                     currency={getCurrencyName()}

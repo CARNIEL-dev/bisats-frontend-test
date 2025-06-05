@@ -150,6 +150,10 @@ const MyAds = () => {
 		}
 	};
 
+	const handleCloseAd = (adId: string) => {
+		updateAdStatus(adId, "closed");
+	};
+
 	return (
 		<div className="w-full max-w-[1200px] mx-auto px-[16px]">
 			<div className="flex flex-col bg-gray-100">
@@ -270,7 +274,7 @@ const MyAds = () => {
 													</div>
 												</td>
 												<td className="text-right px-4 py-3 relative">
-													<TableActionMenu adDetail={ad}/>
+													<TableActionMenu adDetail={ad} onCloseAd={handleCloseAd }/>
 												</td>
 											</tr>
 										))

@@ -39,6 +39,9 @@ export interface AdSchema {
 	status: string;
 	createdAt: string;
 	updatedAt: string;
+	user:{
+		userName: string;
+	}
 }
 
 interface NetworkFeeResponse {

@@ -1,6 +1,7 @@
-import React, { useState, useRef } from "react";
+import  { useState, useRef } from "react";
 import { MoreVertical } from "lucide-react";
 import { Link } from "react-router-dom";
+import EditAd from "./EditAdModal";
 
 export interface IAd {
 	id?: string;
@@ -14,7 +15,9 @@ export interface IAd {
 	price: number;
 	status: string;
 	createdAt?: string;
-	closedAt?: string;
+  closedAt?: string;
+  minimumLimit?: string,
+  maximumLiit?:string
 }
 
 interface TableActionMenuProps {
@@ -28,7 +31,9 @@ const TableActionMenu = ({
 	onCloseAd,
 	isUpdating = false,
 }: TableActionMenuProps) => {
-	const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
+  
 	const buttonRef = useRef(null);
 
 	const handleClick = () => {
@@ -80,7 +85,7 @@ const TableActionMenu = ({
 						{isActiveAd && (
 							<button
 								className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-								onClick={() => console.log("Edit ad")}
+								onClick={() => setShowEdit(true)}
 							>
 								Edit ad
 							</button>
@@ -106,7 +111,14 @@ const TableActionMenu = ({
 						)}
 					</div>
 				</>
-			)}
+      )}
+      
+      {showEdit && (
+        <EditAd
+          close={() => setShowEdit(false)}
+        // ad={{price:adDetail?.price, amount:adDetail?.amount??"",id:adDetail?.id??"",asset:adDetail?.asset, type:adDetail?.type,minimumLimit:adDetail?.minimumLimit??"0", maximumLimit:adDetail?.maximumLiit??"0"}}
+        />
+      )}
 		</>
 	);
 };

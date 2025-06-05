@@ -22,6 +22,7 @@ import KycManager from "../../kyc/KYCManager"
 import { getUserTokenData } from "../../../helpers"
 import { WalletState } from "../../../redux/reducers/walletSlice"
 import { GET_WITHDRAWAL_LIMIT } from "../../../redux/actions/userActions"
+import { formatNumber } from "../../../utils/numberFormat"
 
 
 export type TNetwork = {
@@ -224,14 +225,14 @@ const WithdrawalPage = () => {
                     ((bankAccountId) || selectedToken) && (
                         selectedToken === "xNGN" ?
                             <div>
-                                <PrimaryInput css={"w-full p-2.5 mb-7"}
+                                <PrimaryInput css={"w-full p-2.5 mb-2"}
                                     
                                     label={`Amount `}
                                     placeholder="Enter amount"
                                     type="number"
                                     min={userTransactionLimits?.minimum_fiat_withdrawal}
                                     max={userTransactionLimits?.maximum_fiat_withdrawal}
-                                    error={Number(withdrwalAmount) >userTransactionLimits?.maximum_fiat_withdrawal?true:false}
+                                    error={(Number(withdrwalAmount) >userTransactionLimits?.maximum_fiat_withdrawal)?true:false}
                                     touched={Number(withdrwalAmount) > userTransactionLimits?.maximum_fiat_withdrawal ? true : false}
                                     value={withdrwalAmount}
                                     onChange={(e) => {
@@ -244,23 +245,24 @@ const WithdrawalPage = () => {
 
                                         setWithdrwalAmount(value);
                                     }}
+                                    maxFnc={()=>setWithdrwalAmount(`${userTransactionLimits?.maximum_fiat_withdrawal}`)}
                                 />
                                 <div className="h-fit rounded border border  border-[#F3F4F6] bg-[#F9F9FB] rounded-[12px] py-3 px-5  my-5 text-[14px] leading-[24px] ">
                                     <div className="flex justify-between items-center mb-2">
                                         <p className="text-[#424A59] font-[400]">Daily remaining limit:</p>
-                                        <p className="text-[#606C82]  font-[600]">NGN {userTransactionLimits?.daily_withdrawal_limit_fiat > 500000000 ? "Unlimited" : userTransactionLimits?.daily_withdrawal_limit_fiat - (usedUpLimit?.totalUsedAmountFiat??0)}</p>
+                                        <p className="text-[#606C82]  font-[600]">NGN {userTransactionLimits?.daily_withdrawal_limit_fiat > 500000000 ? "Unlimited" : formatNumber(userTransactionLimits?.daily_withdrawal_limit_fiat - (usedUpLimit?.totalUsedAmountFiat??0))}</p>
                                     </div>
                                     <div className="flex justify-between items-center mb-2">
                                         <p className="text-[#424A59] font-[400]">Transaction fee:</p>
-                                        <p className="text-[#606C82]  font-[600]">{!withdrwalAmount?"-": userTransactionLimits?.charge_on_single_withdrawal_fiat } xNGN</p>
+                                        <p className="text-[#606C82]  font-[600]">{formatNumber(!withdrwalAmount?"-": userTransactionLimits?.charge_on_single_withdrawal_fiat )} xNGN</p>
                                     </div>
                                     <div className="flex justify-between items-center mb-2">
                                         <p className="text-[#424A59] font-[400]">Withdrawal amount:</p>
-                                        <p className="text-[#606C82]  font-[600]">{withdrwalAmount??"-"} xNGN</p>
+                                        <p className="text-[#606C82]  font-[600]">{formatNumber(withdrwalAmount??"-")} xNGN</p>
                                     </div>
                                     <div className="flex justify-between items-center mb-2">
                                         <p className="text-[#424A59] font-[400]">Total:</p>
-                                        <p className="text-[#606C82]  font-[600]">{`${!withdrwalAmount ? "-" : (Number(withdrwalAmount ?? 0)) + userTransactionLimits?.charge_on_single_withdrawal_fiat}`||"-"} xNGN</p>
+                                        <p className="text-[#606C82]  font-[600]">{`${formatNumber(!withdrwalAmount ? "-" : (Number(withdrwalAmount ?? 0)) + userTransactionLimits?.charge_on_single_withdrawal_fiat)}`||"-"} xNGN</p>
                                     </div>
                                 </div>
                                 <KycManager
@@ -294,15 +296,15 @@ const WithdrawalPage = () => {
                                 <div className="h-fit rounded border border  border-[#F3F4F6] bg-[#F9F9FB] rounded-[12px] py-3 px-5 my-5 text-[14px] leading-[24px] ">
                                     <div className="flex justify-between items-center mb-2">
                                         <p className="text-[#424A59] font-[400]">Daily remaining limit:</p>
-                                        <p className="text-[#606C82]  font-[600]"> {userTransactionLimits?.daily_withdrawal_limit_crypto-(usedUpLimit?.totalUsedAmountCrypto??0)} {selectedToken}</p>
+                                        <p className="text-[#606C82]  font-[600]"> {formatNumber(userTransactionLimits?.daily_withdrawal_limit_crypto-(usedUpLimit?.totalUsedAmountCrypto??0))} {selectedToken}</p>
                                     </div>
                                     <div className="flex justify-between items-center mb-2">
                                         <p className="text-[#424A59] font-[400]">Transaction fee:</p>
-                                        <p className="text-[#606C82]  font-[600]">{userTransactionLimits?.charge_on_single_withdrawal_crypto} USDT</p>
+                                        <p className="text-[#606C82]  font-[600]">{formatNumber(userTransactionLimits?.charge_on_single_withdrawal_crypto)} USDT</p>
                                     </div>
                                     <div className="flex justify-between items-center mb-2">
                                         <p className="text-[#424A59] font-[400]">Withdrawal amount:</p>
-                                        <p className="text-[#606C82]  font-[600]">{ cryptoWithdrwalAmount} { selectedToken}</p>
+                                        <p className="text-[#606C82]  font-[600]">{ formatNumber(cryptoWithdrwalAmount??0)} { selectedToken}</p>
                                     </div>
                                     <div className="flex justify-between items-center mb-2">
                                         <p className="text-[#424A59] font-[400]">Total:</p>
