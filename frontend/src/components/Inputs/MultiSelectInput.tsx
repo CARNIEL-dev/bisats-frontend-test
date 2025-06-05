@@ -14,7 +14,7 @@ interface IMultiSelectDropDownProps {
 		| [];
 	error: string | undefined | null;
 	touched: boolean | undefined;
-	label: string;
+	label?: string;
 	scrollHeight?: string;
 	handleChange: (prop: string) => void;
 }
