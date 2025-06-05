@@ -1,261 +1,132 @@
+import React from "react";
 
-import { formatNumber } from '../../utils/numberFormat';
-
-interface TableProps {
-	fields: Array<any>;
-	data: Array<any>;
+interface TableProps<T = any> {
+	data: T[];
+	headers: string[];
+	renderCell: (item: T, column: string, index?: number) => React.ReactNode;
+	onRowClick?: (item: T) => void;
+	boldColumns?: number[];
+	className?: string;
+	customRowHeight?: string;
+	hideOnMobile?: boolean;
+	renderMobileCard?: (item: T, index: number) => React.ReactNode;
 }
 
-const Table: React.FC<TableProps> = ({ fields, data }) => {
-    
-	// Helper function to check field types regardless of case
-	const isFieldType = (field: string, type: string): boolean => {
-		return field.toLowerCase() === type.toLowerCase();
-	};
+const Table: React.FC<TableProps> = ({
+	data,
+	headers,
+	renderCell,
+	onRowClick,
+	boldColumns = [],
+	className = "",
+	customRowHeight = "h-14",
+	hideOnMobile = false,
+	renderMobileCard,
+}) => {
+	const desktopTableClasses = hideOnMobile ? "block" : "hidden lg:block";
+	const mobileClasses = renderMobileCard ? "lg:hidden" : "block lg:hidden";
 
-	// Helper function to render field value with appropriate styling
-    const renderFieldValue = (field: string, value: any, ) => {
-		if (isFieldType(field, "Status")) {
-			return (
-				<span
-					style={{
-						color:
-							value === "Pending"
-								? "#D97708"
-								: value === "Completed" || value === "active"
-								? "#17A34A"
-								: "#B91C1B",
-					}}
-				>
-					{value}
-				</span>
-			);
-		} else if (isFieldType(field, "Amount")) {
-            return <span className="font-semibold">{value}</span>;
-		} else if (isFieldType(field, "status")) {
-			// Handle lowercase "status" field from ads data
-			return (
-				<span
-					style={{
-						color: value === "active" ? "#17A34A" : "#B91C1B",
-					}}
-				>
-					{value}
-				</span>
-			);
-		}
-		return value;
-	};
-
-	// Standard table for sm screens and above
-	const renderDesktopTable = () => (
-		<table
-			className="hidden lg:table table-auto w-full h-full"
-			style={{ color: "#515B6E" }}
-		>
-			<thead className="text-justify">
-				<tr>
-					{fields.map((field, index) => (
-						<th
-							key={index}
-							className={
-								index + 1 > fields.length / 2
-									? "text-right px-4 py-3 text-[14px]"
-									: "text-left px-4 py-4 text-[14px]"
-							}
-							style={{ backgroundColor: "#F9F9FB" }}
-						>
-							{field}
-						</th>
-					))}
-				</tr>
-			</thead>
-			<tbody>
-				{data.map((row, rowIndex) => (
-					<tr
-						key={rowIndex}
-						style={rowIndex % 2 === 0 ? {} : { backgroundColor: "#F9F9FB" }}
-					>
-						{fields.map((field, colIndex) => (
-							<td
-								key={colIndex}
-								className={
-									colIndex + 1 > fields.length / 2
-										? "text-right font-semibold px-4 py-3 text-[14px]"
-										: "text-left px-4 py-2 text-[14px]"
-								}
-                            >
-								{field === "Amount" ?
-									// renderFieldValue(field, row[field])
-									row["Order Type"] === "Buy" ? `xNGN ${formatNumber(row["Amount"])}` : `${row?.Asset ?? "xNGN"} ${formatNumber(row["Amount"])}`
-
-                                    // `${row?.Asset}${convertNairaToAsset(row?.Asset, row?.Amount, row?.Price)?.toFixed(2) }`
-                                        // row["Order Type"] === "Buy" ? `xNGN ${row["Amount"]}` : `${row?.Asset}${convertNairaToAsset(row?.Asset, row?.Amount, row?.Price)}`
-                                                                        
-                                    :
-									renderFieldValue(field, row[field])
-								}
-
-                                
-							</td>
-						))}
-					</tr>
-				))}
-			</tbody>
-		</table>
-    );
-    
-
-	// Mobile layout with stacked fields - organized in specific order
-	const renderMobileTable = () => (
-		<div className="lg:hidden w-full">
-            {data.map((row, rowIndex) => (
-                
-				<div
-					key={rowIndex}
-					className="mb-4 p-3 rounded"
-					style={
-						rowIndex % 2 === 0
-							? { backgroundColor: "#FFFFFF" }
-							: { backgroundColor: "#F9F9FB" }
-					}
-				>
-					{/* Top row: Order type/Order Type and Date & Time/Asset */}
-					<div className="flex justify-between mb-3">
-						{/* Order type field (always first) */}
-						{fields.some(
-							(f) =>
-								isFieldType(f, "Order type") || isFieldType(f, "Order Type")
-						) && (
-							<div className="flex flex-col">
-								<span className="text-[12px] text-gray-500 mb-1">
-									{fields.find(
-										(f) =>
-											isFieldType(f, "Order type") ||
-											isFieldType(f, "Order Type")
-									)}
-								</span>
-								<span className="text-left text-[14px]">
-									{
-										row[
-											fields.find(
-												(f) =>
-													isFieldType(f, "Order type") ||
-													isFieldType(f, "Order Type")
-											) || ""
-										]
-									}
-								</span>
-							</div>
-						)}
-
-						{/* Date & Time or Asset field (always second) */}
-						{fields.some(
-							(f) => isFieldType(f, "Date & Time") || isFieldType(f, "Asset")
-						) && (
-							<div className="flex flex-col">
-								<span className="text-[12px] text-gray-500 mb-1 text-right">
-									{fields.find(
-										(f) =>
-											isFieldType(f, "Date & Time") || isFieldType(f, "Asset")
-									)}
-								</span>
-								<span className="text-right font-semibold text-[14px]">
-									{
-										row[
-											fields.find(
-												(f) =>
-													isFieldType(f, "Date & Time") ||
-													isFieldType(f, "Asset")
-											) || ""
-										]
-									}
-								</span>
-							</div>
-						)}
-					</div>
-
-					{/* Bottom row: Quantity/Price and Status/Amount */}
-					<div className="flex justify-between">
-						{/* Quantity or Price field (always third) */}
-						{fields.some(
-							(f) => isFieldType(f, "Quantity") || isFieldType(f, "Price")
-						) && (
-							<div className="flex flex-col">
-								<span className="text-[12px] text-gray-500 mb-1">
-									{fields.find(
-										(f) => isFieldType(f, "Quantity") || isFieldType(f, "Price")
-									)}
-								</span>
-								<span className="text-left text-[14px]">
-									{
-										row[
-											fields.find(
-												(f) =>
-													isFieldType(f, "Quantity") || isFieldType(f, "Price")
-											) || ""
-										]
-									}
-								</span>
-							</div>
-						)}
-
-						{/* Status or Amount field (always fourth) - prefer Status when both exist */}
-						{(() => {
-							// Check if Status field exists
-							const statusField = fields.find((f) => isFieldType(f, "Status"));
-							// If Status exists, display it
-							if (statusField) {
-								return (
-									<div className="flex flex-col">
-										<span className="text-[12px] text-gray-500 mb-1 text-right">
-											{statusField}
-										</span>
-										<span className="text-right font-semibold text-[14px]">
-                                            {renderFieldValue(statusField, row[statusField])}
-										</span>
-									</div>
-								);
-							}
-							// Otherwise, check for Amount field
-							else {
-								const amountField = fields.find((f) =>
-									isFieldType(f, "Amount")
-								);
-                                if (amountField) {
-                                    console.log(amountField,row["Order Type"])
-									return (
-										<div className="flex flex-col">
-											<span className="text-[12px] text-gray-500 mb-1 text-right">
-												{amountField}
-											</span>
-                                            <span className="text-right font-semibold text-[14px]">
-												{
-													row["Order Type"] === "Buy" ? `xNGN ${formatNumber(row["Amount"])}` : `${row?.Asset ?? "xNGN"} ${formatNumber(row["Amount"])}`
-
-                                                    // `${row?.Asset}${convertNairaToAsset(row?.Asset, row?.Amount, row?.Price)?.toFixed(2)}`
-
-                                                    // row["Order Type"] === "Buy" ? `xNGN ${row["Amount"]}` : `${row?.Asset}${convertNairaToAsset(row?.Asset, row?.Amount, row?.Price)}`
-                                                }
-
-                                                {/* {renderFieldValue(amountField, row[amountField], )} */}
-											</span>
-										</div>
-									);
-								}
-								return null;
-							}
-						})()}
-					</div>
-				</div>
-			))}
-		</div>
-	);
+	// If no data, return early - let the parent component handle empty states
+	if (!data || data.length === 0) {
+		return <div className={`w-full ${className}`}></div>;
+	}
 
 	return (
-		<div>
-			{renderDesktopTable()}
-			{renderMobileTable()}
+		<div className={`w-full ${className}`}>
+			{/* Desktop Table */}
+			<div className={desktopTableClasses}>
+				<div className="overflow-x-auto">
+					<table className="w-full border-collapse">
+						<thead>
+							<tr className="border-b border-[#F3F4F6]">
+								{headers.map((header, index) => (
+									<th
+										key={header}
+										className="text-left py-3 px-4 text-[#515B6E] text-[12px] md:text-[14px] font-[600]"
+									>
+										{header}
+									</th>
+								))}
+							</tr>
+						</thead>
+						<tbody>
+							{data.map((item, rowIndex) => (
+								<tr
+									key={rowIndex}
+									className={`${customRowHeight} border-b border-[#F3F4F6] hover:bg-gray-50 transition-colors ${
+										onRowClick ? "cursor-pointer" : ""
+									}`}
+									onClick={() => onRowClick && onRowClick(item)}
+								>
+									{headers.map((header, colIndex) => (
+										<td
+											key={`${rowIndex}-${colIndex}`}
+											className={`px-4 py-2 text-[14px] ${
+												boldColumns.includes(colIndex)
+													? "font-[600] text-[#0A0E12]"
+													: "font-[400] text-[#515B6E]"
+											}`}
+										>
+											{renderCell(item, header, rowIndex)}
+										</td>
+									))}
+								</tr>
+							))}
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			{/* Mobile Cards */}
+			{renderMobileCard && (
+				<div className={`${mobileClasses} w-full space-y-4`}>
+					{data.map((item, index) => renderMobileCard(item, index))}
+				</div>
+			)}
+
+			{/* Fallback Mobile Table (if no custom mobile card provided) */}
+			{!renderMobileCard && !hideOnMobile && (
+				<div className="block lg:hidden overflow-x-auto">
+					<table className="w-full border-collapse min-w-[600px]">
+						<thead>
+							<tr className="border-b border-[#F3F4F6]">
+								{headers.map((header, index) => (
+									<th
+										key={header}
+										className="text-left py-3 px-4 text-[#515B6E] text-[12px] font-[600] uppercase tracking-wider"
+									>
+										{header}
+									</th>
+								))}
+							</tr>
+						</thead>
+						<tbody>
+							{data.map((item, rowIndex) => (
+								<tr
+									key={rowIndex}
+									className={`${customRowHeight} border-b border-[#F3F4F6] hover:bg-gray-50 transition-colors ${
+										onRowClick ? "cursor-pointer" : ""
+									}`}
+									onClick={() => onRowClick && onRowClick(item)}
+								>
+									{headers.map((header, colIndex) => (
+										<td
+											key={`${rowIndex}-${colIndex}`}
+											className={`px-4 py-2 text-[14px] ${
+												boldColumns.includes(colIndex)
+													? "font-[600] text-[#0A0E12]"
+													: "font-[400] text-[#515B6E]"
+											}`}
+										>
+											{renderCell(item, header, rowIndex)}
+										</td>
+									))}
+								</tr>
+							))}
+						</tbody>
+					</table>
+				</div>
+			)}
 		</div>
 	);
 };

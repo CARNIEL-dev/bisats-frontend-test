@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import DateInput from "../../components/Inputs/DateInput";
 import { MultiSelectDropDown } from "../../components/Inputs/MultiSelectInput";
 import SearchInput from "../../components/Inputs/SearchInput";
@@ -28,7 +28,14 @@ const OrderHistory = () => {
 	const userId = user?.userId;
 	const [orders, setOrders] = useState<Order[]>([]);
 
-	const fetchOrders = async () => {
+	// Fixed filter states - using single values like P2pOrdersTable
+	const [selectedAsset, setSelectedAsset] = useState<string>("");
+	const [selectedType, setSelectedType] = useState<string>("");
+	const [searchTerm, setSearchTerm] = useState("");
+	const [selectedDate, setSelectedDate] = useState<string>("");
+	const [sortBy, setSortBy] = useState<string>("");
+
+	const fetchOrders = useCallback(async () => {
 		try {
 			setLoading(true);
 			const response = await Bisatsfetch(
@@ -55,30 +62,158 @@ const OrderHistory = () => {
 		} finally {
 			setLoading(false);
 		}
-	};
+	}, [userId]);
+
+	// Fixed filtering logic similar to P2pOrdersTable
+	const filteredOrders = useMemo(() => {
+		return orders.filter((order) => {
+			// Search filter
+			const matchesSearch =
+				searchTerm === "" ||
+				order.reference?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+				(order.type?.toLowerCase() === "buy"
+					? order.merchant?.userName
+							?.toLowerCase()
+							.includes(searchTerm.toLowerCase())
+					: order.buyer?.userName
+							?.toLowerCase()
+							.includes(searchTerm.toLowerCase()));
+
+			// Date filter
+			let matchesDate = true;
+			if (selectedDate) {
+				const orderDate = new Date(order.createdAt);
+				const selectedDateObj = new Date(selectedDate);
+
+				const orderDateOnly = new Date(
+					orderDate.getFullYear(),
+					orderDate.getMonth(),
+					orderDate.getDate()
+				);
+				const selectedDateOnly = new Date(
+					selectedDateObj.getFullYear(),
+					selectedDateObj.getMonth(),
+					selectedDateObj.getDate()
+				);
+
+				matchesDate = orderDateOnly.getTime() === selectedDateOnly.getTime();
+			}
+
+			// Asset filter
+			const matchesAsset =
+				selectedAsset === "" || order.asset === selectedAsset;
+
+			// Type filter
+			const matchesType =
+				selectedType === "" ||
+				order.type?.toLowerCase() === selectedType.toLowerCase();
+
+			return matchesSearch && matchesDate && matchesAsset && matchesType;
+		});
+	}, [orders, searchTerm, selectedDate, selectedAsset, selectedType]);
+
+	// Apply sorting to filtered results
+	const sortedAndFilteredOrders = useMemo(() => {
+		if (!sortBy) return filteredOrders;
+
+		return [...filteredOrders].sort((a, b) => {
+			switch (sortBy) {
+				case "price":
+					return (b.price || 0) - (a.price || 0);
+				case "date":
+					const dateA = new Date(a.createdAt || 0);
+					const dateB = new Date(b.createdAt || 0);
+					return dateB.getTime() - dateA.getTime();
+				default:
+					return 0;
+			}
+		});
+	}, [filteredOrders, sortBy]);
 
 	useEffect(() => {
 		if (userId) {
 			fetchOrders();
 		}
-	}, [userId]);
+	}, [userId, fetchOrders]);
 
-	const assets = [
-		{ value: "USDT", label: "USDT" },
-		{ value: "BTC", label: "BTC" },
-		{ value: "ETH", label: "ETH" },
-		{ value: "SOL_TEST", label: "SOL_TEST" },
-	];
-	const types = [
-		{ value: "Buy", label: "Buy" },
-		{ value: "Sell", label: "Sell" },
-	];
-	const sortOptions = [
-		{ value: "price", label: "Price" },
-		{ value: "date", label: "Date" },
+	// Generate dynamic asset options based on available orders - fixed format
+	const getUniqueAssets = () => {
+		const uniqueAssets = Array.from(
+			new Set(orders.map((order) => order.asset).filter(Boolean))
+		);
+		return [
+			{
+				value: "",
+				label: "All",
+				labelDisplay: "All",
+			},
+			...uniqueAssets.map((asset) => ({
+				value: asset,
+				label: asset,
+				labelDisplay: asset,
+			})),
+		];
+	};
+
+	// Fixed type options format
+	const getTypeOptions = () => [
+		{
+			value: "",
+			label: "All",
+			labelDisplay: "All",
+		},
+		{
+			value: "buy",
+			label: "Buy",
+			labelDisplay: "Buy",
+		},
+		{
+			value: "sell",
+			label: "Sell",
+			labelDisplay: "Sell",
+		},
 	];
 
-	// Mobile order row component
+	// Fixed sort options format
+	const getSortOptions = () => [
+		{
+			value: "",
+			label: "None",
+			labelDisplay: "None",
+		},
+		{
+			value: "price",
+			label: "Price",
+			labelDisplay: "Price",
+		},
+		{
+			value: "date",
+			label: "Date",
+			labelDisplay: "Date",
+		},
+	];
+
+	// Fixed handler functions - single value handlers like P2pOrdersTable
+	const handleAssetChange = (asset: string) => {
+		setSelectedAsset(asset);
+	};
+
+	const handleTypeChange = (type: string) => {
+		setSelectedType(type);
+	};
+
+	const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setSearchTerm(e.target.value);
+	};
+
+	const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setSelectedDate(e.target.value);
+	};
+
+	const handleSortChange = (sort: string) => {
+		setSortBy(sort);
+	};
+
 	const MobileOrderRow = ({
 		order,
 		index,
@@ -86,7 +221,6 @@ const OrderHistory = () => {
 		order: Order;
 		index: number;
 	}) => {
-		// Format date if available
 		const formattedDate = order.createdAt
 			? new Date(order.createdAt).toLocaleString("en-US", {
 					month: "2-digit",
@@ -108,7 +242,6 @@ const OrderHistory = () => {
 					index % 2 === 0 ? "bg-white" : "bg-[#F9F9FB]"
 				}`}
 			>
-				{/* First row - Type and Order ref */}
 				<div className="flex justify-between mb-3">
 					<div className="flex flex-col">
 						<span style={{ color: "#515B6E", fontSize: "14px" }}>Type</span>
@@ -132,7 +265,6 @@ const OrderHistory = () => {
 					</div>
 				</div>
 
-				{/* Second row - Asset and Amount */}
 				<div className="flex justify-between mb-3">
 					<div className="flex flex-col">
 						<span style={{ color: "#515B6E", fontSize: "14px" }}>Asset</span>
@@ -148,7 +280,6 @@ const OrderHistory = () => {
 					</div>
 				</div>
 
-				{/* Third row - Price and Quantity */}
 				<div className="flex justify-between mb-3">
 					<div className="flex flex-col">
 						<span style={{ color: "#515B6E", fontSize: "14px" }}>Price</span>
@@ -164,7 +295,6 @@ const OrderHistory = () => {
 					</div>
 				</div>
 
-				{/* Fourth row - CounterParty and Date */}
 				<div className="flex justify-between">
 					<div className="flex flex-col">
 						<span style={{ color: "#515B6E", fontSize: "14px" }}>
@@ -184,7 +314,6 @@ const OrderHistory = () => {
 	const renderOrdersTable = () => {
 		return (
 			<>
-				{/* Desktop table view */}
 				<div className="hidden md:block">
 					<table className="table-auto w-full text-[#515B6E] text-sm">
 						<thead className="text-justify">
@@ -207,8 +336,7 @@ const OrderHistory = () => {
 									</td>
 								</tr>
 							) : (
-								orders.map((order, index) => {
-									// Format date if available
+								sortedAndFilteredOrders.map((order, index) => {
 									const formattedDate = order.createdAt
 										? new Date(order.createdAt).toLocaleString("en-US", {
 												month: "2-digit",
@@ -274,15 +402,14 @@ const OrderHistory = () => {
 					</table>
 				</div>
 
-				{/* Mobile card view */}
 				<div className="md:hidden">
 					{loading ? (
 						<div className="flex justify-center items-center h-40">
 							<p className="text-gray-500">Loading orders...</p>
 						</div>
-					) : orders.length > 0 ? (
+					) : sortedAndFilteredOrders.length > 0 ? (
 						<div className="rounded overflow-hidden">
-							{orders.map((order, index) => (
+							{sortedAndFilteredOrders.map((order, index) => (
 								<MobileOrderRow key={index} order={order} index={index} />
 							))}
 						</div>
@@ -309,51 +436,45 @@ const OrderHistory = () => {
 				<div className="flex flex-wrap items-end gap-4">
 					<div className="xl:w-40 lg:w-28 md:w-24">
 						<MultiSelectDropDown
-							parentId=""
 							title="All"
-							choices={assets}
-							handleChange={(e) => console.log(e)}
+							choices={getUniqueAssets()}
+							handleChange={handleAssetChange}
 							label="Assets"
-							error={undefined}
-							touched={undefined}
+							error={null}
+							touched={false}
 						/>
 					</div>
 					<div className="xl:w-40 lg:w-28 md:w-24">
 						<MultiSelectDropDown
-							parentId=""
 							title="All"
-							choices={types}
-							handleChange={(e) => console.log(e)}
+							choices={getTypeOptions()}
+							handleChange={handleTypeChange}
 							label="Type"
-							error={undefined}
-							touched={undefined}
+							error={null}
+							touched={false}
 						/>
 					</div>
 					<div className="xl:w-80 lg:w-72 md:w-64">
 						<SearchInput
 							placeholder="Search by ref. or counterparty"
-							handleChange={(e) => console.log(e)}
+							value={searchTerm}
+							handleChange={handleSearchChange}
 						/>
 					</div>
 					<div className="w-48">
 						<DateInput
-							label="Date Range"
-							handleChange={(e) => console.log(e)}
-							title="Date Range"
-							name="Date Range"
-							error={undefined}
-							touched={undefined}
+							title="Filter by Date"
+							name="Date"
+							handleChange={handleDateChange}
 						/>
 					</div>
 					<div className="xl:w-40 lg:w-28 md:w-24">
 						<MultiSelectDropDown
-							parentId=""
 							title="Sort By"
-							choices={sortOptions}
-							handleChange={(e) => console.log(e)}
-							label="sort"
-							error={undefined}
-							touched={undefined}
+							choices={getSortOptions()}
+							handleChange={handleSortChange}
+							error={null}
+							touched={false}
 						/>
 					</div>
 				</div>
@@ -378,7 +499,11 @@ const OrderHistory = () => {
 				</button>
 			</div>
 
-			{!loading && orders.length < 1 ? <Empty /> : renderOrdersTable()}
+			{!loading && sortedAndFilteredOrders.length < 1 ? (
+				<Empty />
+			) : (
+				renderOrdersTable()
+			)}
 		</div>
 	);
 };

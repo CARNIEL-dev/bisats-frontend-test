@@ -4,7 +4,7 @@ import Label from "./Label";
 interface TDateType {
     parentId?: string;
     title: string;
-    label: string;
+    label?: string;
     name: string;
     error?: string | undefined | null,
     touched?: boolean | string| undefined
