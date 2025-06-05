@@ -18,7 +18,7 @@ const MobileP2PMP: React.FC<TableProps> = ({ data, type }) => {
 					style={rowIndex % 2 === 0 ? {} : { backgroundColor: "#F9F9FB" }}
 					className="p-2 w-full"
 				>
-					<div className="flex items-center justify-between py-4">
+					<div className="flex items-start justify-between py-4">
 						<div className="space-x-2">
 							<div className="flex items-center space-x-2">
 								<div
@@ -28,13 +28,13 @@ const MobileP2PMP: React.FC<TableProps> = ({ data, type }) => {
 											: "bg-[#FEF2F2] text-[#B91C1B]"
 									}`}
 								>
-									{row.user.firstName?.charAt(0)?.toUpperCase() || "?"}
+									{row.user.userName?.charAt(0)?.toUpperCase() || "?"}
 								</div>
 								<span className="text-[14px] font-[600] text-[#515B6E]">
-									{row.user.firstName} {row.user.lastName}
+									{row.user.userName}
 								</span>
 							</div>
-							<div className="flex items-center space-x-2">
+							<div className="flex flex-col items-start mt-2 ">
 								<span className="text-[#515B6E] text-[12px] font-[600]">
 									Unit Price
 								</span>
@@ -47,7 +47,7 @@ const MobileP2PMP: React.FC<TableProps> = ({ data, type }) => {
 									{row?.asset}
 								</span>
 							</div>
-							<div className="flex items-center space-x-2">
+							<div className="flex flex-col items-start mt-2 ">
 								<span className="text-[#515B6E] text-[12px] font-[600]">
 									Available/Limits
 								</span>
@@ -59,7 +59,7 @@ const MobileP2PMP: React.FC<TableProps> = ({ data, type }) => {
 						</div>
 
 						<div className="flex flex-col items-end justify-between">
-							<span className="text-[#515B6E] text-[14px] font-[600] text-end">
+							<span className="text-[#515B6E] text-[14px] font-[600] text-end mb-3">
 								₦ {formatNumber(row?.price)}
 							</span>
 							<Link
@@ -73,7 +73,7 @@ const MobileP2PMP: React.FC<TableProps> = ({ data, type }) => {
 								<PrimaryButton
 									text={type}
 									loading={false}
-									css="text-[14px] px-[22px] py-[6px] font-[600]"
+									css="text-[14px] px-[30px] py-[1px] font-[600]"
 								/>
 							</Link>
 						</div>

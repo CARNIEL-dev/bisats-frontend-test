@@ -58,6 +58,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage,wallet }) => {
 
    
     const calculateDisplayWalletBallance = useMemo(() => {
+        console.log(adType)
         if (adType.toLowerCase() === "buy") {
             return `${formatNumber(walletData?.xNGN)} xNGN`
         } else {
@@ -100,7 +101,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage,wallet }) => {
                     touched={formik.values.type.toLowerCase() === "buy" ? formik.touched.amount : formik.touched.amountToken}
                     maxFnc={() =>
                         formik.values.type.toLowerCase() === "buy" ? formik.setFieldValue('amount', walletData?.xNGN === '' ? 0 : Number(walletData?.xNGN)) :
-                        formik.setFieldValue('amountToken', walletData?.token === '' ? 0 : Number(walletData?.token))}
+                            formik.setFieldValue('amountToken', walletData?.token === '' ? 0 : Number(walletData?.[token]))}
                     onChange={(e) => {
                         const value = e.target.value;
                         if (/^\d*$/.test(value)) {
@@ -114,7 +115,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage,wallet }) => {
 
             <div className="mb-4">
                 <p className="mb-3 text-[#515B6E] font-semibold text-sm">Limits (in NGN)</p>
-                <div className="flex justify-between mb-[1px]">
+                <div className="flex flex-col lg:flex-wrap   justify-between mb-[1px]">
                     <PrimaryInput
                         css="w-[98%] p-2.5 mr-1"
                         label={`Minimum (xNGN${formik.values.type === "buy" ? formatNumber(userTransactionLimits?.lower_limit_buy_ad) : formatNumber(userTransactionLimits?.lower_limit_sell_ad)})`}

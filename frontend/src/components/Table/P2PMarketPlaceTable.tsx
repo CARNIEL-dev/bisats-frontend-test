@@ -48,15 +48,15 @@ const P2PMPTable: React.FC<TableProps> = ({ fields, data, type }) => {
 						>
 							<td className={"text-left px-4 py-2 h-[96px] flex items-center"}>
 								<div
-									className={`rounded-full w-[32px] h-[32px] mr-2 flex items-center justify-center font-[600] text-[14px]  ${
+									className={`rounded-full w-[52px] h-[52px] mr-2 flex items-center justify-center font-[600] text-[16px]  ${
 										row.orderType === "buy"
 											? "text-[#17A34A] bg-[#F5FEF8]"
 											: "bg-[#FEF2F2] text-[#B91C1B]"
 									}`}
 								>
-									{row.user.firstName?.charAt(0)?.toUpperCase() || "?"}
+									{row.user.userName?.charAt(0)?.toUpperCase() || "?"}
 								</div>
-								{row.user.firstName} {row.user.lastName}
+								{row.user.userName}
 							</td>
 							<td className={"text-left px-4 py-2 h-[96px]"}>
 								NGN {formatNumber(row?.price)}

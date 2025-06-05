@@ -133,12 +133,12 @@ const CreateAd = () => {
               }),
         amountToken: Yup.number()
             .min(1, 'Token amount must be greater than 0')
+
             .when(['asset'], (assetValue, schema) => {
                 // Safely type asset as one of the known keys
                 const asset = assetValue as unknown as keyof typeof toke_100_ngn;
 
                 const maxAmount = toke_100_ngn?.[asset] ?? 0;;
-                console.log(maxAmount)
                 return schema.max(
                     maxAmount,
                     `Amount must not exceed ₦100,000,000 worth of ${asset}`
@@ -148,14 +148,17 @@ const CreateAd = () => {
                 is: (val: string) => val?.toLowerCase() === 'sell',
                 then: schema => schema.required('Token amount is required'),
                 otherwise: schema => schema.notRequired(),
-              })
+            })
             .test(
                 'max-wallet-balance',
                 'Amount cannot exceed your current wallet balance',
                 function (value) {
+                    console.log(value, calculateDisplayWalletBallance)
+                    if (typeof value !== 'number') return false;
                     return value !== undefined && value <= calculateDisplayWalletBallance;
                 }
-            ),
+            )
+,
     
         minimumLimit: Yup.number()
             .min(15000, 'Minimum must be greater than 15,000 xNGN')
@@ -256,8 +259,9 @@ const CreateAd = () => {
         if (formik.values.type.toLowerCase() === "buy") {
             return walletData?.xNGN;
         } else {
-            return walletData ? walletData[formik.values.asset] : 0;
+            return walletData ? walletData?.[formik.values.asset] : 0;
         }
+
     }, [walletData, formik.values.type, formik.values.asset]);
  
     
