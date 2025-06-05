@@ -47,7 +47,6 @@ const AdsTable: React.FC<AdsTableProps> = ({
 					orderTypeConfig[ad["type"] as keyof typeof orderTypeConfig];
 
 				if (!config) {
-					// Fallback for unknown order types
 					return (
 						<span className="text-[14px] text-[#515B6E] font-[600]">
 							{ad.type}

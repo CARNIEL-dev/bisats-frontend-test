@@ -1,4 +1,3 @@
-import { ToggleRight } from "lucide-react";
 import { PrimaryButton } from "../../../components/buttons/Buttons";
 import TableActionMenu from "../../../components/Modals/TableActionMenu";
 import { useNavigate } from "react-router-dom";
@@ -44,26 +43,20 @@ const MyAds = () => {
 				setLoading(true);
 
 				const response = await GetAds({ userId });
-				console.log("Ads response:", response);
 
 				if (response && response.status && response.data) {
-					console.log("Ads fetched successfully:", response.data);
 					if (Array.isArray(response.data) && response.data.length > 0) {
 						setAds(response.data);
 					} else {
-						console.log("Data array is empty");
 						setAds([]);
 					}
 				} else if (response && response.data) {
 					if (Array.isArray(response.data) && response.data.length > 0) {
-						console.log("Using data array from response:", response.data);
 						setAds(response.data);
 					} else {
-						console.log("No valid data in response");
 						setAds([]);
 					}
 				} else {
-					console.log("No ads found or invalid response format");
 					setAds([]);
 				}
 			} catch (error) {
@@ -77,15 +70,11 @@ const MyAds = () => {
 		fetchAds();
 	}, [userId]);
 
-	// Function to update ad status
 	const updateAdStatus = async (adId: string, newStatus: string) => {
-		console.log("🔄 Starting updateAdStatus:", { adId, newStatus });
 		setUpdatingAdId(adId);
 
 		try {
 			const endpoint = `/api/v1/user/${userId}/ads/${adId}/update-ads-status`;
-
-			console.log("Updating ad status:", { adId, newStatus, endpoint });
 
 			const response = await Bisatsfetch(endpoint, {
 				method: "PUT",
@@ -97,18 +86,13 @@ const MyAds = () => {
 				}),
 			});
 
-			console.log("Update status response:", response);
-
 			if (response.status) {
-				// Update the local state to reflect the change
 				setAds((prevAds) =>
 					prevAds.map((ad) =>
 						ad.id === adId ? { ...ad, status: newStatus } : ad
 					)
 				);
-				console.log("✅ Ad status updated successfully");
 			} else {
-				console.error("❌ Failed to update ad status:", response.message);
 				alert(response.message || "Failed to update ad status");
 			}
 		} catch (err) {
@@ -119,27 +103,21 @@ const MyAds = () => {
 		}
 	};
 
-	// Handle toggle switch click
 	const handleStatusToggle = (ad: IAd) => {
 		if (!ad.id) {
 			console.error("Ad ID is missing");
 			return;
 		}
 
-		console.log(
-			"🎯 Switch clicked for ad:",
-			ad.id,
-			"current status:",
-			ad.status
-		);
 		const newStatus =
 			ad.status.toLowerCase() === "active" ? "disabled" : "active";
-		console.log("🔀 Toggling to new status:", newStatus);
 		updateAdStatus(ad.id, newStatus);
 	};
 
-	// Updated filtering logic - Active ads include both active and disabled (user-created ads)
-	// Only permanently closed/completed ads go to closed section
+	const handleCloseAd = (adId: string) => {
+		updateAdStatus(adId, "closed");
+	};
+
 	const activeAds = ads.filter((ad) => {
 		const status = ad.status.toLowerCase();
 		return status === "active" || status === "disabled" || status === "open";
@@ -159,7 +137,6 @@ const MyAds = () => {
 		return new Intl.NumberFormat("en-US").format(price);
 	};
 
-	// Helper function to get status display text and color
 	const getStatusInfo = (status: string) => {
 		const statusLower = status.toLowerCase();
 		if (statusLower === "active" || statusLower === "open") {
@@ -171,7 +148,6 @@ const MyAds = () => {
 		}
 	};
 
-	// Mobile row renderer component for both tables
 	const MobileAdRow = ({
 		ad,
 		index,
@@ -195,7 +171,6 @@ const MyAds = () => {
 					index % 2 === 0 ? "bg-white" : "bg-[#F9F9FB]"
 				}`}
 			>
-				{/* First row - Type and Asset */}
 				<div className="flex justify-between mb-3">
 					<div className="flex flex-col">
 						<span style={{ color: "#515B6E", fontSize: "14px" }}>Type</span>
@@ -216,7 +191,6 @@ const MyAds = () => {
 					</div>
 				</div>
 
-				{/* Second row - Price and Price Type */}
 				<div className="flex justify-between mb-3">
 					<div className="flex flex-col">
 						<span style={{ color: "#515B6E", fontSize: "14px" }}>Price</span>
@@ -230,7 +204,6 @@ const MyAds = () => {
 					</div>
 				</div>
 
-				{/* Third row - Amount Filled and Status */}
 				<div className="flex justify-between mb-3">
 					<div className="flex flex-col">
 						<span style={{ color: "#515B6E", fontSize: "14px" }}>
@@ -260,12 +233,15 @@ const MyAds = () => {
 					</div>
 				</div>
 
-				{/* Fourth row - Action */}
 				<div className="flex flex-col justify-between items-end">
 					<span style={{ color: "#515B6E", fontSize: "14px" }} className="mr-2">
 						Action
 					</span>
-					<TableActionMenu adDetail={ad} />
+					<TableActionMenu
+						adDetail={ad}
+						onCloseAd={handleCloseAd}
+						isUpdating={updatingAdId === ad.id}
+					/>
 				</div>
 			</div>
 		);
@@ -295,7 +271,6 @@ const MyAds = () => {
 				</div>
 			</div>
 
-			{/* Active Ads Section */}
 			<div>
 				<div className="min-h-[288px] w-full">
 					<div className="mb-[12px]">
@@ -318,7 +293,6 @@ const MyAds = () => {
 						</div>
 					) : activeAds.length > 0 ? (
 						<>
-							{/* Desktop version of the table - hidden on mobile */}
 							<div className="hidden md:block">
 								<table
 									className="table-auto w-full"
@@ -397,7 +371,11 @@ const MyAds = () => {
 														</div>
 													</td>
 													<td className="text-right px-4 py-3 relative">
-														<TableActionMenu adDetail={ad} />
+														<TableActionMenu
+															adDetail={ad}
+															onCloseAd={handleCloseAd}
+															isUpdating={updatingAdId === ad.id}
+														/>
 													</td>
 												</tr>
 											);
@@ -406,7 +384,6 @@ const MyAds = () => {
 								</table>
 							</div>
 
-							{/* Mobile version - shown only on mobile */}
 							<div className="md:hidden">
 								<div className="rounded overflow-hidden">
 									{activeAds.map((ad, index) => (
@@ -426,7 +403,6 @@ const MyAds = () => {
 				</div>
 			</div>
 
-			{/* Closed Ads Section */}
 			<div>
 				<div className="min-h-[288px]">
 					<div className="mb-[12px]">
@@ -449,7 +425,6 @@ const MyAds = () => {
 						</div>
 					) : closedAds.length > 0 ? (
 						<>
-							{/* Desktop version of the table - hidden on mobile */}
 							<div className="hidden md:block">
 								<table
 									className="table-auto w-full"
@@ -504,7 +479,11 @@ const MyAds = () => {
 														{statusInfo.text}
 													</td>
 													<td className="text-right px-4 py-3 relative">
-														<TableActionMenu adDetail={ad} />
+														<TableActionMenu
+															adDetail={ad}
+															onCloseAd={handleCloseAd}
+															isUpdating={updatingAdId === ad.id}
+														/>
 													</td>
 												</tr>
 											);
@@ -513,7 +492,6 @@ const MyAds = () => {
 								</table>
 							</div>
 
-							{/* Mobile version - shown only on mobile */}
 							<div className="md:hidden">
 								<div className="rounded overflow-hidden">
 									{closedAds.map((ad, index) => (
