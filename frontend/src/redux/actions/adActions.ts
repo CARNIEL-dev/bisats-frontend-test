@@ -3,6 +3,8 @@
 import { AdActionTypes } from "../types";
 import { Dispatch } from "redux";
 import Bisatsfetch from "../fetchWrapper";
+import { TCreateAdsRequest, TUpdateAdsRequest } from "../../types/wallet";
+import { BACKEND_URLS } from "../../utils/backendUrls";
 
 export interface IAd {
 	id?: string;
@@ -83,3 +85,24 @@ export const GetAds = async (payload: { userId: string }) => {
 		return error;
 	}
 };
+
+
+export const UpdateAd = async (
+  payload: TUpdateAdsRequest
+) => {
+  try {
+	const response = await Bisatsfetch(
+    `/api/v1/user/${payload.userId}/ads/${payload?.adId}/update-ads`,
+    {
+      method: "PUT",
+      body: JSON.stringify(payload),
+    }
+  );
+	const data = response;
+	console.log(data);
+	return data;
+  } catch (error) {
+	// throw handleApiError(error);
+	return error;
+  }
+}

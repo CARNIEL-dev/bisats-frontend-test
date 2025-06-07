@@ -224,9 +224,7 @@ const Swap = ({ type, adDetail }: { type: "buy" | "sell", adDetail?: AdSchema | 
     // }, [adDetail?.orderType, adDetail?.price, otherAmount])
     useEffect(() => {
         const price = adDetail?.price ?? 0;
-
         if (!price) return;
-
         const amt = parseFloat(amount);
         const oth = parseFloat(otherAmount);
 
@@ -243,7 +241,7 @@ const Swap = ({ type, adDetail }: { type: "buy" | "sell", adDetail?: AdSchema | 
                 setAmount((oth / price).toFixed(2));
             }
         }
-    }, [amount, otherAmount, adDetail?.orderType, adDetail?.price, focusedField]);
+    }, [amount, otherAmount, adDetail?.orderType, adDetail?.price, focusedField, setAmount,setOtherAmount]);
       
     const sellError = useMemo(() => {
         if (((adDetail?.minimumLimit??0)/(adDetail?.price ?? 0)) > Number(amount)) return "Not within Limit"
@@ -304,7 +302,8 @@ const Swap = ({ type, adDetail }: { type: "buy" | "sell", adDetail?: AdSchema | 
                                 value={amount}
                                 onFocus={() => setFocusedField("amount")}
                                 onChange={(e) => setAmount(e.target.value)}
-                                maxFnc={() => setAmount(`${adDetail?.maximumLimit ?? 0}`)} touched={undefined}                            />
+                                maxFnc={() => setAmount(`${adDetail?.maximumLimit ?? 0}`)}
+                                touched={undefined} />
                             <div className='absolute right-3 top-10'>
 
                                 <button
@@ -341,6 +340,7 @@ const Swap = ({ type, adDetail }: { type: "buy" | "sell", adDetail?: AdSchema | 
                                 css="w-full h-[64px]"
                                 label="You’ll receive at least"
                                 value={otherAmount}
+                                maxFnc={() => setOtherAmount(`${adDetail?.amountAvailable}`)}
                                 onFocus={() => setFocusedField("otherAmount")}
                                 onChange={(e) => setOtherAmount(e.target.value)} error={undefined}
                                 touched={undefined} />
@@ -370,6 +370,8 @@ const Swap = ({ type, adDetail }: { type: "buy" | "sell", adDetail?: AdSchema | 
                                 error={sellError}
                                 touched={undefined}
                                 value={amount}
+                                onFocus={() => setFocusedField("amount")}
+
                                 onChange={handleAmountChange}
                                 maxFnc={()=>setAmount(`${Number(adDetail?.amount??0)/Number(adDetail?.price??0)}`)}
                             
@@ -407,10 +409,10 @@ const Swap = ({ type, adDetail }: { type: "buy" | "sell", adDetail?: AdSchema | 
                                 css="w-full h-[64px]"
                                 label="You’ll receive at least"
                                 value={otherAmount}
+                                maxFnc={()=>setOtherAmount(`${(adDetail?.amountAvailable??0)}`)}
                                 onFocus={() => setFocusedField("otherAmount")}
                                 onChange={(e) => setOtherAmount(e.target.value)} error={undefined} touched={undefined}                            />
                             <div className='absolute right-3 top-10'>
-
                                 <button
 
                                     className={`text-[#515B6E] p-2.5 px-4 bg-gradient-to-r from-[#FFFFFF] to-[#EEEFF2] border border-[#E2E4E8] h-[48px] rounded-[8px] rounded inline-flex items-center w-[120px] flex justify-between font-[600] text-[14px] leading-[24px] `}
@@ -455,7 +457,7 @@ const Swap = ({ type, adDetail }: { type: "buy" | "sell", adDetail?: AdSchema | 
                     close={() => setShowConfirmation(false)}
                     type={adDetail?.orderType === "buy" ? typeofSwam.Buy : typeofSwam.Sell}
                     amount={amount}
-                    receiveAmount={amount??"0"}
+                    receiveAmount={otherAmount ??"0"}
                     fee={calculateFee()}
                     token={adDetail?.orderType === "buy" ? "xNGN" : adDetail?.asset}
                     currency={getCurrencyName()}

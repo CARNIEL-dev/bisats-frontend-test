@@ -100,6 +100,27 @@ export type TCreateAdsRequest = {
   priceLowerLimit: number;
 };
 
+export type TUpdateAdsRequest = {
+  userId: string;
+  adId: string;
+  // asset: string;
+  // type: string;
+  amount: number;
+  minimumLimit: number;
+  maximumLimit: number;
+  expiryDate: string;
+  priceType: string;
+  price: number;
+  priceMargin?: number;
+  priceUpperLimit?: number;
+  priceLowerLimit?: number;
+
+  
+  // "price": 1600,
+
+};
+
+
 export type T2FARequest = { 
     "userId": string, 
     "code": string,

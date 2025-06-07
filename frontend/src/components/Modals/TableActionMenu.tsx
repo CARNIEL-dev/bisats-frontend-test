@@ -10,14 +10,18 @@ export interface IAd {
 	currency?: string;
 	priceMargin: number;
 	asset: string;
-	amount?: number;
+  amount?: number;
+  amountAvailable?: number;
 	amountFilled: number;
 	price: number;
 	status: string;
 	createdAt?: string;
   closedAt?: string;
+  expiryDate?: string;
   minimumLimit?: string,
-  maximumLiit?:string
+  maximumLimit?: string,
+  priceUpperLimit?:string ,
+  priceLowerLimit?: string,
 }
 
 interface TableActionMenuProps {
@@ -116,7 +120,8 @@ const TableActionMenu = ({
       {showEdit && (
         <EditAd
           close={() => setShowEdit(false)}
-        // ad={{price:adDetail?.price, amount:adDetail?.amount??"",id:adDetail?.id??"",asset:adDetail?.asset, type:adDetail?.type,minimumLimit:adDetail?.minimumLimit??"0", maximumLimit:adDetail?.maximumLiit??"0"}}
+          ad={adDetail}
+        // ad={price: adDetail?.price amount:adDetail?.amount??"",id:adDetail?.id??"",asset:adDetail?.asset, type:adDetail?.type,minimumLimit:adDetail?.minimumLimit??"0", maximumLimit:adDetail?.maximumLiit??"0"}
         />
       )}
 		</>

@@ -579,7 +579,7 @@ export const UPDATE_PIN = async (payload: TPinRequest) => {
     const response = await Bisatsfetch(
       `/api/v1/user/${payload.userId}${BACKEND_URLS.AUTH.UPDATE_PIN}`,
       {
-        method: "POST",
+        method: "PUT",
         body: JSON.stringify({
           oldPin:payload.oldPin,
           newPin: payload.pin,

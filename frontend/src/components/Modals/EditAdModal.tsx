@@ -7,21 +7,27 @@ import { UserState } from "../../redux/reducers/userSlice";
 import Toast from "../Toast";
 import { useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
-import { Info } from "lucide-react";
+import { Info, TriangleAlert } from "lucide-react";
 import { formatNumber } from "../../utils/numberFormat";
 import { AccountLevel, bisats_limit } from "../../utils/transaction_limits";
 import * as Yup from 'yup'
 import { WalletState } from "../../redux/reducers/walletSlice";
+import { IAd } from "./TableActionMenu";
+import { UpdateAd } from "../../redux/actions/adActions";
+import { APP_ROUTES } from "../../constants/app_route";
 
 interface Props {
     close: () => void;
-    ad?: { id: string; price: string; type: string; asset: string; amount: string; minimumLimit: string; maximumLimit: string; }
+    ad?:IAd
+    // ad?: { id: string; price: string; type: string; asset: string; amount: string; minimumLimit: string; maximumLimit: string; }
 }
 
 
 type TEditAd = {
     minimumLimit: string,
     maximumLimit: string,
+    priceUpperLimit: string,
+    priceLowerLimit: string,
     amount: string,
     price: string,
     agree?: boolean
@@ -31,20 +37,22 @@ type TEditAd = {
 
 
 const EditAd: React.FC<Props> = ({ close, ad }) => {
-    const [amount, setAmount] = useState(ad?.amount)
-    const [price, setPrice] = useState(ad?.price)
+    const [amount, setAmount] = useState(`${ad?.amount}`)
+    const [price, setPrice] = useState(`${ad?.price}`)
+    console.log(ad)
 
     const [minimumLimit, setMinimumLimit] = useState(ad?.minimumLimit)
 
     const [maximumLimit, setMaximumLimit] = useState(ad?.maximumLimit)
 
     const initialAd: TEditAd = {
-
-        amount: ad?.amount??"0",
-        price: ad?.price??"0",
+        amount: `${ad?.amount}`,
+        price: `${ad?.price}`,
         minimumLimit: ad?.minimumLimit??"0",
-        maximumLimit: ad?.maximumLimit??"0",
-        agree: false
+        maximumLimit: ad?.maximumLimit ?? "0",
+        priceUpperLimit: ad?.priceUpperLimit??"0",
+        priceLowerLimit: ad?.priceLowerLimit??"0",
+        
     }
     const navigate= useNavigate()
     const walletState: WalletState = useSelector((state: any) => state.wallet);
@@ -99,7 +107,18 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
                 .min(15000, 'Maximum must be greater than Minimum')
                 .max(23000000, 'Price must not exceed 23,000,000 xNGN').required(),
     
-    
+      priceLowerLimit: Yup.number()
+                .min(1, 'Lower Price Limit must be greater than 0')
+                // .when('price', (price, schema) =>
+                //     schema.max(Number(price), 'Lower price must be less than or equal to amount')
+                // )
+                .required('Lower price is required'),
+            priceUpperLimit: Yup.number()
+                .when(['priceLowerLimit', 'price'], ([priceLowerLimit, price], schema) =>
+                    schema
+                        .min(Number(priceLowerLimit) + 1, 'Upper price limit must be greater than minimum limit')
+                )
+                .required('Upper limit price is required'),
         });
     
 
@@ -114,38 +133,42 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
                 console.log(values);
     
     
-                if (!values.agree) {
-                    Toast.error("Agree to the terms of use", "Agree to the terms")
-                    return
-                }
 
                 setIsLoading(true);
     
-                // try {
-                //     const payload = {
-                //         userId: user?.userId??"",
-                //         amount: Number(values.amount),
-                //         minimumLimit: Number(values.minimumLimit),
-                //         maximumLimit: Number(values.maximumLimit),
-                //         price: Number(values.price),
+                try {
+                    const payload = {
+                        userId: user?.userId ?? "",
+                        adId:ad?.id??"",
+                        amount: Number(values.amount),
+                        minimumLimit: Number(values.minimumLimit),
+                        maximumLimit: Number(values.maximumLimit),
+                        price: Number(values.price),
+                        expiryDate: ad?.expiryDate ??"",
+                        priceType: ad?.priceType??"",
+                        priceMargin: ad?.priceMargin,
+                        priceUpperLimit: Number(values?.priceUpperLimit),
+                        priceLowerLimit: Number(values?.priceLowerLimit)
                     
-    
+                    };
+
+                    // console.log(payload)
+                    const response = await UpdateAd(payload)
                     
-                //     };
-                //     const response = await console.log(payload)
-                //     if (response?.status) {
-                //         Toast.success(response?.message, "Add created");
-                //         navigate(APP_ROUTES.P2P.MY_ADS)
+                    if (response?.status) {
+                        Toast.success(response?.message, "Add Updated");
+                        close()
+                        navigate(APP_ROUTES.P2P.MY_ADS)
     
-                //     } else {
-                //         Toast.error(response.message, "Failed to create");
+                    } else {
+                        Toast.error(response.message, "Failed to update");
     
-                //     }
-                // } catch (error) {
-                //     Toast.error("Failed to create ad", "Error");
-                // } finally {
-                //     setIsLoading(false);
-                // }
+                    }
+                } catch (error) {
+                    Toast.error("Failed to create ad", "Error");
+                } finally {
+                    setIsLoading(false);
+                }
             },
      });
     
@@ -172,8 +195,8 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
                             <p className="text-[#424A59] font-[400] ">{ad?.type} Ad</p>
                             <p className="text-[#606C82]  font-[600]  text-right w-1/2 break-all ">NGN/{ad?.asset}</p>
                         </div>
-                        </div>
-                  
+                    </div>
+                     
 
                     <div className="my-3">
                         <PrimaryInput css={"w-full py-2 "} label={"Price"} error={undefined} touched={undefined}
@@ -182,13 +205,54 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
                                 // Allow only digits
                                 const numericValue = value.replace(/\D/g, '');
                                 setPrice(numericValue);
-                                formik.setFieldValue('amount', numericValue)
+                                formik.setFieldValue('price', numericValue)
 
                             }}
                             value={price}
                         />
 
+                    </div> <div className="mb-4">
+                        <div className="flex justify-between mb-[1px]">
+                            <PrimaryInput
+                                css="w-[98%] p-2.5 mr-1"
+                                label="Lower Price Limit"
+                                placeholder="0.00 xNGN"
+                                name="priceLowerLimit"
+                                error={formik.errors.priceLowerLimit}
+                                value={formik.values.priceLowerLimit}
+                                touched={formik.touched.priceLowerLimit}
+                                onChange={(e) => {
+                                    const value = e.target.value;
+
+                                    if (/^\d*$/.test(value)) {
+                                        formik.setFieldValue('priceLowerLimit', value === '' ? 0 : Number(value));
+                                    }
+                                }}
+                            />
+                            <PrimaryInput
+                                css="w-[100%] p-2.5"
+                                label="Upper price Limit"
+                                name="priceUpperLimit"
+                                placeholder="0.00 xNGN"
+                                error={formik.errors.priceUpperLimit}
+                                value={formik.values.priceUpperLimit}
+                                touched={formik.touched.priceUpperLimit}
+                                onChange={(e) => {
+                                    const value = e.target.value;
+                                    if (/^\d*$/.test(value)) {
+                                        formik.setFieldValue('priceUpperLimit', value === '' ? 0 : Number(value));
+                                    }
+                                }}
+                            />
+                        </div>
+                        <p>
+                            <TriangleAlert color="#F59E0C" size={12} className="inline mr-1" />
+                            <span className="text-[#515B6E] text-xs font-light">
+                                Your ad will be paused if the market price gets to these prices
+                            </span>
+                        </p>
                     </div>
+
                     <div className="my-3">
                         <PrimaryInput css={"w-full py-2 "} label={"Amount"} error={undefined} touched={undefined}
                             onChange={(e) => {
@@ -231,7 +295,7 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
                         error={formik.errors.maximumLimit}
                         value={formik.values.maximumLimit}
                         touched={formik.touched.maximumLimit}
-                        maxFnc={() => formik.setFieldValue('maximumLimit', userTransactionLimits?.upper_limit_buy_ad)}
+                                maxFnc={() => formik.setFieldValue('maximumLimit', ad?.type === "buy" ? ad?.amountAvailable : Number(ad?.amountFilled) * Number(ad?.price))}
                         onChange={(e) => {
                             const value = e.target.value;
                             if (/^\d*$/.test(value)) {

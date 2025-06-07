@@ -25,7 +25,7 @@ export const BACKEND_URLS = {
     RESEND_PHONE_OTP: "/resend-phone-verification-otp",
 
     GET_ACTIVITY_SUMMARY: "/profile/activity-summary",
-    GET_WITHDRAWAL_LIMIT:"/get-withdrawal-limits",
+    GET_WITHDRAWAL_LIMIT: "/get-withdrawal-limits",
 
     SET_PIN: "/wallet/set-pin",
     UPDATE_PIN: "/wallet/change-pin",
@@ -69,6 +69,7 @@ export const BACKEND_URLS = {
   P2P: {
     ADS: {
       CREATE: "/ads/create",
+      // UPDATE: "/ads/create",
       GET_ALL: "/ads/get-user-ads",
       GET_BY_ID: "/ads/:adsId/get-user-ads-by-id",
       GET_ORDER: "/ads/:adsId/get-user-ads-order",

@@ -153,7 +153,6 @@ const CreateAd = () => {
                 'max-wallet-balance',
                 'Amount cannot exceed your current wallet balance',
                 function (value) {
-                    console.log(value, calculateDisplayWalletBallance)
                     if (typeof value !== 'number') return false;
                     return value !== undefined && value <= calculateDisplayWalletBallance;
                 }
@@ -276,11 +275,13 @@ const CreateAd = () => {
                     <form  className="mt-5">
                         {
                             stage === "details" ? (
-                                <CreateAdDetails formik={formik} setStage={setStage} wallet={walletState} />
-                            ) : (
-                                stage === "pricing" ? (
-                                    <CreateAdPricing formik={formik} setStage={setStage} liveRate={tokenLivePrices} wallet={walletState} />
-                                ) : (
+                                <CreateAdDetails formik={formik} setStage={setStage} wallet={walletState} liveRate={tokenLivePrices} />
+                            )
+                                // : (
+                                // stage === "pricing" ? (
+                                //     <CreateAdPricing formik={formik} setStage={setStage} liveRate={tokenLivePrices} wallet={walletState} />
+                                //     )
+                                        : (
                                     <>
                                         <AdReview formik={formik} setStage={setStage} />
                                                 <PrimaryButton css="w-full disabled" type="button" text="PublishAd" loading={isLoading}
@@ -289,13 +290,13 @@ const CreateAd = () => {
                                                             ? AdSchema.omit(['amountToken'])
                                                             : AdSchema.omit(['amount']);
                                                         setCurrentSchema(newSchema);
-                                                        formik.validateForm(); // force validation with new schema
+                                                        formik.validateForm(); 
                                                         formik.handleSubmit();
                   }}
                                                 />
                                     </>
                                 )
-                            )
+                            
                         }
                     </form>}
         </div>

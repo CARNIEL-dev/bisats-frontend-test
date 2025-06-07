@@ -8,7 +8,7 @@ const ModalTemplate: React.FC<ModalProps> = ({ children, onClose }) => {
 	return (
 		<div
 			className="bg-[#0011404D] backdrop-blur-[2px] fixed top-0 bottom-0 left-0 h-full lg:h-[100vh] w-full flex justify-center items-center z-[60]"
-			onClick={onClose}
+			// onClick={onClose}
 		>
 			<div className="w-[85%] lg:w-[37%] rounded-[12px]  bg-[#fff] relative p-5">
 				<div

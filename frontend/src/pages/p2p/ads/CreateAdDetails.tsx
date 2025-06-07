@@ -1,4 +1,4 @@
-import { Info } from "lucide-react";
+import { Info, TriangleAlert } from "lucide-react";
 import { MultiSelectDropDown } from "../../../components/Inputs/MultiSelectInput";
 import PrimaryInput from "../../../components/Inputs/PrimaryInput";
 import TokenSelect from "../../../components/Inputs/TokenSelect";
@@ -14,10 +14,15 @@ import { useSelector } from "react-redux";
 import { formatNumber } from "../../../utils/numberFormat";
 // import DateInput from "../../../components/Inputs/DateInput";
 
-const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage,wallet }) => {
+const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage, wallet ,liveRate}) => {
+        const [pricingType, setPricingType] = useState("Static")
     const [adType, setAdType] = useState('Buy'); 
     const [token, setToken] = useState(''); 
 
+    const currency = [
+        { value: "NGN", label: "NGN" },
+ 
+    ];
     const loading = false;
     const walletData = wallet?.wallet
 
@@ -36,15 +41,15 @@ const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage,wallet }) => {
         try {
             let errors = await formik.validateForm();
             console.log('errors', errors)
-            const requiredFields = ["type", "asset", "amount", "minimumLimit", "maximumLimit", "expiryDate", "expiryTime"];
-            const requiredFieldsForToken = ["type", "asset", "amountToken", "minimumLimit", "maximumLimit", "expiryDate", "expiryTime"];
+            const requiredFields = ["type", "asset", "amount", "minimumLimit", "maximumLimit", "expiryDate", "expiryTime", "price", "priceLowerLimit", "priceUpperLimit"];
+            const requiredFieldsForToken = ["type", "asset", "amountToken", "minimumLimit", "maximumLimit", "expiryDate", "expiryTime", "price", "priceLowerLimit", "priceUpperLimit"];
 
             let updatedErrors = Object.keys(errors).filter(field => {
                 return formik.values.type.toLowerCase() === "buy" ? requiredFields.includes(field) : requiredFieldsForToken.includes(field);
             });
             console.log('errors', errors,updatedErrors)
             if (updatedErrors.length === 0) {
-                setStage("pricing");
+                setStage("review");
             } else {
                 Toast.error(`Please fill all required fields`, "ERROR");    
                 formik.values.type.toLowerCase() === "buy" ?
@@ -112,6 +117,78 @@ const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage,wallet }) => {
                 />
                 <p className="text-[#515B6E] text-xs font-light">Wallet Balance: { (calculateDisplayWalletBallance)}</p>
             </div>
+               <div className="flex mb-1">
+                            <div className="w-[90%] mr-1">
+                                <PrimaryInput
+                                    css="w-full p-2.5"
+                                    label={pricingType === "Static" ? "Price" : "Current Market Price"}
+                                    disabled={pricingType === "Static" ? false : true}
+                                    placeholder="0.00 xNGN"
+                                    name="price"
+                                    error={formik.errors.price}
+                                    value={pricingType === "Static" ?formik.values.price:liveRate?.xNGN}
+                                    touched={formik.touched.price}
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+                                        if (/^\d*$/.test(value)) {
+                                            formik.setFieldValue('price', value === '' ? 0 : Number(value));
+                                        }
+                                    }}
+                                />
+                            </div>
+                            <div className="w-[20%]">
+                                <MultiSelectDropDown
+                                    parentId=""
+                                    title="NGN"
+                                    choices={currency}
+                                    error={formik.errors.currency}
+                                    touched={formik.touched.currency}
+                                    label="Currency"
+                                    handleChange={(value) => formik.setFieldValue("currency", value)}
+                                />
+                            </div>
+            </div>
+             <div className="mb-4">
+                            <div className="flex justify-between mb-[1px]">
+                                <PrimaryInput
+                                    css="w-[98%] p-2.5 mr-1"
+                                    label="Lower Price Limit"
+                                    placeholder="0.00 xNGN"
+                                    name="priceLowerLimit"
+                                    error={formik.errors.priceLowerLimit}
+                                    value={formik.values.priceLowerLimit}
+                                    touched={formik.touched.priceLowerLimit}
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+            
+                                        if (/^\d*$/.test(value)) {
+                                            formik.setFieldValue('priceLowerLimit', value === '' ? 0 : Number(value));
+                                        }
+                                    }}
+                                />
+                                <PrimaryInput
+                                    css="w-[100%] p-2.5"
+                                    label="Upper price Limit"
+                                    name="priceUpperLimit"
+                                    placeholder="0.00 xNGN"
+                                    error={formik.errors.priceUpperLimit}
+                                    value={formik.values.priceUpperLimit}
+                                    touched={formik.touched.priceUpperLimit}
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+                                        if (/^\d*$/.test(value)) {
+                                            formik.setFieldValue('priceUpperLimit', value === '' ? 0 : Number(value));
+                                        }
+                                    }}
+                                />
+                            </div>
+                            <p>
+                                <TriangleAlert color="#F59E0C" size={12} className="inline mr-1" />
+                                <span className="text-[#515B6E] text-xs font-light">
+                                    Your ad will be paused if the market price gets to these prices
+                                </span>
+                            </p>
+                        </div>
 
             <div className="mb-4">
                 <p className="mb-3 text-[#515B6E] font-semibold text-sm">Limits (in NGN)</p>
@@ -142,7 +219,18 @@ const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage,wallet }) => {
                         error={formik.errors.maximumLimit}
                         value={formik.values.maximumLimit}
                         touched={formik.touched.maximumLimit}
-                        maxFnc={() => formik.setFieldValue('maximumLimit', userTransactionLimits?.upper_limit_buy_ad)}
+                        maxFnc={() =>
+                        {
+                            if (adType.toLowerCase()=== "sell") {
+                                console.log(formik.values.amountToken,formik.values.price)
+                               return formik.setFieldValue('maximumLimit', (Number(  formik.values.amountToken) * Number(formik.values.price)) >= userTransactionLimits?.upper_limit_buy_ad ? userTransactionLimits?.upper_limit_buy_ad : (Number(formik.values.amountToken) * Number(formik.values.price)))
+
+                            } else {
+                                return formik.setFieldValue('maximumLimit', (Number(formik.values.amount) >= userTransactionLimits?.upper_limit_buy_ad ? userTransactionLimits?.upper_limit_buy_ad : (Number(formik.values.amount))))
+                            }
+                        }
+                            
+                        }
                         onChange={(e) => {
                             const value = e.target.value;
                             if (/^\d*$/.test(value)) {
