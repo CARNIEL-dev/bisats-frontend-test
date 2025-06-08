@@ -16,6 +16,7 @@ import Bisatsfetch from '../../../redux/fetchWrapper'
 import { UserState } from '../../../redux/reducers/userSlice'
 import KycManager from '../../kyc/KYCManager'
 import { formatNumber } from '../../../utils/numberFormat'
+import { APP_ROUTES } from '../../../constants/app_route'
 // assets = isDev ? TestAssets : LiveAssets
 
 export const assetIndexMap: Record<string, number> = Object.values(assets).reduce((acc, asset, index) => {
@@ -140,6 +141,7 @@ const Swap = ({ type, adDetail }: { type: "buy" | "sell", adDetail?: AdSchema | 
 
                 // TODO: Show success notification
                 Toast.success(orderResult?.message, "Success");
+                navigate(APP_ROUTES.P2P.MARKETPLACE)
             } else {
                 Toast.error(orderResult?.message, "Failed");
             }

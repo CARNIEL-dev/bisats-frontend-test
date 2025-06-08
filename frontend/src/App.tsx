@@ -79,8 +79,8 @@ const App: React.FC = () => {
 					payload?.notification?.title ?? ""
 				);
 				rehydrateUser();
-        GetWallet();
-        GetNotification()
+                GetWallet();
+                GetNotification()
 
 			}
 			// You can show a toast or in-app notification here
