@@ -360,7 +360,7 @@ const OrderHistory = () => {
 											<td className="text-left px-4 py-4 font-semibold">
 												<span
 													style={
-														order.type?.toLowerCase() === "buy"
+														order.type?.toLowerCase() !== "buy"
 															? { color: "#DC2625" }
 															: { color: "#17A34A" }
 													}
@@ -377,7 +377,7 @@ const OrderHistory = () => {
 											</td>
 											<td className="text-left px-4 py-4">
 												{order.amount
-													? `${order.amount.toLocaleString()} ${order.asset}`
+													? `${order.amount.toLocaleString()} ${order.type?.toLowerCase() === "buy" ? "xNGN" : "xNGN"}`
 													: "N/A"}
 											</td>
 											<td className="text-right px-4 py-4">
@@ -387,7 +387,7 @@ const OrderHistory = () => {
 											</td>
 											<td className="text-right px-4 py-4">
 												{order.quantity
-													? `${order.quantity} ${order.asset}`
+													? `${order.quantity} ${order.type?.toLowerCase() !== "buy" ? order.asset : order.asset}`
 													: "N/A"}
 											</td>
 											<td className="text-right px-4 py-4">

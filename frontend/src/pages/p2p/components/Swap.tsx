@@ -299,10 +299,20 @@ const Swap = ({ type, adDetail }: { type: "buy" | "sell", adDetail?: AdSchema | 
                                 error={buyError}
                                 min={adDetail?.minimumLimit}
                                 max={adDetail?.maximumLimit}
-                                value={amount}
+                                format
+                                value={(amount)}
                                 onFocus={() => setFocusedField("amount")}
-                                onChange={(e) => setAmount(e.target.value)}
-                                maxFnc={() => setAmount(`${adDetail?.maximumLimit ?? 0}`)}
+                                onChange={(e) => {
+                                    const value = e.target.value;
+
+                                    // Allow only valid decimal numbers (e.g., "0", "0.", "0.2", ".2", "10.55")
+                                    const isValidDecimal = /^(\d+(\.\d*)?|\.\d+)?$/.test(value);
+
+                                    if (isValidDecimal) {
+                                        setAmount(value); // Keep it as a string
+                                    }
+                                }}
+                                                                  maxFnc={() => { setFocusedField("amount"); setAmount(`${adDetail?.maximumLimit ?? 0}`) }}
                                 touched={undefined} />
                             <div className='absolute right-3 top-10'>
 
@@ -323,7 +333,7 @@ const Swap = ({ type, adDetail }: { type: "buy" | "sell", adDetail?: AdSchema | 
                                 </button>
                                 {/* <CryptoFilter error={undefined} touched={undefined} handleChange={() => console.log("mms")} /> */}
                             </div>
-                            <small className='text-[#606C82] text-[12px] font-[400]'>Balance: {walletState?.wallet?.xNGN} xNGN</small>
+                            <small className='text-[#606C82] text-[12px] font-[400]'>Balance: {formatNumber(walletState?.wallet?.xNGN)} xNGN</small>
                         </div>
                         {/* <p className="text-[#FFCCCB] text-[12px] font-[400] mt-2">{amount></p> */}
 
@@ -340,9 +350,21 @@ const Swap = ({ type, adDetail }: { type: "buy" | "sell", adDetail?: AdSchema | 
                                 css="w-full h-[64px]"
                                 label="You’ll receive at least"
                                 value={otherAmount}
-                                maxFnc={() => setOtherAmount(`${adDetail?.amountAvailable}`)}
+                                format
+
+                                maxFnc={() => { setFocusedField("otherAmount"); setOtherAmount(`${(Number(adDetail?.maximumLimit)/Number(adDetail?.price))}`) }}
                                 onFocus={() => setFocusedField("otherAmount")}
-                                onChange={(e) => setOtherAmount(e.target.value)} error={undefined}
+                                onChange={(e) => {
+                                    const value = e.target.value;
+
+                                    // Allow only valid decimal numbers (e.g., "0", "0.", "0.2", ".2", "10.55")
+                                    const isValidDecimal = /^(\d+(\.\d*)?|\.\d+)?$/.test(value);
+
+                                    if (isValidDecimal) {
+                                        setOtherAmount(value); // Keep it as a string
+                                    }
+                                }}
+                                                                  error={undefined}
                                 touched={undefined} />
                             <div className='absolute right-3 top-10'>
                                 <button
@@ -371,9 +393,15 @@ const Swap = ({ type, adDetail }: { type: "buy" | "sell", adDetail?: AdSchema | 
                                 touched={undefined}
                                 value={amount}
                                 onFocus={() => setFocusedField("amount")}
-
-                                onChange={handleAmountChange}
-                                maxFnc={()=>setAmount(`${Number(adDetail?.amount??0)/Number(adDetail?.price??0)}`)}
+                                format
+                                onChange={(e) => {
+                                    const value = e.target.value;
+                                    const isValidDecimal = /^(\d+(\.\d*)?|\.\d+)?$/.test(value);
+                                    if (isValidDecimal) {
+                                        setAmount(value); // Keep it as a string
+                                    }
+                                }}
+                                maxFnc={() => { setFocusedField("amount"); setAmount(`${(Number(adDetail?.maximumLimit) / Number(adDetail?.price)) }`) }}
                             
                             />
                             
@@ -409,9 +437,18 @@ const Swap = ({ type, adDetail }: { type: "buy" | "sell", adDetail?: AdSchema | 
                                 css="w-full h-[64px]"
                                 label="You’ll receive at least"
                                 value={otherAmount}
-                                maxFnc={()=>setOtherAmount(`${(adDetail?.amountAvailable??0)}`)}
-                                onFocus={() => setFocusedField("otherAmount")}
-                                onChange={(e) => setOtherAmount(e.target.value)} error={undefined} touched={undefined}                            />
+                                maxFnc={() => { setFocusedField("otherAmount"); setOtherAmount(`${(adDetail?.maximumLimit ?? 0)}`) }}
+                                onFocus={() => { setFocusedField("otherAmount") }}
+
+                                format
+                                onChange={(e) => {
+                                    const value = e.target.value;
+                                    const isValidDecimal = /^(\d+(\.\d*)?|\.\d+)?$/.test(value);
+                                    if (isValidDecimal) {
+                                        setOtherAmount(value); // Keep it as a string
+                                    }
+                                }}
+                                                                  error={undefined} touched={undefined} />
                             <div className='absolute right-3 top-10'>
                                 <button
 

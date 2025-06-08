@@ -1,5 +1,6 @@
-import { InputHTMLAttributes } from "react";
+import { InputHTMLAttributes, useState } from "react";
 import Label from "./Label";
+import { formatNumber } from "../../utils/numberFormat";
 
 
 interface TInput extends InputHTMLAttributes<HTMLInputElement> {
@@ -7,10 +8,36 @@ interface TInput extends InputHTMLAttributes<HTMLInputElement> {
     label: string,
     error: string | undefined | null|boolean,
     touched: boolean | undefined,
-    info?: string
+    info?: string,
+    format?:boolean,
     maxFnc?:()=>void
 }
-const PrimaryInput: React.FC<TInput> = ({ css, label, error, touched, info,maxFnc, ...props }) => {
+const PrimaryInput: React.FC<TInput> = ({ css, label, error, touched, info, maxFnc, onBlur,
+    onFocus, format, ...props }) => {
+
+    const [isFocused, setIsFocused] = useState(false);
+
+    const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+        setIsFocused(false);
+        onBlur?.(e);
+    };
+
+    const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+        setIsFocused(true);
+        onFocus?.(e);
+    };
+
+    const displayValue =
+        format && !isFocused && typeof props.value === "string"
+            ? formatNumberInput(props.value)
+            : props.value;
+    function formatNumberInput(value: string): string {
+        if (!value) return '';
+        const [integer, decimal] = value.split('.');
+        const formatted = Number(integer.replace(/,/g, '')).toLocaleString();
+        return decimal !== undefined ? `${formatted}.${decimal}` : formatted;
+    }
+      
     return (
         <div className='w-full h-full'>
             <div className="mb-2">
@@ -19,8 +46,21 @@ const PrimaryInput: React.FC<TInput> = ({ css, label, error, touched, info,maxFn
             <input
                 type={props.type ?? "text"}
                 style={{outline:"none"}}
-                className={`rounded-[6px] text-[14px] leading-[24px] text-[#525C76] font-[300] border-[1px] border-[#D6DAE1] outline-[none] focus:border-[#C49600] focus:shadow-[0_0_10px_#FEF8E5] text-[#606C82] p-1 px-3 ${css} ${error  ? "border-[#EF4444] outline-0 focus:border-[#EF4444]" : ""}`}
+                className={`rounded-[6px] text-[14px] leading-[24px] text-[#525C76] font-[300] border-[1px] border-[#D6DAE1] outline-[none] focus:border-[#C49600] focus:shadow-[0_0_10px_#FEF8E5] text-[#606C82] p-1 px-3 ${css} ${error ? "border-[#EF4444] outline-0 focus:border-[#EF4444]" : ""}`}
                 {...props}
+                onFocus={(e) => {
+                    setIsFocused(true);
+                    onFocus?.(e);
+                }}
+                onBlur={(e) => {
+                    setIsFocused(false);
+                   onBlur?.(e);
+                }}
+                value={
+                    format && typeof props.value === 'string' && !isFocused
+                        ? formatNumberInput(props.value)
+                        : props.value
+                }
             />
             {info &&
             <div className="flex items-center mt-1" >

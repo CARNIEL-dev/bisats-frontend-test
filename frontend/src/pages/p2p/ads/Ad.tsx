@@ -114,10 +114,23 @@ const CreateAd = () => {
             .max(100, 'Margin cannot be more than 100%'),
 
         price: Yup.number()
+            .transform((value, originalValue) => {
+                if (originalValue === '' || isNaN(originalValue)) return undefined;
+                return Number(originalValue);
+            })
             .min(1, 'Price must be greater than 0')
             .required('Price is required'),
+        
+        
+      
+          
         amount: Yup.number()
-            .min(1, 'Amount must be greater than 0')
+
+            .transform((value, originalValue) => {
+                if (originalValue === '' || isNaN(originalValue)) return undefined;
+                return Number(originalValue);
+            })
+            // .min(0.00000, 'Amount must be greater than 0')
             .max(userTransactionLimits?.maximum_ad_creation_amount, `Amount must not exceed ${formatNumber(userTransactionLimits?.maximum_ad_creation_amount)} xNGN`) 
             .test(
                 'max-wallet-balance',
@@ -132,7 +145,7 @@ const CreateAd = () => {
             otherwise: schema => schema.notRequired(),
               }),
         amountToken: Yup.number()
-            .min(1, 'Token amount must be greater than 0')
+            .min(0, 'Token amount must be greater than 0')
 
             .when(['asset'], (assetValue, schema) => {
                 // Safely type asset as one of the known keys
@@ -170,7 +183,29 @@ const CreateAd = () => {
 
         maximumLimit: Yup.number()
             .min(15000, 'Maximum must be greater than Minimum')
-            .max(23000000, 'Price must not exceed 23,000,000 xNGN').required(),
+            .when(['type', 'amount', 'amountToken', 'price'], ([type, amount, amountToken, price], schema) => {
+                let computedMax = 23000000;
+
+                if (type?.toLowerCase() === 'buy') {
+                    if (typeof amount === 'number') {
+                        computedMax = Math.min(amount, 23000000);
+                    }
+                }
+
+                if (type?.toLowerCase() === 'sell') {
+                    if (typeof amountToken === 'number' && typeof price === 'number') {
+                        const product = amountToken * price;
+                        computedMax = Math.min(product, 23000000);
+                    }
+                }
+
+                return schema.max(
+                    computedMax,
+                    `Maximum must not exceed ₦${formatNumber(computedMax)}`
+                );
+            })
+            .required('Maximum is required'),
+        
 
         priceLowerLimit: Yup.number()
             .min(1, 'Lower Price Limit must be greater than 0')
@@ -290,7 +325,7 @@ const CreateAd = () => {
                                                             ? AdSchema.omit(['amountToken'])
                                                             : AdSchema.omit(['amount']);
                                                         setCurrentSchema(newSchema);
-                                                        formik.validateForm(); 
+                                                        formik.validateForm(); // force validation with new schema
                                                         formik.handleSubmit();
                   }}
                                                 />

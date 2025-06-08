@@ -100,6 +100,10 @@ const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage, wallet ,liveRat
                     css="w-full p-2.5"
                     label="Amount to be deposited in Ad Escrow"
                     placeholder="0"
+                    type="text" // or at least if it's number, make sure you add step="any"
+                    step="any"
+                    inputMode="decimal"
+                    format={true}
                     name={formik.values.type.toLowerCase() === "buy" ? "amount":"amountToken"}
                     error={formik.values.type.toLowerCase() === "buy" ? formik.errors.amount : formik.errors.amountToken}
                     value={formik.values.type.toLowerCase() === "buy" ? formik.values.amount : formik.values.amountToken}
@@ -109,11 +113,16 @@ const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage, wallet ,liveRat
                             formik.setFieldValue('amountToken', walletData?.token === '' ? 0 : Number(walletData?.[token]))}
                     onChange={(e) => {
                         const value = e.target.value;
-                        if (/^\d*$/.test(value)) {
-                            console.log(value)
-                            formik.setFieldValue(formik.values.type.toLowerCase() === "buy" ? 'amount':'amountToken', value === '' ? 0 : Number(value));
+
+                        const isValidDecimal = /^(\d+(\.\d*)?|\.\d+)?$/.test(value);
+
+                        if (isValidDecimal) {
+                            const fieldName = formik.values.type.toLowerCase() === 'buy' ? 'amount' : 'amountToken';
+                            formik.setFieldValue(fieldName, value);
                         }
                     }}
+                              
+                              
                 />
                 <p className="text-[#515B6E] text-xs font-light">Wallet Balance: { (calculateDisplayWalletBallance)}</p>
             </div>
@@ -123,14 +132,19 @@ const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage, wallet ,liveRat
                                     css="w-full p-2.5"
                                     label={pricingType === "Static" ? "Price" : "Current Market Price"}
                                     disabled={pricingType === "Static" ? false : true}
-                                    placeholder="0.00 xNGN"
-                                    name="price"
+                        placeholder="0.00 xNGN"
+                        type="text" // or at least if it's number, make sure you add step="any"
+                        step="any"
+                        name="price"
+                        format={true}
+
                                     error={formik.errors.price}
                                     value={pricingType === "Static" ?formik.values.price:liveRate?.xNGN}
-                                    touched={formik.touched.price}
+                        touched={formik.touched.price}
+                        
                                     onChange={(e) => {
                                         const value = e.target.value;
-                                        if (/^\d*$/.test(value)) {
+                                        if (/^(\d+(\.\d*)?|\.\d+)?$/.test(value)) {
                                             formik.setFieldValue('price', value === '' ? 0 : Number(value));
                                         }
                                     }}
@@ -154,14 +168,16 @@ const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage, wallet ,liveRat
                                     css="w-[98%] p-2.5 mr-1"
                                     label="Lower Price Limit"
                                     placeholder="0.00 xNGN"
-                                    name="priceLowerLimit"
+                        name="priceLowerLimit"
+                        format
+
                                     error={formik.errors.priceLowerLimit}
                                     value={formik.values.priceLowerLimit}
                                     touched={formik.touched.priceLowerLimit}
                                     onChange={(e) => {
                                         const value = e.target.value;
             
-                                        if (/^\d*$/.test(value)) {
+                                        if (/^\d+(\.\d{0,})?$/.test(value)) {
                                             formik.setFieldValue('priceLowerLimit', value === '' ? 0 : Number(value));
                                         }
                                     }}
@@ -170,13 +186,15 @@ const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage, wallet ,liveRat
                                     css="w-[100%] p-2.5"
                                     label="Upper price Limit"
                                     name="priceUpperLimit"
-                                    placeholder="0.00 xNGN"
+                        placeholder="0.00 xNGN"
+                        format
+
                                     error={formik.errors.priceUpperLimit}
                                     value={formik.values.priceUpperLimit}
                                     touched={formik.touched.priceUpperLimit}
                                     onChange={(e) => {
                                         const value = e.target.value;
-                                        if (/^\d*$/.test(value)) {
+                                        if (/^\d+(\.\d{0,})?$/.test(value)) {
                                             formik.setFieldValue('priceUpperLimit', value === '' ? 0 : Number(value));
                                         }
                                     }}
@@ -198,6 +216,8 @@ const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage, wallet ,liveRat
                         label={`Minimum (xNGN${formik.values.type === "buy" ? formatNumber(userTransactionLimits?.lower_limit_buy_ad) : formatNumber(userTransactionLimits?.lower_limit_sell_ad)})`}
                         placeholder="0"
                         name="minimumLimit"
+                        format
+
                         min={formik.values.type === "buy" ? userTransactionLimits?.lower_limit_buy_ad : userTransactionLimits?.lower_limit_sell_ad}
                         error={formik.errors.minimumLimit}
                         value={formik.values.minimumLimit}
@@ -205,7 +225,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage, wallet ,liveRat
 
                         onChange={(e) => {
                             const value = e.target.value;
-                            if (/^\d*$/.test(value)) {
+                            if (/^\d+(\.\d{0,})?$/.test(value)) {
                                 formik.setFieldValue('minimumLimit', value === '' ? 0 : Number(value));
                             }
                         }}
@@ -215,6 +235,8 @@ const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage, wallet ,liveRat
                         label={`Maximum (xNGN  ${formatNumber(formik.values.type==="buy"? userTransactionLimits?.upper_limit_buy_ad:userTransactionLimits?.upper_limit_sell_ad)})`}
                         placeholder="0"
                         name="maximumLimit"
+                        format
+
                         max={formik.values.type === "buy" ? userTransactionLimits?.upper_limit_buy_ad : userTransactionLimits?.upper_limit_sell_ad}
                         error={formik.errors.maximumLimit}
                         value={formik.values.maximumLimit}
@@ -233,7 +255,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage, wallet ,liveRat
                         }
                         onChange={(e) => {
                             const value = e.target.value;
-                            if (/^\d*$/.test(value)) {
+                            if (/^\d+(\.\d{0,})?$/.test(value)) {
                                 formik.setFieldValue('maximumLimit', value === '' ? 0 : Number(value));
                             }
                         }}
