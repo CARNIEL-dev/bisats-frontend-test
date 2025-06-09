@@ -12,7 +12,6 @@ interface Props {
 }
 
 type TBank = {
-
     bank_code:string,
     bank_logo:string,
     bank_name:string,

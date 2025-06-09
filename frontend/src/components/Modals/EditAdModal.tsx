@@ -39,12 +39,7 @@ type TEditAd = {
 const EditAd: React.FC<Props> = ({ close, ad }) => {
     const [amount, setAmount] = useState(`${ad?.amount}`)
     const [price, setPrice] = useState(`${ad?.price}`)
-    console.log(ad)
-
-    const [minimumLimit, setMinimumLimit] = useState(ad?.minimumLimit)
-
-    const [maximumLimit, setMaximumLimit] = useState(ad?.maximumLimit)
-
+   
     const initialAd: TEditAd = {
         amount: `${ad?.amount}`,
         price: `${ad?.price}`,
@@ -52,7 +47,6 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
         maximumLimit: ad?.maximumLimit ?? "0",
         priceUpperLimit: ad?.priceUpperLimit??"0",
         priceLowerLimit: ad?.priceLowerLimit??"0",
-        
     }
     const navigate= useNavigate()
     const walletState: WalletState = useSelector((state: any) => state.wallet);
@@ -184,17 +178,17 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
                 <div className="my-5">
                     <div className="h-fit rounded border border  border-[#F3F4F6] bg-[#F9F9FB] rounded-[12px] py-3 px-5 my-5 text-[14px] leading-[24px] w-full ">
                         <div className="flex justify-between items-start mb-2 text-wrap w-full">
-                            <p className="text-[#424A59] font-[400] ">{ad?.type} Ad</p>
+                            <p className="text-[#424A59] font-[400] capitalize font-bold">{ad?.type} Ad</p>
                             <p className="text-[#606C82]  font-[600]  text-right w-1/2 break-all ">NGN/{ad?.asset}</p>
                         </div>
                         <div className="flex justify-between items-start mb-2 text-wrap w-full">
                             <p className="text-[#424A59] font-[400] ">Ad Price</p>
                             <p className="text-[#606C82]  font-[600]  text-right w-1/2 break-all ">{ formatNumber(ad?.price??0)}/NGN</p>
                         </div>
-                        <div className="flex justify-between items-start mb-2 text-wrap w-full">
+                        {/* <div className="flex justify-between items-start mb-2 text-wrap w-full">
                             <p className="text-[#424A59] font-[400] ">{ad?.type} Ad</p>
                             <p className="text-[#606C82]  font-[600]  text-right w-1/2 break-all ">NGN/{ad?.asset}</p>
-                        </div>
+                        </div> */}
                     </div>
                      
 
@@ -211,7 +205,8 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
                             value={price}
                         />
 
-                    </div> <div className="mb-4">
+                    </div>
+                    {/* <div className="mb-4">
                         <div className="flex justify-between mb-[1px]">
                             <PrimaryInput
                                 css="w-[98%] p-2.5 mr-1"
@@ -251,7 +246,7 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
                                 Your ad will be paused if the market price gets to these prices
                             </span>
                         </p>
-                    </div>
+                    </div> */}
 
                     <div className="my-3">
                         <PrimaryInput css={"w-full py-2 "} label={"Amount"} error={undefined} touched={undefined}
@@ -266,6 +261,12 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
                         />
 
                     </div>
+                    {ad?.type.toLowerCase() === "buy" ?
+                        <small className='text-[#606C82] text-[12px] font-[400]'>Balance: {formatNumber(walletState?.wallet?.xNGN)} xNGN</small>
+                        : <small className='text-[#606C82] text-[12px] font-[400]'>Balance: {walletState?.wallet?.[ad?.asset ?? "USDT"]} {ad?.asset}</small>
+                    }
+
+                    
                 <div className="mb-4">
                 <p className="mb-3 text-[#515B6E] font-semibold text-sm">Limits (in NGN)</p>
                 <div className="flex flex-col lg:flex-wrap   justify-between mb-[1px]">

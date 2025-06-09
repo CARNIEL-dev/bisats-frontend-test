@@ -69,6 +69,7 @@ const Swap = ({ type, adDetail }: { type: "buy" | "sell", adDetail?: AdSchema | 
         // setAmount(e.target.value);
         setOtherAmount(e.target.value)
     };
+
     const fetchNetworkFee = async () => {
         if ( !amount) return null;
 
@@ -86,8 +87,6 @@ const Swap = ({ type, adDetail }: { type: "buy" | "sell", adDetail?: AdSchema | 
                     }),
                 }
             );
-
-
             if (response.status) {
                 console.log(response)
                 setNetworkFee(response?.data?.networkFee);
@@ -97,6 +96,7 @@ const Swap = ({ type, adDetail }: { type: "buy" | "sell", adDetail?: AdSchema | 
                 setError("Failed to fetch network fee: " + response.message);
                 return response;
             }
+
         } catch (err) {
             console.error("Error fetching network fee:", err);
             setError("Failed to fetch network fee. Please try again.");
@@ -154,12 +154,13 @@ const Swap = ({ type, adDetail }: { type: "buy" | "sell", adDetail?: AdSchema | 
         }
     };
     const placeOrder = async (feeData: any) => {
-        if ( !amount) return;
-
+        if (!amount) return;
+        console.log(amount)
         try {
             const adsId = adDetail?.id;
-            const amountValue = parseFloat(amount);
-
+            const type=adDetail?.type?.toLowerCase()
+            const amountValue = parseFloat(type!=="buy"? amount:otherAmount);
+            console.log(amountValue)
             const response = await Bisatsfetch(
                 `/api/v1/user/${userId}/ads/${adsId}/order`,
                 {
@@ -246,7 +247,7 @@ const Swap = ({ type, adDetail }: { type: "buy" | "sell", adDetail?: AdSchema | 
     }, [amount, otherAmount, adDetail?.orderType, adDetail?.price, focusedField, setAmount,setOtherAmount]);
       
     const sellError = useMemo(() => {
-        if (((adDetail?.minimumLimit??0)/(adDetail?.price ?? 0)) > Number(amount)) return "Not within Limit"
+        if (((adDetail?.minimumLimit??0)) > Number(otherAmount)) return "Not within Limit"
         if (((adDetail?.maximumLimit??0) / (adDetail?.price ?? 0)) < Number(amount)) return "Not within Limit"
 
         if (amount > walletState?.wallet?.[adDetail?.asset??"USDT"]) return "Insufficient wallet balance"
@@ -258,7 +259,8 @@ const Swap = ({ type, adDetail }: { type: "buy" | "sell", adDetail?: AdSchema | 
 
         if (amount > walletState?.wallet?.xNGN) return "Insufficient wallet balance"
         if (Number(amount)/Number(adDetail?.price) > (adDetail?.amountAvailable ?? 0)) return "Available amount exceeded"
-    },[adDetail?.amountAvailable, adDetail?.maximumLimit, adDetail?.minimumLimit, adDetail?.price, amount, walletState?.wallet?.xNGN])
+    }, [adDetail?.amountAvailable, adDetail?.maximumLimit, adDetail?.minimumLimit, adDetail?.price, amount, walletState?.wallet?.xNGN])
+    
     return (
         <div>
             <p className={`${type === "buy" ? "text-[#17A34A]" : "text-[#DC2625]"} text-[14px] font-[600] my-3`}> {type === "buy" ? "You’re Buying from" : "You’re Selling to"}</p>
