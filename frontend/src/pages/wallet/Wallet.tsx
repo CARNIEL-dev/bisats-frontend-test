@@ -9,7 +9,7 @@ const Wallet = () => {
 		<div>
 			<Header currentPage="Wallet" />
 			<div className="w-full max-w-[1024px] mx-auto mt-[30px]">
-				<div className="w-full space-y-4 px-4">
+				<div className="w-full space-y-4 px-4 py-20" >
 					<div className="sm:w-[65%]">
 						<Balance />
 					</div>

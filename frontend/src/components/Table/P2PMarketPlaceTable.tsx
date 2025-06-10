@@ -68,7 +68,7 @@ const P2PMPTable: React.FC<TableProps> = ({ fields, data, type }) => {
 									{row?.orderType === "buy"
 										? row?.amountAvailable
 										: formatNumber(
-												Number(row?.amount) / Number(row?.price)
+                                            Number(row?.amountAvailable) / Number(row?.price)
 										  )}{" "}
 									{row?.asset}
 								</p>

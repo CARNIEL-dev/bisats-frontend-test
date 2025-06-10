@@ -3,7 +3,6 @@ import Header from "./components/Header";
 import { useState, useEffect } from "react";
 import MarketPlaceContent from "./components/MarketPlaceTable";
 import { useSelector } from "react-redux";
-import Bisatsfetch from "../../redux/fetchWrapper";
 import { GetSearchAds } from "../../redux/actions/walletActions";
 import { UserState } from "../../redux/reducers/userSlice";
 import { AdSchema } from "./components/ExpressSwap";
@@ -35,6 +34,7 @@ const MarketPlace = () => {
 			amount:""
 		})
 	const [pagination, setPagination] = useState({
+		page:1,
 		limit: 10,
 		skip: 0,
 	});
@@ -43,14 +43,13 @@ const MarketPlace = () => {
 		useEffect(() => {
 			const FetchAds = async () => {
               setLoading(true)
-				const res = await GetSearchAds({ ...adsParam, userId: userId }) ?? []
+				const res = await GetSearchAds({ ...adsParam, userId: userId,limit:`${pagination?.limit}`,skip:`${pagination?.skip}` }) ?? []
 				if (res?.length <= 0 || !res) {
 					setError("Could not find any express ad at this moment")
 				} else {
 					setError(null)
 				}
 				setLoading(false)
-
 				setSearchAds(res)
 			}
 			// if (adsParam?.amount && parseFloat(adsParam?.amount) > 0) {
@@ -60,7 +59,7 @@ const MarketPlace = () => {
 
 		// 	return () => clearTimeout(debounceTimer);
 		// }
-		},[ adsParam, userId])
+		},[adsParam, pagination?.limit, pagination?.skip, userId])
 
 	const handleTokenChange = (tokenId: string): void => {
 		setAdsParam({
@@ -70,6 +69,7 @@ const MarketPlace = () => {
 		setPagination({
 			limit: 10,
 			skip: 0,
+			page:1
 		});
 	};
 
@@ -165,12 +165,15 @@ const MarketPlace = () => {
 				{loading ? (
 					<PreLoader />
 				) : (
-					<MarketPlaceContent
-						type={adsParam.type === "buy" ? "Buy" : "Sell"}
-						ads={searchAds}
-						pagination={pagination}
-						setPagination={setPagination}
-					/>
+						<>
+							<MarketPlaceContent
+								type={adsParam.type === "buy" ? "Buy" : "Sell"}
+								ads={searchAds}
+								pagination={pagination}
+								setPagination={setPagination}
+							/>
+						</>
+					
 				)}
 			</div>
 		</div>

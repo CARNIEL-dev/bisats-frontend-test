@@ -10,7 +10,7 @@ import { APP_ROUTES } from "../../constants/app_route"
 import Header from "../../components/Header"
 import { useSelector } from "react-redux"
 import { UserState } from "../../redux/reducers/userSlice"
-import { PostBVN_KYC, Resend_OTP_PhoneNumber_KYC, Verify_BVN_KYC, } from "../../redux/actions/userActions"
+import { GetUserDetails, PostBVN_KYC, Resend_OTP_PhoneNumber_KYC, Verify_BVN_KYC, } from "../../redux/actions/userActions"
 import Toast from "../../components/Toast"
 import Success from "../../assets/icons/success.png"
 const BVNVerification = () => {
@@ -64,6 +64,7 @@ const BVNVerification = () => {
             if (response?.status ) {
                 setIsSuccess(true)
                 navigate(APP_ROUTES?.DASHBOARD)
+                GetUserDetails()
             } else {
                 Toast.error(response.message,"Failed")
             }          

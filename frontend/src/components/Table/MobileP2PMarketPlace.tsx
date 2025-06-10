@@ -42,7 +42,7 @@ const MobileP2PMP: React.FC<TableProps> = ({ data, type }) => {
 									{row?.orderType === "buy"
 										? row?.amountAvailable
 										: formatNumber(
-												Number(row?.amount) / Number(row?.price)
+											Number(row?.amountAvailable) / Number(row?.price)
 										  )}{" "}
 									{row?.asset}
 								</span>

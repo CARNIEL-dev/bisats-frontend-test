@@ -377,7 +377,7 @@ export const GetSearchAds= async (payload: TAddSearchRequest) => {
         BACKEND_URLS?.P2P.ADS.SEARCH_ADS
       }?asset=${payload.asset}&type=${
         payload.type === "buy" ? "sell" : "buy"
-      }&limit=10&skip=0`,
+      }&limit=${payload?.limit}&skip=${payload?.skip}`,
       {
         method: "GET",
       }

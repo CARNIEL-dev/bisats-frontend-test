@@ -6,6 +6,7 @@ import { GetLivePrice } from "../../redux/actions/walletActions";
 import { convertAssetToUSD } from "../../utils/conversions";
 import { Link } from "react-router-dom";
 import { assets } from "../../data";
+import { formatNumber } from "../../utils/numberFormat";
 
 export enum Fields {
     Asset = "Asset",
@@ -91,7 +92,7 @@ const Table: React.FC<TableProps> = ({ data, livePrices }) => {
                                     style={{ color: "#515B6E", fontSize: "14px" }}
                                     className="font-semibold"
                                 >
-                                    {row.Balance}
+                                    {formatNumber(row.Balance)}
                                 </p>
                                 <p style={{ color: "#606C82", fontSize: "12px" }}>
                                     {" "}

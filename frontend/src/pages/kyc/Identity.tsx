@@ -3,21 +3,22 @@ import { MultiSelectDropDown } from "../../components/Inputs/MultiSelectInput"
 import PrimaryInput from "../../components/Inputs/PrimaryInput"
 import { PrimaryButton } from "../../components/buttons/Buttons"
 import StepFlow from "./StepFlow"
-import { camera } from "../../assets/icons"
-import Label from "../../components/Inputs/Label"
 import { useEffect, useRef, useState } from "react"
-import { getUser } from "../../helpers"
 import Toast from "../../components/Toast"
 import { useFormik } from "formik"
 import { IdentificationSchema } from "../../formSchemas/KYC"
-import { PostIdentity_KYC, GetUserDetails, rehydrateUser } from "../../redux/actions/userActions"
+import { PostIdentity_KYC, rehydrateUser } from "../../redux/actions/userActions"
 import { APP_ROUTES } from "../../constants/app_route"
 import { useNavigate } from "react-router-dom"
 import { useSelector } from "react-redux"
 import { UserState } from "../../redux/reducers/userSlice"
+import FileInput from '../../components/Inputs/FileInput'
 const Identity = () => {
     const navigate = useNavigate()
     const [isLoading, setIsLoading] = useState(false)
+    const [file1Name, setFile1Name] = useState("");
+        const [error1, setError1] = useState(false);
+        const [file1, setFile1] = useState<File | null>(null);
 
     const [capturedImage, setCapturedImage] = useState<string | null>(null);
     const user = useSelector((state: { user: UserState }) => state.user);
@@ -52,6 +53,25 @@ const Identity = () => {
             navigate(APP_ROUTES.KYC.BVNVERIFICATION)
         }
     }, [user])
+
+       const handleFile1Change = (e: any) => {
+            const file1 = e.target?.files[0];
+            console.log(file1)
+            if (file1) {
+                const allowedTypes = ["application/pdf", "image/jpeg", "image/jpg"];
+                if (allowedTypes.includes(file1.type)) {
+                    setFile1Name(file1.name);
+                    setFile1(file1);
+                    formik.setFieldValue("selfie", file1)
+
+                } else {
+                    Toast.warning("Only pdf, jepeg an jpg formats are allowed", "Document type");
+                    setFile1Name("");
+                    setError1(true)
+                }
+            }
+        };
+    
 
     // const dataURLToBlob = (dataUrl: string) => {
     //     const [header, base64Data] = dataUrl.split(',');
@@ -192,9 +212,15 @@ const Identity = () => {
 
                     />
                 </div>
+                <div className="my-4">
+                    <div>
+                        <FileInput fileName={file1Name} handleFileChange={handleFile1Change} error={error1} label={"Upload the selected document"} disabled={user?.kyc?.utilityBillVerified} />
+                    </div>
+
+                </div>
                 <div className="py-4">
-                    <Label text={"Take a selfie"} css={""} />
-                    <div className="file-upload-container my-4" >
+                    {/* <Label text={"Take a selfie"} css={""} /> */}
+                    {/* <div className="file-upload-container my-4" >
                         {isCapturing ? (
                             <div className="camera-container relative">
                                 <video
@@ -237,7 +263,7 @@ const Identity = () => {
                                         <path d="M10.0025 8.82208L13.538 5.28653C13.8635 4.96109 14.3911 4.96109 14.7165 5.28653C15.042 5.61196 15.042 6.13959 14.7165 6.46502L11.181 10.0006L14.7165 13.5361C15.042 13.8615 15.042 14.3891 14.7165 14.7146C14.3911 15.04 13.8635 15.04 13.538 14.7146L10.0025 11.1791L6.46698 14.7146C6.14154 15.04 5.61391 15.04 5.28848 14.7146C4.96304 14.3892 4.96304 13.8615 5.28848 13.5361L8.82404 10.0006L5.28847 6.46503C4.96304 6.13959 4.96304 5.61196 5.28847 5.28652C5.61391 4.96108 6.14154 4.96108 6.46698 5.28652L10.0025 8.82208Z" fill="#707D96" />
                                     </svg> */}
 
-                                </div> :
+                                {/* </div> :
                                 <label
                                     onClick={startCamera}
                                     className="file-upload-box cursor-pointer"
@@ -247,10 +273,10 @@ const Identity = () => {
                                         {capturedImage ? "Selfie Captured" : "Open Camera"}
                                     </span>
                                 </label>
-                        }
-                        {formik.errors.selfie && <p className="error-text capitalize">{formik.errors.selfie}</p>}
+                        {/* } */}
+                        {/* {formik.errors.selfie && <p className="error-text capitalize">{formik.errors.selfie}</p>} */} 
 
-                    </div>
+                    {/* </div> */} 
 
 
 

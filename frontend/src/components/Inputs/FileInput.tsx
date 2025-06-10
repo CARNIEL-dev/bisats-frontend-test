@@ -25,7 +25,7 @@ const FileInput:React.FC<TFileInput>=({fileName,handleFileChange,error,loading,l
                       
                       <img className="file-upload-icon w-[24px] h-[24px]" src={docUpload} />
                       <span className="file-upload-text text-[13px] text-[#424A59] leading-[24px]">
-                          {loading ? "Uploading document..." :( fileName || "Upload")}
+                          {loading ? "Uploading document..." :( fileName || "Upload (png, jpeg, jpg, pdf only)")}
                       </span>
 
 

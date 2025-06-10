@@ -1,4 +1,5 @@
 import React from "react";
+import { formatNumber } from "../../utils/numberFormat";
 
 interface TableProps {
 	fields: Array<any>;
@@ -137,10 +138,10 @@ const Table: React.FC<TableProps> = ({ fields, data }) => {
 								{fields.find((f) => isFieldType(f, "Amount")) || "Amount"}
 							</span>
 							<span className="text-left font-semibold text-[14px]">
-								{renderFieldValue(
+								{( renderFieldValue(
 									fields.find((f) => isFieldType(f, "Amount")) || "",
-									row[fields.find((f) => isFieldType(f, "Amount")) || ""]
-								)}
+									formatNumber(row[fields.find((f) => isFieldType(f, "Amount")) || ""])
+								))}
 							</span>
 						</div>
 

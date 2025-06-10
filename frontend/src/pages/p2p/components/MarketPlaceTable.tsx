@@ -3,6 +3,7 @@ import P2PMPTable from "../../../components/Table/P2PMarketPlaceTable";
 import MobileP2PMP from "../../../components/Table/MobileP2PMarketPlace";
 import Empty from "../../../components/Empty";
 import { AdSchema } from "./ExpressSwap";
+import Pagination from "../../../components/pagination";
 
 type limits = {
 	available: string;
@@ -16,6 +17,7 @@ export interface Ad {
 }
 
 interface PaginationProps {
+	page:number,
 	limit: number;
 	skip: number;
 }
@@ -62,6 +64,8 @@ console.log(ads)
 					</div>
 				</div>
 			)}
+
+			<Pagination currentPage={0} totalPages={0} onPageChange={() => { setPagination({ limit: 10, skip: (pagination.page-1)*10, page:pagination?.page+1 }) }} />
 		</div>
 	);
 };

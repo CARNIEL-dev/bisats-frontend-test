@@ -1,5 +1,4 @@
 import { Outlet } from "react-router-dom";
-import HomeLogo from "../../assets/logo";
 import SideFrame from "../../assets/illustrations/side-frame1.png"
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { GOOGLE } from "../../utils/googleCred";

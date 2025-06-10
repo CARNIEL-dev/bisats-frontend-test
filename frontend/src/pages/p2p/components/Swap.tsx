@@ -4,12 +4,10 @@ import { PrimaryButton } from '../../../components/buttons/Buttons'
 import { TokenData } from '../../../data'
 import { AdSchema } from './ExpressSwap'
 import { useNavigate } from 'react-router-dom'
-import { assets, convertAssetToNaira, convertNairaToAsset } from '../../../utils/conversions'
+import { assets } from '../../../utils/conversions'
 import { useSelector } from 'react-redux'
 import { WalletState } from '../../../redux/reducers/walletSlice'
 import SwapConfirmation from '../../../components/Modals/SwapConfirmation'
-import { GetLivePrice } from '../../../redux/actions/walletActions'
-import { PriceData } from '../../wallet/Assets'
 import { ACTIONS, bisats_charges } from '../../../utils/transaction_limits'
 import Toast from '../../../components/Toast'
 import Bisatsfetch from '../../../redux/fetchWrapper'
@@ -35,7 +33,6 @@ const Swap = ({ type, adDetail }: { type: "buy" | "sell", adDetail?: AdSchema | 
     const [otherAmount, setOtherAmount] = useState("");
     const [focusedField, setFocusedField] = useState<"amount" | "otherAmount" | null>(null);
 
-    const [tokenPrice, setTokenPrice] = useState<PriceData>()
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [orderError, setOrderError] = useState<string | null>(null);
     const [networkFee, setNetworkFee] = useState<string | null>(null);
@@ -46,19 +43,11 @@ const Swap = ({ type, adDetail }: { type: "buy" | "sell", adDetail?: AdSchema | 
     const userId = user?.user?.userId || "";    
     const navigate = useNavigate()
     useEffect(() => {
-
+        setFocusedField("amount")
         if (!adDetail) navigate(-1);
 
     },[])
 
-     useEffect(() => {
-                const fetchPrices = async () => {
-                    const prices = await GetLivePrice();
-                    setTokenPrice(prices);
-                };
-        
-                fetchPrices();
-     }, []);
     
     const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         // setAmount(e.target.value);
@@ -316,7 +305,7 @@ const Swap = ({ type, adDetail }: { type: "buy" | "sell", adDetail?: AdSchema | 
                                         setAmount(value); // Keep it as a string
                                     }
                                 }}
-                                                                  maxFnc={() => { setFocusedField("amount"); setAmount(`${adDetail?.maximumLimit ?? 0}`) }}
+                                maxFnc={() => { setFocusedField("amount"); setAmount(`${adDetail?.maximumLimit ?? 0}`); }}
                                 touched={undefined} />
                             <div className='absolute right-3 top-10'>
 

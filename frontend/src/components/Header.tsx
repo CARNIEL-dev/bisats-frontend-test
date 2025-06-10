@@ -34,7 +34,6 @@ const Header: React.FC<HeaderProps> = ({ currentPage }) => {
 	const [notiDropDown, setNotiDropDown] = useState(false);
 	const [showLogOutModal, setLogOutModal] = useState(false);
 
-	console.log(notificationState);
 	const navigate = useNavigate();
 
 	useEffect(() => {
