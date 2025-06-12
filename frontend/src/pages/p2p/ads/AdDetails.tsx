@@ -61,17 +61,16 @@ const AdDetails = () => {
                 <table className="w-full table-fixed mb-2">
                     <thead className="text-left">
                     <tr>
-                        {["Transaction Type", "Asset", "Created On", "Expires On", "Quantity", "Amount Filled"].map((header, index) => (
+                        {["Transaction Type", "Asset", "Created On",, "Amount", "Amount Filled"].map((header, index) => (
                             <th key={index} className="p-1 w-1/6 font-light">{header}</th>
                         ))}
                     </tr>
                     </thead>
                     <tbody>
                     <tr className="">
-                        <td className="p-1 w-1/6 font-semibold text-[#17A34A]">{ad?.type}</td>
+                        <td className="p-1 w-1/6 font-semibold text-[#17A34A] capitalise">{ad?.type}</td>
                         <td className="p-1 w-1/6">{ad?.asset}</td>
                         <td className="p-1 w-1/6">{ad?.createdAt}</td>
-                        <td className="p-1 w-1/6">{ad?.expiryDate}</td>
                         <td className="p-1 w-1/6">{ad?.amount} USDT</td>
                         <td className="p-1 w-1/6">{ad?.amountFilled} USDT</td>
                     </tr>
@@ -81,7 +80,7 @@ const AdDetails = () => {
                 <table className="w-full table-fixed">
                     <thead className="text-left">
                     <tr>
-                        {["Pricing Type", "Your Price", "Upper Limit", "Lower Limit", "Ad Duration", ""].map((header, index) => (
+                        {["Pricing Type", "Your Price",  ""].map((header, index) => (
                         <th key={index} className="p-1 w-1/6 font-light">{header}</th>
                         ))}
                     </tr>
@@ -90,9 +89,7 @@ const AdDetails = () => {
                     <tr className="text-black">
                         <td className="p-1 w-1/6">{ad?.type}</td>
                         <td className="p-1 w-1/6">1640.44 NGN</td>
-                        <td className="p-1 w-1/6">1,000,000.99 NGN</td>
-                        <td className="p-1 w-1/6">1,000.99 NGN</td>
-                        <td className="p-1 w-1/6">2 days, 0 hrs, 0 mins</td>
+
                         <td className="p-1 w-1/6"></td>
                     </tr>
                     </tbody>

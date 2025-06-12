@@ -79,6 +79,8 @@ const TokenSelect = ({ title, label, error, touched, handleChange,removexNGN,hid
                     id={`tokenSelectBtn`}
                     className={`absolute mt-1 z-10 transition-all duration-150 ease ${isDropdownOpen ? "visible translate-y-0 opacity-100" : "invisible -translate-y-3 opacity-0"
                         } bg-[#EEEFF2] rounded w-full shadow`}
+                     onMouseLeave={ toggleDropdown }
+                    
                 >
                     <ul
                         className="p-1 space-y-1 text-xs font-secondary h-[230px] overflow-y-scroll"

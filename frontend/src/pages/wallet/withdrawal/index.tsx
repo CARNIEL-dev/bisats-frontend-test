@@ -1,23 +1,19 @@
 import TokenSelect from "../../../components/Inputs/TokenSelect"
 import Head from "../Head"
 import { MultiSelectDropDown } from "../../../components/Inputs/MultiSelectInput"
-import { TokenData } from "../../../data"
 import { useEffect, useState } from "react"
 import { PrimaryButton } from "../../../components/buttons/Buttons"
 import PrimaryInput from "../../../components/Inputs/PrimaryInput"
 import WithdrawalConfirmationNGN from "../../../components/Modals/WithdrawalConfirmationNGN"
 import WithdrawalConfirmationCrypto from "../../../components/Modals/WithdrawalConfirmationCrypto"
-import SecurityVerification from "../../../components/Modals/SecurityVerification"
-import {  GetLivePrice, GetUserBank, Withdraw_Crypto, Withdraw_xNGN } from "../../../redux/actions/walletActions"
+import {   GetUserBank, Withdraw_Crypto, Withdraw_xNGN } from "../../../redux/actions/walletActions"
 import { useSelector } from "react-redux"
 import { UserState } from "../../../redux/reducers/userSlice"
 import AddWithdrawalBankAccount from "../../../components/Modals/AddWithdrawalBankAccount"
 import Toast from "../../../components/Toast"
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { AccountLevel, ACTIONS, bisats_limit } from "../../../utils/transaction_limits"
-import { PriceData } from "../Assets"
-import { assets, convertUSDToAsset } from "../../../utils/conversions"
-import KycRouteGuard from "../../../components/KycGuard"
+
 import KycManager from "../../kyc/KYCManager"
 import { getUserTokenData } from "../../../helpers"
 import { WalletState } from "../../../redux/reducers/walletSlice"
@@ -58,10 +54,8 @@ const WithdrawalPage = () => {
     const [bankAccountId, setbankAccountId] = useState<string>()
     const [withdrawalModal, setWithDrawalModal] = useState(false)
     const [addBankModal, setAddBankModal] = useState(false)
-    const [verificationModal, setVerificationModal] = useState(false)
     const [bankList, setBankList] = useState([])
     const [isLoading, setIsLoading] = useState(false)
-    const [tokenPrice, setTokenPrice] = useState<PriceData>()
     const [usedUpLimit, setUsedUpLimit] = useState<{
         totalUsedAmountFiat: number,
         totalUsedAmountCrypto:number
@@ -177,14 +171,14 @@ const WithdrawalPage = () => {
         }
     }
 
-     useEffect(() => {
-                const fetchPrices = async () => {
-                    const prices = await GetLivePrice();
-                    setTokenPrice(prices);
-                };
+    //  useEffect(() => {
+    //             const fetchPrices = async () => {
+    //                 const prices = await GetLivePrice();
+    //                 setTokenPrice(prices);
+    //             };
         
-                fetchPrices();
-            }, []);
+    //             fetchPrices();
+    //         }, []);
 
     const account_level=user?.accountLevel as AccountLevel
     const userTransactionLimits = bisats_limit[account_level]
@@ -296,12 +290,12 @@ const WithdrawalPage = () => {
                                 <div className="h-fit rounded border border  border-[#F3F4F6] bg-[#F9F9FB] rounded-[12px] py-3 px-5 my-5 text-[14px] leading-[24px] ">
                                     <div className="flex justify-between items-center mb-2">
                                         <p className="text-[#424A59] font-[400]">Daily remaining limit:</p>
-                                        <p className="text-[#606C82]  font-[600]"> {formatNumber(userTransactionLimits?.daily_withdrawal_limit_crypto-(usedUpLimit?.totalUsedAmountCrypto??0))} {selectedToken}</p>
+                                        <p className="text-[#606C82]  font-[600]"> {formatNumber(userTransactionLimits?.daily_withdrawal_limit_crypto-(usedUpLimit?.totalUsedAmountCrypto??0))} USD</p>
                                     </div>
-                                    <div className="flex justify-between items-center mb-2">
+                                    {/* <div className="flex justify-between items-center mb-2">
                                         <p className="text-[#424A59] font-[400]">Transaction fee:</p>
                                         <p className="text-[#606C82]  font-[600]">{formatNumber(userTransactionLimits?.charge_on_single_withdrawal_crypto)} USDT</p>
-                                    </div>
+                                    </div> */}
                                     <div className="flex justify-between items-center mb-2">
                                         <p className="text-[#424A59] font-[400]">Withdrawal amount:</p>
                                         <p className="text-[#606C82]  font-[600]">{ formatNumber(cryptoWithdrwalAmount??0)} { selectedToken}</p>
@@ -309,14 +303,16 @@ const WithdrawalPage = () => {
                                     <div className="flex justify-between items-center mb-2">
                                         <p className="text-[#424A59] font-[400]">Total:</p>
                                         <p className="text-[#606C82] font-[600]">
-                                            {(parseFloat(cryptoWithdrwalAmount ?? "0") +
-                                                (tokenPrice
-                                                    ? convertUSDToAsset(
-                                                        selectedToken as keyof typeof assets,
-                                                        userTransactionLimits?.charge_on_single_withdrawal_crypto ?? 0,
-                                                        tokenPrice
-                                                    ) ?? 0
-                                                    : 0)) || "-"}  
+                                            {(parseFloat(cryptoWithdrwalAmount ?? "0") 
+                                                // (tokenPrice
+                                                //     ? convertUSDToAsset(
+                                                //         selectedToken as keyof typeof assets,
+                                                //         userTransactionLimits?.charge_on_single_withdrawal_crypto ?? 0,
+                                                //         tokenPrice
+                                                //     ) ?? 0
+                                                //     : 0)
+                                                    
+                                            ) || "-"}  
                                             
                                             {selectedToken}
                                         </p>
@@ -341,7 +337,8 @@ const WithdrawalPage = () => {
                 total={`${Number(withdrwalAmount ?? 0) + userTransactionLimits?.charge_on_single_withdrawal_fiat}`}
                 submit={handleWithdrawal}
                 isLoading={isLoading} /> :
-                <WithdrawalConfirmationCrypto close={() => setWithDrawalModal(false)} isLoading={isLoading}  amount={cryptoWithdrwalAmount ?? "0"} address={cryptoWithdrwalAddress ?? '-'} livePricesData={tokenPrice} submit={() => handleCryptoWithdrawal()} asset={selectedToken} network={selectedNetwork} />)}
+                <WithdrawalConfirmationCrypto close={() => setWithDrawalModal(false)} isLoading={isLoading} amount={cryptoWithdrwalAmount ?? "0"} address={cryptoWithdrwalAddress ?? '-'}
+                    submit={() => handleCryptoWithdrawal()} asset={selectedToken} network={selectedNetwork} />)}
             {/* {verificationModal && <SecurityVerification close={() => setVerificationModal(false)} />} */}
             {addBankModal &&<AddWithdrawalBankAccount close={()=>setAddBankModal(false)}/>}
 

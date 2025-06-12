@@ -8,11 +8,10 @@ interface Props {
     network?: string;
     address: string;
     amount: string;
-    livePricesData: any;
     submit: () => void;
     isLoading:boolean
 }
-const WithdrawalConfirmationCrypto: React.FC<Props> = ({ close,asset,address,amount,livePricesData,submit,isLoading,network }) => {
+const WithdrawalConfirmationCrypto: React.FC<Props> = ({ close,asset,address,amount,submit,isLoading,network }) => {
     return (
         <ModalTemplate onClose={close}>
             <div className="flex flex-col justify-center w-full text-center mx-auto">

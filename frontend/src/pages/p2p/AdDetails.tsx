@@ -1,8 +1,29 @@
 import { useLocation } from "react-router-dom";
-import { formatNumber } from "../../utils/numberFormat";
+import { formatCrypto, formatNumber } from "../../utils/numberFormat";
+import { GetAdOrder } from "../../redux/actions/adActions";
+import { useSelector } from "react-redux";
+import { UserState } from "../../redux/reducers/userSlice";
+import { useEffect, useState } from "react";
+import { Ad } from "react-flags-select";
 
+
+type TOrder = {
+    type: string,
+    reference: string,
+    asset:string,
+    amount:number,
+    price:number,
+    quantity: number,
+    buyer: { userName: string },
+    createdAt:string
+}
 const AdDetails = () => {
-        const location = useLocation();
+    const [loading, setLoading] = useState(false)
+
+    const [adOrders, setAdOrders]=useState([])
+    const location = useLocation();
+    const user = useSelector((state: { user: UserState }) => state.user);
+        const userId = user?.user?.userId || "";
     
     const adDetail = location.state?.adDetail;
     const formatDate = (dateString?: string): string => {
@@ -14,6 +35,17 @@ const AdDetails = () => {
         }
     };
 
+    const FetAdOrder = async () => {
+        setLoading(true)
+        const res = await GetAdOrder({ userId: userId, adId: adDetail?.id })
+        setAdOrders(res?.data)
+        console.log(res)
+        setLoading(false)
+    }
+    useEffect(() => {
+        FetAdOrder()
+    }, [adDetail])
+    
     return (
         <div className="w-full max-w-[1024px] mx-auto px-3">
             <div>
@@ -23,19 +55,18 @@ const AdDetails = () => {
                 <table className="w-full table-fixed mb-2">
                     <thead className="text-left">
                     <tr>
-                        {["Transaction Type", "Asset", "Created On", "Expires On", "Quantity", "Amount Filled"].map((header, index) => (
+                        {["Transaction Type", "Asset", "Created On",  "Amount", "Amount Filled"].map((header, index) => (
                             <th key={index} className="p-1 w-1/6 font-light">{header}</th>
                         ))}
                     </tr>
                     </thead>
                     <tbody>
                     <tr className="">
-                            <td className="p-1 w-1/6 font-semibold text-[#17A34A]">{ adDetail?.type}</td>
+                            <td className="p-1 w-1/6 font-semibold text-[#17A34A] capitalize">{ adDetail?.type}</td>
                             <td className="p-1 w-1/6">{adDetail?.asset}</td>
                             <td className="p-1 w-1/6">{ formatDate( adDetail?.createdAt)}</td>
-                            <td className="p-1 w-1/6">{ formatDate(adDetail?.closedAt)??"Still On"}</td>
-                            <td className="p-1 w-1/6">{formatNumber( adDetail?.amount)}</td>
-                            <td className="p-1 w-1/6">{formatNumber( adDetail?.amountFilled)} </td>
+                            <td className="p-1 w-1/6">{adDetail?.type.toLowerCase() === "sell" ? `${adDetail?.asset} ${formatCrypto(Number(adDetail?.amount) )}` : `xNGN ${formatNumber(adDetail?.amount)}`}</td>
+                            <td className="p-1 w-1/6">{adDetail?.type.toLowerCase()==="sell"? `${adDetail?.asset} ${formatCrypto(Number(adDetail?.amountFilled))}`:`xNGN ${formatNumber(adDetail?.amountFilled)}`} </td>
                     </tr>
                     </tbody>
                 </table>
@@ -43,18 +74,16 @@ const AdDetails = () => {
                 <table className="w-full table-fixed">
                     <thead className="text-left">
                     <tr>
-                        {["Pricing Type", "Your Price", "Upper Limit", "Lower Limit", "Ad Duration", ""].map((header, index) => (
+                        {[ "Your Price",   ""].map((header, index) => (
                         <th key={index} className="p-1 w-1/6 font-light">{header}</th>
                         ))}
                     </tr>
                     </thead>
                     <tbody>
                     <tr className="text-black">
-                            <td className="p-1 w-1/6">{ adDetail?.priceType}</td>
+                            {/* <td className="p-1 w-1/6">{ adDetail?.priceType}</td> */}
                             <td className="p-1 w-1/6">{ formatNumber(adDetail?.price)} NGN</td>
-                        <td className="p-1 w-1/6">-</td>
-                        <td className="p-1 w-1/6">-</td>
-                        <td className="p-1 w-1/6">-</td>
+                        
                         <td className="p-1 w-1/6"></td>
                     </tr>
                     </tbody>
@@ -82,7 +111,7 @@ const AdDetails = () => {
                                         Asset
                                     </th>
                                     <th className='text-left px-4 py-4'>
-                                        Amount
+                                        Amount Filled
                                     </th>
                                     <th className='text-right px-4 py-4'>
                                         Price
@@ -102,35 +131,39 @@ const AdDetails = () => {
                             <tr>
                                 
                             </tr>
-                            <tr>
-                                    <td className={`text-left px-4 py-2 font-semibold`}>
-                                        {/* <span style={"Buy" === "Buy" ? {color: "#DC2625"} : {color: "#17A34A"}}> */}
-                                        <span style={{color: "#DC2625"}}>
-                                            Buy
-                                        </span>                 
+                            {
+                                adOrders?.map((ad:TOrder, idx:number ) => <tr>
+                                    <td className={`text-left px-4 py-2 font-semibold capitalize`} key={idx}>
+                                        <span style={ad?.type.toLowerCase() !== "buy" ? { color: "#DC2625" } : { color: "#17A34A" }}>
+
+                                            {
+                                                ad?.type
+                                            }                                    </span>
                                     </td>
                                     <td className='text-left px-4 py-2 font-semibold'>
-                                        BTC
+                                        {ad?.reference}
                                     </td>
                                     <td className='text-left px-4 py-2'>
-                                        1670.23
+                                        {ad?.asset}
                                     </td>
                                     <td className='text-left px-4 py-2'>
-                                        10,000 USDT
+                                        {formatNumber(ad?.amount)} xNGN
                                     </td>
                                     <td className='text-right px-4 py-3'>
-                                        1670.23 NGN
+                                        {formatNumber(ad?.price)} xNGN
                                     </td>
                                     <td className='text-right px-4 py-3'>
-                                        10000 USDT
+                                        {formatCrypto(ad?.quantity)} {ad?.asset}
                                     </td>
                                     <td className='text-right px-4 py-3'>
-                                        Express
+                                        {ad?.buyer?.userName}
                                     </td>
                                     <td className='text-right px-4 py-3'>
-                                        10/11 12:12
+                                        {formatDate(ad?.createdAt)}
                                     </td>
-                                </tr>
+                                </tr>)
+                            }
+                            
                             </tbody>
                         </table>
                     </div>

@@ -2,7 +2,7 @@ import React from "react";
 import { PrimaryButton } from "../buttons/Buttons";
 import { Link } from "react-router-dom";
 import { APP_ROUTES } from "../../constants/app_route";
-import { formatNumber } from "../../utils/numberFormat";
+import { formatCrypto, formatNumber } from "../../utils/numberFormat";
 
 interface TableProps {
 	fields: Array<any>;
@@ -67,7 +67,7 @@ const P2PMPTable: React.FC<TableProps> = ({ fields, data, type }) => {
 								<p>
 									{row?.orderType === "buy"
 										? row?.amountAvailable
-										: formatNumber(
+										: formatCrypto(
                                             Number(row?.amountAvailable) / Number(row?.price)
 										  )}{" "}
 									{row?.asset}

@@ -59,6 +59,7 @@ export const MultiSelectDropDown = ({
 				}`}
 				type="button"
 				onClick={toggleDropdown}
+
 			>
 				{selected ? selected : title}
 
@@ -86,7 +87,8 @@ export const MultiSelectDropDown = ({
 					isDropdownOpen
 						? "visible translate-y-0 opacity-100"
 						: "invisible -translate-y-3 opacity-0"
-				} bg-white rounded w-full shadow-lg border border-gray-200`}
+					} bg-white rounded w-full shadow-lg `}
+				onMouseLeave={()=>toggleDropdown()}
 			>
 				<ul
 					className={`p-1 space-y-1 text-xs font-secondary ${

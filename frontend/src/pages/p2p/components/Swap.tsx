@@ -236,15 +236,15 @@ const Swap = ({ type, adDetail }: { type: "buy" | "sell", adDetail?: AdSchema | 
     }, [amount, otherAmount, adDetail?.orderType, adDetail?.price, focusedField, setAmount,setOtherAmount]);
       
     const sellError = useMemo(() => {
-        if (((adDetail?.minimumLimit??0)) > Number(otherAmount)) return "Not within Limit"
-        if (((adDetail?.maximumLimit??0) / (adDetail?.price ?? 0)) < Number(amount)) return "Not within Limit"
+        if (((adDetail?.minimumLimit ?? 0)) > Number(otherAmount)) return "the value is below the lower limit"
+        if (((adDetail?.maximumLimit ?? 0) / (adDetail?.price ?? 0)) < Number(amount)) return "the value is above the upper limit"
 
         if (amount > walletState?.wallet?.[adDetail?.asset??"USDT"]) return "Insufficient wallet balance"
         if (Number(amount) > (adDetail?.amountAvailable??0)) return "Available amount exceeded"
     }, [adDetail?.amountAvailable, adDetail?.asset, adDetail?.maximumLimit, adDetail?.minimumLimit, adDetail?.price, amount, walletState?.wallet])
     const buyError = useMemo(() => {
-        if ((adDetail?.minimumLimit ?? 0) > Number(amount)) return "Not within Limit"
-        if ((adDetail?.maximumLimit ?? 0) < Number(amount)) return "Not within Limit"
+        if ((adDetail?.minimumLimit ?? 0) > Number(amount)) return "the value is below the lower limit"
+        if ((adDetail?.maximumLimit ?? 0) < Number(amount)) return "the value is above the upper limit"
 
         if (amount > walletState?.wallet?.xNGN) return "Insufficient wallet balance"
         if (Number(amount)/Number(adDetail?.price) > (adDetail?.amountAvailable ?? 0)) return "Available amount exceeded"

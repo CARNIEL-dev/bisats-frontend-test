@@ -12,6 +12,7 @@ import { ACTIONS } from "../../../utils/transaction_limits";
 import Bisatsfetch from "../../../redux/fetchWrapper";
 import Switch from "../../../components/Switch";
 import Toast from "../../../components/Toast";
+import { formatCrypto, formatNumber } from "../../../utils/numberFormat";
 
 export interface IAd {
 	id?: string;
@@ -22,6 +23,8 @@ export interface IAd {
 	asset: string;
 	amount?: number;
 	amountFilled: number;
+	minimumLimit: string;
+	maximumLimit: string;
 	price: number;
 	status: string;
 	createdAt?: string;
@@ -197,12 +200,12 @@ const MyAds = () => {
 						<span style={{ color: "#515B6E", fontSize: "14px" }}>Price</span>
 						<span>{formatPrice(ad.price)}</span>
 					</div>
-					<div className="flex flex-col items-end">
+					{/* <div className="flex flex-col items-end">
 						<span style={{ color: "#515B6E", fontSize: "14px" }}>
 							Price Type
 						</span>
 						<span className="capitalize">{ad.priceType}</span>
-					</div>
+					</div> */}
 				</div>
 
 				<div className="flex justify-between mb-3">
@@ -304,7 +307,8 @@ const MyAds = () => {
 											<th className="text-left px-4 py-4">Type</th>
 											<th className="text-left px-4 py-4">Asset</th>
 											<th className="text-left px-4 py-4">Price</th>
-											<th className="text-left px-4 py-4">Price Type</th>
+											<th className="text-left px-4 py-4">Minimum Price</th>
+											<th className="text-left px-4 py-4">Maximum Price</th>
 											<th className="text-right px-4 py-3">Amount Filled</th>
 											<th className="text-right px-4 py-3">Status</th>
 											<th className="text-right px-4 py-3">Action</th>
@@ -337,14 +341,16 @@ const MyAds = () => {
 														{ad.asset}
 													</td>
 													<td className="text-left px-4 py-2">
-														{formatPrice(ad.price)}
+														xNGN {formatPrice(ad.price)}
 													</td>
 													<td className="text-left px-4 py-2">
-														{ad.priceType.charAt(0).toUpperCase() +
-															ad.priceType.slice(1)}
+														xNGN { formatNumber(ad?.minimumLimit)}
+													</td>
+													<td className="text-left px-4 py-2">
+														xNGN {formatNumber(ad?.maximumLimit)}
 													</td>
 													<td className="text-right px-4 py-2">
-														{ad.amountFilled}
+														{ad.type.toLowerCase() === "sell"?`${ad?.asset} ${formatCrypto(Number(ad.amountFilled))}`:`xNGN ${formatNumber(ad?.amountFilled)}`}
 													</td>
 													<td className="text-right px-4 py-3">
 														<div className="flex items-center justify-end space-x-3">
@@ -436,7 +442,9 @@ const MyAds = () => {
 											<th className="text-left px-4 py-4">Type</th>
 											<th className="text-left px-4 py-4">Asset</th>
 											<th className="text-left px-4 py-4">Price</th>
-											<th className="text-left px-4 py-4">Price Type</th>
+												<th className="text-left px-4 py-4">Minimum Limit</th>
+												<th className="text-left px-4 py-4">Maximum Limit</th>
+
 											<th className="text-right px-4 py-3">Amount Filled</th>
 											<th className="text-right px-4 py-3">Status</th>
 											<th className="text-right px-4 py-3">Action</th>
@@ -467,11 +475,13 @@ const MyAds = () => {
 														{formatPrice(ad.price)}
 													</td>
 													<td className="text-left px-4 py-2">
-														{ad.priceType.charAt(0).toUpperCase() +
-															ad.priceType.slice(1)}
+														xNGN {formatNumber(ad?.minimumLimit)}
 													</td>
-													<td className="text-right px-4 py-2">
-														{ad.amountFilled}
+													<td className="text-left px-4 py-2">
+														xNGN {formatNumber(ad?.maximumLimit)}
+													</td>
+													<td className="text-left px-4 py-2">
+														{ad.type.toLowerCase() === "sell" ? `${ad?.asset} ${formatCrypto(Number(ad.amountFilled) )}` : `xNGN ${formatNumber(ad?.amountFilled)}`}
 													</td>
 													<td
 														className="text-right px-4 py-3 capitalize"

@@ -182,7 +182,9 @@ const CreateAd = () => {
             .required('Minimum is required'),
 
         maximumLimit: Yup.number()
-            .min(15000, 'Maximum must be greater than Minimum')
+            .when(['minimumLimit', 'amount', 'amountToken'], ([minimumLimit], schema) =>
+                schema.min(Number(minimumLimit) + 1, 'Maximum must be greater than Minimum')
+          )
             .when(['type', 'amount', 'amountToken', 'price'], ([type, amount, amountToken, price], schema) => {
                 let computedMax = 23000000;
 

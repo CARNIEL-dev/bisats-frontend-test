@@ -106,3 +106,21 @@ export const UpdateAd = async (
 	return error;
   }
 }
+
+
+export const GetAdOrder = async (payload: { userId: string,adId:string }) => {
+  try {
+    const response = await Bisatsfetch(
+      `/api/v1/user/${payload.userId}/ads/${payload.adId}/get-user-ads-order`,
+      {
+        method: "GET",
+      }
+    );
+
+    console.log("Response data:", response);
+    return response;
+  } catch (error: any) {
+    console.error("Error fetching ads:", error);
+    return error;
+  }
+};
