@@ -271,7 +271,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage, wallet ,liveRat
 
             <div className="mb-4 w-full flex items-center">
                 <div className="flex justify-between mb-[1px] w-1/2">
-                <DateInput 
+                {/* <DateInput 
                         name="expiryDate"
                         label="Expiry Date"
                         error={formik.errors.expiryDate}
@@ -281,10 +281,10 @@ const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage, wallet ,liveRat
                             
                                 formik.setFieldValue('expiryDate', value);
                             
-                        } } title="expiryDate" />
+                        } } title="expiryDate" /> */}
                     {/* <p className="mb-3 text-[#515B6E] font-semibold text-sm">Expiry Date</p> */}
                 </div>
-                <div className="flex justify-between mb-[1px] w-1/2 ml-3">
+                {/* <div className="flex justify-between mb-[1px] w-1/2 ml-3">
 
                 <TimePicker
                     label="Expiry Time"
@@ -293,7 +293,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage, wallet ,liveRat
                     handleChange={(value) => { formik.setFieldValue('expiryTime', value.target.value) }}
                     title={"expiryTime"}
                     name={"expiryTime"} />
-</div>
+</div> */}
                 
             </div>
             <PrimaryButton

@@ -73,7 +73,7 @@ const LogIn = () => {
                             name="password"
                             error={formik.errors.password}
                             touched={formik.touched.password}
-                            check={true}
+                            check={false}
                             text="Password"
                             value={formik.values.password}
                             onBlur={formik.handleBlur}

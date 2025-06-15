@@ -117,18 +117,18 @@ const AdReview:  React.FC<AdsProps>  = ({ formik, setStage }) => {
                     {formik.values.currency}
                 </p>
             </div>
-            <div className="mb-4 flex items-center justify-between w-full">
+            {/* <div className="mb-4 flex items-center justify-between w-full">
                 <p className="mb-1">
                     <span className="text-[#606C82] font-light mr-2">
                         Duration
                     </span>
                     <Pen size={14} className="inline curser-pointer -mt-1" color="#606C82" onClick={() => setStage("details")} />
-                </p> 
-                <p className="text-[#515B6E] font-semibold text-bold">
+                </p>  */}
+                {/* <p className="text-[#515B6E] font-semibold text-bold"> */}
                     {/* {formik.values.duration.days}days, {formik.values.duration.hours}hrs, {formik.values.duration.minutes}mins */}
-                    {formik.values.expiryDate}
-                </p>
-            </div>
+                    {/* {formik.values.expiryDate} */}
+                {/* </p> */}
+            {/* </div> */}
 
             <div className="w-full p-3 rounded-[8px] border-[1px] border-[#F3F4F6] bg-[#F9F9FB] my-4">
                 <h1 className="text-[#2B313B] text-[14px] leading-[24px] font-[600]">Summary</h1>
@@ -136,7 +136,7 @@ const AdReview:  React.FC<AdsProps>  = ({ formik, setStage }) => {
                 <p className="text-[#606C82] text-[13px] leading-[24px] font-[400]">
                     You are about to create an ad to  <span className="font-[600]">{formik.values.type.toLowerCase() === "buy" ? `Buy ${formatNumber(formik.values.amount)} NGN worth of ${formik.values.asset}` : `Sell ${formatNumber(formik.values.amountToken)} ${formik.values.asset}`} at {formik.values.priceType?.toLowerCase() === "static" ? `${formik.values.price} NGN/USDT.` : ` a margin of ${formik.values.priceMargin}% ${formik.values.type?.toLowerCase() === "buy" ? "price increase" : "price decrease"} at the current market price during fulfiment of the ad`}</span> <br />
                     Your ad will be paused if market price goes higher than {formatNumber(formik.values.priceUpperLimit)} NGN or Lower than {formatNumber(formik.values.priceLowerLimit)} NGN.
-                    Your ad expires on {formik.values.expiryDate} by {formik.values.expiryTime}
+                    {/* Your ad expires on {formik.values.expiryDate} by {formik.values.expiryTime} */}
                 </p>
 
             </div>

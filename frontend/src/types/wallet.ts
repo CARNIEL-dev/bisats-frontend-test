@@ -92,7 +92,7 @@ export type TCreateAdsRequest = {
   amount: number;
   minimumLimit: number;
   maximumLimit: number;
-  expiryDate: string;
+  // expiryDate: string;
   priceType: string;
   price: number;
   priceMargin: number;

@@ -38,8 +38,8 @@ export interface IAdRequest {
     maximumLimit: number,
     priceUpperLimit: number, 
     priceLowerLimit: number,
-    expiryDate: string,
-    expiryTime: string ,
+    expiryDate?: string,
+    expiryTime?: string ,
     agree?: boolean
 }
 
@@ -221,8 +221,8 @@ const CreateAd = () => {
                     .min(Number(priceLowerLimit) + 1, 'Upper price limit must be greater than minimum limit')
             )
             .required('Upper limit price is required'),
-        expiryDate: Yup.date().required('Expiry date is required'),
-        expiryTime: Yup.string().required('Expiry time is required')
+        // expiryDate: Yup.date().required('Expiry date is required'),
+        // expiryTime: Yup.string().required('Expiry time is required')
 
     });
     const [currentSchema, setCurrentSchema] = useState<Yup.ObjectSchema<any>>(AdSchema);
@@ -249,7 +249,7 @@ const CreateAd = () => {
         onSubmit: async (values) => {
             console.log(values);
 
-            const expiryTimestamp = combineDateAndTimeToISO(values.expiryDate, values.expiryTime);
+            // const expiryTimestamp = combineDateAndTimeToISO(values.expiryDate, values.expiryTime);
 
             if (!values.agree) {
                 Toast.error("Agree to the terms of use", "Agree to the terms")
@@ -265,7 +265,7 @@ const CreateAd = () => {
                     amount: Number(values.type.toLowerCase()==="buy"?values.amount:values?.amountToken),
                     minimumLimit: Number(values.minimumLimit),
                     maximumLimit: Number(values.maximumLimit),
-                    expiryDate: expiryTimestamp,
+                    // expiryDate: expiryTimestamp,
                     priceType: values.priceType.toLowerCase(),
                     price: Number(values.price),
                     priceMargin: Number(values.priceMargin??0),
