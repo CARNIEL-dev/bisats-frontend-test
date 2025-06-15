@@ -193,7 +193,7 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
                      
 
                     <div className="my-3">
-                        <PrimaryInput css={"w-full py-2 "} label={"Price"} error={undefined} touched={undefined}
+                        <PrimaryInput css={"w-full py-2 "} label={" Price"} error={undefined} touched={undefined}
                             onChange={(e) => {
                                 const value = e.target.value;
                                 // Allow only digits
@@ -249,7 +249,7 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
                     </div> */}
 
                     <div className="my-3">
-                        <PrimaryInput css={"w-full py-2 "} label={"Amount"} error={undefined} touched={undefined}
+                        <PrimaryInput css={"w-full py-2 "} label={"Top Up Amount"} error={undefined} touched={undefined}
                             onChange={(e) => {
                                 const value = e.target.value;
                                 // Allow only digits
@@ -257,7 +257,7 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
                                 setAmount(numericValue);
                                 formik.setFieldValue('amount',numericValue)
                             }}
-                            value={amount}
+                            // value={amount}
                         />
 
                     </div>

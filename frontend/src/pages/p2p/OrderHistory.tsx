@@ -138,9 +138,7 @@ const OrderHistory = () => {
 
 	// Generate dynamic asset options based on available orders - fixed format
 	const getUniqueAssets = () => {
-		const uniqueAssets = Array.from(
-			new Set(orders.map((order) => order.asset).filter(Boolean))
-		);
+		const uniqueAssets = ["USDT", "BTC", "ETH", "SOL"]
 		return [
 			{
 				value: "",

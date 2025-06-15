@@ -180,7 +180,8 @@ const Header: React.FC<HeaderProps> = ({ currentPage }) => {
 
 				<div className="pb-1">
 					<div className="flex items-center">
-						<button className="mr-2 md:mr-[20px]">
+                        <button className="mr-2 md:mr-[20px] relative">
+                            <small className="absolute -right-2 -top-3 bg-[#F5BB00] px-1.5 py-1 text-[8px] rounded-full ">{ notificationState.unreadNotifications}</small>
 							<img
 								src="/Icon/bell.png"
 								alt="bell"
@@ -263,7 +264,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage }) => {
 										return (
 											<div
 												key={idx}
-												className="hover:bg-[#F5FEF8] cursor-pointer border-b-[1px] py-3 border-[#F3F4F6]"
+												className="hover:bg-[#F5FEF8] px-2 cursor-pointer border-b-[1px] py-3 border-[#F3F4F6]"
 												onMouseEnter={() => setActive(idx)}
 												onMouseLeave={() => setActive(100)}
 											>
