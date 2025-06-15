@@ -108,12 +108,12 @@ export type TUpdateAdsRequest = {
   amount: number;
   minimumLimit: number;
   maximumLimit: number;
-  expiryDate: string;
+  // expiryDate: string;
   priceType: string;
   price: number;
   priceMargin?: number;
-  priceUpperLimit?: number;
-  priceLowerLimit?: number;
+  // priceUpperLimit?: number;
+  // priceLowerLimit?: number;
 
   
   // "price": 1600,

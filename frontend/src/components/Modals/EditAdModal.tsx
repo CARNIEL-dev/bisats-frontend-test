@@ -101,18 +101,18 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
                 .min(15000, 'Maximum must be greater than Minimum')
                 .max(23000000, 'Price must not exceed 23,000,000 xNGN').required(),
     
-      priceLowerLimit: Yup.number()
-                .min(1, 'Lower Price Limit must be greater than 0')
-                // .when('price', (price, schema) =>
-                //     schema.max(Number(price), 'Lower price must be less than or equal to amount')
-                // )
-                .required('Lower price is required'),
-            priceUpperLimit: Yup.number()
-                .when(['priceLowerLimit', 'price'], ([priceLowerLimit, price], schema) =>
-                    schema
-                        .min(Number(priceLowerLimit) + 1, 'Upper price limit must be greater than minimum limit')
-                )
-                .required('Upper limit price is required'),
+    //   priceLowerLimit: Yup.number()
+    //             .min(1, 'Lower Price Limit must be greater than 0')
+    //             // .when('price', (price, schema) =>
+    //             //     schema.max(Number(price), 'Lower price must be less than or equal to amount')
+    //             // )
+    //             .required('Lower price is required'),
+    //         priceUpperLimit: Yup.number()
+    //             .when(['priceLowerLimit', 'price'], ([priceLowerLimit, price], schema) =>
+    //                 schema
+    //                     .min(Number(priceLowerLimit) + 1, 'Upper price limit must be greater than minimum limit')
+    //             )
+    //             .required('Upper limit price is required'),
         });
     
 
@@ -120,14 +120,11 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
 
 
 
-     const formik = useFormik<TEditAd>({
+    const formik = useFormik<TEditAd>({
+        
             initialValues: { ...initialAd, agree: false  },
             validationSchema: AdSchema,
             onSubmit: async (values) => {
-                console.log(values);
-    
-    
-
                 setIsLoading(true);
     
                 try {
@@ -138,11 +135,11 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
                         minimumLimit: Number(values.minimumLimit),
                         maximumLimit: Number(values.maximumLimit),
                         price: Number(values.price),
-                        expiryDate: ad?.expiryDate ??"",
+                        // expiryDate: ad?.expiryDate ??"",
                         priceType: ad?.priceType??"",
                         priceMargin: ad?.priceMargin,
-                        priceUpperLimit: Number(values?.priceUpperLimit),
-                        priceLowerLimit: Number(values?.priceLowerLimit)
+                        // priceUpperLimit: Number(values?.priceUpperLimit),
+                        // priceLowerLimit: Number(values?.priceLowerLimit)
                     
                     };
 
@@ -200,11 +197,9 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
                                 const numericValue = value.replace(/\D/g, '');
                                 setPrice(numericValue);
                                 formik.setFieldValue('price', numericValue)
-
                             }}
                             value={price}
                         />
-
                     </div>
                     {/* <div className="mb-4">
                         <div className="flex justify-between mb-[1px]">

@@ -187,8 +187,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage, wallet ,liveRat
                                     label="Upper price Limit"
                                     name="priceUpperLimit"
                         placeholder="0.00 xNGN"
-                        format
-
+                    format
                                     error={formik.errors.priceUpperLimit}
                                     value={formik.values.priceUpperLimit}
                                     touched={formik.touched.priceUpperLimit}

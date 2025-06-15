@@ -261,7 +261,7 @@ const MyAds = () => {
 
 				<div>
 					<KycManager
-						action={ACTIONS.DEPOSIT_NGN}
+						action={ACTIONS.CREATE_AD}
 						func={() => navigate("/p2p/ad/create")}
 					>
 						{(validateAndExecute) => (
