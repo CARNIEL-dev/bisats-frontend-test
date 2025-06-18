@@ -13,6 +13,7 @@ import { UserState } from "../../../redux/reducers/userSlice";
 import { useSelector } from "react-redux";
 import { formatNumber } from "../../../utils/numberFormat";
 // import DateInput from "../../../components/Inputs/DateInput";
+import { convertAssetToNaira } from "../../../utils/conversions";
 
 const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage, wallet ,liveRate}) => {
         const [pricingType, setPricingType] = useState("Static")
@@ -63,13 +64,14 @@ const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage, wallet ,liveRat
 
    
     const calculateDisplayWalletBallance = useMemo(() => {
-        console.log(adType)
         if (adType.toLowerCase() === "buy") {
             return `${formatNumber(walletData?.xNGN)} xNGN`
         } else {
             return walletData? `${formatNumber( walletData?.[token])} ${token}`:"-"
         }
-    },[adType, token, walletData])
+    }, [adType, token, walletData])
+    
+    const rate= convertAssetToNaira(formik.values.asset as keyof typeof liveRate, 1, 0, liveRate)
     return (
         <>
             <div className="my-4">
@@ -90,7 +92,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage, wallet ,liveRat
                     label="Asset"
                     error={formik.errors.asset}
                     touched={formik.touched.asset}
-                    handleChange={(value) => { formik.setFieldValue("asset", value); setToken(value) }}
+                    handleChange={(value) => { localStorage.setItem("bst_ad_asset", value); formik.setFieldValue("asset", value); setToken(value) }}
                     removexNGN={true}
                 />
             </div>
@@ -109,20 +111,16 @@ const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage, wallet ,liveRat
                     value={formik.values.type.toLowerCase() === "buy" ? formik.values.amount : formik.values.amountToken}
                     touched={formik.values.type.toLowerCase() === "buy" ? formik.touched.amount : formik.touched.amountToken}
                     maxFnc={() =>
-                        formik.values.type.toLowerCase() === "buy" ? formik.setFieldValue('amount', walletData?.xNGN === '' ? 0 : Number(walletData?.xNGN)) :
-                            formik.setFieldValue('amountToken', walletData?.token === '' ? 0 : Number(walletData?.[token]))}
+                    formik.values.type.toLowerCase() === "buy" ? formik.setFieldValue('amount', walletData?.xNGN === '' ? 0 : Number(walletData?.xNGN)) :
+                    formik.setFieldValue('amountToken', walletData?.token === '' ? 0 : Number(walletData?.[token]))}
                     onChange={(e) => {
                         const value = e.target.value;
-
                         const isValidDecimal = /^(\d+(\.\d*)?|\.\d+)?$/.test(value);
-
                         if (isValidDecimal) {
                             const fieldName = formik.values.type.toLowerCase() === 'buy' ? 'amount' : 'amountToken';
                             formik.setFieldValue(fieldName, value);
                         }
-                    }}
-                              
-                              
+                    }}     
                 />
                 <p className="text-[#515B6E] text-xs font-light">Wallet Balance: { (calculateDisplayWalletBallance)}</p>
             </div>
@@ -131,20 +129,18 @@ const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage, wallet ,liveRat
                                 <PrimaryInput
                                     css="w-full p-2.5"
                                     label={pricingType === "Static" ? "Price" : "Current Market Price"}
-                                    disabled={pricingType === "Static" ? false : true}
-                        placeholder="0.00 xNGN"
-                        type="text" // or at least if it's number, make sure you add step="any"
-                        step="any"
-                        name="price"
-                        format={true}
-
+                                    // disabled={pricingType === "Static" ? false : true}
+                                    placeholder="0.00 xNGN"
+                                    type="text"                                    inputMode="decimal"
+                                    name="price"
+                                    format={true}
                                     error={formik.errors.price}
                                     value={pricingType === "Static" ?formik.values.price:liveRate?.xNGN}
-                        touched={formik.touched.price}
-                        
+                                    touched={formik.touched.price}
                                     onChange={(e) => {
                                         const value = e.target.value;
-                                        if (/^(\d+(\.\d*)?|\.\d+)?$/.test(value)) {
+                                        const isValidDecimal = /^(\d+(\.\d*)?|\.\d+)?$/.test(value);
+                                        if (isValidDecimal) {
                                             formik.setFieldValue('price', value === '' ? 0 : Number(value));
                                         }
                                     }}
@@ -160,8 +156,12 @@ const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage, wallet ,liveRat
                                     label="Currency"
                                     handleChange={(value) => formik.setFieldValue("currency", value)}
                                 />
-                            </div>
+                </div>
+
             </div>
+
+
+            <p className="text-[12px]">Market Price: xNGN {formatNumber(rate??0)} </p>
              <div className="mb-4">
                             <div className="flex justify-between mb-[1px]">
                                 <PrimaryInput
@@ -170,14 +170,14 @@ const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage, wallet ,liveRat
                                     placeholder="0.00 xNGN"
                         name="priceLowerLimit"
                         format
-
                                     error={formik.errors.priceLowerLimit}
                                     value={formik.values.priceLowerLimit}
                                     touched={formik.touched.priceLowerLimit}
                                     onChange={(e) => {
                                         const value = e.target.value;
-            
-                                        if (/^\d+(\.\d{0,})?$/.test(value)) {
+                                        const isValidDecimal = /^(\d+(\.\d*)?|\.\d+)?$/.test(value);
+
+                                        if (isValidDecimal) {
                                             formik.setFieldValue('priceLowerLimit', value === '' ? 0 : Number(value));
                                         }
                                     }}
@@ -193,7 +193,9 @@ const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage, wallet ,liveRat
                                     touched={formik.touched.priceUpperLimit}
                                     onChange={(e) => {
                                         const value = e.target.value;
-                                        if (/^\d+(\.\d{0,})?$/.test(value)) {
+                                        const isValidDecimal = /^(\d+(\.\d*)?|\.\d+)?$/.test(value);
+
+                                        if (isValidDecimal) {
                                             formik.setFieldValue('priceUpperLimit', value === '' ? 0 : Number(value));
                                         }
                                     }}

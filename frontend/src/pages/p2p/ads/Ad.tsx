@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react"
-import { FormikProps, useFormik } from "formik"
+import { FormikConfig, FormikProps, useFormik } from "formik"
 import { useSelector } from "react-redux"
 import * as Yup from 'yup'
 
@@ -19,6 +19,7 @@ import { useNavigate } from "react-router-dom"
 import { APP_ROUTES } from "../../../constants/app_route"
 import { AccountLevel, bisats_limit } from "../../../utils/transaction_limits"
 import { formatNumber } from "../../../utils/numberFormat"
+import { convertAssetToNaira } from "../../../utils/conversions"
 
 export type TNetwork = {
     label: string,
@@ -88,7 +89,8 @@ const CreateAd = () => {
 
     const [tokenLivePrices, setTokenLivePrices] = useState<PriceData>()
     const walletState: WalletState = useSelector((state: any) => state.wallet);
-
+   
+   
     const AdSchema = Yup.object().shape({
         type: Yup.string().required('Transaction type is required'),
         asset: Yup.string().oneOf(['BTC', 'USDT', 'SOL', 'ETH']).required('Asset selection is required'),
@@ -114,15 +116,23 @@ const CreateAd = () => {
             .max(100, 'Margin cannot be more than 100%'),
 
         price: Yup.number()
-            .transform((value, originalValue) => {
-                if (originalValue === '' || isNaN(originalValue)) return undefined;
-                return Number(originalValue);
-            })
-            .min(1, 'Price must be greater than 0')
-            .required('Price is required'),
-        
-        
-      
+            .when(['asset', '$liveRate'], ([assetValue, liveRate], schema) => {
+                const rate = convertAssetToNaira(
+                    assetValue as keyof typeof tokenLivePrices,
+                    1,
+                    0,
+                    liveRate as keyof typeof tokenLivePrices
+                );
+                const minPrice = 0.9 * Number(rate ?? 0);
+                const maxPrice = 1.1 * Number(rate ?? 0);
+
+                console.log('Yup context liveRate:', liveRate); // ✅ This should now log correctly
+
+                return schema
+                    .min(minPrice, `Price must be greater than 90% of market rate`)
+                    .max(maxPrice, `Price must be lower than 110% of market rate`)
+                    .required('Price is required');
+            }),
           
         amount: Yup.number()
 
@@ -245,7 +255,25 @@ const CreateAd = () => {
     }, []);
     const formik = useFormik<IAdRequest>({
         initialValues: { ...initialAd, agree: false  },
-        validationSchema: currentSchema,
+        validate: async (values) => {
+            try {
+                await currentSchema.validate(values, {
+                    abortEarly: false,
+                    context: { liveRate: tokenLivePrices }, // pass your context here
+                });
+                return {};
+            } catch (err: any) {
+                const errors: Record<string, string> = {};
+                if (err.inner) {
+                    err.inner.forEach((e: any) => {
+                        if (e.path) errors[e.path] = e.message;
+                    });
+                }
+                return errors;
+            }
+        },
+                validateOnMount: true,
+
         onSubmit: async (values) => {
             console.log(values);
 
@@ -289,7 +317,9 @@ const CreateAd = () => {
                 setIsLoading(false);
             }
         },
-    });
+        context: { liveRate: tokenLivePrices },
+
+    } as FormikConfig<IAdRequest> & { context: {liveRate:PriceData} });
     const walletData = walletState?.wallet
     const calculateDisplayWalletBallance: number  = useMemo(() => {
         if (formik.values.type.toLowerCase() === "buy") {

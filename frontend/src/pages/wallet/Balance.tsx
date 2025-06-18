@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { GetLivePrice, GetWallet } from "../../redux/actions/walletActions";
+import {  GetWallet } from "../../redux/actions/walletActions";
 import { useDispatch, useSelector } from "react-redux";
-import Bisatsfetch from "../../redux/fetchWrapper";
 
 interface WalletData {
 	id: string;
@@ -36,7 +35,6 @@ interface RootState {
 }
 
 const Balance: React.FC = () => {
-	const tokenUsdtValues = GetLivePrice();
 	const dispatch = useDispatch();
 	const [showBalance, setShowBalance] = useState(true);
 	const [currency, setCurrency] = useState<"USD" | "NGN">("USD");
@@ -47,8 +45,6 @@ const Balance: React.FC = () => {
 	const [totalBalance, setTotalBalance] = useState<number | null>(null);
 
 	const walletData = useSelector((state: RootState) => state.wallet.wallet);
-	const walletLoading = useSelector((state: RootState) => state.wallet.loading);
-	const walletError = useSelector((state: RootState) => state.wallet.error);
 
 	// Fetch wallet data
 	useEffect(() => {

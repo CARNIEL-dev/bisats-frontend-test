@@ -65,6 +65,7 @@ export const BACKEND_URLS = {
     DELE_BANK_ACCOUNT: "/delete-bank-details",
     WITHDRAW: "/withdraw",
     WITHDRAW_CRYPTO: "/withdraw-token",
+    WALLET_TRANSC_HISTORY: "/transactions",
   },
   P2P: {
     ADS: {
@@ -80,6 +81,7 @@ export const BACKEND_URLS = {
     },
   },
   NOTIFICATIONS: "/v1/user/notifications",
+  READ_NOTIFICATION:"/update-notification-status",
   ADD_PUSH_NOTIFICATION: "/v1/notification/add-push-token",
   SUPPORT_CHANNEL: "/v1/support",
   SUPPORT_SOCKET_CHAT: "/withdraw",

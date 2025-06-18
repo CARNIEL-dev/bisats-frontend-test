@@ -1,124 +1,95 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Empty from "../../components/Empty";
-import { getUser } from "../../helpers";
-import Bisatsfetch from "../../redux/fetchWrapper";
 import Table from "../../components/Table/TransactionHistory";
-
+import { MultiSelectDropDown } from "../../components/Inputs/MultiSelectInput";
+import DateInput from "../../components/Inputs/DateInput";
+import SearchInput from "../../components/Inputs/SearchInput";
+import { useSelector } from "react-redux";
+import { UserState } from "../../redux/reducers/userSlice";
+import { GetWalletTransactions } from "../../redux/actions/walletActions";
+import { formatDate } from "../../layouts/utils/Dates";
 export enum Fields {
-	TransactionType = "Trx type",
-	Assets = "Assets",
+	Asset = "Asset",
+	Network = "Network",
 	Amount = "Amount",
+	Type="Type",
+	
 	Reference = "Reference",
-	Date = "Date & Time",
+	Date = "Date",
 	Status = "Status",
 }
 
 export interface ITransaction {
-	"Trx type": string;
-	"Date & Time": string;
+	Asset: string;
+	Type: string;
+	Date: string;
 	Reference: string;
-	Assets: string;
+	Network: string;
 	Amount: number;
 	Status: string;
 }
 
 const Transactions: React.FC = () => {
+	const user = useSelector((state: { user: UserState }) => state.user);
 	const [transactions, setTransactions] = useState<Array<ITransaction>>([]);
 	const [loading, setLoading] = useState<boolean>(true);
 	const [error, setError] = useState<string | null>(null);
+	const [selectedAsset, setSelectedAsset] = useState<string>("");
+		const [selectedType, setSelectedType] = useState<string>("");
+		const [searchTerm, setSearchTerm] = useState("");
+		const [selectedDate, setSelectedDate] = useState<string>("");
 	const fields: Fields[] = [
-		Fields.TransactionType,
-		Fields.Assets,
+		Fields.Asset,
+		Fields.Network,
 		Fields.Amount,
+	
+		Fields.Type,
 		Fields.Date,
 		Fields.Reference,
 		Fields.Status,
+
 	];
 
-	useEffect(() => {
-		fetchUserTransactions();
-	}, []);
-
-	const fetchUserTransactions = async () => {
-		console.log("Fetching Transactions...");
-		try {
-			setLoading(true);
-			setError(null);
-
-			const user = getUser();
-			if (!user || !user.userId) {
-				console.error("User data not found or userId is missing");
-				setError("User authentication issue. Please log in again.");
-				setLoading(false);
-				return;
-			}
-
-			const response = await Bisatsfetch(
-				`/api/v1/user/${user.userId}/order/fetch-user-orders`,
-				{
-					method: "GET",
-				}
-			);
-
-			// Handle the response
-			console.log("Orders API response:", response);
-			if (response) {
-				if (response.message === "No orders found") {
-					setTransactions([]);
-				} else if (response.statusCode === 200 && response.data) {
-					const ordersData = response.data || [];
-
-					const transformedTransactions: ITransaction[] = Array.isArray(
-						ordersData
-					)
-						? ordersData.map((order: any) => {
-								const orderDate = new Date(order.createdAt);
-								const formattedDate = orderDate
-									.toLocaleString("en-US", {
-										year: "numeric",
-										month: "2-digit",
-										day: "2-digit",
-										hour: "2-digit",
-										minute: "2-digit",
-										second: "2-digit",
-										hour12: false,
-									})
-									.replace(",", "");
-
-								return {
-									"Trx type": order.type
-										? order.type.charAt(0).toUpperCase() + order.type.slice(1)
-										: "Unknown",
-									"Date & Time": formattedDate,
-									Reference: order.reference || "N/A",
-									Assets: order.asset || "Unknown",
-									Amount: order.amount || 0,
-									Status: order.status
-										? order.status.charAt(0).toUpperCase() +
-										  order.status.slice(1)
-										: "Unknown",
-								};
-						  })
-						: [];
-
-					console.log("Transformed transactions:", transformedTransactions);
-					setTransactions(transformedTransactions);
-				} else if (response.message !== "No orders found") {
-					console.error("API returned error status:", response);
-					setError(`Error: ${response?.message || "Failed to load orders"}`);
-				}
-			} else {
-				setError("Failed to receive API response");
-			}
-		} catch (err) {
-			console.error("Error fetching orders:", err);
-			const errorMessage =
-				err instanceof Error ? err.message : "An unknown error occurred";
-			setError(`Failed to load orders data: ${errorMessage}`);
-		} finally {
-			setLoading(false);
+	const fetchUserTransactions = useCallback(async () => {
+		const res = await GetWalletTransactions({
+			userID: user?.user?.userId,
+			reason: selectedType ?? "top-up",
+			asset:selectedAsset,
+			type: "",
+			date: selectedDate,
+			searchWord: searchTerm
+		})
+		console.log(res)
+		if (res?.transactions) {
+			console.log(transactions)
+			setLoading(false)
+			setTransactions(res?.transactions.map((trans: {
+				paymentMethod: any; createdAt: string; asset: any; reason: any; reference: any; network: any; amount: any; status: any; 
+}) => {
+				// const tranDate = new Date(trans?.createdAt);
+				// const transDate = new Date(
+				// 	tranDate.getFullYear(),
+				// 	tranDate.getMonth(),
+				// 	tranDate.getDate()
+				// );
+				return (
+					{
+						Asset: trans.asset,
+						Type: trans.reason,
+						Date: formatDate(trans?.createdAt),
+						Reference: trans.reference??"-",
+						Network: trans.network??trans?.paymentMethod,
+						Amount: trans?.amount,
+						Status: trans.status
+				
+					})
+			}))
 		}
-	};
+	},[searchTerm, selectedAsset, selectedDate, selectedType, user?.user?.userId]);
+
+	useEffect(() => {
+	fetchUserTransactions()
+		}, [fetchUserTransactions, searchTerm, selectedDate, selectedType, user?.user?.userId]);
 
 	const handleRetry = () => {
 		fetchUserTransactions();
@@ -127,7 +98,7 @@ const Transactions: React.FC = () => {
 	if (loading) {
 		return (
 			<div className="flex justify-center items-center h-32">
-				Loading orders...
+				Loading transactions...
 			</div>
 		);
 	}
@@ -146,9 +117,122 @@ const Transactions: React.FC = () => {
 		);
 	}
 
+	const getUniqueAssets = () => {
+		const uniqueAssets = ["USDT", "BTC", "ETH", "SOL","xNGN"]
+		return [
+			{
+				value: "",
+				label: "All",
+				labelDisplay: "All",
+			},
+			...uniqueAssets.map((asset) => ({
+				value: asset,
+				label: asset,
+				labelDisplay: asset,
+			})),
+		];
+	};
+
+	// Fixed type options format
+	const getTypeOptions = () => [
+		{
+			value: "",
+			label: "All",
+			labelDisplay: "All",
+		},
+		{
+			value: "withdrawal",
+			label: "Withdrawal",
+			labelDisplay: "Withdrawal",
+		},
+		{
+			value: "top-up",
+			label: "Deposit",
+			labelDisplay: "Deposit",
+		},
+	];
+
+	// Fixed sort options format
+	const getSortOptions = () => [
+		{
+			value: "",
+			label: "None",
+			labelDisplay: "None",
+		},
+		{
+			value: "price",
+			label: "Price",
+			labelDisplay: "Price",
+		},
+		{
+			value: "date",
+			label: "Date",
+			labelDisplay: "Date",
+		},
+	];
+	const handleAssetChange = (asset: string) => {
+		setSelectedAsset(asset);
+	};
+
+	const handleTypeChange = (type: string) => {
+		setSelectedType(type);
+	};
+
+	const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setSearchTerm(e.target.value);
+	};
+
+
 	return (
 		<div>
-			{transactions.length === 0 ? (
+			<div className="hidden md:block mb-6">
+				<div className="flex flex-wrap items-end gap-4 py-5">
+					<div className="xl:w-40 lg:w-28 md:w-24">
+						<MultiSelectDropDown
+							title="All"
+							choices={getUniqueAssets()}
+							handleChange={handleAssetChange}
+							label="Assets"
+							error={null}
+							touched={false}
+						/>
+					</div>
+					<div className="xl:w-40 lg:w-28 md:w-24">
+						<MultiSelectDropDown
+							title="All"
+							choices={getTypeOptions()}
+							handleChange={handleTypeChange}
+							label="Type"
+							error={null}
+							touched={false}
+						/>
+					</div>
+					<div className="xl:w-80 lg:w-72 md:w-64">
+						<SearchInput
+							placeholder="Search by reference"
+							value={searchTerm}
+							handleChange={handleSearchChange}
+						/>
+					</div>
+					{/* <div className="w-48">
+						<DateInput
+							title="Filter by Date"
+							name="Date"
+							handleChange={handleDateChange}
+						/>
+					</div> */}
+					{/* <div className="xl:w-40 lg:w-28 md:w-24">
+						<MultiSelectDropDown
+							title="Sort By"
+							choices={getSortOptions()}
+							handleChange={handleSortChange}
+							error={null}
+							touched={false}
+						/>
+					</div> */}
+				</div>
+			</div>
+			{transactions?.length === 0 ? (
 				<Empty />
 			) : (
 				<Table fields={fields} data={transactions} />

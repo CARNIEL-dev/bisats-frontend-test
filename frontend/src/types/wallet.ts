@@ -140,3 +140,13 @@ export enum DepositStatus {
   CANCEL = "cancel",
   PAID = "paid",
 }
+
+export type TPayloadTransHistory = {
+  userID: string;
+  reason?: string;
+  type?: string,
+  asset?: string,
+  date?: string,
+  searchWord?: string,
+  status?:string
+}

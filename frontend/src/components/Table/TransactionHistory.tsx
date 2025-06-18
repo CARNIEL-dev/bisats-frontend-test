@@ -21,7 +21,7 @@ const Table: React.FC<TableProps> = ({ fields, data }) => {
 						color:
 							value === "Pending"
 								? "#D97708"
-								: value === "Completed" || value === "active"
+								: value === "success" || value === "active"
 								? "#17A34A"
 								: "#B91C1B",
 					}}
@@ -59,7 +59,7 @@ const Table: React.FC<TableProps> = ({ fields, data }) => {
 							key={index}
 							className={
 								index + 1 > fields.length / 2
-									? "text-right px-4 py-3 text-[14px]"
+									? "text-left px-4 py-3 text-[14px]"
 									: "text-left px-4 py-4 text-[14px]"
 							}
 							style={{ backgroundColor: "#F9F9FB" }}
@@ -80,8 +80,8 @@ const Table: React.FC<TableProps> = ({ fields, data }) => {
 								key={colIndex}
 								className={
 									colIndex + 1 > fields.length / 2
-										? "text-right font-semibold px-4 py-3 text-[14px]"
-										: "text-left px-4 py-2 text-[14px]"
+										? "text-left font-semibold px-4 py-3 text-[12px] w-fit  text-wrap"
+										: "text-left px-4 py-2 text-[12px]"
 								}
 							>
 								{renderFieldValue(field, row[field])}
@@ -111,21 +111,21 @@ const Table: React.FC<TableProps> = ({ fields, data }) => {
 						{/* Trx type field */}
 						<div className="flex flex-col">
 							<span className="text-[12px] text-gray-500 mb-1">
-								{fields.find((f) => isFieldType(f, "Trx type")) || "Trx type"}
+								{fields.find((f) => isFieldType(f, "Type")) || "Type"}
 							</span>
 							<span className="text-left text-[14px]">
-								{row[fields.find((f) => isFieldType(f, "Trx type")) || ""]}
+								{row[fields.find((f) => isFieldType(f, "Type")) || ""]}
 							</span>
 						</div>
 
 						{/* Date & Time field */}
 						<div className="flex flex-col">
 							<span className="text-[12px] text-gray-500 mb-1 text-right">
-								{fields.find((f) => isFieldType(f, "Date & Time")) ||
-									"Date & Time"}
+								{fields.find((f) => isFieldType(f, "Date")) ||
+									"Date"}
 							</span>
 							<span className="text-right text-[14px]">
-								{row[fields.find((f) => isFieldType(f, "Date & Time")) || ""]}
+								{row[fields.find((f) => isFieldType(f, "Date")) || ""]}
 							</span>
 						</div>
 					</div>

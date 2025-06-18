@@ -1,6 +1,7 @@
 /** @format */
 
 import { getUserId } from "../../helpers";
+import { BACKEND_URLS } from "../../utils/backendUrls";
 import dispatchWrapper from "../../utils/dispatchWrapper";
 import Bisatsfetch from "../fetchWrapper";
 import { NotificationsActionypes } from "../types";
@@ -36,6 +37,28 @@ export const GetNotification = async () => {
       return data;
     } else {
     }
+  } catch (error) {
+    // throw handleApiError(error);
+    return error;
+  }
+};
+
+export const Read_Notification = async (payload: {
+  userId: string;
+  notificationId
+:string}) => {
+  try {
+    const response = await Bisatsfetch(
+      `/api/v1/user/${payload.userId}/notification/${payload.notificationId}${BACKEND_URLS.READ_NOTIFICATION}`,
+      {
+        method: "PUT",
+      }
+    );
+    const data = response.data;
+    console.log(data);
+    // dispatchWrapper({ type: GeneralTypes.SUCCESS, payload: data });
+
+    return response;
   } catch (error) {
     // throw handleApiError(error);
     return error;

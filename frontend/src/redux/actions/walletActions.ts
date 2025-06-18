@@ -1,7 +1,7 @@
 /** @format */
 
 import { getToken, getUser, setLivePrices, setUserTokenData } from "../../helpers";
-import { T2FARequest, TAddSearchRequest, TCreateAdsRequest, TCryptoWithdrawalRequest, TDeleteWithdrawalRequest, TTopUpNGN, TWithdrawalBankAccount, TWithdrawalRequest } from "../../types/wallet";
+import { T2FARequest, TAddSearchRequest, TCreateAdsRequest, TCryptoWithdrawalRequest, TDeleteWithdrawalRequest, TPayloadTransHistory, TTopUpNGN, TWithdrawalBankAccount, TWithdrawalRequest } from "../../types/wallet";
 import { BACKEND_URLS } from "../../utils/backendUrls";
 import dispatchWrapper from "../../utils/dispatchWrapper";
 import Bisatsfetch from "../fetchWrapper";
@@ -459,6 +459,26 @@ export const Fetch_CryptoAssets = async (payload:string) => {
     console.log(data)
     return data;
   } catch (error) {
+    // throw handleApiError(error);
+    return error;
+  }
+};
+
+
+
+export const GetWalletTransactions = async (payload:TPayloadTransHistory) => {
+  try {
+    const response = await Bisatsfetch(
+      `/api/v1/user/${payload.userID}${BACKEND_URLS?.WALLET?.WALLET_TRANSC_HISTORY}?limit=50&skip=0&reason=${payload.reason??""}&type=${payload.type??""}&asset=${payload.asset??""}&startDate=${payload.date??""}&endDate=${payload.date??""}&searchWord=${payload.searchWord??""}&status=${payload.status??""}`,
+      {
+        method: "GET",
+      }
+    );
+    const data = response.data;
+      return data;
+  
+  } catch (error) {
+    // logoutUser();
     // throw handleApiError(error);
     return error;
   }

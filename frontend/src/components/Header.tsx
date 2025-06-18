@@ -19,6 +19,8 @@ import {
 	NotificationState,
 	TNotification,
 } from "../redux/reducers/notificationSlice";
+import { GetNotification, Read_Notification } from "../redux/actions/generalActions";
+import { UserState } from "../redux/reducers/userSlice";
 
 interface HeaderProps {
 	currentPage: string;
@@ -28,6 +30,8 @@ const Header: React.FC<HeaderProps> = ({ currentPage }) => {
 	const notificationState: NotificationState = useSelector(
 		(state: any) => state.notification
 	);
+		const user = useSelector((state: { user: UserState }) => state.user);
+	
 
 	const [active, setActive] = useState(99);
 	const [dropDown, setDropDown] = useState(false);
@@ -39,7 +43,12 @@ const Header: React.FC<HeaderProps> = ({ currentPage }) => {
 	useEffect(() => {
 		GetWallet();
 		GetLivePrice();
+		
 	}, []);
+
+	useEffect(() => {
+		GetNotification()
+	},[active])
 
 	const formatDate = (isoDate: string) => {
 		const date = new Date(isoDate);
@@ -105,7 +114,6 @@ const Header: React.FC<HeaderProps> = ({ currentPage }) => {
 		},
 	};
 
-	console.log(Object.values(navDropDowLinks));
 	return (
 		<header className="px-4 md:px-8 lg:px-[120px] pt-[16px] pb-2 border-b-[1px] border-[#F3F4F6] ">
 			<nav
@@ -264,10 +272,16 @@ const Header: React.FC<HeaderProps> = ({ currentPage }) => {
 										return (
 											<div
 												key={idx}
-												className="hover:bg-[#F5FEF8] px-2 cursor-pointer border-b-[1px] py-3 border-[#F3F4F6]"
+												className="hover:bg-[#F5FEF8] relative px-2 cursor-pointer border-b-[1px] py-3 border-[#F3F4F6]"
 												onMouseEnter={() => setActive(idx)}
 												onMouseLeave={() => setActive(100)}
+												onClick={()=>Read_Notification({userId:user?.user?.userId,notificationId:notification?.id})}
 											>
+												{
+													!notification.read &&
+													<p className="text-[green] absolute top-1 left-2 text-[10px] font-[400] leading-[16px]">
+														New
+													</p>}
 												<div className={`  items-center py-2`}>
 													<div className="flex items-center justify-between">
 														<h1 className="text-[#2B313B] text-[14px] font-[600] leading-[24px]">

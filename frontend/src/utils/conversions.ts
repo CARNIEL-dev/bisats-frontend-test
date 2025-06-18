@@ -1,6 +1,4 @@
-import { useEffect } from "react";
 import { LiveAssets, TestAssets } from "./assets";
-import { PriceData } from "../pages/wallet/Assets";
 import { getLivePrice } from "../helpers";
 
 /** @format */
@@ -52,11 +50,10 @@ export function convertAssetToNaira(
   asset: keyof Prices,
   assetAmount: number,
   adPrice: number,
-  prices: Prices
+  prices: Prices|undefined,
 ): number | null {
-    console.log(asset,assetAmount,adPrice,prices)
-  const usdPriceOfAsset = prices[asset];
-  const ngnToUsdRate = adPrice;
+  const usdPriceOfAsset = prices?.[asset];
+  const ngnToUsdRate = adPrice!==0?adPrice:prices?.xNGN;
   if (!usdPriceOfAsset || !ngnToUsdRate || asset === "xNGN") return null;
 
   const valueInUsd = assetAmount * usdPriceOfAsset;

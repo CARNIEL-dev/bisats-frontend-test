@@ -29,7 +29,7 @@ const Wallet = () => {
 								>
 									Your assets
 								</span>
-								<button
+								{/* <button
 									style={{
 										color: "#C49600",
 										fontSize: "14px",
@@ -37,7 +37,7 @@ const Wallet = () => {
 									}}
 								>
 									view all
-								</button>
+								</button> */}
 							</p>
 						</div>
 						<Assets />
@@ -56,9 +56,9 @@ const Wallet = () => {
 									}}
 									className="mr-[8px]"
 								>
-									Transaction History
+									Wallet History
 								</span>
-								<button
+								{/* <button
 									style={{
 										color: "#C49600",
 										fontSize: "14px",
@@ -66,7 +66,7 @@ const Wallet = () => {
 									}}
 								>
 									view all
-								</button>
+								</button> */}
 							</p>
 							<Transactions />
 						</div>
