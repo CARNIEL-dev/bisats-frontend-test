@@ -27,6 +27,12 @@ export interface ITransaction {
 	Network: string;
 	Amount: number;
 	Status: string;
+	txHash: string;
+	bankDetails: {accountName:string,
+		accountNumber:string,
+		
+		bankName:string
+		}
 }
 
 const Transactions: React.FC = () => {
@@ -64,7 +70,8 @@ const Transactions: React.FC = () => {
 			console.log(transactions)
 			setLoading(false)
 			setTransactions(res?.transactions.map((trans: {
-				paymentMethod: any; createdAt: string; asset: any; reason: any; reference: any; network: any; amount: any; status: any; 
+				paymentMethod: any; createdAt: string; asset: any; reason: any; reference: any; network: any; amount: any;
+				status: any; txHash: string;bankDetails:any
 }) => {
 				// const tranDate = new Date(trans?.createdAt);
 				// const transDate = new Date(
@@ -80,7 +87,10 @@ const Transactions: React.FC = () => {
 						Reference: trans.reference??"-",
 						Network: trans.network??trans?.paymentMethod,
 						Amount: trans?.amount,
-						Status: trans.status
+						Status: trans.status,
+						txHash: trans?.txHash,
+						bankDetails: trans?.bankDetails
+
 				
 					})
 			}))

@@ -116,6 +116,10 @@ const CreateAd = () => {
             .max(100, 'Margin cannot be more than 100%'),
 
         price: Yup.number()
+            .transform((value, originalValue) => {
+                if (originalValue === '' || isNaN(originalValue)) return undefined;
+                return Number(originalValue);
+            })
             .when(['asset', '$liveRate'], ([assetValue, liveRate], schema) => {
                 const rate = convertAssetToNaira(
                     assetValue as keyof typeof tokenLivePrices,
@@ -126,11 +130,10 @@ const CreateAd = () => {
                 const minPrice = 0.9 * Number(rate ?? 0);
                 const maxPrice = 1.1 * Number(rate ?? 0);
 
-                console.log('Yup context liveRate:', liveRate); // ✅ This should now log correctly
 
                 return schema
-                    .min(minPrice, `Price must be greater than 90% of market rate`)
-                    .max(maxPrice, `Price must be lower than 110% of market rate`)
+                    .min(minPrice??1450, `Price must be greater than 90% of market rate`)
+                    .max(maxPrice??1700, `Price must be lower than 110% of market rate`)
                     .required('Price is required');
             }),
           

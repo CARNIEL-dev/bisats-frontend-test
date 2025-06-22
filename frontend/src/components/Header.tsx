@@ -106,7 +106,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage }) => {
 		},
 		Support: {
 			text: "Support",
-			link: APP_ROUTES.DASHBOARD,
+			link: APP_ROUTES.SETTINGS.SUPPORT,
 		},
 		Sign_out: {
 			text: "Sign out",

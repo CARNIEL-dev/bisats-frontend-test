@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { formatNumber } from "../../utils/numberFormat";
+import TransactionDetails from "../Modals/TransactionDetails";
 
 interface TableProps {
 	fields: Array<any>;
@@ -7,6 +8,10 @@ interface TableProps {
 }
 
 const Table: React.FC<TableProps> = ({ fields, data }) => {
+
+	const [openModal, setOpenModal] = useState(false)
+	const [selectedData, setSelectedData] = useState()
+
 	// Helper function to check field types regardless of case
 	const isFieldType = (field: string, type: string): boolean => {
 		return field.toLowerCase() === type.toLowerCase();
@@ -49,11 +54,11 @@ const Table: React.FC<TableProps> = ({ fields, data }) => {
 	// Standard table for desktop screens
 	const renderDesktopTable = () => (
 		<table
-			className="hidden lg:table table-auto w-full h-full"
+			className="hidden lg:table table-auto w-full h-full "
 			style={{ color: "#515B6E" }}
 		>
 			<thead className="text-justify">
-				<tr>
+				<tr >
 					{fields.map((field, index) => (
 						<th
 							key={index}
@@ -71,9 +76,12 @@ const Table: React.FC<TableProps> = ({ fields, data }) => {
 			</thead>
 			<tbody>
 				{data.map((row, rowIndex) => (
+					<>
+					
 					<tr
-						key={rowIndex}
-						style={rowIndex % 2 === 0 ? {} : { backgroundColor: "#F9F9FB" }}
+							key={rowIndex}
+							className={`cursor-pointer ${rowIndex % 2 === 0 ? "#FFF" : "#F9F9FB"} hover:bg-[lightgrey]`}
+							onClick={() => { setSelectedData(row); setOpenModal(true) }}
 					>
 						{fields.map((field, colIndex) => (
 							<td
@@ -87,7 +95,10 @@ const Table: React.FC<TableProps> = ({ fields, data }) => {
 								{renderFieldValue(field, row[field])}
 							</td>
 						))}
+
 					</tr>
+
+						</>
 				))}
 			</tbody>
 		</table>
@@ -189,8 +200,12 @@ const Table: React.FC<TableProps> = ({ fields, data }) => {
 							</span>
 						</div>
 					</div>
+				
 				</div>
+
 			))}
+
+			
 		</div>
 	);
 
@@ -198,6 +213,9 @@ const Table: React.FC<TableProps> = ({ fields, data }) => {
 		<div>
 			{renderDesktopTable()}
 			{renderMobileTable()}
+			{openModal &&
+				<TransactionDetails close={() => setOpenModal(false)} details={selectedData} />
+			}
 		</div>
 	);
 };

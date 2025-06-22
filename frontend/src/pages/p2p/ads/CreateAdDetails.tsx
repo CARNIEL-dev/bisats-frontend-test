@@ -131,8 +131,9 @@ const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage, wallet ,liveRat
                                     label={pricingType === "Static" ? "Price" : "Current Market Price"}
                                     // disabled={pricingType === "Static" ? false : true}
                                     placeholder="0.00 xNGN"
-                                    type="text"                                    inputMode="decimal"
-                                    name="price"
+                        type="text" 
+                        step="any"
+                                    inputMode="decimal"                         name="price"
                                     format={true}
                                     error={formik.errors.price}
                                     value={pricingType === "Static" ?formik.values.price:liveRate?.xNGN}
@@ -141,7 +142,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({ formik, setStage, wallet ,liveRat
                                         const value = e.target.value;
                                         const isValidDecimal = /^(\d+(\.\d*)?|\.\d+)?$/.test(value);
                                         if (isValidDecimal) {
-                                            formik.setFieldValue('price', value === '' ? 0 : Number(value));
+                                            formik.setFieldValue('price', value === '' ? 0 : (value));
                                         }
                                     }}
                                 />
