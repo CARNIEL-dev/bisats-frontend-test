@@ -63,7 +63,7 @@ const TransactionDetails: React.FC<Props> = ({ close, details }) => {
                         </>
                     }
                 </div>
-                <PrimaryButton css={"w-full"} text={"Upgrade Reference"} loading={false}
+                <PrimaryButton css={"w-full"} text={"Copy Reference"} loading={false}
                     onClick={() =>handleCopyToClip(details?.Reference) } />
                 <RedTransparentButton css={"w-full my-3"} text={"Cancel"} loading={false} onClick={close} />
             </div>
