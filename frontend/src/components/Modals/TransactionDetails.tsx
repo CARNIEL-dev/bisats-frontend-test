@@ -48,9 +48,9 @@ const TransactionDetails: React.FC<Props> = ({ close, details }) => {
                                     <p className="text-[#606C82]  font-[600]">{details?.bankDetails?.accountName} ({details?.bankDetails?.accountNumber })</p>
                                 </div>
                             }
-                            <div className="flex justify-between items-center mb-2">
+                            <div className="flex justify-between h-full items-center mb-2">
                         <p className="text-[#424A59] font-[400]">Transaction Hash:</p>
-                        <p className="text-[#606C82]  font-[600] flex flex-wrap text-wrap lg:w-1/3">{ details?.txHash}</p>
+                        <h1 className="text-[#606C82]  font-[600]  relative text-wrap overflow-wrap lg:w-1/3 ">{ details?.txHash}</h1>
                             </div>
                             <div className="flex justify-between items-center mb-2">
                                 <p className={`text-[#424A59] font-[400]`}>Status:</p>
