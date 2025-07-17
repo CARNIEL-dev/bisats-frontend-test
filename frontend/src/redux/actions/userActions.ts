@@ -1,31 +1,30 @@
 /** @format */
 
-import Bisatsfetch from "../fetchWrapper";
-import { BACKEND_URLS } from "../../utils/backendUrls";
 import {
-  TUser,
-  TLogin,
-  TSignUp,
-  TResponse,
-  TPersonalInfoKYC,
-  TPOA,
-  TIdentity,
-  TRequestPhone,
-  TVerifyPhone,
-  TPinRequest,
-  TVerify2FARequest,
-  TUpdate2FAStatus,
-} from "../../types/user";
-import {
-  setToken,
-  setRefreshToken,
-  setUser,
   getToken,
   getUser,
+  setRefreshToken,
+  setToken,
+  setUser,
   setUserId,
 } from "../../helpers";
-import { UserActionTypes, GeneralTypes } from "../types";
+import {
+  TIdentity,
+  TLogin,
+  TPersonalInfoKYC,
+  TPinRequest,
+  TPOA,
+  TRequestPhone,
+  TSignUp,
+  TUpdate2FAStatus,
+  TUser,
+  TVerify2FARequest,
+  TVerifyPhone
+} from "../../types/user";
+import { BACKEND_URLS } from "../../utils/backendUrls";
 import dispatchWrapper from "../../utils/dispatchWrapper";
+import Bisatsfetch from "../fetchWrapper";
+import { GeneralTypes, UserActionTypes } from "../types";
 
 export const Login = async (payload: TLogin) => {
   try {

@@ -1,35 +1,38 @@
 import { BuildingIcon, LockIcon, ShieldIcon, ZapIcon } from "lucide-react";
 import { Card, CardContent } from "../../../../components/ui/card";
-import LogoPulse from "../../../../../../../assets/icons/bisats logo.png"
-import Mobile_Features from "../../../../../../../assets/landingPage/mobile_features.png"
-
+import LogoPulse from "../../../../../../../assets/icons/bisats logo.png";
+import Mobile_Features from "../../../../../../../assets/landingPage/mobile_features.png";
 
 // Feature card data for mapping
 const featureCards = [
   {
     title: "Speedy Transactions",
-    description:"Time is money, and we value yours. Our platform helps you trade faster while you enjoy seamless experience.",
+    description:
+      "Time is money, and we value yours. Our platform helps you trade faster while you enjoy seamless experience.",
     icon: (
       <ZapIcon className="w-[98px] h-[98px] text-primaryprimary-5 opacity-50" />
     ),
   },
   {
     title: "Fraud proof",
-    description:"We know the pain in the crypto market. So we beat other platforms through our escrow protection and thorough verification processes. We ensure that every profile is genuine, validated, and secured for transaction.",
+    description:
+      "We know the pain in the crypto market. So we beat other platforms through our escrow protection and thorough verification processes. We ensure that every profile is genuine, validated, and secured for transaction.",
     icon: (
       <ShieldIcon className="w-[98px] h-[98px] text-primaryprimary-5 opacity-50" />
     ),
   },
   {
     title: "Regulatory Compliant",
-    description: "We don’t just give you our words; we adhere strictly to legal policies and regulatory standard both locally and internationally.Bisats is that platform you use with confidence.",
+    description:
+      "We don’t just give you our words; we adhere strictly to legal policies and regulatory standard both locally and internationally.Bisats is that platform you use with confidence.",
     icon: (
       <BuildingIcon className="w-[137px] h-[137px] text-primaryprimary-5 opacity-50" />
     ),
   },
   {
     title: "Secure",
-    description: "Protecting your assets is our top priority. With our advanced encryption and secured wallets, you experience zero market risk or losses.",
+    description:
+      "Protecting your assets is our top priority. With our advanced encryption and secured wallets, you experience zero market risk or losses.",
     icon: (
       <LockIcon className="w-[98px] h-[98px] text-primaryprimary-5 opacity-50" />
     ),
@@ -38,14 +41,14 @@ const featureCards = [
 
 export const ChangingTheByAnima = (): JSX.Element => {
   return (
-    <section className="w-full py-10 px-5 bg-white w-[98%] mx-auto h-full">
+    <section className="md:mt-16 mt-8">
       <div className="container mx-auto">
         <h2 className="mb-8 lg:mb-16 text-[#2B313B] font-[500] text-[28px] lg:text-[42px] leading-[40px] lg:leading-[56px]">
-          <span className="">Bettering the peer-to-peer experience-<br />
-            </span>
-          <span className=" text-[#C49600]">
-          How Bisats Dominate Others          </span>
-         
+          <span className="">
+            Bettering the peer-to-peer experience-
+            <br />
+          </span>
+          <span className=" text-[#C49600]">How Bisats Dominate Others </span>
         </h2>
 
         <div className="relative hidden lg:block">
@@ -97,8 +100,7 @@ export const ChangingTheByAnima = (): JSX.Element => {
           </div>
         </div>
         <div className="flex lg:hidden ">
-          <img alt="" src={ Mobile_Features} className="h-fit w-full " />
-
+          <img alt="" src={Mobile_Features} className="h-fit w-full " />
         </div>
       </div>
     </section>

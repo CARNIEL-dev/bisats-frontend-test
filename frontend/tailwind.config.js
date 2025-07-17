@@ -11,6 +11,5 @@ module.exports = {
       black: "#000",
     },
   },
-  plugins: [],
+  plugins: ["@tailwindcss/postcss"],
 };
-

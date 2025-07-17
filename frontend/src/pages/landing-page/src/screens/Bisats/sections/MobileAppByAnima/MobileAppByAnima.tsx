@@ -1,8 +1,8 @@
 import React from "react";
 import { Badge } from "../../../../components/ui/badge";
 import { Card, CardContent } from "../../../../components/ui/card";
-import AppStores from "../../../../../../../assets/mobil-stores.svg"
-import Phones from "../../../../../../../assets/landingPage/phone-mockup.png"
+import AppStores from "../../../../../../../assets/mobil-stores.svg";
+import Phones from "../../../../../../../assets/landingPage/phone-mockup.png";
 
 export const MobileAppByAnima = (): JSX.Element => {
   // App store data
@@ -30,24 +30,21 @@ export const MobileAppByAnima = (): JSX.Element => {
   ];
 
   return (
-    <section className="relative w-full py-28 bg-[#0A0E12] bg-mobile-app">
-      <div className="container flex flex- md:flex-col relative items-center justify-between w-[90%] flex items-center justify-between mx-auto">
-        <div className="bottom-blur h-[20px] border w-full border-[#fff] absolute  -bottom-24 lg:-bottom-28 lg:left-0">
-
-            </div>
+    <section className="relative w-full py-28 mt-16 bg-[#0A0E12] bg-mobile-app">
+      <div className="container flex flex- md:flex-col relative items-center  w-[90%] justify-between mx-auto">
+        <div className="bottom-blur h-[20px] border w-full border-[#fff] absolute  -bottom-24 lg:-bottom-28 lg:left-0"></div>
         <div className="flex lg:hidden">
-   
-        <Card className="relative w-full md:w-[366px] h-[421px] bg-transparent border-0 shadow-none ">
-          <CardContent className="p-0 relative h-full">
-            <img
-              className={` absolute top-0 left-0`}
-              src={Phones}
-              alt="Screen"
-            />
-          </CardContent>
+          <Card className="relative w-full md:w-[366px] h-[421px] bg-transparent border-0 shadow-none ">
+            <CardContent className="p-0 relative h-full">
+              <img
+                className={` absolute top-0 left-0`}
+                src={Phones}
+                alt="Screen"
+              />
+            </CardContent>
           </Card>
-          </div>
-       
+        </div>
+
         {/* Content Section */}
         <div className="flex flex-col  justify-center text-center w-full md:w-1/2 items-start gap-4 mb-8 md:mb-0">
           <Badge className="inline-flex mx-auto items-center justify-center px-3 py-2 rounded-[40px] border border-solid border-[#f5bb00] backdrop-blur-[3px] backdrop-brightness-[100%] [-webkit-backdrop-filter:blur(3px)_brightness(100%)] [background:linear-gradient(136deg,rgba(76,95,110,0.1)_0%,rgba(74,108,135,0.1)_100%)]">
@@ -68,22 +65,18 @@ export const MobileAppByAnima = (): JSX.Element => {
           </p>
 
           <div className="flex items-center gap-6 mt-2 mx-auto">
-              <img
-                className="h-[30px] lg:h-[44px]"
-                alt={"app/google-stores"}
-                src={AppStores}
-              />
-
-          
+            <img
+              className="h-[30px] lg:h-[44px]"
+              alt={"app/google-stores"}
+              src={AppStores}
+            />
           </div>
         </div>
 
         {/* Phone Mockups Section */}
         <div className="hidden lg:flex">
-
           <Card className="relative w-full mt-10 md:w-[366px] h-[421px] bg-transparent border-0 shadow-none ">
             <CardContent className="p-0 relative h-full">
-
               <img
                 className={` absolute top-0 left-0`}
                 src={Phones}

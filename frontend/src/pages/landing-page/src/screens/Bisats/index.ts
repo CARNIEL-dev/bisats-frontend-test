@@ -1,1 +1,0 @@
-export { Bisats } from "./Bisats";

@@ -1,19 +1,17 @@
-import { Navigate, Outlet } from 'react-router-dom';
-import { UserState } from '../redux/reducers/userSlice';
+import { Navigate, Outlet } from "react-router-dom";
+import { UserState } from "@/redux/reducers/userSlice";
+import { useSelector } from "react-redux";
 
-
-interface ProtectedRouteProps {
-    user: UserState;
-}
 // const userFromLocalStorage = getUser()
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ user }) => {
-    console.log(user)
+const ProtectedRoute = () => {
+  const userState: UserState = useSelector((state: any) => state.user);
+  console.log("Logged in User", userState);
 
-    if (!user.isAuthenticated) {
-        return <Navigate to="/auth/login" />;
-    }
-    
-    return <Outlet />;
+  if (!userState.isAuthenticated) {
+    return <Navigate to="/auth/login" />;
+  }
+
+  return <Outlet />;
 };
 
 export default ProtectedRoute;

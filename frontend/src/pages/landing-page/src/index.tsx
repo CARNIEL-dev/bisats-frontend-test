@@ -1,9 +1,9 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { Bisats } from "./screens/Bisats";
+import { LandingPage } from "@/pages/landing-page/src/screens/Bisats/LandingPage";
 
 createRoot(document.getElementById("app") as HTMLElement).render(
   <StrictMode>
-    <Bisats />
-  </StrictMode>,
+    <LandingPage />
+  </StrictMode>
 );
