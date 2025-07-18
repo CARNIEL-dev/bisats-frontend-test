@@ -1,30 +1,29 @@
 import { Outlet } from "react-router-dom";
-import OtherSide from "./auth/OtherSide";
 import Header from "../components/Header";
-import { Footer } from "../components/Footer";
+import OtherSide from "./auth/OtherSide";
 
 const KycLayOut = () => {
-    return (
-        <div>
-            <Header currentPage={""} />
+  return (
+    <div>
+      <Header currentPage={""} />
 
-        <div className={`bg-white bg-no-repeat bg-cover h-full w-full py-20`}>
-            <div className="w-full lg:w-2/5 mx-auto h-full px-3 lg:items-center ">
-                <OtherSide
-                    header="Complete your KYC"
-                    subHeader="Verify Your Identity to fully unlock your Bisats account"
-                    upperSubHeader={<></>}
-                />
+      <div className={`bg-white bg-no-repeat bg-cover h-full w-full py-20`}>
+        <div className="w-full lg:w-2/5 mx-auto h-full px-3 lg:items-center ">
+          <OtherSide
+            header="Complete your KYC"
+            subHeader="Verify Your Identity to fully unlock your Bisats account"
+            upperSubHeader={<></>}
+          />
 
-                <div className="w-full  flex justify-center items-center py-5 bg-white">
-                    <div className="w-full ">
-                        <Outlet />
-                    </div>
-                </div>
+          <div className="w-full  flex justify-center items-center py-5 bg-white">
+            <div className="w-full ">
+              <Outlet />
             </div>
-            </div>  
+          </div>
         </div>
-    )
-}
+      </div>
+    </div>
+  );
+};
 
-export default KycLayOut
+export default KycLayOut;

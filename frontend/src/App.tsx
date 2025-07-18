@@ -39,26 +39,28 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <Router>
-      <ScrollToTop>
-        <Routing />
-      </ScrollToTop>
+    <>
+      <Router>
+        <ScrollToTop>
+          <Routing />
+        </ScrollToTop>
 
-      {/* <Footer /> */}
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={true}
-        // newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        style={{ marginRight: "90px" }}
-        // theme="colored"
-      />
-    </Router>
+        {/* <Footer /> */}
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={true}
+          // newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          style={{ marginRight: "90px" }}
+          // theme="colored"
+        />
+      </Router>
+    </>
   );
 };
 

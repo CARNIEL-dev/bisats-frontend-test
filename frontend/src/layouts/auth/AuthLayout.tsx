@@ -2,7 +2,7 @@ import SideFrame from "@/assets/illustrations/side-frame1.png";
 import BisatLogo from "@/components/shared/Logo";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { Outlet } from "react-router-dom";
-import { GOOGLE } from "../../utils/googleCred";
+import { GOOGLE } from "@/utils/googleCred";
 
 const AuthLayout = () => {
   return (

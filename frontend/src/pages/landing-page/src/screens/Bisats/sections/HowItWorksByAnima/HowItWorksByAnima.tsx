@@ -1,4 +1,4 @@
-import { Card, CardContent } from "../../../../components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import DepositIcon from "../../../../../../../assets/icons/deposit 1.png";
 import Alter from "../../../../../../../assets/icons/alter 1.png";
 import Withdraw from "../../../../../../../assets/icons/withdraw 1.png";

@@ -44,6 +44,7 @@ import ProtectedRoute from "@/utils/protectedRoutes";
 import { Navigate, Route, Routes } from "react-router-dom";
 import Layout from "@/routing/Layout";
 import { LandingPage } from "@/pages/landing-page/src/screens/Bisats/LandingPage";
+import DashboardLayout from "@/routing/DashboardLayout";
 
 const Routing = () => {
   return (
@@ -66,57 +67,64 @@ const Routing = () => {
         </Route>
         {/* SUB: PROTECTED PAGES */}
         <Route element={<ProtectedRoute />}>
-          {/* <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/wallet" element={<Wallet />} /> */}
-          {/* <Route path="/wallet/deposit" element={<Deposit />} />
-            <Route path="/wallet/withdrawal" element={<Withdrawal />} /> */}
+          <Route element={<DashboardLayout />}>
+            <Route element={<KycLayOut />}>
+              <Route
+                path={APP_ROUTES?.KYC.PERSONAL}
+                Component={PersonalInformation}
+              />
+              <Route path={APP_ROUTES?.KYC.POA} Component={POA} />
+              <Route path={APP_ROUTES?.KYC.IDENTITY} Component={Identity} />
+            </Route>
+            <Route element={<TranscLayOut />}>
+              <Route
+                path={APP_ROUTES.WALLET.DEPOSIT}
+                element={<DepositPage />}
+              />
+              <Route
+                path={APP_ROUTES.WALLET.WITHDRAW}
+                element={<WithdrawalPage />}
+              />
+              <Route
+                path={APP_ROUTES.WALLET.TRANSACTION_BREAKDOWN}
+                element={<TransactionBreakdown />}
+              />
+            </Route>
+            <Route element={<P2PLayOut />}>
+              <Route
+                path={APP_ROUTES.P2P.MARKETPLACE}
+                element={<MarketPlace />}
+              />
+              <Route path={APP_ROUTES.P2P.EXPRESS} element={<Express />} />
+              <Route
+                path={APP_ROUTES.P2P.ORDER_HISTORY}
+                element={<OrderHistory />}
+              />
+              <Route path={APP_ROUTES.P2P.MY_ADS} element={<MyAds />} />
+              <Route path={APP_ROUTES.P2P.AD_DETAILS} element={<AdDetails />} />
+              <Route path={APP_ROUTES.P2P.CREATE_AD} element={<CreateAd />} />
+              <Route path={APP_ROUTES.P2P.MY_PROFILE} element={<Profile />} />
+              <Route path={APP_ROUTES.P2P.SELL} element={<Sell />} />
+              <Route path={APP_ROUTES.P2P.BUY} element={<Buy />} />
+              <Route path={APP_ROUTES.P2P.RECEIPT} element={<Receipt />} />
+            </Route>
+            <Route element={<SettingsLayOut />}>
+              <Route
+                path={APP_ROUTES.SETTINGS.PROFILE}
+                element={<UserInfo />}
+              />
+              <Route
+                path={APP_ROUTES.SETTINGS.SECURITY}
+                element={<Security />}
+              />
+              <Route path={APP_ROUTES.SETTINGS.PAYMENT} element={<Payment />} />
+              <Route path={APP_ROUTES.SETTINGS.SUPPORT} element={<Support />} />
+            </Route>
 
-          <Route element={<KycLayOut />}>
-            <Route
-              path={APP_ROUTES?.KYC.PERSONAL}
-              Component={PersonalInformation}
-            />
-            <Route path={APP_ROUTES?.KYC.POA} Component={POA} />
-            <Route path={APP_ROUTES?.KYC.IDENTITY} Component={Identity} />
+            <Route path={APP_ROUTES.DASHBOARD} element={<Dashboard />} />
+            <Route path={APP_ROUTES.WALLET.HOME} element={<Wallet />} />
+            <Route path={APP_ROUTES.PROFILE} element={<Profile />} />
           </Route>
-          <Route element={<TranscLayOut />}>
-            <Route path={APP_ROUTES.WALLET.DEPOSIT} element={<DepositPage />} />
-            <Route
-              path={APP_ROUTES.WALLET.WITHDRAW}
-              element={<WithdrawalPage />}
-            />
-            <Route
-              path={APP_ROUTES.WALLET.TRANSACTION_BREAKDOWN}
-              element={<TransactionBreakdown />}
-            />
-          </Route>
-          <Route element={<P2PLayOut />}>
-            <Route
-              path={APP_ROUTES.P2P.MARKETPLACE}
-              element={<MarketPlace />}
-            />
-            <Route path={APP_ROUTES.P2P.EXPRESS} element={<Express />} />
-            <Route
-              path={APP_ROUTES.P2P.ORDER_HISTORY}
-              element={<OrderHistory />}
-            />
-            <Route path={APP_ROUTES.P2P.MY_ADS} element={<MyAds />} />
-            <Route path={APP_ROUTES.P2P.AD_DETAILS} element={<AdDetails />} />
-            <Route path={APP_ROUTES.P2P.CREATE_AD} element={<CreateAd />} />
-            <Route path={APP_ROUTES.P2P.MY_PROFILE} element={<Profile />} />
-            <Route path={APP_ROUTES.P2P.SELL} element={<Sell />} />
-            <Route path={APP_ROUTES.P2P.BUY} element={<Buy />} />
-            <Route path={APP_ROUTES.P2P.RECEIPT} element={<Receipt />} />
-          </Route>
-          <Route element={<SettingsLayOut />}>
-            <Route path={APP_ROUTES.SETTINGS.PROFILE} element={<UserInfo />} />
-            <Route path={APP_ROUTES.SETTINGS.SECURITY} element={<Security />} />
-            <Route path={APP_ROUTES.SETTINGS.PAYMENT} element={<Payment />} />
-            <Route path={APP_ROUTES.SETTINGS.SUPPORT} element={<Support />} />
-          </Route>
-          <Route path={APP_ROUTES.DASHBOARD} element={<Dashboard />} />
-          <Route path={APP_ROUTES.WALLET.HOME} element={<Wallet />} />
-          <Route path={APP_ROUTES.PROFILE} element={<Profile />} />
           <Route
             path={APP_ROUTES?.KYC.PHONEVERIFICATION}
             Component={PhoneVerifcation}

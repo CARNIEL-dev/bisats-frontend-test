@@ -329,19 +329,19 @@ const Header: React.FC<HeaderProps> = ({ currentPage }) => {
                       } flex items-center py-2`}
                     >
                       {title === "Dashboard" ? (
-                        <Home active={active === idx ? true : false} />
+                        <Home />
                       ) : title === "Wallet" ? (
-                        <Wallet active={active === idx ? true : false} />
+                        <Wallet />
                       ) : title === "P2P Marketplace" ? (
-                        <P2PMC active={active === idx ? true : false} />
+                        <P2PMC />
                       ) : title === "Make deposit" ? (
-                        <MakeDeposit active={active === idx ? true : false} />
+                        <MakeDeposit />
                       ) : title === "Profile" ? (
-                        <Profile active={active === idx ? true : false} />
+                        <Profile />
                       ) : title === "Settings" ? (
-                        <Settings active={active === idx ? true : false} />
+                        <Settings />
                       ) : title === "Support" ? (
-                        <Support active={active === idx ? true : false} />
+                        <Support />
                       ) : title === "Sign out" ? (
                         <SignOut />
                       ) : (
@@ -391,19 +391,19 @@ const Header: React.FC<HeaderProps> = ({ currentPage }) => {
                         } flex items-center py-2`}
                       >
                         {title === "Dashboard" ? (
-                          <Home active={active === idx ? true : false} />
+                          <Home />
                         ) : title === "Wallet" ? (
-                          <Wallet active={active === idx ? true : false} />
+                          <Wallet />
                         ) : title === "P2P Marketplace" ? (
-                          <P2PMC active={active === idx ? true : false} />
+                          <P2PMC />
                         ) : title === "Make deposit" ? (
-                          <MakeDeposit active={active === idx ? true : false} />
+                          <MakeDeposit />
                         ) : title === "Profile" ? (
-                          <Profile active={active === idx ? true : false} />
+                          <Profile />
                         ) : title === "Settings" ? (
-                          <Settings active={active === idx ? true : false} />
+                          <Settings />
                         ) : title === "Support" ? (
-                          <Support active={active === idx ? true : false} />
+                          <Support />
                         ) : title === "Sign out" ? (
                           <SignOut />
                         ) : (

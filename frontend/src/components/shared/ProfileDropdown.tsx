@@ -1,0 +1,170 @@
+import {
+  Home,
+  MakeDeposit,
+  P2PMC,
+  Profile,
+  Settings,
+  SignOut,
+  Support,
+  Wallet,
+} from "@/assets/icons/header-dropdown-icons";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { APP_ROUTES } from "@/constants/app_route";
+import { logoutUser } from "@/redux/actions/userActions";
+import { cn } from "@/utils";
+import { ChevronDown } from "lucide-react";
+import { NavLink } from "react-router-dom";
+import { Button } from "@/components/ui/Button";
+
+const mainMenuItems = [
+  {
+    text: "Make deposit",
+    link: APP_ROUTES.WALLET.DEPOSIT,
+    icon: MakeDeposit,
+  },
+  {
+    text: "Profile",
+    link: APP_ROUTES.PROFILE,
+    icon: Profile,
+  },
+  {
+    text: "Settings",
+    link: APP_ROUTES.SETTINGS.PROFILE,
+    icon: Settings,
+  },
+  {
+    text: "Support",
+    link: APP_ROUTES.SETTINGS.SUPPORT,
+    icon: Support,
+  },
+];
+
+const mobileMenuItems = [
+  {
+    text: "Dashboard",
+    link: APP_ROUTES.DASHBOARD,
+    icon: Home,
+  },
+  {
+    text: "Wallet",
+    link: APP_ROUTES.WALLET.HOME,
+    icon: Wallet,
+  },
+  {
+    text: "P2P Marketplace",
+    link: APP_ROUTES.P2P.MARKETPLACE,
+    icon: P2PMC,
+    subMenu: [
+      {
+        text: "My Ads",
+        link: APP_ROUTES.P2P.MY_ADS,
+      },
+      {
+        text: "Express",
+        link: APP_ROUTES.P2P.EXPRESS,
+      },
+      {
+        text: "Order History",
+        link: APP_ROUTES.P2P.ORDER_HISTORY,
+      },
+    ],
+  },
+];
+
+const ProfileDropdown = () => {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger className="outline-none relative flex items-center gap-2">
+        <img
+          src="/avatar.png"
+          alt="profile"
+          className="w-[32px] h-[32px] md:w-[40px] md:h-[40px]"
+        />
+        <ChevronDown className="w-4 h-4" />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        align="end"
+        className="w-[200px] p-2"
+        sideOffset={10}
+      >
+        <div className="profile-dropdown">
+          <div className="md:hidden">
+            {mobileMenuItems.map((item, index) => {
+              if (item.subMenu) {
+                return (
+                  <div>
+                    <NavLink
+                      to={item.link}
+                      key={index}
+                      className={cn(
+                        "group flex items-center gap-2 py-2.5  font-normal cursor-pointer text-slate-700 text-sm  hover:bg-[#F5FEF8] px-3 hover:font-medium hover:text-green-600 "
+                      )}
+                    >
+                      <item.icon />
+                      <span>{item.text}</span>
+                    </NavLink>
+                    <div className="pl-8 border-b">
+                      {item.subMenu.map((subItem, subIndex) => (
+                        <NavLink
+                          to={subItem.link}
+                          key={subIndex}
+                          className="block py-2.5 text-sm text-slate-600 hover:text-green-500"
+                        >
+                          {subItem.text}
+                        </NavLink>
+                      ))}
+                    </div>
+                  </div>
+                );
+              }
+              return (
+                <NavLink
+                  to={item.link}
+                  key={index}
+                  className={cn(
+                    "group flex items-center gap-2 py-2.5 hover:text-green-500 font-normal cursor-pointer text-slate-700 text-sm  hover:bg-[#F5FEF8] px-3 border-b "
+                  )}
+                >
+                  <item.icon />
+                  <span className="group-hover:text-green-600 group-hover:font-medium">
+                    {item.text}
+                  </span>
+                </NavLink>
+              );
+            })}
+          </div>
+          {mainMenuItems.map((item, index) => (
+            <NavLink
+              to={item.link}
+              key={index}
+              className={cn(
+                " flex items-center gap-2 py-2  font-normal cursor-pointer text-slate-700 text-sm  hover:bg-[#F5FEF8] px-3  hover:font-medium hover:text-green-600"
+              )}
+            >
+              <item.icon />
+              <span className="  ">{item.text}</span>
+            </NavLink>
+          ))}
+          <div className="border-t mt-2">
+            <Button
+              variant="ghost"
+              onClick={() => logoutUser()}
+              className={cn(
+                "w-full text-sm px-3 text-slate-700 font-normal justify-start hover:bg-red-500/5 hover:text-red-500 hover:font-medium"
+              )}
+            >
+              <SignOut />
+              Sign out
+            </Button>
+          </div>
+        </div>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
+
+export default ProfileDropdown;

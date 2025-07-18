@@ -1,25 +1,31 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 
-import { APP_ROUTES } from "../constants/app_route";
-import { UserState } from "../redux/reducers/userSlice";
-import { PrimaryButton, WhiteTransparentButton } from "./buttons/Buttons";
-import Header from "./Header";
 import MaxWidth from "@/components/shared/MaxWith";
+import { Button, buttonVariants } from "@/components/ui/Button";
+import NAV_LINKS from "@/data/navlinks";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/utils";
+import { Menu, X } from "lucide-react";
+import { APP_ROUTES } from "@/constants/app_route";
+import { UserState } from "@/redux/reducers/userSlice";
 import BisatLogo from "./shared/Logo";
+import usePreventScroll from "@/hooks/use-preventScroll";
+import { logoutUser } from "@/redux/actions/userActions";
 
 const NavBar = () => {
   const user: UserState = useSelector((state: any) => state.user);
+  const isAuthenticated = user.isAuthenticated;
+  const isMobile = useIsMobile();
 
   const [toggleMenu, setToggleMenu] = useState(false);
-  const navLinks = [
-    { title: "About us", href: "/about" },
-    { title: "Blog", href: "#" },
-    { title: "Contact", href: "#" },
-    // { title: "Sign In", href: "/auth/login" },
-  ];
-  const navigate = useNavigate();
+
+  usePreventScroll(toggleMenu);
+
+  const closeMenu = () => {
+    setToggleMenu(false);
+  };
 
   return (
     <>
@@ -28,172 +34,99 @@ const NavBar = () => {
           as="header"
           className="flex items-center justify-between  py-5 "
         >
-          <BisatLogo />
+          <div className="scale-75" onClick={isMobile ? closeMenu : undefined}>
+            <BisatLogo />
+          </div>
 
-          <nav className="hidden lg:flex items-center gap-8">
-            {navLinks.map((link, index) => (
+          <nav
+            className={cn(
+              "flex items-center gap-8 flex-col md:flex-row absolute md:static bg-white md:bg-transparent w-full md:w-auto top-full md:top-0   -right-[100vw] md:right-0 z-40 md:z-0 transition-all duration-500 ease transform p-10 md:p-0",
+              toggleMenu && "right-0 duration-700 ease-in-out rounded-b-xl"
+            )}
+          >
+            {NAV_LINKS.map((link, index) => (
               <NavLink
                 key={index}
                 to={link.href}
-                className="font-[400] text-[14px] leading-[24px] text-[#515B6E] text-center whitespace-nowrap cursor-pointer"
+                onClick={isMobile ? closeMenu : undefined}
+                className="font-[400] text-sm leading-[24px] text-slate-600 text-center whitespace-nowrap cursor-pointer"
               >
                 {link.title}
               </NavLink>
             ))}
-            <WhiteTransparentButton
-              text={"Sign In"}
-              loading={false}
-              css="border-[1px] w-full border-[#F3F4F6] bg-[#F6F7F8] text-[#181300] px-[44px] py-[12px]"
-              onClick={() => navigate(APP_ROUTES.AUTH.LOGIN)}
-            />
 
-            <PrimaryButton
-              css="w-full px-[44px] py-[12px]"
-              text={"Sign Up"}
-              loading={false}
-              onClick={() => navigate(APP_ROUTES.AUTH.SIGNUP)}
-            />
-          </nav>
-
-          <div className="md:hidden">
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              onClick={() => setToggleMenu(!toggleMenu)}
-            >
-              <path
-                d="M3 7H21"
-                stroke="#515B6E"
-                stroke-width="1.5"
-                stroke-linecap="round"
-              />
-              <path
-                d="M3 12H21"
-                stroke="#515B6E"
-                stroke-width="1.5"
-                stroke-linecap="round"
-              />
-              <path
-                d="M3 17H21"
-                stroke="#515B6E"
-                stroke-width="1.5"
-                stroke-linecap="round"
-              />
-            </svg>
-          </div>
-        </MaxWidth>
-
-        {/* HDR: Mobile */}
-        <div
-          className={`bg-white w-full h-screen px-5 md:hidden flex flex-col fixed z-20 right-0 top-0 left-0 transition-all duration-300 ease-in-out transform
-    ${
-      toggleMenu
-        ? "translate-y-0 opacity-100"
-        : "-translate-y-5 opacity-0 pointer-events-none"
-    }`}
-        >
-          <header className="flex items-center justify-between  py-6 w-full lg:max-w-[1360px] mx-auto">
-            <BisatLogo />
-
-            <nav className="hidden lg:flex items-center gap-10">
-              {navLinks.map((link, index) => (
-                <NavLink
-                  key={index}
-                  to={link.href}
-                  className="font-[400] text-[14px] leading-[24px] text-[#515B6E] text-center whitespace-nowrap cursor-pointer"
-                >
-                  {link.title}
-                </NavLink>
-              ))}
-              <WhiteTransparentButton
-                text={"Sign In"}
-                loading={false}
-                css="border-[1px] w-full border-[#F3F4F6] bg-[#F6F7F8] text-[#181300] px-[44px] py-[12px]"
-                onClick={() => navigate(APP_ROUTES.AUTH.LOGIN)}
-              />
-
-              <PrimaryButton
-                css="w-full px-[44px] py-[12px]"
-                text={"Sign Up"}
-                loading={false}
-                onClick={() => navigate(APP_ROUTES.AUTH.SIGNUP)}
-              />
-            </nav>
-
-            <div className="md:hidden">
-              {toggleMenu ? (
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  onClick={() => setToggleMenu(!toggleMenu)}
-                >
-                  <rect width="20" height="20" rx="10" fill="#F3F4F6" />
-                  <path
-                    d="M10.0025 8.82208L13.538 5.28653C13.8635 4.96109 14.3911 4.96109 14.7165 5.28653C15.042 5.61196 15.042 6.13959 14.7165 6.46502L11.181 10.0006L14.7165 13.5361C15.042 13.8615 15.042 14.3891 14.7165 14.7146C14.3911 15.04 13.8635 15.04 13.538 14.7146L10.0025 11.1791L6.46698 14.7146C6.14154 15.04 5.61391 15.04 5.28848 14.7146C4.96304 14.3892 4.96304 13.8615 5.28848 13.5361L8.82404 10.0006L5.28847 6.46503C4.96304 6.13959 4.96304 5.61196 5.28847 5.28652C5.61391 4.96108 6.14154 4.96108 6.46698 5.28652L10.0025 8.82208Z"
-                    fill="#707D96"
-                  />
-                </svg>
+            <div className="flex items-center gap-x-6 gap-y-4 md:flex-row flex-col w-full md:w-auto">
+              {isAuthenticated ? (
+                <>
+                  <Link
+                    to={APP_ROUTES.DASHBOARD}
+                    className="text-sm text-slate-600"
+                  >
+                    Dashboard
+                  </Link>
+                  <Button
+                    variant="secondary"
+                    className={cn(
+                      "px-8 md:w-fit w-full self-stretch h-fit py-2.5 text-sm"
+                    )}
+                    onClick={() => {
+                      if (isMobile) {
+                        closeMenu();
+                      }
+                      logoutUser();
+                    }}
+                  >
+                    Log Out
+                  </Button>
+                </>
               ) : (
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  onClick={() => setToggleMenu(!toggleMenu)}
-                >
-                  <path
-                    d="M3 7H21"
-                    stroke="#515B6E"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                  />
-                  <path
-                    d="M3 12H21"
-                    stroke="#515B6E"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                  />
-                  <path
-                    d="M3 17H21"
-                    stroke="#515B6E"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                  />
-                </svg>
+                <>
+                  <Link
+                    className={cn(
+                      buttonVariants({ variant: "secondary" }),
+                      "px-8 md:w-fit w-full self-stretch h-fit py-2.5 text-sm"
+                    )}
+                    to={APP_ROUTES.AUTH.LOGIN}
+                    onClick={isMobile ? closeMenu : undefined}
+                  >
+                    Sign In
+                  </Link>
+                  <Link
+                    className={cn(
+                      buttonVariants(),
+                      "px-8 md:w-fit w-full self-stretch h-fit py-2.5 text-sm"
+                    )}
+                    to={APP_ROUTES.AUTH.SIGNUP}
+                    onClick={isMobile ? closeMenu : undefined}
+                  >
+                    Sign Up
+                  </Link>
+                </>
               )}
             </div>
-          </header>
-          {navLinks.map((link, index) => (
-            <NavLink
-              key={index}
-              to={link.href}
-              className="font-[400] my-3 w-full text-[14px] leading-[24px] text-[#515B6E] text-left whitespace-nowrap cursor-pointer"
-            >
-              {link.title}
-            </NavLink>
-          ))}
-          <WhiteTransparentButton
-            text={"Sign In"}
-            loading={false}
-            css="border-[1px] w-full lg:w-[133px] border-[#F3F4F6] bg-[#F6F7F8] mb-4 text-[#181300]"
-            onClick={() => navigate(APP_ROUTES.AUTH.LOGIN)}
-          />
+          </nav>
 
-          <PrimaryButton
-            css="w-full"
-            text={"Sign Up"}
-            loading={false}
-            onClick={() => navigate(APP_ROUTES.AUTH.SIGNUP)}
-          />
-        </div>
+          <Button
+            variant="ghost"
+            onClick={() => setToggleMenu((prev) => !prev)}
+            className={cn(" !p-0 w-fit h-fit bg-transparent lg:hidden")}
+          >
+            {toggleMenu ? (
+              <X className="!w-6 !h-6" />
+            ) : (
+              <Menu className="!w-6 !h-6" />
+            )}
+          </Button>
+        </MaxWidth>
       </div>
+      {/* SUB: OVERLAY */}
+      <div
+        onClick={closeMenu}
+        className={cn(
+          "md:hidden fixed inset-0 bg-black/80 z-30 opacity-0 duration-500 ease delay-300 invisible",
+          toggleMenu && "opacity-100 visible"
+        )}
+      />
     </>
   );
 };

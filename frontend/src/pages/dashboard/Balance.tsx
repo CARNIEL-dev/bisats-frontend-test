@@ -1,306 +1,242 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import { PrimaryButton } from "../../components/buttons/Buttons";
-import KycManager from "../kyc/KYCManager";
-import { APP_ROUTES } from "../../constants/app_route";
-import { ACTIONS } from "../../utils/transaction_limits";
-import { GetWallet } from "../../redux/actions/walletActions";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
-interface WalletData {
-	id: string;
-	userId: string;
-	xNGN: number;
-	SOL: number;
-	BTC: number;
-	USDT_ETH: number;
-	USDT_TRX: number;
-	USDT_SOL: number;
-	ETH: number;
-	TRX: number;
-}
+import { Button, buttonVariants } from "@/components/ui/Button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Skeleton } from "@/components/ui/skeleton";
+import { APP_ROUTES } from "@/constants/app_route";
+import { GetWallet } from "@/redux/actions/walletActions";
+import { cn, formatter } from "@/utils";
+import { ChevronDown, Eye, EyeClosed } from "lucide-react";
 
-interface CryptoRates {
-	bitcoin?: { usd: number; ngn: number };
-	ethereum?: { usd: number; ngn: number };
-	solana?: { usd: number; ngn: number };
-	tron?: { usd: number; ngn: number };
-	usd?: { usd: number; ngn: number };
-}
+const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
+  const dispatch = useDispatch();
 
-interface WalletState {
-	wallet: WalletData | null;
-	loading: boolean;
-	error: string | null;
-}
+  const [showBalance, setShowBalance] = useState(true);
+  const [currency, setCurrency] = useState<string>("USD");
+  const [cryptoRates, setCryptoRates] = useState<CryptoRates | null>(null);
+  const [totalBalance, setTotalBalance] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-interface RootState {
-	wallet: WalletState;
-}
+  const walletData = useSelector((state: RootState) => state.wallet.wallet);
+  const walletError = useSelector((state: RootState) => state.wallet.error);
 
-const Balance: React.FC = () => {
-	const navigate = useNavigate();
-	const dispatch = useDispatch();
+  console.log(walletError, "walletError");
 
-	const [showBalance, setShowBalance] = useState(true);
-	const [currency, setCurrency] = useState<"USD" | "NGN">("USD");
-	const [showCurrencyDropdown, setShowCurrencyDropdown] = useState(false);
-	const [cryptoRates, setCryptoRates] = useState<CryptoRates | null>(null);
-	const [totalBalance, setTotalBalance] = useState<number | null>(null);
+  // Fetch wallet data
+  useEffect(() => {
+    const fetchWalletData = async () => {
+      try {
+        await dispatch(GetWallet() as any);
+      } catch (err) {
+        console.error("Error fetching wallet:", err);
+      }
+    };
 
-	const walletData = useSelector((state: RootState) => state.wallet.wallet);
-	const walletLoading = useSelector((state: RootState) => state.wallet.loading);
-	const walletError = useSelector((state: RootState) => state.wallet.error);
+    fetchWalletData();
+  }, [dispatch]);
 
-	// Fetch wallet data
-	useEffect(() => {
-		const fetchWalletData = async () => {
-			try {
-				await dispatch(GetWallet() as any);
-			} catch (err) {
-				console.error("Error fetching wallet:", err);
-			}
-		};
+  // Fetch crypto rates when wallet data is available
+  useEffect(() => {
+    const fetchCryptoRates = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch(
+          "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,tron,usd&vs_currencies=usd,ngn"
+        );
 
-		fetchWalletData();
-	}, [dispatch]);
+        if (response.ok) {
+          const data = await response.json();
+          setCryptoRates(data);
+        }
+      } catch (err) {
+        console.error("Error fetching crypto rates:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-	// Fetch crypto rates when wallet data is available
-	useEffect(() => {
-		const fetchCryptoRates = async () => {
-			try {
-				const response = await fetch(
-					"https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,tron,usd&vs_currencies=usd,ngn"
-				);
+    if (walletData && !cryptoRates) {
+      fetchCryptoRates();
+    }
+  }, [walletData, cryptoRates]);
 
-				if (response.ok) {
-					const data = await response.json();
-					setCryptoRates(data);
-				}
-			} catch (err) {
-				console.error("Error fetching crypto rates:", err);
-			}
-		};
+  //? Calculate total balance when rates are available
+  useEffect(() => {
+    if (walletData && cryptoRates) {
+      calculateTotalBalance();
+    }
+  }, [walletData, cryptoRates, currency]);
 
-		if (walletData && !cryptoRates) {
-			fetchCryptoRates();
-		}
-	}, [walletData, cryptoRates]);
+  //? Simple function to calculate the total balance
+  const calculateTotalBalance = () => {
+    if (!walletData || !cryptoRates) return;
 
-	// Calculate total balance when rates are available
-	useEffect(() => {
-		if (walletData && cryptoRates) {
-			calculateTotalBalance();
-		}
-	}, [walletData, cryptoRates, currency]);
+    const currencyKey = currency.toLowerCase() as "usd" | "ngn";
+    let total = 0;
 
-	// Simple function to calculate the total balance
-	const calculateTotalBalance = () => {
-		if (!walletData || !cryptoRates) return;
+    // Bitcoin
+    if (walletData.BTC && cryptoRates.bitcoin) {
+      total += walletData.BTC * cryptoRates.bitcoin[currencyKey];
+    }
 
-		const currencyKey = currency.toLowerCase() as "usd" | "ngn";
-		let total = 0;
+    // Ethereum
+    if (walletData.ETH && cryptoRates.ethereum) {
+      total += walletData.ETH * cryptoRates.ethereum[currencyKey];
+    }
 
-		// Bitcoin
-		if (walletData.BTC && cryptoRates.bitcoin) {
-			total += walletData.BTC * cryptoRates.bitcoin[currencyKey];
-		}
+    // Solana
+    if (walletData.SOL && cryptoRates.solana) {
+      total += walletData.SOL * cryptoRates.solana[currencyKey];
+    }
 
-		// Ethereum
-		if (walletData.ETH && cryptoRates.ethereum) {
-			total += walletData.ETH * cryptoRates.ethereum[currencyKey];
-		}
+    // Tron
+    if (walletData.TRX && cryptoRates.tron) {
+      total += walletData.TRX * cryptoRates.tron[currencyKey];
+    }
 
-		// Solana
-		if (walletData.SOL && cryptoRates.solana) {
-			total += walletData.SOL * cryptoRates.solana[currencyKey];
-		}
+    // USDT (all types)
+    const usdtTotal =
+      (walletData.USDT_ETH || 0) +
+      (walletData.USDT_TRX || 0) +
+      (walletData.USDT_SOL || 0);
 
-		// Tron
-		if (walletData.TRX && cryptoRates.tron) {
-			total += walletData.TRX * cryptoRates.tron[currencyKey];
-		}
+    if (usdtTotal > 0 && cryptoRates.usd) {
+      total += usdtTotal * cryptoRates.usd[currencyKey];
+    }
 
-		// USDT (all types)
-		const usdtTotal =
-			(walletData.USDT_ETH || 0) +
-			(walletData.USDT_TRX || 0) +
-			(walletData.USDT_SOL || 0);
+    // xNGN
+    if (walletData.xNGN) {
+      if (currency === "NGN") {
+        total += walletData.xNGN;
+      } else if (cryptoRates.usd && cryptoRates.usd.ngn) {
+        // Convert NGN to USD
+        total += walletData.xNGN / cryptoRates.usd.ngn;
+      }
+    }
 
-		if (usdtTotal > 0 && cryptoRates.usd) {
-			total += usdtTotal * cryptoRates.usd[currencyKey];
-		}
+    setTotalBalance(total);
+  };
 
-		// xNGN
-		if (walletData.xNGN) {
-			if (currency === "NGN") {
-				total += walletData.xNGN;
-			} else if (cryptoRates.usd && cryptoRates.usd.ngn) {
-				// Convert NGN to USD
-				total += walletData.xNGN / cryptoRates.usd.ngn;
-			}
-		}
+  const toggleBalanceVisibility = () => {
+    setShowBalance(!showBalance);
+  };
 
-		console.log(`Total balance in ${currency}:`, total);
-		setTotalBalance(total);
-	};
+  const getCurrencySymbol = () => {
+    return currency === "USD" ? "$" : "₦";
+  };
 
-	const formatBalance = () => {
-		if (totalBalance === null) return "0.00";
+  return (
+    <div className="border-[1px]  flex flex-col gap-2 p-4 md:p-6 rounded-2xl">
+      <div className="flex items-center gap-2">
+        <p className="font-semibold text-neutral-800">Total Balance</p>
+        <Button
+          variant="ghost"
+          disabled={isLoading}
+          className={cn(
+            "!p-0 h-fit w-fit hover:bg-transparent hover:scale-110"
+          )}
+          onClick={toggleBalanceVisibility}
+        >
+          {showBalance ? (
+            <EyeClosed className="!w-5 !h-5" />
+          ) : (
+            <Eye className="!w-5 !h-5" />
+          )}
+        </Button>
+      </div>
+      <div className="flex items-baseline gap-3">
+        {isLoading ? (
+          <Skeleton className="w-24 h-10" />
+        ) : walletError ? (
+          <span className="text-red-500 font-normal ">
+            Error loading balance
+          </span>
+        ) : (
+          <div className="flex items-center gap-0.5">
+            <span className="text-[28px] md:text-[34px] font-medium inline-block">
+              {getCurrencySymbol()}
+            </span>
+            {showBalance ? (
+              totalBalance ? (
+                <p className="font-semibold">
+                  <span className="text-2xl md:text-4xl">
+                    {
+                      formatter({})
+                        .format(totalBalance ?? 0)
+                        .split(".")[0]
+                    }
+                  </span>
+                  <span className={`mr-[4px] text-lg md:text-2xl `}>
+                    .
+                    {
+                      formatter({})
+                        .format(totalBalance ?? 0)
+                        .split(".")[1]
+                    }
+                  </span>
+                </p>
+              ) : (
+                <p className="text-red-500 text-sm">Error getting balance</p>
+              )
+            ) : (
+              <p className="font-semibold text-xl md:text-3xl self-end"> ***</p>
+            )}
+          </div>
+        )}
 
-		return totalBalance.toLocaleString("en-US", {
-			minimumFractionDigits: 2,
-			maximumFractionDigits: 2,
-		});
-	};
-
-	const toggleBalanceVisibility = () => {
-		setShowBalance(!showBalance);
-	};
-
-	const toggleCurrencyDropdown = () => {
-		setShowCurrencyDropdown(!showCurrencyDropdown);
-	};
-
-	const changeCurrency = (newCurrency: "USD" | "NGN") => {
-		setCurrency(newCurrency);
-		setShowCurrencyDropdown(false);
-	};
-
-	const getCurrencySymbol = () => {
-		return currency === "USD" ? "$" : "₦";
-	};
-
-	const isLoading = walletLoading || (!cryptoRates && !walletError);
-
-	return (
-		<div
-			className="border-[1px] h-full w-full py-3 px-3 md:py-6 md:px-6"
-			style={{ borderRadius: "12px", borderColor: "#D6DAE1" }}
-		>
-			<div className="m-[2px]">
-				<p
-					style={{ color: "#2B313B", fontSize: "15px" }}
-					className="font-semibold"
-				>
-					Total Balance
-					<img
-						className="mx-[8px] inline h-[15px] w-[15px] cursor-pointer outline-none"
-						src={showBalance ? "/Icon/eye.png" : "/Icon/eye.png"}
-						alt={showBalance ? "hide balance" : "show balance"}
-						tabIndex={0}
-						onClick={toggleBalanceVisibility}
-						onKeyDown={(e) => {
-							if (e.key === "Enter" || e.key === " ") {
-								toggleBalanceVisibility();
-							}
-						}}
-					/>
-				</p>
-			</div>
-			<div className="m-[2px]">
-				<p style={{ color: "#0A0E12" }}>
-					{isLoading ? (
-						<span style={{ fontSize: "16px", fontWeight: 400 }}>
-							Loading...
-						</span>
-					) : walletError ? (
-						<span
-							style={{ fontSize: "18px", fontWeight: 400, color: "#ff6b6b" }}
-						>
-							Error loading balance
-						</span>
-					) : (
-						<>
-							<span
-								style={{ fontWeight: 600 }}
-								className={`mr-[0.5px] text-[28px] md:text-[34px] ${!showBalance && "blur"}`}
-							>
-								{getCurrencySymbol()}
-								{formatBalance().split(".")[0]}
-							</span>
-							<span
-								style={{ fontWeight: 600 }}
-								className={`mr-[4px] text-[18px] md:text-[22px] ${!showBalance && "blur"}`}
-							>
-								.{formatBalance().split(".")[1]}
-							</span>
-						</>
-					)}
-					<span
-						className="cursor-pointer relative"
-						tabIndex={0}
-						onClick={toggleCurrencyDropdown}
-						onKeyDown={(e) => {
-							if (e.key === "Enter" || e.key === " ") {
-								toggleCurrencyDropdown();
-							}
-						}}
-					>
-						<span style={{ fontSize: "16px", fontWeight: 400 }}>
-							{" "}
-							{currency}
-						</span>
-						<img
-							className="inline h-[16px] w-[16px] cursor-pointer"
-							src="/Icon/Arrow-down-Fill.png"
-							alt="currency dropdown"
-						/>
-						{showCurrencyDropdown && (
-							<div
-								className="absolute text-[12px] top-full left-8 mt-1 bg-white border-[1px] border-gray-200 rounded shadow-lg z-10 px-2 pr-4 gap-y-2 py-1"
-								style={{
-									borderRadius: "12px",
-									borderColor: "#D6DAE1",
-								}}
-							>
-								<div
-									className=" hover:bg-gray-100 cursor-pointer"
-									onClick={() => changeCurrency("USD")}
-								>
-									USD
-								</div>
-								<div
-									className=" hover:bg-gray-100 cursor-pointer"
-									onClick={() => changeCurrency("NGN")}
-								>
-									NGN
-								</div>
-							</div>
-						)}
-					</span>
-				</p>
-			</div>
-			<div>
-				{/* <div>
-					<p style={{ color: "#515B6E" }} className="mb-[25px]">
-						<span style={{ fontSize: "12px", fontWeight: 600 }}>+$100.45</span>
-						<span
-							style={{ fontSize: "12px", fontWeight: 400 }}
-							className="ml-[4px]"
-						>
-							0.11%
-						</span>
-					</p>
-				</div> */}
-			</div>
-			<div>
-				{/* <KycManager
-					action={ACTIONS.DEPOSIT}
-					func={() => navigate(APP_ROUTES.WALLET.DEPOSIT)}
-				>
-					{(validateAndExecute) => ( */}
-				<PrimaryButton
-					text={"Deposit"}
-					loading={isLoading}
-					css="w-full mt-10"
-					onClick={() => navigate(APP_ROUTES.WALLET.DEPOSIT)}
-				/>
-				{/* )}
-				</KycManager> */}
-			</div>
-		</div>
-	);
+        <div>
+          <DropdownMenu>
+            <DropdownMenuTrigger className="outline-none text-sm">
+              <div className="flex items-center gap-0.5">
+                {currency}
+                <ChevronDown className="w-4 h-4" />
+              </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="">
+              <DropdownMenuLabel>Choose Currency</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuRadioGroup
+                value={currency}
+                onValueChange={(val) => setCurrency(val)}
+              >
+                <DropdownMenuRadioItem value="USD">USD</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="NGN">NGN</DropdownMenuRadioItem>
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </div>
+      <div className="flex gap-2  md:mt-10 mt-6 ">
+        <Link
+          to={APP_ROUTES.WALLET.DEPOSIT}
+          className={cn(buttonVariants({}), "flex-1 py-6")}
+        >
+          Deposit
+        </Link>
+        {showWithdraw && (
+          <Link
+            to={APP_ROUTES.WALLET.WITHDRAW}
+            className={cn(
+              buttonVariants({ variant: "secondary" }),
+              "flex-1 py-6"
+            )}
+          >
+            Withdraw
+          </Link>
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default Balance;

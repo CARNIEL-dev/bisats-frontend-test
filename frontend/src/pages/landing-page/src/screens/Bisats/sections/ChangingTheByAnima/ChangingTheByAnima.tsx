@@ -1,7 +1,8 @@
 import { BuildingIcon, LockIcon, ShieldIcon, ZapIcon } from "lucide-react";
-import { Card, CardContent } from "../../../../components/ui/card";
+
 import LogoPulse from "../../../../../../../assets/icons/bisats logo.png";
 import Mobile_Features from "../../../../../../../assets/landingPage/mobile_features.png";
+import { Card, CardContent } from "@/components/ui/card";
 
 // Feature card data for mapping
 const featureCards = [

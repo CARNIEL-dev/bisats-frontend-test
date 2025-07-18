@@ -1,8 +1,6 @@
-import React from "react";
-import { Card, CardContent } from "../../../../components/ui/card";
-import Merchant from "../../../../../../../assets/merchant.png"
-import Customer from "../../../../../../../assets/customer.png"
-
+import { Card, CardContent } from "@/components/ui/card";
+import Customer from "../../../../../../../assets/customer.png";
+import Merchant from "../../../../../../../assets/merchant.png";
 
 export const ChangingThePpByAnima = (): JSX.Element => {
   const cards = [
@@ -14,7 +12,7 @@ export const ChangingThePpByAnima = (): JSX.Element => {
       textClass: "text-accent-black",
       descriptionClass: "text-greysgrey-10",
       position: "left-0",
-      img:Merchant
+      img: Merchant,
     },
     {
       title: "Bisats for Customers",
@@ -24,7 +22,7 @@ export const ChangingThePpByAnima = (): JSX.Element => {
       textClass: "text-accent-white",
       descriptionClass: "text-accent-white",
       position: "left-[591px]",
-      img:Customer
+      img: Customer,
     },
   ];
 
@@ -32,7 +30,7 @@ export const ChangingThePpByAnima = (): JSX.Element => {
     <section className="relative w-full bg-white pb-10 px-5 lg:py-28">
       <div className="relative max-w-[90%] mx-auto">
         <h2 className="mb-16 font-['Geist',Helvetica] text-[28px] lg:text-[42px] leading-[56px] font-semibold">
-          Elevating Peer-to-peer <br/> transactions for everyone
+          Elevating Peer-to-peer <br /> transactions for everyone
         </h2>
 
         <div className="flex flex-col md:flex-row gap-6 justify-between">
@@ -42,7 +40,7 @@ export const ChangingThePpByAnima = (): JSX.Element => {
               className={`w-full md:w-[535px] h-auto md:h-[505px] rounded-md bg-cover bg-[50%_50%] border-none shadow-none`}
             >
               <CardContent className="flex flex-col justify-end h-full p-0">
-                <img src={card.img} alt={card.title } />
+                <img src={card.img} alt={card.title} />
               </CardContent>
             </Card>
           ))}

@@ -1,7 +1,22 @@
 /** @format */
 
-import { getToken, getUser, setLivePrices, setUserTokenData } from "../../helpers";
-import { T2FARequest, TAddSearchRequest, TCreateAdsRequest, TCryptoWithdrawalRequest, TDeleteWithdrawalRequest, TPayloadTransHistory, TTopUpNGN, TWithdrawalBankAccount, TWithdrawalRequest } from "../../types/wallet";
+import {
+  getToken,
+  getUser,
+  setLivePrices,
+  setUserTokenData,
+} from "../../helpers";
+import {
+  T2FARequest,
+  TAddSearchRequest,
+  TCreateAdsRequest,
+  TCryptoWithdrawalRequest,
+  TDeleteWithdrawalRequest,
+  TPayloadTransHistory,
+  TTopUpNGN,
+  TWithdrawalBankAccount,
+  TWithdrawalRequest,
+} from "../../types/wallet";
 import { BACKEND_URLS } from "../../utils/backendUrls";
 import dispatchWrapper from "../../utils/dispatchWrapper";
 import Bisatsfetch from "../fetchWrapper";
@@ -17,17 +32,15 @@ export const GetWallet = async () => {
       }
     );
     const data = response.data;
-    console.log(response)
+    console.log(response);
     if (response.status) {
       dispatchWrapper({
         type: WalletActionypes.GET_WALLET,
         payload: data,
       });
-      const asset_list =  transformAssets(data?.cryptoAssests);
-      setUserTokenData(asset_list)
+      const asset_list = transformAssets(data?.cryptoAssests);
+      setUserTokenData(asset_list);
       return data;
-    } else {
-      // logoutUser();
     }
   } catch (error) {
     // logoutUser();
@@ -109,8 +122,8 @@ export const GetLivePrice = async () => {
       TRX: 0,
       USDT_TRX: 0,
     };
-    setLivePrices(JSON.stringify(prices))
-    return prices
+    setLivePrices(JSON.stringify(prices));
+    return prices;
   } catch (error) {
     console.error("Failed to fetch live prices:", error);
     setLivePrices(
@@ -155,7 +168,6 @@ export const GetLivePrice = async () => {
   }
 };
 
-
 export const TopUpNGNBalance = async (payload: TTopUpNGN) => {
   try {
     const response = await Bisatsfetch(
@@ -174,26 +186,24 @@ export const TopUpNGNBalance = async (payload: TTopUpNGN) => {
   }
 };
 
-export const GetUserBank = async (userId:string) => {
-   
-   try {
-     const response = await Bisatsfetch(
-       `/api/v1/user/${userId}${BACKEND_URLS?.WALLET.MY_BANKS}`,
-       {
-         method: "GET",
-       }
-     );
-     const data = response.data;
-     return data
-   } catch (error) {
-     // logoutUser();
-     // throw handleApiError(error);
-     return error;
-   }
-}
+export const GetUserBank = async (userId: string) => {
+  try {
+    const response = await Bisatsfetch(
+      `/api/v1/user/${userId}${BACKEND_URLS?.WALLET.MY_BANKS}`,
+      {
+        method: "GET",
+      }
+    );
+    const data = response.data;
+    return data;
+  } catch (error) {
+    // logoutUser();
+    // throw handleApiError(error);
+    return error;
+  }
+};
 
-export const GetBankList = async (userId:string) => {
- 
+export const GetBankList = async (userId: string) => {
   try {
     const response = await Bisatsfetch(
       `/api/v1/user/${userId}${BACKEND_URLS?.WALLET?.LIST_BANKS}`,
@@ -214,8 +224,9 @@ export const GetBankList = async (userId:string) => {
   }
 };
 
-
-export const AddBankAccountForWithdrawal = async (payload: TWithdrawalBankAccount) => {
+export const AddBankAccountForWithdrawal = async (
+  payload: TWithdrawalBankAccount
+) => {
   try {
     const response = await Bisatsfetch(
       `/api/v1/user/${payload.userId}${BACKEND_URLS.WALLET.ADD_BANK_ACCOUNT}`,
@@ -271,9 +282,7 @@ export const DeleteBankAccountForWithdrawal = async (
     return error;
   }
 };
-export const Withdraw_xNGN = async (
-  payload: TWithdrawalRequest
-) => {
+export const Withdraw_xNGN = async (payload: TWithdrawalRequest) => {
   try {
     const response = await Bisatsfetch(
       `/api/v1/user/${payload.userId}${BACKEND_URLS.WALLET.WITHDRAW}`,
@@ -292,7 +301,6 @@ export const Withdraw_xNGN = async (
 };
 
 export const Withdraw_Crypto = async (payload: TCryptoWithdrawalRequest) => {
-
   try {
     const response = await Bisatsfetch(
       `/api/v1/user/${payload.userId}${BACKEND_URLS.WALLET.WITHDRAW_CRYPTO}`,
@@ -308,7 +316,6 @@ export const Withdraw_Crypto = async (payload: TCryptoWithdrawalRequest) => {
     return error;
   }
 };
-
 
 export const TwoFactorAuth = async (payload: T2FARequest) => {
   try {
@@ -327,11 +334,7 @@ export const TwoFactorAuth = async (payload: T2FARequest) => {
   }
 };
 
-
-
-export const CreateAds = async (
-  payload: TCreateAdsRequest
-) => {
+export const CreateAds = async (payload: TCreateAdsRequest) => {
   try {
     const response = await Bisatsfetch(
       `/api/v1/user/${payload.userId}${BACKEND_URLS.P2P.ADS.CREATE}`,
@@ -349,11 +352,14 @@ export const CreateAds = async (
   }
 };
 
-
 export const GetExpressAds = async (payload: TAddSearchRequest) => {
   try {
     const response = await Bisatsfetch(
-      `/api/v1/user/${payload.userId}${BACKEND_URLS?.P2P.ADS.EXPRESS_ADS}?asset=${payload.asset}&amount=${payload.amount}&type=${payload.type==="buy"?"sell":"buy"}&limit=1&skip=0`,
+      `/api/v1/user/${payload.userId}${
+        BACKEND_URLS?.P2P.ADS.EXPRESS_ADS
+      }?asset=${payload.asset}&amount=${payload.amount}&type=${
+        payload.type === "buy" ? "sell" : "buy"
+      }&limit=1&skip=0`,
       {
         method: "GET",
       }
@@ -362,15 +368,14 @@ export const GetExpressAds = async (payload: TAddSearchRequest) => {
     if (response.status) {
       return data;
     } else {
-      return data
+      return data;
     }
   } catch (error) {
- 
     return error;
   }
 };
 
-export const GetSearchAds= async (payload: TAddSearchRequest) => {
+export const GetSearchAds = async (payload: TAddSearchRequest) => {
   try {
     const response = await Bisatsfetch(
       `/api/v1/user/${payload.userId}${
@@ -383,13 +388,12 @@ export const GetSearchAds= async (payload: TAddSearchRequest) => {
       }
     );
     const data = response.data;
-    console.log(response)
+    console.log(response);
     if (response.status) {
       return data;
     } else {
     }
   } catch (error) {
- 
     return error;
   }
 };
@@ -417,27 +421,31 @@ export const GetUserAd = async (payload: TAddSearchRequest) => {
   }
 };
 function transformAssets(data: any[]) {
-  const result: { id: string; tokenName: string; networks: { value: string; label: string; address: string; }[]; }[] = [];
+  const result: {
+    id: string;
+    tokenName: string;
+    networks: { value: string; label: string; address: string }[];
+  }[] = [];
 
   data.forEach(({ asset, network, address }) => {
-    let existing = result.find(item => item.id === asset);
+    let existing = result.find((item) => item.id === asset);
 
     const networkObj = {
       value: network,
       label: network,
-      address
+      address,
     };
 
     if (existing) {
       // Avoid duplicate networks
-      if (!existing.networks.some(n => n.value === network)) {
+      if (!existing.networks.some((n) => n.value === network)) {
         existing.networks.push(networkObj);
       }
     } else {
       result.push({
         id: asset,
         tokenName: asset,
-        networks: [networkObj]
+        networks: [networkObj],
       });
     }
   });
@@ -445,18 +453,14 @@ function transformAssets(data: any[]) {
   return result;
 }
 
-
-export const Fetch_CryptoAssets = async (payload:string) => {
+export const Fetch_CryptoAssets = async (payload: string) => {
   try {
-    const response = await Bisatsfetch(
-      `/api/v1/user/${payload}/crypto-data`,
-      {
-        method: "POST",
-        body: JSON.stringify(payload),
-      }
-    );
+    const response = await Bisatsfetch(`/api/v1/user/${payload}/crypto-data`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
     const data = response;
-    console.log(data)
+    console.log(data);
     return data;
   } catch (error) {
     // throw handleApiError(error);
@@ -464,19 +468,22 @@ export const Fetch_CryptoAssets = async (payload:string) => {
   }
 };
 
-
-
-export const GetWalletTransactions = async (payload:TPayloadTransHistory) => {
+export const GetWalletTransactions = async (payload: TPayloadTransHistory) => {
   try {
     const response = await Bisatsfetch(
-      `/api/v1/user/${payload.userID}${BACKEND_URLS?.WALLET?.WALLET_TRANSC_HISTORY}?limit=50&skip=0&reason=${payload.reason??""}&type=${payload.type??""}&asset=${payload.asset??""}&startDate=${payload.date??""}&endDate=${payload.date??""}&searchWord=${payload.searchWord??""}&status=${payload.status??""}`,
+      `/api/v1/user/${payload.userID}${
+        BACKEND_URLS?.WALLET?.WALLET_TRANSC_HISTORY
+      }?limit=50&skip=0&reason=${payload.reason ?? ""}&type=${
+        payload.type ?? ""
+      }&asset=${payload.asset ?? ""}&startDate=${payload.date ?? ""}&endDate=${
+        payload.date ?? ""
+      }&searchWord=${payload.searchWord ?? ""}&status=${payload.status ?? ""}`,
       {
         method: "GET",
       }
     );
     const data = response.data;
-      return data;
-  
+    return data;
   } catch (error) {
     // logoutUser();
     // throw handleApiError(error);

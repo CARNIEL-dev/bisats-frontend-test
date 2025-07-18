@@ -1,53 +1,14 @@
+import { footerData, LoggedInLinks } from "@/data/navlinks";
+import { cn } from "@/utils";
 import { FacebookIcon, TwitterIcon } from "lucide-react";
-import React from "react";
-import PrimaryInput from "./Inputs/PrimaryInput";
-import { PrimaryButton } from "./buttons/Buttons";
 import { useSelector } from "react-redux";
-import { UserState } from "../redux/reducers/userSlice";
 import { NavLink } from "react-router-dom";
+import { UserState } from "../redux/reducers/userSlice";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/input";
+import BisatLogo from "./shared/Logo";
 
 // Define footer navigation data for better maintainability
-const footerData = {
-  site: {
-    title: "Pages",
-    links: [
-      { name: "Home", url: "#" },
-      { name: "Terms and Conditions", url: "/terms&condition" },
-
-      { name: "T&C for Merchants", url: "/terms&condition" },
-      { name: "Policy", url: "/policy" },
-      { name: "Blog", url: "#" },
-      { name: "FAQs", url: "/faqs" },
-    ],
-  },
-  connect: {
-    title: "CONNECT",
-    links: [
-      { name: "X (Twitter)", url: "#" },
-      { name: "Instagram", url: "#" },
-      { name: "Facebook", url: "#" },
-    ],
-  },
-  contact: {
-    title: "Contact",
-    links: [{ name: "support@Bisats.org", url: "mailto:support@Bisats.org" }],
-  },
-};
-
-const LoggedInLinks = [
-  {
-    title: "Support",
-    link: "mailto:support@Bisats.org",
-  },
-  {
-    title: "FAQs",
-    link: "/faqs",
-  },
-  {
-    title: "Terms of Service",
-    link: "terms&condition",
-  },
-];
 
 export const Footer = (): JSX.Element => {
   const user = useSelector((state: { user: UserState }) => state.user);
@@ -69,20 +30,14 @@ export const Footer = (): JSX.Element => {
                 </a>
               ))}
             </div>
-            <div className="flex items-end justify-end w-2/3">
-              <div className="font-bold">
-                <img
-                  src="/logo-dash.png"
-                  alt="Logo"
-                  className="w-[80px] cursor-pointer h-[20px] md:w-[100px] md:h-[24px]"
-                />
-              </div>
+            <div className="flex items-end justify-end w-2/3 md:w-auto scale-75">
+              <BisatLogo />
             </div>
           </div>
         </footer>
       ) : (
         <footer className="w-full bg-[#0A0E12] px-5 py-10 lg:pt-28">
-          {/* Newsletter Section */}
+          {/* SUB: Newsletter Section */}
           <div className="flex flex-wrap lg:flex-col items-center gap-6 mb-32">
             <div className="flex flex-col items-center text-center gap-2">
               <h3 className="text-center font-desktop-header5 text-[28px] font-semibold text-white leading-[40px]">
@@ -93,25 +48,16 @@ export const Footer = (): JSX.Element => {
               </p>
             </div>
 
-            <div className="flex flex-wrap items-start w-full lg:w-[50%] border h-[48px]">
-              <div className="relative w-full lg:w-[70%] h-full">
-                <PrimaryInput
-                  placeholder="Email Address"
-                  css={
-                    "w-full border-[1px] border-[#F5BB00] h-full bg-[#2B313B33]"
-                  }
-                  label={""}
-                  error={undefined}
-                  touched={undefined}
-                />
-              </div>
-              <div className="w-full lg:w-[30%] h-full">
-                <PrimaryButton
-                  text={"Subscribe"}
-                  loading={false}
-                  css="w-full  mt-5 lg:mt-1.5 lg:ml-5"
-                />
-              </div>
+            <div className="flex items-center w-full lg:w-[50%]  gap-4 md:flex-row flex-col lg:h-[48px]">
+              <Input
+                placeholder="Email Address"
+                className={cn(
+                  "w-full md:h-full h-[50px] border-[1px] border-priYellow text-slate-600"
+                )}
+              />
+              <Button className={cn("px-5 py-3 w-full lg:w-[30%] h-full")}>
+                Subscribe
+              </Button>
             </div>
           </div>
 

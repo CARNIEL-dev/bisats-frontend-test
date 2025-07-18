@@ -72,7 +72,6 @@ export const LogInSchema = Yup.object().shape({
     .matches(lowerCaseRegex)
     .matches(upperCaseRegex)
     .matches(numberRegex)
-    .matches(specialCharcterRegex)
     .matches(characterLength)
     .required(),
 });
@@ -83,6 +82,6 @@ export const LogInSchema = Yup.object().shape({
 
 export const TopUpSchema = Yup.object().shape({
   amount: Yup.string()
-    .matches(/^\d*$/, "Amount must be a number") 
+    .matches(/^\d*$/, "Amount must be a number")
     .required("Amount is required"),
 });
