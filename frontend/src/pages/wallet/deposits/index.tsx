@@ -1,190 +1,208 @@
-import TokenSelect from "../../../components/Inputs/TokenSelect"
-import Head from "../Head"
-import { MultiSelectDropDown } from "../../../components/Inputs/MultiSelectInput"
-import { TokenData } from "../../../data"
-import { useEffect, useMemo, useState } from "react"
-import { PrimaryButton } from "../../../components/buttons/Buttons"
-import PrimaryInput from "../../../components/Inputs/PrimaryInput"
-import { useFormik } from "formik"
-import { useSelector } from "react-redux"
-import { UserState } from "../../../redux/reducers/userSlice"
-import { TopUpSchema } from "../../../formSchemas"
-import { DepositTranscBreakDown, TopUpNGNBalance } from "../../../redux/actions/walletActions"
-import Toast from "../../../components/Toast"
-import { useLocation, useNavigate } from "react-router-dom"
-import { APP_ROUTES } from "../../../constants/app_route"
-import { getUserTokenData, setDepositTranscBreakDown } from "../../../helpers"
-import KycRouteGuard from "../../../components/KycGuard"
-import { ACTIONS } from "../../../utils/transaction_limits"
-import { WalletState } from "../../../redux/reducers/walletSlice"
-import { assets } from "../../../utils/conversions"
-import { handleCopy } from "../../../redux/actions/generalActions"
-import KycManager from "../../kyc/KYCManager"
+import { PrimaryButton } from "@/components/buttons/Buttons";
+import { MultiSelectDropDown } from "@/components/Inputs/MultiSelectInput";
+import PrimaryInput from "@/components/Inputs/PrimaryInput";
+import Toast from "@/components/Toast";
+import { APP_ROUTES } from "@/constants/app_route";
+import { TopUpSchema } from "@/formSchemas";
+import { getUserTokenData, setDepositTranscBreakDown } from "@/helpers";
+import Head from "@/pages/wallet/Head";
+import { DepositTranscBreakDown } from "@/redux/actions/walletActions";
+import { UserState } from "@/redux/reducers/userSlice";
+import { useFormik } from "formik";
+import { useEffect, useMemo, useState } from "react";
+import { useSelector } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
+
+import CopyDisplay from "@/components/shared/CopyDisplay";
+import TokenSelection from "@/components/shared/TokenSelection";
+import KycManager from "@/pages/kyc/KYCManager";
+import { WalletState } from "@/redux/reducers/walletSlice";
+import { ACTIONS } from "@/utils/transaction_limits";
 
 export type TNetwork = {
-    label: string,
-    value: string,
-}
+  label: string;
+  value: string;
+};
 export type TProxyNetwork = {
-    label: string,
-    value: string,
-    address:string
-}
+  label: string;
+  value: string;
+  address: string;
+};
 const DepositPage = () => {
-    const location = useLocation();
-    const linkedAsset = location.state?.asset;
-    const [isLoading, setIsLoading] = useState(false)
-    const [selectedToken, setSelectedToken] = useState<string>(linkedAsset)
-    const [networks, setNetworks] = useState<TNetwork[]>([])
-    const [proxyNetworks, setProxyNetworks] = useState<TProxyNetwork[]>([])
+  const location = useLocation();
+  const linkedAsset = location.state?.asset;
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedToken, setSelectedToken] = useState<string>(linkedAsset);
+  const [networks, setNetworks] = useState<TNetwork[]>([]);
+  const [proxyNetworks, setProxyNetworks] = useState<TProxyNetwork[]>([]);
 
-    const [selectedNetwork, setSelectedNetworks] = useState<string>()
-    const [paymentOption, setPaymentOption] = useState<string>("")
-    const navigate = useNavigate()
-    const user: UserState = useSelector((state: any) => state.user);
-    const walletState: WalletState = useSelector((state: any) => state.wallet);
-    const wallet= walletState?.wallet
+  const [selectedNetwork, setSelectedNetworks] = useState<string>();
 
-    useEffect(() => {
-           const tokenList = getUserTokenData()
-           for (let token of tokenList) {
-               if (token.tokenName === selectedToken) {
-                   setNetworks(token.networks)
-                   setProxyNetworks(token.networks)
-                   return
-               }
-           }
-       }, [selectedToken])
+  const navigate = useNavigate();
+  const user: UserState = useSelector((state: any) => state.user);
 
-    const formik = useFormik({
-        initialValues: { amount: "" },
-        validationSchema: TopUpSchema,
-        onSubmit: async (values) => {
-            setIsLoading(true)
-            const { ...payload } = values
-            const payloadd = {
-                ...payload,
-                userId: `${user?.user?.userId}`,
-                amount: Number(payload.amount)
-            }
-            const response = await DepositTranscBreakDown(payloadd)
-            setIsLoading(false)
-            if (response.statusCode === 200) {
-                setDepositTranscBreakDown(response.data)
-                navigate(APP_ROUTES.WALLET.TRANSACTION_BREAKDOWN)
-                return
-            } else {
-                Toast.error(response.message, "Error")
-                return
-            }
-        },
-    });
-
-    const getAddress = useMemo(() => {
-        for (let network of proxyNetworks) {
-
-            if (selectedNetwork === network.value) {
-                console.log(network, selectedNetwork)
-
-                return network.address
-            } 
-        }
-        return "Please select a network"
-    
+  useEffect(() => {
+    const tokenList = getUserTokenData();
+    for (let token of tokenList) {
+      if (token.tokenName === selectedToken) {
+        setNetworks(token.networks);
+        setProxyNetworks(token.networks);
+        return;
+      }
     }
-        , [proxyNetworks, selectedNetwork])
-    
-    const handleCopyToClip = async(prop: string) => {
-        const result = await handleCopy(prop);
-        console.log(result)
-        if (result.status) {
-            Toast.info(result.message, "");
-        } else {
-            Toast.error(result.message, "")
-        }
+  }, [selectedToken]);
+
+  //   HDR: FORMIK
+  const formik = useFormik({
+    initialValues: { amount: "" },
+    validationSchema: TopUpSchema,
+    onSubmit: async (values) => {
+      setIsLoading(true);
+      const { ...payload } = values;
+      const payloadd = {
+        ...payload,
+        userId: `${user?.user?.userId}`,
+        amount: Number(payload.amount),
+      };
+      const response = await DepositTranscBreakDown(payloadd);
+      setIsLoading(false);
+      if (response.statusCode === 200) {
+        setDepositTranscBreakDown(response.data);
+        navigate(APP_ROUTES.WALLET.TRANSACTION_BREAKDOWN);
+        return;
+      } else {
+        Toast.error(response.message, "Error");
+        return;
+      }
+    },
+  });
+
+  const getAddress = useMemo(() => {
+    for (let network of proxyNetworks) {
+      if (selectedNetwork === network.value) {
+        return network.address;
+      }
     }
-    return (
-        // <KycRouteGuard requiredAction={ACTIONS.DEPOSIT}
-        //     fallbackRedirect={APP_ROUTES.DASHBOARD}
-        // >
-        <div>
-            <Head header={"Make a Deposit"} subHeader={"Securely deposit fiat or crypto to fund your account and start trading."} />
+  }, [proxyNetworks, selectedNetwork]);
 
-            <form className="mt-10"
-                onSubmit={formik.handleSubmit}
-            >
-                <TokenSelect title={selectedToken??"Select option"}  label={"Select Asset"} error={undefined} touched={undefined} handleChange={(e) => { setSelectedToken(e); setSelectedNetworks(""); setPaymentOption("") }} />
+  return (
+    <div>
+      <Head
+        header={"Make a Deposit"}
+        subHeader={
+          "Securely deposit fiat or crypto to fund your account and start trading."
+        }
+      />
 
-                {/* {
-                    selectedToken &&
+      <form className="mt-10" onSubmit={formik.handleSubmit}>
+        <TokenSelection
+          title={selectedToken}
+          label={"Select Asset"}
+          error={undefined}
+          touched={undefined}
+          handleChange={(e) => {
+            setSelectedToken(e);
+            setSelectedNetworks("");
+          }}
+        />
 
-                    <div className="my-4">
-                        {
-                                selectedToken !== "xNGN"
-                                && <MultiSelectDropDown parentId={""} title={"Select"} choices={networks} error={undefined} touched={undefined} label={"Select Network"} handleChange={(e) => setSelectedNetworks(e)} />
-
-                        }
-                    </div>
-                } */}
-                {selectedToken === "xNGN" ?
-                    <div>
-                        <PrimaryInput css={"w-full p-2.5 mb-7"} label={"Amount"} placeholder="Enter amount" name="amount" error={formik.errors.amount} value={formik.values.amount} touched={formik.touched.amount} onChange={(e) => {
-                            const value = e.target.value;
-                            if (/^\d*$/.test(value)) {
-                                formik.setFieldValue('amount', value);
-                            }
-                        }} />
-                        <KycManager action={ACTIONS.DEPOSIT_NGN} func={formik.handleSubmit }>
-                            {(validateAndExecute) => (
-                                <PrimaryButton css={"w-full"} text={"Proceed"} loading={isLoading} onClick={validateAndExecute} />
-                            )}
-                        </KycManager>
-                    </div> :
-
-                    <div className="my-3">
-                        <MultiSelectDropDown parentId={""} title={"Select option"} choices={networks} error={undefined} touched={undefined} label={"Select Network"} handleChange={(e) => setSelectedNetworks(e)} />
-                    </div>
-
+        {selectedToken === "xNGN" ? (
+          <div className="space-y-4 mt-2">
+            <PrimaryInput
+              css={"w-full"}
+              label={"Amount"}
+              placeholder="Enter amount"
+              name="amount"
+              error={formik.errors.amount}
+              value={formik.values.amount}
+              touched={formik.touched.amount}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (/^\d*$/.test(value)) {
+                  formik.setFieldValue("amount", value);
                 }
-                {
-                    ((selectedToken &&selectedToken!=="xNGN")) && (
-                            <div>
-                                <div className="lg:h-[84px] rounded border border-dashed  border-[#F59E0C] bg-[#FFFBEB] rounded-[12px] py-1 lg:py-3 px-2 lg:px-5 mt-3">
-                                    <h1 className="text-[#2B313B] text-[14px] leading-[24px] font-[600]">Wallet Address</h1>
-                                    <div className="flex  flex-wrap lg:flex-nowrap text-wrap items-center justify-between mt-2">
-                                        <p className="text-[#515B6E] text-[12px] lg:text-[14px] leading-[24px] font-[400] break-all">
-                                        {getAddress}
-                                        </p>
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="cursor-pointer" onClick={()=>handleCopyToClip(getAddress??"")}>
-                                            <path d="M16 12.9V17.1C16 20.6 14.6 22 11.1 22H6.9C3.4 22 2 20.6 2 17.1V12.9C2 9.4 3.4 8 6.9 8H11.1C14.6 8 16 9.4 16 12.9Z" stroke="#515B6E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                                            <path d="M22 6.9V11.1C22 14.6 20.6 16 17.1 16H16V12.9C16 9.4 14.6 8 11.1 8H8V6.9C8 3.4 9.4 2 12.9 2H17.1C20.6 2 22 3.4 22 6.9Z" stroke="#515B6E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                                        </svg>
+              }}
+            />
+            <KycManager action={ACTIONS.DEPOSIT_NGN} func={formik.handleSubmit}>
+              {(validateAndExecute) => (
+                <PrimaryButton
+                  css={"w-full"}
+                  text={"Proceed"}
+                  loading={isLoading}
+                  onClick={validateAndExecute}
+                />
+              )}
+            </KycManager>
+          </div>
+        ) : (
+          <div className="my-3">
+            <MultiSelectDropDown
+              parentId={""}
+              title={"Select option"}
+              choices={networks}
+              error={undefined}
+              touched={undefined}
+              label={"Select Network"}
+              handleChange={(e) => setSelectedNetworks(e)}
+            />
+          </div>
+        )}
+        {selectedToken && selectedToken !== "xNGN" && (
+          <div>
+            <CopyDisplay
+              title="Wallet Address"
+              text={getAddress}
+              placeholder="Please select a network"
+            />
+            <div className="lg:h-[88px]  border   border-[#F3F4F6] bg-[#F9F9FB] rounded-md py-3 px-5 flex items-start my-5 ">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className="shrink-0 "
+              >
+                <path
+                  d="M7.9987 14.6663C11.6654 14.6663 14.6654 11.6663 14.6654 7.99967C14.6654 4.33301 11.6654 1.33301 7.9987 1.33301C4.33203 1.33301 1.33203 4.33301 1.33203 7.99967C1.33203 11.6663 4.33203 14.6663 7.9987 14.6663Z"
+                  stroke="#858FA5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M8 5.33301V8.66634"
+                  stroke="#858FA5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M7.99609 10.667H8.00208"
+                  stroke="#858FA5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
 
-                                    </div>
-                                </div>
-                                <div className="lg:h-[88px] rounded border border  border-[#F3F4F6] bg-[#F9F9FB] rounded-[12px] py-3 px-5 flex items-start my-5 ">
-                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M7.9987 14.6663C11.6654 14.6663 14.6654 11.6663 14.6654 7.99967C14.6654 4.33301 11.6654 1.33301 7.9987 1.33301C4.33203 1.33301 1.33203 4.33301 1.33203 7.99967C1.33203 11.6663 4.33203 14.6663 7.9987 14.6663Z" stroke="#858FA5" stroke-linecap="round" stroke-linejoin="round" />
-                                        <path d="M8 5.33301V8.66634" stroke="#858FA5" stroke-linecap="round" stroke-linejoin="round" />
-                                        <path d="M7.99609 10.667H8.00208" stroke="#858FA5" stroke-linecap="round" stroke-linejoin="round" />
-                                    </svg>
-
-                                    <p className="text-[#606C82] text-[12px] leading-[16px] font-[400] ml-2">Please confirm that you are depositing<span className="font-[600] ml-2">{selectedToken}</span> to this address on the <span className="font-[600] ml-1">{selectedNetwork}</span>  network.
-                                        <br className="mb-2" />
-                                        Mismatched address indivation may result in the permanent loss of your assets.</p>
-
-                                </div>
-
-                            </div>)
-                }
-
-
-            </form>
-
+              <p className="text-[#606C82] text-[12px] leading-[16px] font-[400] ml-2">
+                Please confirm that you are depositing
+                <span className="font-semibold ml-1 capitalize">
+                  {selectedToken}
+                </span>{" "}
+                to this address on the{" "}
+                <span className="font-semibold ml-1 capitalize">
+                  {selectedNetwork}
+                </span>{" "}
+                network.
+                <br className="mb-2" />
+                Mismatched address indivation may result in the permanent loss
+                of your assets.
+              </p>
             </div>
-        // </KycRouteGuard>
+          </div>
+        )}
+      </form>
+    </div>
+  );
+};
 
-    )
-}
-
-export default DepositPage
+export default DepositPage;

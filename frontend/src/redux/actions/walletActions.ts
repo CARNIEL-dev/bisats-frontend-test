@@ -178,7 +178,6 @@ export const TopUpNGNBalance = async (payload: TTopUpNGN) => {
       }
     );
     const data = response;
-    console.log(data);
     return data;
   } catch (error) {
     // throw handleApiError(error);

@@ -1,21 +1,18 @@
+import BackButton from "@/components/shared/BackButton";
+import MaxWidth from "@/components/shared/MaxWith";
 import { Outlet } from "react-router-dom";
-import Header from "../components/Header";
 const TranscLayOut = () => {
-    return (
-        <div>
-            <Header currentPage={"Wallet"} />
-            <div className={`bg-white bg-no-repeat bg-cover h-full w-full py-20`}>
-                <div className="w-full lg:w-1/3 mx-auto h-full  lg:items-center ">
+  return (
+    <MaxWidth
+      as="section"
+      className="md:min-h-[75dvh] min-h-[95dvh] max-w-[72rem]  mb-10 mt-8 md:space-y-12 space-y-6"
+    >
+      <BackButton />
+      <MaxWidth className="max-w-[35rem]">
+        <Outlet />
+      </MaxWidth>
+    </MaxWidth>
+  );
+};
 
-                    <div className="w-full flex justify-center items-center py-5 bg-white">
-                        <div className="w-full px-5 lg:px-0">
-                            <Outlet />
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    )
-}
-
-export default TranscLayOut
+export default TranscLayOut;

@@ -62,9 +62,12 @@ const Notification = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="outline-none relative">
-        <small className="absolute -right-2 -top-3 bg-priYellow grid place-content-center w-5 h-5 text-xs font-medium rounded-full ">
-          {notificationState.unreadNotifications}
-        </small>
+        {notificationState !== null &&
+          notificationState.totalNotification > 0 && (
+            <small className="absolute -right-2 -top-3 bg-priYellow grid place-content-center w-5 h-5 text-xs font-medium rounded-full ">
+              {notificationState.unreadNotifications}
+            </small>
+          )}
         <Bell />
       </DropdownMenuTrigger>
       <DropdownMenuContent

@@ -42,9 +42,9 @@ import WithdrawalPage from "@/pages/wallet/withdrawal";
 import ProtectedRoute from "@/utils/protectedRoutes";
 
 import { Navigate, Route, Routes } from "react-router-dom";
-import Layout from "@/routing/Layout";
+import Layout from "@/layouts/Layout";
 import { LandingPage } from "@/pages/landing-page/src/screens/Bisats/LandingPage";
-import DashboardLayout from "@/routing/DashboardLayout";
+import DashboardLayout from "@/layouts/DashboardLayout";
 
 const Routing = () => {
   return (
@@ -65,7 +65,7 @@ const Routing = () => {
             Component={ResetPassword}
           />
         </Route>
-        {/* SUB: PROTECTED PAGES */}
+        {/* SUB: PROTECTED || DASHBOARD  PAGES */}
         <Route element={<ProtectedRoute />}>
           <Route element={<DashboardLayout />}>
             <Route element={<KycLayOut />}>
@@ -90,6 +90,7 @@ const Routing = () => {
                 element={<TransactionBreakdown />}
               />
             </Route>
+
             <Route element={<P2PLayOut />}>
               <Route
                 path={APP_ROUTES.P2P.MARKETPLACE}

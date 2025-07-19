@@ -1,8 +1,8 @@
 /** @format */
 
-import { getUserId } from "../../helpers";
-import { BACKEND_URLS } from "../../utils/backendUrls";
-import dispatchWrapper from "../../utils/dispatchWrapper";
+import { getUserId } from "@/helpers";
+import { BACKEND_URLS } from "@/utils/backendUrls";
+import dispatchWrapper from "@/utils/dispatchWrapper";
 import Bisatsfetch from "../fetchWrapper";
 import { NotificationsActionypes } from "../types";
 
@@ -11,17 +11,16 @@ export const handleCopy = async (
 ): Promise<{ status: boolean; message: string }> => {
   try {
     await navigator.clipboard.writeText(text);
-    
+
     return { status: true, message: "Copied to clipboard" };
   } catch (err) {
     return { status: false, message: "Unable to copy" };
   }
 };
 
-
 export const GetNotification = async () => {
-  const uid=getUserId()
- 
+  const uid = getUserId();
+
   try {
     const response = await Bisatsfetch(
       `/api/v1/user/${uid}/notification/get-notifications`,
@@ -31,10 +30,10 @@ export const GetNotification = async () => {
     );
     const data = response.data;
     if (response.status) {
-       dispatchWrapper({
-              type: NotificationsActionypes.GET_NOTIFICATIONS,
-              payload: data,
-            });
+      dispatchWrapper({
+        type: NotificationsActionypes.GET_NOTIFICATIONS,
+        payload: data,
+      });
       return data;
     } else {
     }
@@ -46,8 +45,8 @@ export const GetNotification = async () => {
 
 export const Read_Notification = async (payload: {
   userId: string;
-  notificationId
-:string}) => {
+  notificationId: string;
+}) => {
   try {
     const response = await Bisatsfetch(
       `/api/v1/user/${payload.userId}/notification/${payload.notificationId}${BACKEND_URLS.READ_NOTIFICATION}`,

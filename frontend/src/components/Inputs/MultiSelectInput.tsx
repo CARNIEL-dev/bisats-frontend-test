@@ -1,131 +1,131 @@
-// import { useOutsideClick } from "@/hooks";
-import { useState } from "react";
+import useClickOutside from "@/hooks/use-clickOutside";
+import usePreventScroll from "@/hooks/use-preventScroll";
+import { cn } from "@/utils";
+import { Check, ChevronDown } from "lucide-react";
+import { useEffect, useState } from "react";
 import Label from "./Label";
 
 interface IMultiSelectDropDownProps {
-	parentId?: string;
-	title: string;
-	choices:
-		| Array<{
-				value: string;
-				label: string | React.ReactNode;
-				labelDisplay?: string | React.ReactNode;
-		  }>
-		| [];
-	error: string | undefined | null;
-	touched: boolean | undefined;
-	label?: string;
-	scrollHeight?: string;
-	handleChange: (prop: string) => void;
+  parentId?: string;
+  title: string;
+  choices:
+    | Array<{
+        value: string;
+        label: string | React.ReactNode;
+        labelDisplay?: string | React.ReactNode;
+      }>
+    | [];
+  error: string | undefined | null;
+  touched: boolean | undefined;
+  label?: string;
+  scrollHeight?: string;
+  handleChange: (prop: string) => void;
 }
 
 export const MultiSelectDropDown = ({
-	parentId,
-	title,
-	choices = [], // Default to empty array to prevent undefined
-	label,
-	error,
-	touched,
-	handleChange,
-	scrollHeight,
-	...props
+  parentId,
+  title,
+  choices = [],
+  label,
+  error,
+  touched,
+  handleChange,
+  scrollHeight,
 }: IMultiSelectDropDownProps) => {
-	const [isDropdownOpen, setDropdownOpen] = useState(false);
-	const [selected, setSelected] = useState<string | React.ReactNode>("");
+  const { ref, visible, setVisible } = useClickOutside(false);
 
-	const toggleDropdown = () => {
-		setDropdownOpen(!isDropdownOpen);
-	};
+  const [selected, setSelected] = useState<string | React.ReactNode>("");
+  usePreventScroll(visible);
 
-	// const root = useOutsideClick(() => {
-	//     setDropdownOpen(false);
-	// });
+  useEffect(() => {
+    setSelected("");
+  }, [choices]);
 
-	return (
-		<div className="w-full relative">
-			{label && (
-				<div className="mb-2">
-					<Label text={label} css="" />
-				</div>
-			)}
+  return (
+    <div>
+      {label && (
+        <div className="mb-2">
+          <Label text={label} css="" />
+        </div>
+      )}
 
-			<button
-				id={`${parentId}Btn`}
-				data-dropdown-toggle={parentId}
-				className={`text-[#515B6E] p-2.5 bg-gradient-to-r from-[#FFFFFF] to-[#EEEFF2] border border-[#E2E4E8] h-[48px] rounded-[8px] inline-flex items-center w-full justify-between font-[600] text-[14px] leading-[24px] ${
-					error && touched
-						? "border-[#EF4444] outline-0 focus:border-[#EF4444]"
-						: ""
-				}`}
-				type="button"
-				onClick={toggleDropdown}
+      <div className="w-full relative" ref={ref}>
+        <button
+          id={`${parentId}Btn`}
+          data-dropdown-toggle={parentId}
+          className={cn(
+            " py-2.5 px-3  bg-neutral-100 border border-input h-[48px] rounded-[8px] flex items-center w-full justify-between  text-sm  font-normal capitalize gap-2 ",
+            {
+              "border-[#EF4444] outline-0 focus:border-[#EF4444]":
+                error && touched,
+            },
+            selected ? "text-black" : "text-muted-foreground"
+          )}
+          type="button"
+          onClick={() => setVisible((prev) => !prev)}
+        >
+          <div className="truncate w-[100%] text-left">
+            {selected ? selected : title}
+          </div>
 
-			>
-				{selected ? selected : title}
+          <ChevronDown className="size-4" />
+        </button>
 
-				<svg
-					width="12"
-					height="8"
-					viewBox="0 0 12 8"
-					fill="none"
-					xmlns="http://www.w3.org/2000/svg"
-					className={`transition-transform duration-200 ${
-						isDropdownOpen ? "rotate-180" : ""
-					}`}
-				>
-					<path
-						d="M5.99865 4.97656L10.1236 0.851562L11.302 2.0299L5.99865 7.33323L0.695312 2.0299L1.87365 0.851562L5.99865 4.97656Z"
-						fill="#525C76"
-					/>
-				</svg>
-			</button>
+        <div
+          id={parentId}
+          className={cn(
+            `absolute mt-1 z-10 transition-all duration-150 ease
+         bg-white rounded-md w-full shadow-md border `,
+            visible
+              ? "visible translate-y-0 opacity-100"
+              : "invisible -translate-y-3 opacity-0"
+          )}
+        >
+          <ul
+            className={cn(
+              `p-3 space-y-2 text-xs font-secondary h-fit w-full `,
+              scrollHeight && "overflow-y-scroll max-h-[300px]"
+            )}
+            aria-labelledby={`${parentId}Btn`}
+          >
+            <>
+              {choices && choices.length > 0 ? (
+                choices.map((data, index) => (
+                  <li
+                    key={data.value || index}
+                    className={cn(
+                      "flex items-center text-sm px-2 py-2 cursor-pointer text-gray-700  hover:bg-neutral-100 rounded-md transition-colors duration-150 capitalize",
+                      selected === (data.labelDisplay ?? data.label) &&
+                        "bg-neutral-200/40"
+                    )}
+                    onClick={() => {
+                      setVisible(false);
+                      setSelected(data.labelDisplay ?? data?.label);
+                      handleChange(data.value);
+                    }}
+                  >
+                    <div>{data.label}</div>
+                    {selected === (data.labelDisplay ?? data.label) && (
+                      <Check className="ml-auto size-4" />
+                    )}
+                  </li>
+                ))
+              ) : (
+                <li className="text-center text-sm text-gray-500 py-4">
+                  No options available
+                </li>
+              )}
+            </>
+          </ul>
+        </div>
+      </div>
 
-			<div
-				// ref={root}
-				id={parentId}
-				className={`absolute mt-2 z-10 transition-all duration-150 ease ${
-					isDropdownOpen
-						? "visible translate-y-0 opacity-100"
-						: "invisible -translate-y-3 opacity-0"
-					} bg-white rounded w-full shadow-lg `}
-				onMouseLeave={()=>toggleDropdown()}
-			>
-				<ul
-					className={`p-1 space-y-1 text-xs font-secondary ${
-						scrollHeight ? "h-[300px]" : "h-fit"
-					} overflow-y-auto`}
-					aria-labelledby={`${parentId}Btn`}
-				>
-					<div className="w-full gap-4 px-3">
-						{choices && choices.length > 0 ? (
-							choices.map((data, index) => (
-								<div
-									key={data.value || index} // Use data.value as key, fallback to index
-									className="flex items-center my-2 cursor-pointer text-gray-700 bg-[#f5f5f5] hover:bg-[#EEEFF2] rounded-md transition-colors duration-150"
-									onClick={() => {
-										toggleDropdown();
-										setSelected(data.labelDisplay ?? data?.label);
-										handleChange(data.value);
-									}}
-								>
-									<p className="mx-2 text-[14px] p-3">{data.label}</p>
-								</div>
-							))
-						) : (
-							<div className="flex items-center justify-center py-4">
-								<p className="text-gray-500 text-sm">No options available</p>
-							</div>
-						)}
-					</div>
-				</ul>
-			</div>
-
-			{/* Error message */}
-			{error && touched && (
-				<div className="mt-1">
-					<p className="text-[#EF4444] text-xs">{error}</p>
-				</div>
-			)}
-		</div>
-	);
+      {/* SUB: Error message */}
+      {error && touched && (
+        <div className="mt-1">
+          <p className="text-[#EF4444] text-xs">{error}</p>
+        </div>
+      )}
+    </div>
+  );
 };

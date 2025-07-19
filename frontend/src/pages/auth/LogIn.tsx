@@ -23,6 +23,9 @@ const LogIn = () => {
   const formik = useFormik({
     initialValues: { ...logInBody },
     validationSchema: LogInSchema,
+    validateOnMount: false,
+    validateOnChange: false,
+    validateOnBlur: false,
     onSubmit: async (values) => {
       setIsLoading(true);
       const { ...payload } = values;
@@ -50,33 +53,31 @@ const LogIn = () => {
       />
       <form onSubmit={formik.handleSubmit}>
         <div className="w-full mt-10">
-          <div className="w-full mb-3">
-            <PrimaryInput
-              type="email"
-              name="email"
-              label="Email"
-              css="w-full h-[48px] px-3 outline-none "
-              error={formik.errors.email}
-              touched={formik.touched.email}
-              value={formik.values.email}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-            />
-          </div>
-          <div className="w-full mb-3">
-            <AuthPasswordInput
-              css="w-full h-[48px] px-3 outline-none"
-              handleChange={formik.handleChange}
-              name="password"
-              error={formik.errors.password}
-              touched={formik.touched.password}
-              check={false}
-              text="Password"
-              value={formik.values.password}
-              onBlur={formik.handleBlur}
-            />
-          </div>
-          <div className="w-full">
+          <PrimaryInput
+            type="email"
+            name="email"
+            label="Email"
+            css="w-full h-[48px] px-3 outline-none "
+            error={formik.errors.email}
+            touched={formik.touched.email}
+            value={formik.values.email}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+          />
+
+          <AuthPasswordInput
+            css="w-full h-[48px] px-3 outline-none"
+            handleChange={formik.handleChange}
+            name="password"
+            error={formik.errors.password}
+            touched={formik.touched.password}
+            check={false}
+            text="Password"
+            value={formik.values.password}
+            onBlur={formik.handleBlur}
+          />
+
+          <div className="w-full mt-4">
             <PrimaryButton
               css={"w-full"}
               text={"Log In"}
