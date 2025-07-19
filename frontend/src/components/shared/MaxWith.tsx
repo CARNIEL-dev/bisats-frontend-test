@@ -18,7 +18,7 @@ const MaxWidth = <T extends ElementType = "div">({
   return (
     <Component
       {...rest}
-      className={cn("mx-auto w-[92%] max-w-[180rem]", className)}
+      className={cn("mx-auto w-[92%] max-w-720", className)}
     >
       {children}
     </Component>

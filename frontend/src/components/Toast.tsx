@@ -15,7 +15,7 @@ const defaultOptions: ToastOptions = {
 const BaseToast = ({ title, message }: { title: string; message: string }) => (
   <div className="-ml-[40px] ">
     <div className="text-[14px] leading-[24px]">
-      <div className=" font-[600] text-[#001140]">{title}</div>
+      <div className=" font-semibold text-[#001140]">{title}</div>
       <div className="text-[#606C82]">{message}</div>
     </div>
   </div>

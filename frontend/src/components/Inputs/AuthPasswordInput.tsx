@@ -50,7 +50,7 @@ const AuthPasswordInput: React.FC<TInput> = ({ css, handleChange, text, check, e
                 <div className='relative'>
                     <input
                         type={passwordHidden ? "password" : "text"}
-                        className={`rounded-[6px] border-[1px] border-[#D6DAE1] outline-[none] focus:border-[#C49600] focus:shadow-[0_0_10px_#FEF8E5] text-[#606C82] p-1 ${css} ${error && touched ? "border-[#EF4444] outline-[none] focus:border-[#EF4444]" : ""}`}
+                        className={`rounded-[6px] border border-[#D6DAE1] outline-[none] focus:border-[#C49600] focus:shadow-[0_0_10px_#FEF8E5] text-[#606C82] p-1 ${css} ${error && touched ? "border-[#EF4444] outline-[none] focus:border-[#EF4444]" : ""}`}
                         {...props}
                         onChange={(e) => {
                             handleChange(e)
@@ -63,7 +63,7 @@ const AuthPasswordInput: React.FC<TInput> = ({ css, handleChange, text, check, e
             </div>
 
             {(check && passwordString) &&
-                <div className='text-[#515B6E] text-[12px] leading-[16px] font-[400] flex justify-between flex-wrap mt-5'>
+                <div className='text-[#515B6E] text-[12px] leading-[16px] font-normal flex justify-between flex-wrap mt-5'>
                     {
                         PasswordChecks.map((item, idx) => <div className='flex items-center w-full lg:w-1/2 my-1' key={idx}>
                             {

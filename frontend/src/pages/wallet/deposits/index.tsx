@@ -183,7 +183,7 @@ const DepositPage = () => {
                 />
               </svg>
 
-              <p className="text-[#606C82] text-[12px] leading-[16px] font-[400] ml-2">
+              <p className="text-[#606C82] text-[12px] leading-[16px] font-normal ml-2">
                 Please confirm that you are depositing
                 <span className="font-semibold ml-1 capitalize">
                   {selectedToken}

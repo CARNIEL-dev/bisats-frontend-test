@@ -67,7 +67,7 @@ const TokenSelection = ({
           >
             <SelectValue placeholder="Select option" />
           </SelectTrigger>
-          <SelectContent className="w-full">
+          <SelectContent className="!w-full">
             {tokenOptions.map((token) => (
               <SelectItem key={token.id} value={token.id}>
                 <div className="flex items-center gap-2 w-full">
@@ -81,9 +81,9 @@ const TokenSelection = ({
       </div>
 
       {selected && (
-        <p className="text-[#606C82] text-[12px] leading-[16px] font-[400] mt-2.5">
+        <p className="text-[#606C82] text-[12px] leading-[16px] font-normal mt-2.5">
           Current Balance:{" "}
-          <span className="font-[600] text-[#515B6E]">
+          <span className="font-semibold text-[#515B6E]">
             {calculateCurrentWalletBallance ?? 0}
           </span>
         </p>

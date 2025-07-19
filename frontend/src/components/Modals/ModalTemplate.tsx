@@ -34,10 +34,10 @@ export default ModalTemplate;
 /* 
 
   <div
-      className="bg-[#0101019a] backdrop-blur-[2px] fixed top-0 bottom-0 left-0 h-[100dvh] w-full flex justify-center items-center z-[60]"
+      className="bg-[#0101019a] backdrop-blur-[2px] fixed top-0 bottom-0 left-0 h-dvh w-full flex justify-center items-center z-60"
       // onClick={onClose}
     >
-      <div className="w-[85%] lg:w-[37%] rounded-[12px]  bg-[#fff] relative p-5">
+      <div className="w-[85%] lg:w-[37%] rounded-[12px]  bg-white relative p-5">
         <div
           className="absolute top-5 right-7 cursor-pointer"
           onClick={onClose}

@@ -59,7 +59,7 @@ const TokenSelect = ({
       <button
         id={`tokenSelectBtn`}
         // data-dropdown-toggle={parentId}
-        className={`text-[#515B6E] p-2.5 bg-gradient-to-r from-[#FFFFFF] to-[#EEEFF2] border border-[#E2E4E8] h-[48px] rounded-[8px] items-center w-full flex justify-between font-[600] text-[14px] leading-[24px]  ${
+        className={`text-[#515B6E] p-2.5 bg-linear-to-r from-[#FFFFFF] to-[#EEEFF2] border border-[#E2E4E8] h-[48px] rounded-[8px] items-center w-full flex justify-between font-semibold text-[14px] leading-[24px]  ${
           error && touched
             ? "border-[#EF4444] outline-0 focus:border-[#EF4444]"
             : ""
@@ -90,9 +90,9 @@ const TokenSelect = ({
         </div>
       </button>
       {selected && (
-        <p className="text-[#606C82] text-[12px] leading-[16px] font-[400] mt-2.5">
+        <p className="text-[#606C82] text-[12px] leading-[16px] font-normal mt-2.5">
           Current Balance:{" "}
-          <span className="font-[600] text-[#515B6E]">
+          <span className="font-semibold text-[#515B6E]">
             {calculateCurrentWalletBallance ?? 0}
           </span>
         </p>

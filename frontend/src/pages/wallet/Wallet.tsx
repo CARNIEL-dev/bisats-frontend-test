@@ -8,14 +8,14 @@ const Wallet = () => {
     <>
       <MaxWidth
         as="section"
-        className="space-y-8 max-w-[72rem] lg:pb-5 mb-10 mt-6"
+        className="space-y-8 max-w-6xl lg:pb-5 mb-10 mt-6"
       >
         <div className="w-full space-y-4  ">
           <div className="sm:w-[40%]">
             <Balance showWithdraw />
           </div>
           <div
-            className="sm:border-[1px] w-full sm:p-6 p-4"
+            className="sm:border w-full sm:p-6 p-4"
             style={{ borderRadius: "12px", borderColor: "#D6DAE1" }}
           >
             <div className="mb-[12px]">
@@ -44,7 +44,7 @@ const Wallet = () => {
             <Assets />
           </div>
           <div
-            className="sm:border-[1px] w-full sm:p-6 p-4"
+            className="sm:border w-full sm:p-6 p-4"
             style={{ borderRadius: "12px", borderColor: "#D6DAE1" }}
           >
             <div className="mb-[12px]">

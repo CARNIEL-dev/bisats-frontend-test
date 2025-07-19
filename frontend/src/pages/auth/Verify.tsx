@@ -66,7 +66,7 @@ const VerifyEmail = () => {
                             type="code"
                             name="code"
                             label="code"
-                            css="w-full h-[48px] px-3 outline-none "
+                            css="w-full h-[48px] px-3 outline-hidden "
                             error={formik.errors.code}
                             touched={formik.touched.code}
                             value={formik.values.code}
@@ -78,8 +78,8 @@ const VerifyEmail = () => {
                         <PrimaryButton css={"w-full"} text={"Verify account"} type="submit" loading={isLoading} />
                 </div>
                 <div className="flex items-center justify-between">
-                    <p className="text-[14px] text-[#515B6E] leading-[24px] font-[400] text-left">00:31</p>
-                        <span className="text-[#C49600] text-[14px] leading-[24px] font-[600] " onClick={() => ReSendverificationCode({ userId: user?.userId })
+                    <p className="text-[14px] text-[#515B6E] leading-[24px] font-normal text-left">00:31</p>
+                        <span className="text-[#C49600] text-[14px] leading-[24px] font-semibold " onClick={() => ReSendverificationCode({ userId: user?.userId })
                         }>Resend a new code</span>
                 </div>
                 </div>

@@ -48,7 +48,7 @@ const AdsTable: React.FC<AdsTableProps> = ({
 
 				if (!config) {
 					return (
-						<span className="text-[14px] text-[#515B6E] font-[600]">
+						<span className="text-[14px] text-[#515B6E] font-semibold">
 							{ad.type}
 						</span>
 					);
@@ -63,7 +63,7 @@ const AdsTable: React.FC<AdsTableProps> = ({
 						>
 							<IconComponent className={config.iconColor} />
 						</div>
-						<span className="text-[14px] text-[#515B6E] font-[600]">
+						<span className="text-[14px] text-[#515B6E] font-semibold">
 							{ad.type}
 						</span>
 					</div>
@@ -71,19 +71,19 @@ const AdsTable: React.FC<AdsTableProps> = ({
 			}
 			case "Asset":
 				return (
-					<span className="text-[#515B6E] font-[600] text-[14px]">
+					<span className="text-[#515B6E] font-semibold text-[14px]">
 						{ad.asset}
 					</span>
 				);
 			case "Price":
 				return (
-					<span className="text-[#515B6E] font-[600] text-[14px]">
+					<span className="text-[#515B6E] font-semibold text-[14px]">
 						₦ {ad.price.toLocaleString()}
 					</span>
 				);
 			case "Amount":
 				return (
-					<span className="text-[#515B6E] font-[600] text-[14px]">
+					<span className="text-[#515B6E] font-semibold text-[14px]">
 						{ad.amount.toLocaleString()} NGN
 					</span>
 				);
@@ -99,7 +99,7 @@ const AdsTable: React.FC<AdsTableProps> = ({
 		>
 			<div className="flex justify-between items-center">
 				<div className="space-y-2">
-					<p className="font-[600] text-[12px] text-[#515B6E]">Order type</p>
+					<p className="font-semibold text-[12px] text-[#515B6E]">Order type</p>
 					<div className="flex items-center space-x-2">
 						<div
 							className={`${
@@ -112,32 +112,32 @@ const AdsTable: React.FC<AdsTableProps> = ({
 								<ArrowDown className="text-[#EF4444]" />
 							)}
 						</div>
-						<span className="text-[14px] text-[#515B6E] font-[600]">
+						<span className="text-[14px] text-[#515B6E] font-semibold">
 							{ad.type}
 						</span>
 					</div>
 				</div>
 				<div className="space-y-2">
-					<p className="font-[600] text-[12px] text-[#515B6E] text-right">
+					<p className="font-semibold text-[12px] text-[#515B6E] text-right">
 						Asset
 					</p>
-					<span className="text-[14px] text-[#515B6E] font-[400] text-right">
+					<span className="text-[14px] text-[#515B6E] font-normal text-right">
 						{ad.asset}
 					</span>
 				</div>
 			</div>
 			<div className="flex justify-between items-center">
 				<div className="space-y-2">
-					<p className="font-[600] text-[12px] text-[#515B6E]">Price</p>
-					<span className="font-[600] text-[14px] text-[#2B313B]">
+					<p className="font-semibold text-[12px] text-[#515B6E]">Price</p>
+					<span className="font-semibold text-[14px] text-[#2B313B]">
 						₦ {ad.price}
 					</span>
 				</div>
 				<div className="space-y-2">
-					<p className="font-[600] text-[12px] text-[#515B6E] text-right">
+					<p className="font-semibold text-[12px] text-[#515B6E] text-right">
 						Amount
 					</p>
-					<span className="font-[600] text-[14px] text-[#2B313B] text-right">
+					<span className="font-semibold text-[14px] text-[#2B313B] text-right">
 						{ad.amount.toLocaleString()} NGN
 					</span>
 				</div>

@@ -133,14 +133,14 @@ const BVNVerification = () => {
                                 <div className="w-full mb-3">
                                     <PrimaryButton css={"w-full"} text={"Submit"} loading={isLoading} type="submit" onSubmit={() => formik.handleSubmit()} />
                                 </div>
-                                {/* <p className="text-[14px] text-[#515B6E] leading-[24px] font-[600] text-left">Need help?<span className="text-[#C49600] pl-2 cursor-pointer">Contact Support</span></p> */}
+                                {/* <p className="text-[14px] text-[#515B6E] leading-[24px] font-semibold text-left">Need help?<span className="text-[#C49600] pl-2 cursor-pointer">Contact Support</span></p> */}
                             </div>
                         </form>
                         :
                  <div>
                         <form onSubmit={formik1.handleSubmit}>
 
-                                <div className="bg-[#F9F9FB] p-2 mt-5 border-[1px] border-[#F9F9FB] rounded-[8px] text-[12px] text-[#515B6E] w-full h-fit flex flex-col space-y-2 ">
+                                <div className="bg-[#F9F9FB] p-2 mt-5 border border-[#F9F9FB] rounded-[8px] text-[12px] text-[#515B6E] w-full h-fit flex flex-col space-y-2 ">
                                     <p>
                                         <span className="w-[4px] bg-[#C2C7D2] rounded-full  mr-1 h-[4px]"></span>
                                         <span>Create sell ads (max 23M NGN in crypto assets)</span>
@@ -160,7 +160,7 @@ const BVNVerification = () => {
                                 type="bvn"
                                 name="bvn"
                                 label="Your BVN"
-                                css="w-full h-[48px] px-3 outline-none "
+                                css="w-full h-[48px] px-3 outline-hidden "
                                 error={formik1.errors.bvn}
                                 touched={formik1.touched.bvn}
                                 value={formik1.values.bvn}
@@ -181,7 +181,7 @@ const BVNVerification = () => {
                             </div>
                        
                 }
-                <div className="bg-[#F5FEF8] p-2 border-[1px] border-[#DCFCE7] rounded-[8px] text-[12px] text-[#17A34A] w-full h-fit flex items-start   ">
+                <div className="bg-[#F5FEF8] p-2 border border-[#DCFCE7] rounded-[8px] text-[12px] text-[#17A34A] w-full h-fit flex items-start   ">
                     <svg width="16" height="16" viewBox="0 0 16 16" className="w-[5%]" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M13.9386 7.41288C13.9386 10.6729 11.5719 13.7262 8.3386 14.6195C8.1186 14.6795 7.87859 14.6795 7.65859 14.6195C4.42526 13.7262 2.05859 10.6729 2.05859 7.41288V4.4862C2.05859 3.93953 2.47194 3.31954 2.98527 3.11287L6.69859 1.59289C7.53192 1.25289 8.47192 1.25289 9.30526 1.59289L13.0186 3.11287C13.5253 3.31954 13.9453 3.93953 13.9453 4.4862L13.9386 7.41288Z" stroke="#22C55D" stroke-linecap="round" stroke-linejoin="round" />
                         <path d="M8.0013 8.33268C8.73768 8.33268 9.33464 7.73573 9.33464 6.99935C9.33464 6.26297 8.73768 5.66602 8.0013 5.66602C7.26492 5.66602 6.66797 6.26297 6.66797 6.99935C6.66797 7.73573 7.26492 8.33268 8.0013 8.33268Z" stroke="#22C55D" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />

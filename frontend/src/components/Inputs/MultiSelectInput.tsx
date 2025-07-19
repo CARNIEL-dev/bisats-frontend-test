@@ -64,7 +64,7 @@ export const MultiSelectDropDown = ({
           type="button"
           onClick={() => setVisible((prev) => !prev)}
         >
-          <div className="truncate w-[100%] text-left">
+          <div className="truncate w-full text-left">
             {selected ? selected : title}
           </div>
 
@@ -77,8 +77,8 @@ export const MultiSelectDropDown = ({
             `absolute mt-1 z-10 transition-all duration-150 ease
          bg-white rounded-md w-full shadow-md border `,
             visible
-              ? "visible translate-y-0 opacity-100"
-              : "invisible -translate-y-3 opacity-0"
+              ? "visible animate-in fade-in-0  slide-in-from-top-4 opacity-100"
+              : "invisible animate-out fade-in-0 slide-out-to-top-0"
           )}
         >
           <ul

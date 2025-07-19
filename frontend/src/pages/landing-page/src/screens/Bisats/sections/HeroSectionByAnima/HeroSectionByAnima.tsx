@@ -24,7 +24,7 @@ export const HeroSectionByAnima = (): JSX.Element => {
           <h1 className="text-[42px] leading-[56px] w-full  lg:text-6xl font-semibold text-[#0A0E12]  lg:leading-[65px]">
             Trade, Rest, and <br /> Stay Happy
           </h1>
-          <p className="w-full lg:w-[541px] text-[16px] leading-[28px] py-3 lg:text-lg lg:leading-[28px] font-[400] text-[#515B6E]">
+          <p className="w-full lg:w-[541px] text-[16px] leading-[28px] py-3 lg:text-lg lg:leading-[28px] font-normal text-[#515B6E]">
             With Bisats, you can say goodbye to your struggles with crypto
             peer-to-peer exchanges
           </p>

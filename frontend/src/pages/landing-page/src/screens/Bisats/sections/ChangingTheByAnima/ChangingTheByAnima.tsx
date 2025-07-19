@@ -44,7 +44,7 @@ export const ChangingTheByAnima = (): JSX.Element => {
   return (
     <section className="md:mt-16 mt-8">
       <div className="container mx-auto">
-        <h2 className="mb-8 lg:mb-16 text-[#2B313B] font-[500] text-[28px] lg:text-[42px] leading-[40px] lg:leading-[56px]">
+        <h2 className="mb-8 lg:mb-16 text-[#2B313B] font-medium text-[28px] lg:text-[42px] leading-[40px] lg:leading-[56px]">
           <span className="">
             Bettering the peer-to-peer experience-
             <br />
@@ -92,7 +92,7 @@ export const ChangingTheByAnima = (): JSX.Element => {
                   <h3 className="font-desktop-header6 font-semibold text-primaryprimary-9 text-[22px] leading-[32px]">
                     {card.title}
                   </h3>
-                  <p className="font-[400] text-greysgrey-9 text-[12.5px] leading-[24px]">
+                  <p className="font-normal text-greysgrey-9 text-[12.5px] leading-[24px]">
                     {card.description}
                   </p>
                 </CardContent>

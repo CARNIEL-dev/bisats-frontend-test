@@ -111,49 +111,49 @@ const TransactionBreakdown = () => {
           <>
             <div className="py-5">
               <div className="flex justify-between items-center mb-3">
-                <p className="text-[#424A59] font-[400]">Amount:</p>
-                <p className="text-[#606C82]  font-[600]">
+                <p className="text-[#424A59] font-normal">Amount:</p>
+                <p className="text-[#606C82]  font-semibold">
                   NGN {formatNumber(TransBreakDown?.amount)}
                 </p>
               </div>
 
               <div className="flex justify-between items-center mb-3">
-                <p className="text-[#424A59] font-[400]">Processing Charge:</p>
-                <p className="text-[#606C82]  font-[600]">
+                <p className="text-[#424A59] font-normal">Processing Charge:</p>
+                <p className="text-[#606C82]  font-semibold">
                   NGN {formatNumber(TransBreakDown?.processingCharge)}
                 </p>
               </div>
 
               <div className="flex justify-between items-center border-t-[0.5px] border-[#606C82] pt-5">
-                <p className="text-[#424A59] font-[400]">Total:</p>
-                <p className="text-[#606C82]  font-[600]">
+                <p className="text-[#424A59] font-normal">Total:</p>
+                <p className="text-[#606C82]  font-semibold">
                   NGN {formatNumber(TransBreakDown?.totalAmount)}
                 </p>
               </div>
             </div>
             <div className="h-fit border   border-[#F3F4F6] bg-[#F9F9FB] rounded-[12px] p-2  my-5 text-[14px] leading-[24px] ">
-              <h1 className="text-[#424A59] font-[600] text-[16px]">
+              <h1 className="text-[#424A59] font-semibold text-[16px]">
                 {" "}
                 Bank details
               </h1>
 
               <div className="mt-3">
                 <div className="flex justify-between items-center mb-2 ">
-                  <p className="text-[#424A59] font-[400]">Bank Name:</p>
-                  <p className="text-[#606C82]  font-[600]">
+                  <p className="text-[#424A59] font-normal">Bank Name:</p>
+                  <p className="text-[#606C82]  font-semibold">
                     {" "}
                     {selectedBank?.bankName}
                   </p>
                 </div>
                 <div className="flex justify-between items-center mb-2">
-                  <p className="text-[#424A59] font-[400]">Account Number:</p>
-                  <p className="text-[#606C82]  font-[600]">
+                  <p className="text-[#424A59] font-normal">Account Number:</p>
+                  <p className="text-[#606C82]  font-semibold">
                     {selectedBank?.accountNumber}{" "}
                   </p>
                 </div>
                 <div className="flex justify-between items-center ">
-                  <p className="text-[#424A59] font-[400]">Account Name:</p>
-                  <p className="text-[#606C82]  font-[600]">
+                  <p className="text-[#424A59] font-normal">Account Name:</p>
+                  <p className="text-[#606C82]  font-semibold">
                     {selectedBank?.accountName}
                   </p>
                 </div>

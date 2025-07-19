@@ -27,7 +27,7 @@ const TermsAndCondition = (): JSX.Element => {
 					>
 						<button
 							onClick={() => setActiveTab("platform")}
-							className={`text-[18px] font-[600] w-1/2 text-center ${
+							className={`text-[18px] font-semibold w-1/2 text-center ${
 								activeTab === "platform" ? "text-[#937000]" : "text-[#515B6E]"
 							}`}
 						>
@@ -40,7 +40,7 @@ const TermsAndCondition = (): JSX.Element => {
 						</button>
 						<button
 							onClick={() => setActiveTab("merchant")}
-							className={`text-[18px] font-[600] w-1/2 text-center ${
+							className={`text-[18px] font-semibold w-1/2 text-center ${
 								activeTab === "merchant" ? "text-[#937000]" : "text-[#515B6E]"
 							}`}
 						>

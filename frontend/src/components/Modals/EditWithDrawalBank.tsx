@@ -95,7 +95,7 @@ const EditWithdrawalBankAccount: React.FC<Props> = ({ close,bank }) => {
     return (
         <ModalTemplate onClose={close}>
             <div className='relative pt-10'>
-                <h1 className='text-[#2B313B] text-[18px] lg:text-[22px] leading-[32px] font-[600]'>Add Withdrawal Bank Account</h1>
+                <h1 className='text-[#2B313B] text-[18px] lg:text-[22px] leading-[32px] font-semibold'>Add Withdrawal Bank Account</h1>
                 <div className="my-5">
                     <MultiSelectDropDown title={bank?.bankName??"Select Bank"} choices={choices}  error={undefined} touched={undefined} label={"Bank"} scrollHeight={"200px"}
                         handleChange={(prop) => handleSelectBank(prop)} />

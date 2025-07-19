@@ -199,7 +199,7 @@ const Level3Verification = () => {
                   :
                           <div>
 
-                              <div className="bg-[#F9F9FB] p-2 mt-5 border-[1px] border-[#F9F9FB] rounded-[8px] text-[12px] text-[#515B6E] w-full h-fit flex flex-col space-y-2 ">
+                              <div className="bg-[#F9F9FB] p-2 mt-5 border border-[#F9F9FB] rounded-[8px] text-[12px] text-[#515B6E] w-full h-fit flex flex-col space-y-2 ">
                                   <p>
                                       <span className="w-[4px] bg-[#C2C7D2] rounded-full  mr-1 h-[4px]"></span>
                                       <span>Create sell ads (max 100M NGN in crypto assets)</span>

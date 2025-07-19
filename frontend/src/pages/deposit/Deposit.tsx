@@ -52,7 +52,7 @@ const Deposit = () => {
                         </p>
                         <select
                             name="Asset"
-                            className="w-[100%] h-[48px] px-[16px] mb-[10px]"
+                            className="w-full h-[48px] px-[16px] mb-[10px]"
                             style={{ border: "1px solid #E2E4E8", borderRadius: "8px", fontSize: "12px", fontWeight: 200 }}
                             onChange={handleSelectChange}
                         >
@@ -76,7 +76,7 @@ const Deposit = () => {
                                 </p>
                                 <select
                                     name="Network"
-                                    className="w-[100%] h-[48px] px-[16px]"
+                                    className="w-full h-[48px] px-[16px]"
                                     style={{ border: "1px solid #E2E4E8", borderRadius: "8px", fontSize: "12px", fontWeight: 200 }}
                                     value={depositDetails.Network}
                                     onChange={handleSelectChange}
@@ -97,7 +97,7 @@ const Deposit = () => {
                                 </p>
                                 <select
                                     name="Payment"
-                                    className="w-[100%] h-[48px] px-[16px]"
+                                    className="w-full h-[48px] px-[16px]"
                                     style={{ border: "1px solid #E2E4E8", borderRadius: "8px", fontSize: "12px", fontWeight: 200 }}
                                     value={depositDetails.Payment}
                                     onChange={handleSelectChange}
@@ -126,7 +126,7 @@ const Deposit = () => {
                                     name="Amount"
                                     value={depositDetails.Amount}
                                     placeholder="Enter Amount"
-                                    className="w-[100%] h-[48px] px-[16px] mb-[10px]"
+                                    className="w-full h-[48px] px-[16px] mb-[10px]"
                                     style={{ border: "1px solid #E2E4E8", borderRadius: "8px", fontSize: "12px", fontWeight: 200 }}
                                     onChange={(e) => setDepositDetails((prevState) => ({ ...prevState, Amount: e.target.value }))}
                                 />

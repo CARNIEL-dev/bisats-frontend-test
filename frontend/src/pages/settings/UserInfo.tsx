@@ -60,7 +60,7 @@ const UserInfo = () => {
 	return (
 		<div>
 			<div className="flex justify-between">
-				<h1 className="text-[22px] lg:text-[22px] leading-[32px] font-[600] text-[#2B313B]">
+				<h1 className="text-[22px] lg:text-[22px] leading-[32px] font-semibold text-[#2B313B]">
 					User Information
 				</h1>
 				<WhiteTransparentButton
@@ -93,7 +93,7 @@ const UserInfo = () => {
 				<div>
 					{UserData.map((data, idx) => (
 						<div
-							className="flex  justify-between text-[16px] leading-[28px] font-[400] mb-5"
+							className="flex  justify-between text-[16px] leading-[28px] font-normal mb-5"
 							key={idx}
 						>
 							<p className="text-[#606C82]">{data.label}</p>

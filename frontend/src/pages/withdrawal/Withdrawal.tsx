@@ -54,7 +54,7 @@ const Withdrawal = () => {
                         </p>
                         <select
                             name="Asset"
-                            className="w-[100%] h-[48px] px-[16px] mb-[10px]"
+                            className="w-full h-[48px] px-[16px] mb-[10px]"
                             style={{ border: "1px solid #E2E4E8", borderRadius: "8px", fontSize: "12px", fontWeight: 200 }}
                             onChange={handleSelectChange}
                         >
@@ -79,7 +79,7 @@ const Withdrawal = () => {
                                     </p>
                                     <select
                                         name="Network"
-                                        className="w-[100%] h-[48px] px-[16px]"
+                                        className="w-full h-[48px] px-[16px]"
                                         style={{ border: "1px solid #E2E4E8", borderRadius: "8px", fontSize: "12px", fontWeight: 200 }}
                                         value={withdrawalDetails.Network}
                                         onChange={handleSelectChange}
@@ -101,7 +101,7 @@ const Withdrawal = () => {
                                         name="Address"
                                         value={withdrawalDetails.Address}
                                         placeholder="Enter Wallet Address"
-                                        className="w-[100%] h-[48px] px-[16px] mb-[10px]"
+                                        className="w-full h-[48px] px-[16px] mb-[10px]"
                                         style={{ border: "1px solid #E2E4E8", borderRadius: "8px", fontSize: "12px", fontWeight: 200 }}
                                         onChange={(e) => setWithdrawalDetails((prevState) => ({ ...prevState, Address: e.target.value }))}
                                     />
@@ -124,7 +124,7 @@ const Withdrawal = () => {
                                         name="Amount"
                                         value={withdrawalDetails.Amount}
                                         placeholder="Enter Amount"
-                                        className="w-[100%] h-[48px] px-[16px] mb-[10px] "
+                                        className="w-full h-[48px] px-[16px] mb-[10px] "
                                         style={{ border: "1px solid #E2E4E8", borderRadius: "8px", fontSize: "12px", fontWeight: 200 }}
                                         onChange={(e) => setWithdrawalDetails((prevState) => ({ ...prevState, Amount: e.target.value }))}
                                     />

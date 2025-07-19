@@ -7,7 +7,7 @@ const Support=()=> {
 
       <div className=" justify-between my-5  w-full lg:w-1/2 mx-auto">
 
-          <h1 className="text-[18px] lg:text-[18px] leading-[32px] font-[600] text-[#2B313B]">Help and Support</h1>
+          <h1 className="text-[18px] lg:text-[18px] leading-[32px] font-semibold text-[#2B313B]">Help and Support</h1>
           <div className='text-[#606C82]'>
               <p className='text-[12px] lg:text-[14px] leading-[24px] my-3'>
                   If you’re experiencing any issues or just have a question, feel free to reach out to our support team. We’re happy to assist you.

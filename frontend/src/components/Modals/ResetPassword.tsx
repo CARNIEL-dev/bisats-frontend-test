@@ -48,12 +48,12 @@ const ResetPasswordModal: React.FC<Props> = ({ close }) => {
         <ModalTemplate onClose={close} >
 
             <div className='relative pt-10'>
-                <h1 className='text-[#2B313B] text-[18px] lg:text-[22px] leading-[32px] font-[600]'>Reset Password</h1>
+                <h1 className='text-[#2B313B] text-[18px] lg:text-[22px] leading-[32px] font-semibold'>Reset Password</h1>
                 <form onSubmit={formik.handleSubmit}>
                     <div className="w-full ">
                         <div className="w-full">
                             <AuthPasswordInput
-                                css="w-full h-[48px] px-3 outline-none"
+                                css="w-full h-[48px] px-3 outline-hidden"
                                 handleChange={formik.handleChange}
                                 name="oldPassword"
                                 error={formik.errors.oldPassword}
@@ -69,7 +69,7 @@ const ResetPasswordModal: React.FC<Props> = ({ close }) => {
                     <div className="w-full ">
                         <div className="w-full ">
                             <AuthPasswordInput
-                                css="w-full h-[48px] px-3 outline-none"
+                                css="w-full h-[48px] px-3 outline-hidden"
                                 handleChange={formik.handleChange}
                                 name="newPassword"
                                 error={formik.errors.newPassword}
@@ -82,7 +82,7 @@ const ResetPasswordModal: React.FC<Props> = ({ close }) => {
                         </div>
                     </div>
                     <div className="w-full ">
-                        <AuthPasswordInput css="w-full h-[48px] px-3 outline-none "
+                        <AuthPasswordInput css="w-full h-[48px] px-3 outline-hidden "
                             check={false}
                             text="Repeat password"
                             name="confirmPassword"

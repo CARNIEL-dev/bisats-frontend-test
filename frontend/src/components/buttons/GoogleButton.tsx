@@ -51,9 +51,9 @@ const GoogleButton: React.FC<TGButtonProps> = ({ text }) => {
 
 
     return (
-        <div onClick={() => TriigerGoogle()} className=" h-[48px] w-full border-[1px] border-[#D6DAE1] rounded-[6px] flex items-center justify-center py-2 text-center shadow-[0_1_1px_#000] mb-4 cursor-pointer">
+        <div onClick={() => TriigerGoogle()} className=" h-[48px] w-full border border-[#D6DAE1] rounded-[6px] flex items-center justify-center py-2 text-center shadow-[0_1_1px_#000] mb-4 cursor-pointer">
             <img src={GoogleLogo} alt="google-logo" className="w-[24px] h-[24px] mr-1.5" />
-            <p className="text-[16px] text-[#606C82] font-[600] leading-[25.6px] ">{text}</p>
+            <p className="text-[16px] text-[#606C82] font-semibold leading-[25.6px] ">{text}</p>
         </div>
     )
 }

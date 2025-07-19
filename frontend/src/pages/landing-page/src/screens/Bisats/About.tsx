@@ -9,10 +9,10 @@ const About = (): JSX.Element => {
       />
 
       <div className="py-[64px] lg:py-[88px] flex flex-col items-center justify-center px-[20px]">
-        <h2 className="text-[28px] lg:text-[42px] font-[500] text-[#0A0E12] lg-[8px] lg:mb-[24px]">
+        <h2 className="text-[28px] lg:text-[42px] font-medium text-[#0A0E12] lg-[8px] lg:mb-[24px]">
           About Us
         </h2>
-        <p className="text-[16px] lg:[18px] font-[400] text-[#515B6E] lg:text-center w-full max-w-[808px]">
+        <p className="text-[16px] lg:[18px] font-normal text-[#515B6E] lg:text-center w-full max-w-[808px]">
           Bisats is the first peer-to-peer cryptocurrency platform in Nigeria
           trusted for its fast, secured and seamless vantage points in the
           Blockchain Ecosystem. Bisats rules other blockchain platforms using
@@ -23,10 +23,10 @@ const About = (): JSX.Element => {
 
       <div className="lg:py-[90px] px-[20px] flex flex-col lg:flex-row items-center justify-between lg:justify-center gap-[48px] lg:gap-[159px]">
         <div className="w-full lg:max-w-[603px]">
-          <h2 className="text-[#0A0E12] font-[500] text-[32px] text-center lg:text-left mb-[16px]">
+          <h2 className="text-[#0A0E12] font-medium text-[32px] text-center lg:text-left mb-[16px]">
             We eliminate the middle man
           </h2>
-          <p className="text-[18px] text-[#515B6E] font-[400]">
+          <p className="text-[18px] text-[#515B6E] font-normal">
             With our innovation, we eliminate the middleman, filter
             insecurities, and help you prevent costly delays. Now you can hold,
             buy, and sell all your crypto assets with zero fees and instant

@@ -20,7 +20,7 @@ const Switch = ({
 			onClick={() => !disabled && onCheckedChange(!checked)}
 			className={`
 				relative inline-flex h-[16px] w-[30px] shrink-0 cursor-pointer rounded-full border-2 border-transparent 
-				transition-colors duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 
+				transition-colors duration-200 ease-in-out focus-visible:outline-hidden focus-visible:ring-2 
 				focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed 
 				disabled:opacity-50 ${checked ? "bg-[#22C55D]" : "bg-[#ADB5C3]"} ${className}
 		`}

@@ -23,30 +23,30 @@ const WithdrawalConfirmationCrypto: React.FC<Props> = ({
   return (
     <ModalTemplate onClose={close}>
       <div className="flex flex-col justify-center w-full text-center mx-auto">
-        <h1 className="text-[#0A0E12] text-[22px] leading-[32px] font-[600] text-left mt-5">
+        <h1 className="text-[#0A0E12] text-[22px] leading-[32px] font-semibold text-left mt-5">
           Withdrawal Confirmation
         </h1>
 
         <div className="h-fit  border bg-[#F9F9FB] rounded-md py-3 px-5 my-5 text-[14px] leading-[24px] w-full ">
           <div className="flex justify-between items-start mb-2 text-wrap w-full">
-            <p className="text-[#424A59] font-[400] ">Withdrawal Address:</p>
+            <p className="text-[#424A59] font-normal ">Withdrawal Address:</p>
             <p className="text-[#606C82]  font-semibold  text-right w-1/2 break-all ">
               {address}
             </p>
           </div>
           <div className="flex justify-between items-center mb-2">
-            <p className="text-[#424A59] font-[400]">Network:</p>
+            <p className="text-[#424A59] font-normal">Network:</p>
             <p className="text-[#606C82]  font-semibold">{network}</p>
           </div>
           <div className="flex justify-between items-center mb-2">
-            <p className="text-[#424A59] font-[400]">Withdrawal amount:</p>
+            <p className="text-[#424A59] font-normal">Withdrawal amount:</p>
             <p className="text-[#606C82]  font-semibold">
               {amount} {asset}
             </p>
           </div>
           <div className="flex justify-between items-center mb-2">
-            <p className="text-[#424A59] font-[400]">Fee:</p>
-            <p className="text-[#606C82]  font-[600]">{2} USDT</p>
+            <p className="text-[#424A59] font-normal">Fee:</p>
+            <p className="text-[#606C82]  font-semibold">{2} USDT</p>
           </div>
         </div>
 
@@ -78,7 +78,7 @@ const WithdrawalConfirmationCrypto: React.FC<Props> = ({
               stroke-linejoin="round"
             />
           </svg>
-          <p className="text-[#606C82] text-[12px] leading-[16px] font-[400] text-left ml-1">
+          <p className="text-[#606C82] text-[12px] leading-[16px] font-normal text-left ml-1">
             Ensure that the address and network are correct. Incorrect entries
             can lead to permanent loss of funds
           </p>

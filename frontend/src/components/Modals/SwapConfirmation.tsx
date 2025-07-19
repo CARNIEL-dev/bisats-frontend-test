@@ -40,46 +40,46 @@ const SwapConfirmation: React.FC<Props> = ({
 					<h1
 						className={` ${
 							type === (typeofSwam.Buy) ? "text-[#17A34A]" : "text-[#DC2625]"
-						} text-[22px] leading-[32px] font-[600] text-left mt-5`}
+						} text-[22px] leading-[32px] font-semibold text-left mt-5`}
 					>
 						{type === typeofSwam.Buy ? "Buy" : "Sell"} {token}
 					</h1>
 					<div className="h-fit rounded-[8px] border border-[#F9F9FB] bg-[#F9F9FB] rounded-[12px] py-3 px-5 my-5 text-[14px] leading-[24px]">
 						<div className="flex justify-between items-center mb-1">
-							<p className="text-[#424A59] font-[400]">Amount:</p>
-							<p className="text-[#606C82] font-[600]">
+							<p className="text-[#424A59] font-normal">Amount:</p>
+							<p className="text-[#606C82] font-semibold">
 								{formatNumber(amount)} {token}
 							</p>
 						</div>
 						<div className="flex justify-between items-center mb-1">
-							<p className="text-[#424A59] font-[400]">You'll receive:</p>
-							<p className="text-[#606C82] font-[600]">
+							<p className="text-[#424A59] font-normal">You'll receive:</p>
+							<p className="text-[#606C82] font-semibold">
 								{formatNumber(receiveAmount)} {currency}
 							</p>
 						</div>
 						{type === (typeofSwam.Buy) &&
 							<div className="flex justify-between items-center mb-1.5">
-								<p className="text-[#424A59] font-[400]">Fee:</p>
-								<p className="text-[#606C82] font-[600]">
+								<p className="text-[#424A59] font-normal">Fee:</p>
+								<p className="text-[#606C82] font-semibold">
 									{fee} {token}
 								</p>
 							</div>}
 						{networkFee && (
 							<div className="flex justify-between items-center mb-1.5">
-								<p className="text-[#424A59] font-[400]">Network Fee:</p>
-								<p className="text-[#606C82] font-[600]">{formatNumber(networkFee)}</p>
+								<p className="text-[#424A59] font-normal">Network Fee:</p>
+								<p className="text-[#606C82] font-semibold">{formatNumber(networkFee)}</p>
 							</div>
 						)}
 						{transactionFee &&  (
 							<div className="flex justify-between items-center mb-1.5">
-								<p className="text-[#424A59] font-[400]">Transaction Fee:</p>
-								<p className="text-[#606C82] font-[600]">{formatNumber(transactionFee)}</p>
+								<p className="text-[#424A59] font-normal">Transaction Fee:</p>
+								<p className="text-[#606C82] font-semibold">{formatNumber(transactionFee)}</p>
 							</div>
 						)}
 					</div>
 
 					{error && (
-						<div className="text-[#FFCCCB] text-[14px] font-[400] mb-4 p-2 bg-red-50 rounded-lg">
+						<div className="text-[#FFCCCB] text-[14px] font-normal mb-4 p-2 bg-red-50 rounded-lg">
 							{error}
 						</div>
 					)}
@@ -93,7 +93,7 @@ const SwapConfirmation: React.FC<Props> = ({
 						/>
 					</div>
 
-					<div className="text-[#515B6E] text-[12px] font-[400] text-center mt-5 flex items-center justify-center">
+					<div className="text-[#515B6E] text-[12px] font-normal text-center mt-5 flex items-center justify-center">
 						<svg
 							width="15"
 							height="13"

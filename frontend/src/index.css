@@ -18,9 +18,7 @@
 }
 
 a.active {
-  color: var(--primary);
-  text-decoration: underline;
-  font-weight: 600;
+  @apply text-primary underline font-semibold;
 }
 
 .profile-dropdown a.active {

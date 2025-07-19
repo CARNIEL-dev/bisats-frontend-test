@@ -43,7 +43,7 @@ const PrimaryInput: React.FC<TInput> = ({
       <input
         type={props.type ?? "text"}
         style={{ outline: "none" }}
-        className={`rounded-sm text-sm font-normal border-[1px] border-[#D6DAE1] outline-[none] focus:border-[#C49600] focus:shadow-[0_0_10px_#FEF8E5] text-[#606C82]  p-2.5  px-3 ${css} ${
+        className={`rounded-sm text-sm font-normal border border-[#D6DAE1] outline-[none] focus:border-[#C49600] focus:shadow-[0_0_10px_#FEF8E5] text-[#606C82]  p-2.5  px-3 ${css} ${
           error ? "border-[#EF4444] outline-0 focus:border-[#EF4444]" : ""
         }`}
         {...props}
@@ -90,7 +90,7 @@ const PrimaryInput: React.FC<TInput> = ({
               stroke-linejoin="round"
             />
           </svg>
-          <small className="text-[#606C82] text-[12px] leading-[16px] font-[400] text-left ml-1">
+          <small className="text-[#606C82] text-[12px] leading-[16px] font-normal text-left ml-1">
             {info}
           </small>
         </div>

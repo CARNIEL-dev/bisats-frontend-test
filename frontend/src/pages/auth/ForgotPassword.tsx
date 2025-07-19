@@ -36,7 +36,7 @@ const ForgotPassword = () => {
             <OtherSide
                 header="Forgot password?"
                 subHeader="Enter your registered email address or phone number, and we’ll send you a link to reset your password."
-                upperSubHeader={<>            <p className="text-[14px] text-[#707D96] leading-[24px] font-[600] text-left flex items-center cursor-pointer mb-2" onClick={() => navigate(APP_ROUTES.AUTH.LOGIN)}> <span className="mr-2"><BackArrow /></span> Back to Log in</p>
+                upperSubHeader={<>            <p className="text-[14px] text-[#707D96] leading-[24px] font-semibold text-left flex items-center cursor-pointer mb-2" onClick={() => navigate(APP_ROUTES.AUTH.LOGIN)}> <span className="mr-2"><BackArrow /></span> Back to Log in</p>
                 </>} />
             <form onSubmit={formik.handleSubmit}>
 
@@ -46,7 +46,7 @@ const ForgotPassword = () => {
                         type="email"
                             name="email"
                         label="email"
-                        css="w-full h-[48px] px-3 outline-none "
+                        css="w-full h-[48px] px-3 outline-hidden "
                             error={formik.errors.email}
                             touched={formik.touched.email}
                             value={formik.values.email}
@@ -58,7 +58,7 @@ const ForgotPassword = () => {
                 <div className="w-full mb-3">
                         <PrimaryButton css={""} text={"Send OTP"} loading={isLoading} type="submit" />
                 </div>
-                <p className="text-[14px] text-[#515B6E] leading-[24px] font-[600] text-left">Need help?<span className="text-[#C49600] pl-2 cursor-pointer">Contact Support</span></p>
+                <p className="text-[14px] text-[#515B6E] leading-[24px] font-semibold text-left">Need help?<span className="text-[#C49600] pl-2 cursor-pointer">Contact Support</span></p>
                 </div>
             </form>
 

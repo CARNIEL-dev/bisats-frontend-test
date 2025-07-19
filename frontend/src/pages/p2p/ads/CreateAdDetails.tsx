@@ -244,7 +244,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
         Market Price: xNGN {formatNumber(rate ?? 0)}{" "}
       </p>
       <div className="mb-4">
-        <div className="flex justify-between mb-[1px]">
+        <div className="flex justify-between mb-px">
           <PrimaryInput
             css="w-[98%] p-2.5 mr-1"
             label="Lower Price Limit"
@@ -267,7 +267,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
             }}
           />
           <PrimaryInput
-            css="w-[100%] p-2.5"
+            css="w-full p-2.5"
             label="Upper price Limit"
             name="priceUpperLimit"
             placeholder="0.00 xNGN"
@@ -300,7 +300,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
         <p className="mb-3 text-[#515B6E] font-semibold text-sm">
           Limits (in NGN)
         </p>
-        <div className="flex flex-col lg:flex-wrap   justify-between mb-[1px]">
+        <div className="flex flex-col lg:flex-wrap   justify-between mb-px">
           <PrimaryInput
             css="w-[98%] p-2.5 mr-1"
             label={`Minimum (xNGN${
@@ -330,7 +330,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
             }}
           />
           <PrimaryInput
-            css="w-[100%] p-2.5"
+            css="w-full p-2.5"
             label={`Maximum (xNGN  ${formatNumber(
               formik.values.type === "buy"
                 ? userTransactionLimits?.upper_limit_buy_ad
@@ -389,7 +389,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
       </div>
 
       <div className="mb-4 w-full flex items-center">
-        <div className="flex justify-between mb-[1px] w-1/2">
+        <div className="flex justify-between mb-px w-1/2">
           {/* <DateInput 
                         name="expiryDate"
                         label="Expiry Date"
@@ -403,7 +403,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
                         } } title="expiryDate" /> */}
           {/* <p className="mb-3 text-[#515B6E] font-semibold text-sm">Expiry Date</p> */}
         </div>
-        {/* <div className="flex justify-between mb-[1px] w-1/2 ml-3">
+        {/* <div className="flex justify-between mb-px w-1/2 ml-3">
 
                 <TimePicker
                     label="Expiry Time"

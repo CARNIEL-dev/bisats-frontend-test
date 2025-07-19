@@ -171,20 +171,20 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
     return (
         <ModalTemplate onClose={close}>
             <div className='relative text-left pt-10'>
-                <h1 className='text-[#2B313B] text-[18px] lg:text-[22px] leading-[32px] font-[600]'>Edit Ad</h1>
+                <h1 className='text-[#2B313B] text-[18px] lg:text-[22px] leading-[32px] font-semibold'>Edit Ad</h1>
                 <div className="my-5">
                     <div className="h-fit rounded border border  border-[#F3F4F6] bg-[#F9F9FB] rounded-[12px] py-3 px-5 my-5 text-[14px] leading-[24px] w-full ">
                         <div className="flex justify-between items-start mb-2 text-wrap w-full">
-                            <p className="text-[#424A59] font-[400] capitalize font-bold">{ad?.type} Ad</p>
-                            <p className="text-[#606C82]  font-[600]  text-right w-1/2 break-all ">NGN/{ad?.asset}</p>
+                            <p className="text-[#424A59] font-normal capitalize font-bold">{ad?.type} Ad</p>
+                            <p className="text-[#606C82]  font-semibold  text-right w-1/2 break-all ">NGN/{ad?.asset}</p>
                         </div>
                         <div className="flex justify-between items-start mb-2 text-wrap w-full">
-                            <p className="text-[#424A59] font-[400] ">Ad Price</p>
-                            <p className="text-[#606C82]  font-[600]  text-right w-1/2 break-all ">{ formatNumber(ad?.price??0)}/NGN</p>
+                            <p className="text-[#424A59] font-normal ">Ad Price</p>
+                            <p className="text-[#606C82]  font-semibold  text-right w-1/2 break-all ">{ formatNumber(ad?.price??0)}/NGN</p>
                         </div>
                         {/* <div className="flex justify-between items-start mb-2 text-wrap w-full">
-                            <p className="text-[#424A59] font-[400] ">{ad?.type} Ad</p>
-                            <p className="text-[#606C82]  font-[600]  text-right w-1/2 break-all ">NGN/{ad?.asset}</p>
+                            <p className="text-[#424A59] font-normal ">{ad?.type} Ad</p>
+                            <p className="text-[#606C82]  font-semibold  text-right w-1/2 break-all ">NGN/{ad?.asset}</p>
                         </div> */}
                     </div>
                      
@@ -202,7 +202,7 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
                         />
                     </div>
                     {/* <div className="mb-4">
-                        <div className="flex justify-between mb-[1px]">
+                        <div className="flex justify-between mb-px">
                             <PrimaryInput
                                 css="w-[98%] p-2.5 mr-1"
                                 label="Lower Price Limit"
@@ -220,7 +220,7 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
                                 }}
                             />
                             <PrimaryInput
-                                css="w-[100%] p-2.5"
+                                css="w-full p-2.5"
                                 label="Upper price Limit"
                                 name="priceUpperLimit"
                                 placeholder="0.00 xNGN"
@@ -257,14 +257,14 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
 
                     </div>
                     {ad?.type.toLowerCase() === "buy" ?
-                        <small className='text-[#606C82] text-[12px] font-[400]'>Balance: {formatNumber(walletState?.wallet?.xNGN)} xNGN</small>
-                        : <small className='text-[#606C82] text-[12px] font-[400]'>Balance: {walletState?.wallet?.[ad?.asset ?? "USDT"]} {ad?.asset}</small>
+                        <small className='text-[#606C82] text-[12px] font-normal'>Balance: {formatNumber(walletState?.wallet?.xNGN)} xNGN</small>
+                        : <small className='text-[#606C82] text-[12px] font-normal'>Balance: {walletState?.wallet?.[ad?.asset ?? "USDT"]} {ad?.asset}</small>
                     }
 
                     
                 <div className="mb-4">
                 <p className="mb-3 text-[#515B6E] font-semibold text-sm">Limits (in NGN)</p>
-                <div className="flex flex-col lg:flex-wrap   justify-between mb-[1px]">
+                <div className="flex flex-col lg:flex-wrap   justify-between mb-px">
                     <PrimaryInput
                         css="w-[98%] p-2.5 mr-1"
                         label={`Minimum (xNGN${ad?.type === "buy" ? formatNumber(userTransactionLimits?.lower_limit_buy_ad) : formatNumber(userTransactionLimits?.lower_limit_sell_ad)})`}
@@ -283,7 +283,7 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
                         }}
                     />
                     <PrimaryInput
-                        css="w-[100%] p-2.5"
+                        css="w-full p-2.5"
                         label={`Maximum (xNGN  ${formatNumber(ad?.type==="buy"? userTransactionLimits?.upper_limit_buy_ad:userTransactionLimits?.upper_limit_sell_ad)})`}
                         placeholder="0"
                         name="maximumLimit"

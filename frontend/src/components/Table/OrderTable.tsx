@@ -76,7 +76,7 @@ const OrderTable: React.FC<OrderTableProps> = ({
 			return (
 				<div className="flex items-center space-x-2">
 					<div className="w-2 h-2 rounded-full bg-gray-400"></div>
-					<span className="text-[12px] font-[600] text-gray-600">{status}</span>
+					<span className="text-[12px] font-semibold text-gray-600">{status}</span>
 				</div>
 			);
 		}
@@ -90,7 +90,7 @@ const OrderTable: React.FC<OrderTableProps> = ({
 						className={`w-[4px] h-[4px] rounded-full ${config.dotColor}`}
 					></div>
 				</div>
-				<span className={`${config.textColor} text-[12px] font-[600]`}>
+				<span className={`${config.textColor} text-[12px] font-semibold`}>
 					{status}
 				</span>
 			</div>
@@ -118,7 +118,7 @@ const OrderTable: React.FC<OrderTableProps> = ({
 
 				if (!config) {
 					return (
-						<span className="text-[14px] text-[#515B6E] font-[600]">
+						<span className="text-[14px] text-[#515B6E] font-semibold">
 							{order["Order type"]}
 						</span>
 					);
@@ -133,7 +133,7 @@ const OrderTable: React.FC<OrderTableProps> = ({
 						>
 							<IconComponent className={config.iconColor} />
 						</div>
-						<span className="text-[14px] text-[#515B6E] font-[600]">
+						<span className="text-[14px] text-[#515B6E] font-semibold">
 							{order["Order type"]}
 						</span>
 					</div>
@@ -146,11 +146,11 @@ const OrderTable: React.FC<OrderTableProps> = ({
 
 				return (
 					<div className="flex items-center space-x-[4px]">
-						<span className="text-[#515B6E] font-[400] text-[14px]">
+						<span className="text-[#515B6E] font-normal text-[14px]">
 							{formattedDate}
 						</span>
 						<div className="bg-[#D6DAE1] h-[4px] w-[4px] rounded-full"></div>
-						<span className="text-[#515B6E] font-[400] text-[14px]">
+						<span className="text-[#515B6E] font-normal text-[14px]">
 							{formattedTime}
 						</span>
 					</div>
@@ -158,19 +158,19 @@ const OrderTable: React.FC<OrderTableProps> = ({
 			}
 			case "Reference":
 				return (
-					<span className="text-[#515B6E] font-[400] text-[14px]">
+					<span className="text-[#515B6E] font-normal text-[14px]">
 						{order.Reference}
 					</span>
 				);
 			case "Quantity":
 				return (
-					<span className="text-[#515B6E] font-[600] text-[14px]">
+					<span className="text-[#515B6E] font-semibold text-[14px]">
 						{order.Quantity.toLocaleString()}
 					</span>
 				);
 			case "Amount":
 				return (
-					<span className="text-[#515B6E] font-[600] text-[14px]">
+					<span className="text-[#515B6E] font-semibold text-[14px]">
 						{order.Amount.toLocaleString()} NGN
 					</span>
 				);
@@ -193,7 +193,7 @@ const OrderTable: React.FC<OrderTableProps> = ({
 			>
 				<div className="flex justify-between items-center">
 					<div className="space-y-2">
-						<p className="font-[600] text-[12px] text-[#515B6E]">Order type</p>
+						<p className="font-semibold text-[12px] text-[#515B6E]">Order type</p>
 						<div className="flex items-center space-x-2">
 							<div
 								className={`${
@@ -208,21 +208,21 @@ const OrderTable: React.FC<OrderTableProps> = ({
 									<ArrowDown className="text-[#EF4444]" />
 								)}
 							</div>
-							<span className="text-[14px] text-[#515B6E] font-[600]">
+							<span className="text-[14px] text-[#515B6E] font-semibold">
 								{order["Order type"]}
 							</span>
 						</div>
 					</div>
 					<div className="space-y-2">
-						<p className="font-[600] text-[12px] text-[#515B6E] text-right">
+						<p className="font-semibold text-[12px] text-[#515B6E] text-right">
 							Date & Time
 						</p>
 						<div className="flex items-center space-x-[4px] justify-end">
-							<span className="text-[#515B6E] font-[400] text-[14px] text-right">
+							<span className="text-[#515B6E] font-normal text-[14px] text-right">
 								{formattedDate}
 							</span>
 							<div className="bg-[#D6DAE1] h-[4px] w-[4px] rounded-full"></div>
-							<span className="text-[#515B6E] font-[400] text-[14px] text-right">
+							<span className="text-[#515B6E] font-normal text-[14px] text-right">
 								{formattedTime}
 							</span>
 						</div>
@@ -230,13 +230,13 @@ const OrderTable: React.FC<OrderTableProps> = ({
 				</div>
 				<div className="flex justify-between items-center">
 					<div className="space-y-2">
-						<p className="font-[600] text-[12px] text-[#515B6E]">Qty</p>
-						<span className="font-[600] text-[14px] text-[#2B313B]">
+						<p className="font-semibold text-[12px] text-[#515B6E]">Qty</p>
+						<span className="font-semibold text-[14px] text-[#2B313B]">
 							{order.Quantity.toLocaleString()}
 						</span>
 					</div>
 					<div className="space-y-2">
-						<p className="font-[600] text-[12px] text-[#515B6E] text-right">
+						<p className="font-semibold text-[12px] text-[#515B6E] text-right">
 							Status
 						</p>
 						<div className="flex justify-end">

@@ -61,7 +61,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage }) => {
     const minutes = String(date.getMinutes()).padStart(2, "0");
 
     const formatted = (
-      <p className="text-[12px] leading-[16px] font-[400] flex items-center">
+      <p className="text-[12px] leading-[16px] font-normal flex items-center">
         {day}/{month}
         <span className="w-1 h-1 mx-1 rounded bg-[#D6DAE1]"></span> {hours}:
         {minutes}
@@ -117,7 +117,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage }) => {
   };
 
   return (
-    <header className="px-4 md:px-8 lg:px-[120px] pt-[16px] pb-2 border-b-[1px] border-[#F3F4F6] ">
+    <header className="px-4 md:px-8 lg:px-[120px] pt-[16px] pb-2 border-b border-[#F3F4F6] ">
       <nav
         className="container mx-auto flex justify-between items-center relative border-b-[#F3F4F6]"
         style={{ borderBottomColor: "#F3F4F6", borderBottom: "1px" }}
@@ -219,7 +219,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage }) => {
         </div>
         {notiDropDown && (
           <div
-            className={`absolute  p-3  border-[1px] bg-[white] border-[#D6DAE1] rounded-[8px] right-20 top-12 w-[380px] h-[252px] z-10 hidden lg:block transition-all duration-200 ease-in-out ${
+            className={`absolute  p-3  border bg-[white] border-[#D6DAE1] rounded-[8px] right-20 top-12 w-[380px] h-[252px] z-10 hidden lg:block transition-all duration-200 ease-in-out ${
               notiDropDown
                 ? "opacity-100 scale-100 ease-in-out"
                 : "opacity-0 scale-95 ease-in pointer-events-none ease-in-out"
@@ -228,9 +228,9 @@ const Header: React.FC<HeaderProps> = ({ currentPage }) => {
               boxShadow: "0px 2px 2px -1px #0000001F",
             }}
           >
-            <div className="mx-3 flex items-center border-b-[1px] py-2 border-[#D6DAE1]">
+            <div className="mx-3 flex items-center border-b py-2 border-[#D6DAE1]">
               <div className="flex items-center">
-                <h1 className="text-[#0A0E12] text-[18px] flex items-center font-[600] leading-[32px]">
+                <h1 className="text-[#0A0E12] text-[18px] flex items-center font-semibold leading-[32px]">
                   Notifications
                   <svg
                     className="mx-1.5"
@@ -268,7 +268,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage }) => {
                     return (
                       <div
                         key={idx}
-                        className="hover:bg-[#F5FEF8] relative px-2 cursor-pointer border-b-[1px] py-3 border-[#F3F4F6]"
+                        className="hover:bg-[#F5FEF8] relative px-2 cursor-pointer border-b py-3 border-[#F3F4F6]"
                         onMouseEnter={() => setActive(idx)}
                         onMouseLeave={() => setActive(100)}
                         onClick={() =>
@@ -279,21 +279,21 @@ const Header: React.FC<HeaderProps> = ({ currentPage }) => {
                         }
                       >
                         {!notification.read && (
-                          <p className="text-[green] absolute top-1 left-2 text-[10px] font-[400] leading-[16px]">
+                          <p className="text-[green] absolute top-1 left-2 text-[10px] font-normal leading-[16px]">
                             New
                           </p>
                         )}
                         <div className={`  items-center py-2`}>
                           <div className="flex items-center justify-between">
-                            <h1 className="text-[#2B313B] text-[14px] font-[600] leading-[24px]">
+                            <h1 className="text-[#2B313B] text-[14px] font-semibold leading-[24px]">
                               {notification.title}
                             </h1>
-                            <p className="text-[#606C82] text-[12px] font-[600] leading-[16px]">
+                            <p className="text-[#606C82] text-[12px] font-semibold leading-[16px]">
                               {formatDate(notification.createdAt)}
                             </p>
                           </div>
 
-                          <p className="text-[#606C82]  font-[400] text-[14px] leading-[24px] ">
+                          <p className="text-[#606C82]  font-normal text-[14px] leading-[24px] ">
                             {notification.message}
                           </p>
                         </div>
@@ -307,7 +307,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage }) => {
         {dropDown && (
           <>
             <div
-              className="absolute border-[1px] bg-[white] border-[#D6DAE1] rounded-[8px] right-0 top-12 w-[207px] z-10 block lg:hidden"
+              className="absolute border bg-[white] border-[#D6DAE1] rounded-[8px] right-0 top-12 w-[207px] z-10 block lg:hidden"
               style={{
                 boxShadow: "0px 2px 2px -1px #0000001F",
               }}
@@ -325,7 +325,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage }) => {
                     <div
                       className={`${
                         (idx === 0 || idx === 1 || idx === 5 || idx === 9) &&
-                        "border-b-[1px] border-[#F3F4F6]"
+                        "border-b border-[#F3F4F6]"
                       } flex items-center py-2`}
                     >
                       {title === "Dashboard" ? (
@@ -348,7 +348,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage }) => {
                         <div className="mr-4"></div>
                       )}
                       <p
-                        className="text-[#515B6E] hover:text-[#17A34A] hover:font-[600] text-[14px] leading-[24px] font-[400] pl-2 cursor-pointer"
+                        className="text-[#515B6E] hover:text-[#17A34A] hover:font-semibold text-[14px] leading-[24px] font-normal pl-2 cursor-pointer"
                         onClick={() =>
                           link.text === "Sign out"
                             ? setLogOutModal(true)
@@ -364,7 +364,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage }) => {
             </div>
 
             <div
-              className={`absolute border-[1px] bg-[white] border-[#D6DAE1] rounded-[8px] right-0 top-12 w-[197px] z-10 hidden lg:block transition-all duration-200 ease-in-out ${
+              className={`absolute border bg-[white] border-[#D6DAE1] rounded-[8px] right-0 top-12 w-[197px] z-10 hidden lg:block transition-all duration-200 ease-in-out ${
                 dropDown
                   ? "opacity-100 scale-100 ease-in-out"
                   : "opacity-0 scale-95 ease-in pointer-events-none ease-in-out"
@@ -387,7 +387,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage }) => {
                     >
                       <div
                         className={`${
-                          idx === 3 && "border-b-[1px] border-[#F3F4F6]"
+                          idx === 3 && "border-b border-[#F3F4F6]"
                         } flex items-center py-2`}
                       >
                         {title === "Dashboard" ? (
@@ -410,7 +410,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage }) => {
                           <div className="mr-4"></div>
                         )}
                         <p
-                          className="text-[#515B6E] hover:text-[#17A34A] hover:font-[600] text-[14px] leading-[24px] font-[400] pl-2 cursor-pointer"
+                          className="text-[#515B6E] hover:text-[#17A34A] hover:font-semibold text-[14px] leading-[24px] font-normal pl-2 cursor-pointer"
                           onClick={() =>
                             link.text === "Sign out"
                               ? setLogOutModal(true)

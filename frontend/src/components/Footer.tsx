@@ -17,14 +17,14 @@ export const Footer = (): JSX.Element => {
   return (
     <>
       {isAuth ? (
-        <footer className="w-full flex flex-wrap items-center justify-between border-t-[1px] border-[#D6DAE1] h-[56px]  bg-[#fff]">
+        <footer className="w-full flex flex-wrap items-center justify-between border-t border-[#D6DAE1] h-[56px]  bg-white">
           <div className="flex px-5 items-center w-full lg:w-3/4 mx-auto  justify-between">
             <div className="w-full lg:w-1/3 flex items-center justify-between">
               {LoggedInLinks.map((link, idx) => (
                 <a
                   key={idx}
                   href={link?.link}
-                  className="text-[#515B6E] text-[14px] leading-[24px] font-[400] cursor-pointer"
+                  className="text-[#515B6E] text-[14px] leading-[24px] font-normal cursor-pointer"
                 >
                   {link?.title}
                 </a>
@@ -52,7 +52,7 @@ export const Footer = (): JSX.Element => {
               <Input
                 placeholder="Email Address"
                 className={cn(
-                  "w-full md:h-full h-[50px] border-[1px] border-priYellow text-slate-600"
+                  "w-full md:h-full h-[50px] border border-primary text-slate-600"
                 )}
               />
               <Button className={cn("px-5 py-3 w-full lg:w-[30%] h-full")}>
@@ -84,7 +84,7 @@ export const Footer = (): JSX.Element => {
             <div className="flex  flex-wrap gap-20">
               {/* Site Links */}
               <div className="flex flex-col gap-[21px]">
-                <h4 className="font-desktop-header-7 text-[#fff] text-[18px] font-semibold leading-8">
+                <h4 className="font-desktop-header-7 text-white text-[18px] font-semibold leading-8">
                   {footerData.site.title}
                 </h4>
                 {footerData.site.links.map((link, index) => (

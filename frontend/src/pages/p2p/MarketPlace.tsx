@@ -87,7 +87,7 @@ const MarketPlace = () => {
 					onClick={() => setAdsParam({ ...adsParam, type: "buy" })}
 					className={`cursor-pointer text-[#515B6E] text-[18px] font-[18px] pb-1 px-5 ${
 						adsParam?.type === "buy" &&
-						"border-b-[4px] rounded-x-[2px] border-[#49DE80] text-[#17A34A]"
+						"border-b-4 rounded-x-[2px] border-[#49DE80] text-[#17A34A]"
 					}`}
 				>
 					Buy
@@ -96,7 +96,7 @@ const MarketPlace = () => {
 					onClick={() => setAdsParam({ ...adsParam, type: "sell" })}
 					className={`cursor-pointer text-[#515B6E] text-[18px] font-[18px] pb-1 px-5 ${
 						adsParam?.type === "sell" &&
-						"border-b-[4px] rounded-x-[2px] border-[#F87171] text-[#DC2625]"
+						"border-b-4 rounded-x-[2px] border-[#F87171] text-[#DC2625]"
 					}`}
 				>
 					Sell
@@ -121,7 +121,7 @@ const MarketPlace = () => {
 				/>
 
 				<button
-					className="border-[1px] border-[#D6DAE1] rounded-[6px] w-full mt-2 lg:w-[120px] px-4 flex justify-between items-center h-[48px] text-[#515B6E] text-[14px]"
+					className="border border-[#D6DAE1] rounded-[6px] w-full mt-2 lg:w-[120px] px-4 flex justify-between items-center h-[48px] text-[#515B6E] text-[14px]"
 					onClick={() => setAdsParam({ ...adsParam })}
 				>
 					Filter

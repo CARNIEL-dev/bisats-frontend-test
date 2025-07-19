@@ -51,7 +51,7 @@ const AdDetails = () => {
             <div>
                 <h2 className="font-semibold" style={{color: "#0A0E12", fontSize: "34px" }}>Ad details</h2>
             </div>
-            <div className="h-auto p-4 rounded-lg shadow text-[#606C82] text-[14px] mb-6" style={{backgroundColor: "#F9F9FB"}}>
+            <div className="h-auto p-4 rounded-lg shadow-sm text-[#606C82] text-[14px] mb-6" style={{backgroundColor: "#F9F9FB"}}>
                 <table className="w-full table-fixed mb-2">
                     <thead className="text-left">
                     <tr>

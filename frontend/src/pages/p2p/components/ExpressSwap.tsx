@@ -303,14 +303,14 @@ const ExpressSwap = () => {
         subtext="Skip the stress of manually finding a merchant."
       />
 
-      <div className="flex items-center my-1 w-full border-b-[1px] border-[#F3F4F6] justify-between my-5">
+      <div className="flex items-center my-1 w-full border-b border-[#F3F4F6] justify-between my-5">
         <p
           onClick={() =>
             setAdsParam({ ...adsParam, type: "buy", amount: "0", asset: "" })
           }
           className={`w-1/2 text-center cursor-pointer ${
             adsParam.type === "buy"
-              ? " text-[18px] border-b-[3px] py-1 px-3 border-[#49DE80] rounded-t-[2px] text-[#49DE80] font-[600]"
+              ? " text-[18px] border-b-[3px] py-1 px-3 border-[#49DE80] rounded-t-[2px] text-[#49DE80] font-semibold"
               : ""
           }`}
         >
@@ -323,7 +323,7 @@ const ExpressSwap = () => {
           }
           className={`w-1/2 text-center cursor-pointer ${
             adsParam.type === "sell"
-              ? " text-[18px] border-b-[3px] py-1 px-3 border-[#DC2625] rounded-t-[2px] text-[#DC2625] font-[600]"
+              ? " text-[18px] border-b-[3px] py-1 px-3 border-[#DC2625] rounded-t-[2px] text-[#DC2625] font-semibold"
               : ""
           }`}
         >
@@ -347,7 +347,7 @@ const ExpressSwap = () => {
             <div className="absolute right-3 top-10 w-2/5">
               <SingleToken prop={TokenData[0]} />
             </div>
-            <small className="text-[#606C82] text-[12px] font-[400]">
+            <small className="text-[#606C82] text-[12px] font-normal">
               Balance: {walletState?.wallet?.xNGN}{" "}
               {adsParam?.type === "buy" ? "xNGN" : "USDT"}
             </small>
@@ -373,12 +373,12 @@ const ExpressSwap = () => {
                 }}
               />
             </div>
-            {/* <small className="text-[#606C82] text-[12px] font-[400]">
+            {/* <small className="text-[#606C82] text-[12px] font-normal">
 								Balance: 20,000 {active === 0 ? "USDT" : "xNGN"}
 							</small> */}
 
             {expressAds.length > 0 && adsParam?.amount && (
-              <p className="text-[#515B6E] text-[14px] font-[400] my-5">
+              <p className="text-[#515B6E] text-[14px] font-normal my-5">
                 <span>1 {adsParam?.asset}</span> ≈{" "}
                 <span>
                   {active === 0
@@ -386,7 +386,7 @@ const ExpressSwap = () => {
                     : (1 / expressAds[0]?.price).toFixed(5)}{" "}
                   {active === 0 ? "xNGN" : "USDT"}
                 </span>
-                {/* <span className="text-[#17A34A] text-[12px] font-[600] bg-[#F5FEF8]">
+                {/* <span className="text-[#17A34A] text-[12px] font-semibold bg-[#F5FEF8]">
 										{" "}
 										30 s
 									</span> */}
@@ -394,7 +394,7 @@ const ExpressSwap = () => {
             )}
 
             {error && (
-              <p className="text-[#FFCCCB] text-[12px] font-[400] mt-2">
+              <p className="text-[#FFCCCB] text-[12px] font-normal mt-2">
                 {error}
               </p>
             )}
@@ -423,7 +423,7 @@ const ExpressSwap = () => {
                 }}
               />
             </div>
-            {/* <small className="text-[#606C82] text-[12px] font-[400]">
+            {/* <small className="text-[#606C82] text-[12px] font-normal">
 						Balance: 20,000 {active === 0 ? "xNGN" : "USDT"}
 					</small> */}
           </div>
@@ -439,12 +439,12 @@ const ExpressSwap = () => {
             <div className="absolute right-3 top-10 w-2/5">
               <SingleToken prop={TokenData[0]} />
             </div>
-            {/* <small className="text-[#606C82] text-[12px] font-[400]">
+            {/* <small className="text-[#606C82] text-[12px] font-normal">
 								Balance: 20,000 {active === 0 ? "USDT" : "xNGN"}
 							</small> */}
 
             {expressAds.length > 0 && adsParam?.amount && (
-              <p className="text-[#515B6E] text-[14px] font-[400] my-5">
+              <p className="text-[#515B6E] text-[14px] font-normal my-5">
                 <span>1 {adsParam.asset}</span> ≈{" "}
                 <span>
                   {adsParam?.type === "buy"
@@ -452,7 +452,7 @@ const ExpressSwap = () => {
                     : (1 / expressAds[0]?.price).toFixed(5)}{" "}
                   {active === 0 ? "xNGN" : "USDT"}
                 </span>
-                {/* <span className="text-[#17A34A] text-[12px] font-[600] bg-[#F5FEF8]">
+                {/* <span className="text-[#17A34A] text-[12px] font-semibold bg-[#F5FEF8]">
 										{" "}
 										30 s
 									</span> */}
@@ -460,7 +460,7 @@ const ExpressSwap = () => {
             )}
 
             {error && (
-              <p className="text-[#FFCCCB] text-[12px] font-[400] mt-2">
+              <p className="text-[#FFCCCB] text-[12px] font-normal mt-2">
                 {error}
               </p>
             )}

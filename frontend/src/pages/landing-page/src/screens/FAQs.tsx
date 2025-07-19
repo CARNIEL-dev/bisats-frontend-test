@@ -186,8 +186,8 @@ Market Price - (1-3% margin) = Your buying price`,
 								onClick={() => handleQuestionClick(index)}
 								className={`w-full max-w-[446px] text-[18px] rounded-[8px] p-[12px] text-left transition-all duration-200 ${
 									activeQuestion === index
-										? "bg-[#F5BB00] text-[#0A0E12] font-[600]"
-										: "text-[#515B6E] font-[400] bg-[#F9F9FB]"
+										? "bg-[#F5BB00] text-[#0A0E12] font-semibold"
+										: "text-[#515B6E] font-normal bg-[#F9F9FB]"
 								}`}
 							>
 								{faq.question}
@@ -196,10 +196,10 @@ Market Price - (1-3% margin) = Your buying price`,
 					</div>
 
 					<div className="w-1/2 p-[8px]">
-						<h3 className="text-[34px] font-[500] text-[#2B313B] mb-[8px]">
+						<h3 className="text-[34px] font-medium text-[#2B313B] mb-[8px]">
 							{faqData[activeQuestion].question}
 						</h3>
-						<div className="text-[#606C82] font-[400] text-[16px] leading-relaxed">
+						<div className="text-[#606C82] font-normal text-[16px] leading-relaxed">
 							{renderAnswer(faqData[activeQuestion].answer, false)}
 						</div>
 					</div>
@@ -215,15 +215,15 @@ Market Price - (1-3% margin) = Your buying price`,
 								}
 								className={`w-full text-left rounded-[8px] p-[12px] transition-all duration-200 ${
 									activeQuestion === index
-										? "bg-[#F5BB00] text-[#0A0E12] font-[600] text-[18px]"
-										: "bg-[#F9F9FB] text-[#515B6E] font-[400] text-[16px]"
+										? "bg-[#F5BB00] text-[#0A0E12] font-semibold text-[18px]"
+										: "bg-[#F9F9FB] text-[#515B6E] font-normal text-[16px]"
 								}`}
 							>
 								{faq.question}
 							</button>
 
 							{activeQuestion === index && (
-								<div className="text-[#606C82] font-[400] leading-relaxed text-[16px]">
+								<div className="text-[#606C82] font-normal leading-relaxed text-[16px]">
 									{renderAnswer(faq.answer, true)}
 								</div>
 							)}

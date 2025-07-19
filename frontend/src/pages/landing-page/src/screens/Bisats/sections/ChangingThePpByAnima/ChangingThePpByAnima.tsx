@@ -37,7 +37,7 @@ export const ChangingThePpByAnima = (): JSX.Element => {
           {cards.map((card, index) => (
             <Card
               key={index}
-              className={`w-full md:w-[535px] h-auto md:h-[505px] rounded-md bg-cover bg-[50%_50%] border-none shadow-none`}
+              className={`w-full md:w-[535px] h-auto md:h-[505px] rounded-md bg-cover bg-position-[50%_50%] border-none shadow-none`}
             >
               <CardContent className="flex flex-col justify-end h-full p-0">
                 <img src={card.img} alt={card.title} />

@@ -136,21 +136,21 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
   };
 
   return (
-    <div className="border-[1px]  flex flex-col gap-2 p-4 md:p-6 rounded-2xl">
+    <div className="border  flex flex-col gap-2 p-4 md:p-6 rounded-2xl">
       <div className="flex items-center gap-2">
         <p className="font-semibold text-neutral-800">Total Balance</p>
         <Button
           variant="ghost"
           disabled={isLoading}
           className={cn(
-            "!p-0 h-fit w-fit hover:bg-transparent hover:scale-110"
+            "p-0! h-fit w-fit hover:bg-transparent hover:scale-110"
           )}
           onClick={toggleBalanceVisibility}
         >
           {showBalance ? (
-            <EyeClosed className="!w-5 !h-5" />
+            <EyeClosed className="w-5! h-5!" />
           ) : (
-            <Eye className="!w-5 !h-5" />
+            <Eye className="w-5! h-5!" />
           )}
         </Button>
       </div>
@@ -196,7 +196,7 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
 
         <div>
           <DropdownMenu>
-            <DropdownMenuTrigger className="outline-none text-sm">
+            <DropdownMenuTrigger className="outline-hidden text-sm">
               <div className="flex items-center gap-0.5">
                 {currency}
                 <ChevronDown className="w-4 h-4" />

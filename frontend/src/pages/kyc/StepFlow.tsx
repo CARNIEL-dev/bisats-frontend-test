@@ -30,18 +30,18 @@ const StepFlow = ({ step }: { step: number }) => {
             <div className="flex w-full justify-between  space-x-2 items-center text-left my-3">
 
                 <div>
-                    <h1 className="text-[#606C82] text-[14px] leading-[24px] font-[600]">Personal info</h1>
-                    <p className="text-[#858FA5] text-[12px] leading-[16px] font-[400]">Let us know you</p>
+                    <h1 className="text-[#606C82] text-[14px] leading-[24px] font-semibold">Personal info</h1>
+                    <p className="text-[#858FA5] text-[12px] leading-[16px] font-normal">Let us know you</p>
                 </div>
 {/* 
                 <div className="text-center">
-                    <h1 className="text-[#606C82] text-[14px] leading-[24px] font-[600]">Proof of Address</h1>
-                    <p className="text-[#858FA5] text-[12px] leading-[16px] font-[400]">Where you live</p>
+                    <h1 className="text-[#606C82] text-[14px] leading-[24px] font-semibold">Proof of Address</h1>
+                    <p className="text-[#858FA5] text-[12px] leading-[16px] font-normal">Where you live</p>
                 </div> */}
 
                 <div className="text-right">
-                    <h1 className="text-[#606C82] text-[14px] leading-[24px] font-[600]">Identity</h1>
-                    <p className="text-[#858FA5] text-[12px] leading-[16px] font-[400]">Lets verify you</p>
+                    <h1 className="text-[#606C82] text-[14px] leading-[24px] font-semibold">Identity</h1>
+                    <p className="text-[#858FA5] text-[12px] leading-[16px] font-normal">Lets verify you</p>
                 </div>
             </div>
         </div>

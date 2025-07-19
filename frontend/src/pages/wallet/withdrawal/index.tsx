@@ -276,10 +276,10 @@ const WithdrawalPage = () => {
               />
               <div className="border  border-[#F3F4F6] bg-[#F9F9FB] rounded-md py-4 px-5  my-5 text-sm space-y-2 ">
                 <div className="flex justify-between items-center">
-                  <p className="text-[#424A59] font-[400]">
+                  <p className="text-[#424A59] font-normal">
                     Daily remaining limit:
                   </p>
-                  <p className="text-[#606C82]  font-[600]">
+                  <p className="text-[#606C82]  font-semibold">
                     NGN{" "}
                     {userTransactionLimits?.daily_withdrawal_limit_fiat >
                     500000000
@@ -291,8 +291,8 @@ const WithdrawalPage = () => {
                   </p>
                 </div>
                 <div className="flex justify-between items-center">
-                  <p className="text-[#424A59] font-[400]">Transaction fee:</p>
-                  <p className="text-[#606C82]  font-[600]">
+                  <p className="text-[#424A59] font-normal">Transaction fee:</p>
+                  <p className="text-[#606C82]  font-semibold">
                     {formatNumber(
                       !withdrwalAmount
                         ? "-"
@@ -302,16 +302,16 @@ const WithdrawalPage = () => {
                   </p>
                 </div>
                 <div className="flex justify-between items-center">
-                  <p className="text-[#424A59] font-[400]">
+                  <p className="text-[#424A59] font-normal">
                     Withdrawal amount:
                   </p>
-                  <p className="text-[#606C82]  font-[600]">
+                  <p className="text-[#606C82]  font-semibold">
                     {formatNumber(withdrwalAmount ?? "-")} xNGN
                   </p>
                 </div>
                 <div className="flex justify-between items-center">
-                  <p className="text-[#424A59] font-[400]">Total:</p>
-                  <p className="text-[#606C82]  font-[600]">
+                  <p className="text-[#424A59] font-normal">Total:</p>
+                  <p className="text-[#606C82]  font-semibold">
                     {`${formatNumber(
                       !withdrwalAmount
                         ? "-"
@@ -363,10 +363,10 @@ const WithdrawalPage = () => {
 
               <div className="border bg-[#F9F9FB] rounded-md py-3 px-5 text-sm space-y-2 my-4 ">
                 <div className="flex justify-between items-center">
-                  <p className="text-[#424A59] font-[400]">
+                  <p className="text-[#424A59] font-normal">
                     Daily remaining limit:
                   </p>
-                  <p className="text-[#606C82]  font-[600]">
+                  <p className="text-[#606C82]  font-semibold">
                     {" "}
                     {formatNumber(
                       userTransactionLimits?.daily_withdrawal_limit_crypto -
@@ -377,16 +377,16 @@ const WithdrawalPage = () => {
                 </div>
 
                 <div className="flex justify-between items-center">
-                  <p className="text-[#424A59] font-[400]">
+                  <p className="text-[#424A59] font-normal">
                     Withdrawal amount:
                   </p>
-                  <p className="text-[#606C82]  font-[600]">
+                  <p className="text-[#606C82]  font-semibold">
                     {formatNumber(cryptoWithdrwalAmount ?? 0)} {selectedToken}
                   </p>
                 </div>
                 <div className="flex justify-between items-center">
-                  <p className="text-[#424A59] font-[400]">Total:</p>
-                  <p className="text-[#606C82] font-[600]">
+                  <p className="text-[#424A59] font-normal">Total:</p>
+                  <p className="text-[#606C82] font-semibold">
                     {parseFloat(cryptoWithdrwalAmount ?? "0") || "-"}{" "}
                     {selectedToken}
                   </p>

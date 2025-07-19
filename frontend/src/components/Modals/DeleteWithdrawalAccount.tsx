@@ -38,8 +38,8 @@ const DeleteWithdrawalAccount: React.FC<Props> = ({ close,bank }) => {
         <ModalTemplate onClose={() => close()}>
 
             <div className='relative pt-10'>
-                <h1 className='text-[#2B313B] text-[18px] lg:text-[22px] leading-[32px] font-[600]'>Delete withdrawal account?</h1>
-                <p className='text-[#606C82] text-[14px] lg:text-[14px] leading-[24px] font-[400] mt-3'>
+                <h1 className='text-[#2B313B] text-[18px] lg:text-[22px] leading-[32px] font-semibold'>Delete withdrawal account?</h1>
+                <p className='text-[#606C82] text-[14px] lg:text-[14px] leading-[24px] font-normal mt-3'>
                     Are you sure you want to delete withdrawal account?
                 </p>
 

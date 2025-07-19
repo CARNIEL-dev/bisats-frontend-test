@@ -22,7 +22,7 @@ const MobileP2PMP: React.FC<TableProps> = ({ data, type }) => {
 						<div className="space-x-2">
 							<div className="flex items-center space-x-2">
 								<div
-									className={`rounded-full w-[32px] h-[32px] flex items-center justify-center font-[600] text-[14px] ${
+									className={`rounded-full w-[32px] h-[32px] flex items-center justify-center font-semibold text-[14px] ${
 										row.orderType === "buy"
 											? "text-[#17A34A] bg-[#F5FEF8]"
 											: "bg-[#FEF2F2] text-[#B91C1B]"
@@ -30,15 +30,15 @@ const MobileP2PMP: React.FC<TableProps> = ({ data, type }) => {
 								>
 									{row.user.userName?.charAt(0)?.toUpperCase() || "?"}
 								</div>
-								<span className="text-[14px] font-[600] text-[#515B6E]">
+								<span className="text-[14px] font-semibold text-[#515B6E]">
 									{row.user.userName}
 								</span>
 							</div>
 							<div className="flex flex-col items-start mt-2 ">
-								<span className="text-[#515B6E] text-[12px] font-[600]">
+								<span className="text-[#515B6E] text-[12px] font-semibold">
 									Unit Price
 								</span>
-								<span className="text-[#515B6E] text-[12px] font-[400]">
+								<span className="text-[#515B6E] text-[12px] font-normal">
 									{row?.orderType === "buy"
 										? row?.amountAvailable
 										: formatCrypto(
@@ -48,10 +48,10 @@ const MobileP2PMP: React.FC<TableProps> = ({ data, type }) => {
 								</span>
 							</div>
 							<div className="flex flex-col items-start mt-2 ">
-								<span className="text-[#515B6E] text-[12px] font-[600]">
+								<span className="text-[#515B6E] text-[12px] font-semibold">
 									Available/Limits
 								</span>
-								<span className="text-[#515B6E] text-[12px] font-[400]">
+								<span className="text-[#515B6E] text-[12px] font-normal">
 									{formatNumber(row?.minimumLimit)} -{" "}
 									{formatNumber(row?.maximumLimit)} xNGN
 								</span>
@@ -59,7 +59,7 @@ const MobileP2PMP: React.FC<TableProps> = ({ data, type }) => {
 						</div>
 
 						<div className="flex flex-col items-end justify-between">
-							<span className="text-[#515B6E] text-[14px] font-[600] text-end mb-3">
+							<span className="text-[#515B6E] text-[14px] font-semibold text-end mb-3">
 								₦ {formatNumber(row?.price)}
 							</span>
 							<Link
@@ -73,7 +73,7 @@ const MobileP2PMP: React.FC<TableProps> = ({ data, type }) => {
 								<PrimaryButton
 									text={type}
 									loading={false}
-									css="text-[14px] px-[30px] py-[1px] font-[600]"
+									css="text-[14px] px-[30px] py-px font-semibold"
 								/>
 							</Link>
 						</div>

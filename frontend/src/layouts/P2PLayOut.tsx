@@ -69,7 +69,7 @@ const P2PLayOut = () => {
 
   return (
     <div className="w-full">
-      <div className="bg-[#F9F9FB] border-[1px] border-[#F3F4F6] h-[48px] flex overflow-hidden">
+      <div className="bg-[#F9F9FB] border border-[#F3F4F6] h-[48px] flex overflow-hidden">
         <div className="w-full lg:w-3/5  flex  mx-auto justify-between items-center">
           {LiveData.map((data, idx) => (
             <div
@@ -81,8 +81,8 @@ const P2PLayOut = () => {
                 alt={`${data.token} logo`}
                 className="w-[16px] h-[16px]"
               />
-              <h2 className=" font-[600] text-[#515B6E] px-1">{data.token}</h2>
-              <p className=" font-[400] text-[#515B6E] flex whitespace-nowrap  ">{`${data.price} USD ${data.percentageIncrease}`}</p>
+              <h2 className=" font-semibold text-[#515B6E] px-1">{data.token}</h2>
+              <p className=" font-normal text-[#515B6E] flex whitespace-nowrap  ">{`${data.price} USD ${data.percentageIncrease}`}</p>
               <img
                 src={data.trend === "up" ? UpTrend : DownTrend}
                 alt={`market trend`}
@@ -103,7 +103,7 @@ const P2PLayOut = () => {
               to={`${page.link}`}
               className={`${
                 activePage === idx ? "border-b-4" : ""
-              } text-[14px] text-[#515B6E] leading-[24px] font-[600] px-5`}
+              } text-[14px] text-[#515B6E] leading-[24px] font-semibold px-5`}
               style={
                 activePage === idx
                   ? {

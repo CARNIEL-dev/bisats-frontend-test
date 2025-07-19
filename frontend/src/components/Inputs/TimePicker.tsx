@@ -54,7 +54,7 @@ const TimePicker = ({
                     />
 
                     <div
-                        className={`cursor-pointer text-[#515B6E] p-3 bg-gradient-to-r from-[#FFFFFF] to-[#EEEFF2] border border-[#E2E4E8] h-[48px] rounded-[8px] inline-flex items-center w-full font-[600] text-[14px] leading-[24px] placeholder-[#515B6E] focus:outline-none ${error && touched ? "border-[#EF4444]" : ""
+                        className={`cursor-pointer text-[#515B6E] p-3 bg-linear-to-r from-[#FFFFFF] to-[#EEEFF2] border border-[#E2E4E8] h-[48px] rounded-[8px] inline-flex items-center w-full font-semibold text-[14px] leading-[24px] placeholder-[#515B6E] focus:outline-hidden ${error && touched ? "border-[#EF4444]" : ""
                             }`}
                     >
                         <span className="text-[#858FA5] text-[14px] leading-[24px]">

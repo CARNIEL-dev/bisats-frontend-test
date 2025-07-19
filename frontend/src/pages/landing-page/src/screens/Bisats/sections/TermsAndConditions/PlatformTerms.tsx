@@ -1,6 +1,6 @@
 const PlatformTerms = () => {
-	const textStyle = "text-[#515B6E] font-[400] text-[16px]";
-	const headerStyle = "text-[#2B313B] font-[600] text-[18px]";
+	const textStyle = "text-[#515B6E] font-normal text-[16px]";
+	const headerStyle = "text-[#2B313B] font-semibold text-[18px]";
 
 	return (
 		<div className="space-y-[24px]">

@@ -39,7 +39,7 @@ export const HowItWorksByAnima = (): JSX.Element => {
           <h2 className="text-[28px] text-[#0A0E12] lg:text-[42px] text-center leading-[40px] lg:leading-[56px] lg:w-3/5">
             At Bisats, you start and end every transactions with peace of mind.
           </h2>
-          <p className="font-[400] text-[#606C82] text-[16px] text-center leading-[28px]">
+          <p className="font-normal text-[#606C82] text-[16px] text-center leading-[28px]">
             Transact in 3 Simple Steps:
           </p>
         </div>

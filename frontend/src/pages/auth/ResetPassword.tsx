@@ -46,7 +46,7 @@ const ResetPassword = () => {
             <div className="w-full mb-4">
                     <div className="w-full mb-2">
                         <AuthPasswordInput
-                            css="w-full h-[48px] px-3 outline-none"
+                            css="w-full h-[48px] px-3 outline-hidden"
                             handleChange={formik.handleChange}
                             name="newPassword"
                             error={formik.errors.newPassword}
@@ -59,7 +59,7 @@ const ResetPassword = () => {
                     </div>
             </div>
             <div className="w-full mb-4">
-                    <AuthPasswordInput css="w-full h-[48px] px-3 outline-none "
+                    <AuthPasswordInput css="w-full h-[48px] px-3 outline-hidden "
                         check={false}
                         text="Repeat password"
                         name="confirmPassword"
@@ -73,7 +73,7 @@ const ResetPassword = () => {
                 <div className="w-full mb-3">
                     <PrimaryButton css={""} text={"Save password"} loading={isLoading} type="submit" />
                 </div>
-                <p className="text-[14px] text-[#515B6E] leading-[24px] font-[600] text-center">Don’t have an account?<span className="text-[#C49600] pl-3 cursor-pointer" onClick={() => navigate(APP_ROUTES.AUTH.SIGNUP)}>Sign Up</span></p>
+                <p className="text-[14px] text-[#515B6E] leading-[24px] font-semibold text-center">Don’t have an account?<span className="text-[#C49600] pl-3 cursor-pointer" onClick={() => navigate(APP_ROUTES.AUTH.SIGNUP)}>Sign Up</span></p>
             </form>
             </div>
     )

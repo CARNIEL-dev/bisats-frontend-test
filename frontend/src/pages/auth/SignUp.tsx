@@ -50,7 +50,7 @@ const SignUp = () => {
                             type="email"
                             name="email"
                         label="Email"
-                        css="w-full h-[48px] px-3 outline-none "
+                        css="w-full h-[48px] px-3 outline-hidden "
                             error={formik.errors.email}
                             touched={formik.touched.email}
                             value={formik.values.email}
@@ -61,7 +61,7 @@ const SignUp = () => {
                     </div>
                     <div className="w-full mb-2">
                         <AuthPasswordInput
-                            css="w-full h-[48px] px-3 outline-none"
+                            css="w-full h-[48px] px-3 outline-hidden"
                             handleChange={formik.handleChange}
                             name="password"
                             error={formik.errors.password}
@@ -73,7 +73,7 @@ const SignUp = () => {
                         />
                     </div>
                     <div className="w-full mb-2">
-                    <AuthPasswordInput css="w-full h-[48px] px-3 outline-none "
+                    <AuthPasswordInput css="w-full h-[48px] px-3 outline-hidden "
                             // handleChange={(e) => setSignUpBody({ ...signupBody, confirmPassword: e })}
                             check={false}
                             text="Repeat password"
@@ -93,10 +93,10 @@ const SignUp = () => {
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                             />
-                    <p className="text-[12px] text-[#515B6E] leading-[16px] font-[400] mt-1 ml-2">By creating an account you certify that you are over the age of 18 and agree to the Privacy Policy.</p>
+                    <p className="text-[12px] text-[#515B6E] leading-[16px] font-normal mt-1 ml-2">By creating an account you certify that you are over the age of 18 and agree to the Privacy Policy.</p>
                         </div>
                         {formik.touched.agreeToTerms && formik.errors.agreeToTerms ? (
-                            <div style={{ color: 'red' }} className="text-[12px] text-[#515B6E] leading-[16px] font-[400] mb-3">{formik.errors.agreeToTerms}</div>
+                            <div style={{ color: 'red' }} className="text-[12px] text-[#515B6E] leading-[16px] font-normal mb-3">{formik.errors.agreeToTerms}</div>
                         ) : null}
                     </div>
                 <div className="w-full mb-3">
@@ -107,11 +107,11 @@ const SignUp = () => {
                 </form>
                 <div className="w-full flex items-center my-6">
                     <hr className="text-[#F3F4F6] w-1/2 h-[1.5px]" />
-                    <span className="text-[12px] text-[#707D96] leading-[16px] font-[400] mx-2">or</span>
+                    <span className="text-[12px] text-[#707D96] leading-[16px] font-normal mx-2">or</span>
                     <hr className="text-[#F3F4F6] w-1/2 h-[1.5px]" />
                 </div>
                 <GoogleButton text="Sign up with Google" />
-                <p className="text-[14px] text-[#515B6E] leading-[24px] font-[600] text-center">Already have an account?<span className="text-[#C49600] pl-3 cursor-pointer" onClick={() => navigate(APP_ROUTES.AUTH.LOGIN)}>Sign In</span></p>
+                <p className="text-[14px] text-[#515B6E] leading-[24px] font-semibold text-center">Already have an account?<span className="text-[#C49600] pl-3 cursor-pointer" onClick={() => navigate(APP_ROUTES.AUTH.LOGIN)}>Sign In</span></p>
 
             </div>
         </div>

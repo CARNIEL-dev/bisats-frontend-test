@@ -146,7 +146,7 @@ const CreateAdPricing: React.FC<AdsProps> = ({ formik, setStage,liveRate }) => {
             <p className="text-[#515B6E] text-xs font-light mb-4">Market Price: 1 USDT ≈ {formatNumber( liveRate?.xNGN??0)} xNGN</p>
 
             <div className="mb-4">
-                <div className="flex justify-between mb-[1px]">
+                <div className="flex justify-between mb-px">
                     <PrimaryInput
                         css="w-[98%] p-2.5 mr-1"
                         label="Lower Price Limit"
@@ -164,7 +164,7 @@ const CreateAdPricing: React.FC<AdsProps> = ({ formik, setStage,liveRate }) => {
                         }}
                     />
                     <PrimaryInput
-                        css="w-[100%] p-2.5"
+                        css="w-full p-2.5"
                         label="Upper price Limit"
                         name="priceUpperLimit"
                         placeholder="0.00 xNGN"

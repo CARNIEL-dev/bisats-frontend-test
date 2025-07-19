@@ -80,7 +80,7 @@ const TwoFactorAuthModal: React.FC<Props> = ({ close }) => {
     return (
       <div className="p-6 max-w-md mx-auto bg-white space-y-4 text-center text-[#001140]">
         <img src={qrImg} alt="Scan QR Code" className="mx-auto w-40 h-40" />
-        <h2 className="text-xl font-[500]">Scan QRCode</h2>
+        <h2 className="text-xl font-medium">Scan QRCode</h2>
         <p className="">
           From your device, launch Google Authenticator, and scan the QRCode above. Hit done, when you’ve added the key above successfully.
         </p>

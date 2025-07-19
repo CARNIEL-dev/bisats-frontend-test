@@ -27,7 +27,7 @@ const FileInput: React.FC<TFileInput> = ({
         <Label text={label} css={""} />
         <div
           className={`file-upload-container  py-2 ${
-            error && "border-[1px] border-red-400"
+            error && "border border-red-400"
           }`}
         >
           <label htmlFor="file-upload" className="file-upload-box">

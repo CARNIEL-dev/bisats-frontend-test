@@ -148,7 +148,7 @@ const MarketRate: React.FC = () => {
   }, []);
 
   return (
-    <div className="border-[1px] h-full w-full p-3 md:p-[16px] rounded-2xl">
+    <div className="border h-full w-full p-3 md:p-[16px] rounded-2xl">
       <div className="mb-[6px]">
         <p style={{ fontSize: "15px", fontWeight: "600", color: "#0A0E12" }}>
           Market Rates (per unit)

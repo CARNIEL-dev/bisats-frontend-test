@@ -8,13 +8,13 @@ const AuthLayout = () => {
   return (
     <GoogleOAuthProvider clientId={GOOGLE.CLIENT_ID ?? ""}>
       <div
-        className={`bg-white bg-no-repeat bg-cover lg:h-[100vh] w-full pt-8 md:pt-0`}
+        className={`bg-white bg-no-repeat bg-cover lg:h-screen w-full pt-8 md:pt-0`}
       >
         <div className="md:hidden px-4 mb-4">
           <BisatLogo />
         </div>
         <div className="w-full h-full flex flex-col-reverse lg:flex-row lg:justify-start lg:items-center p-3 ">
-          <div className="hidden lg:block lg:w-[561px] p-2 bg-priBlack h-full rounded-[16px] relative">
+          <div className="hidden lg:block lg:w-[561px] p-2 bg-pri-black h-full rounded-[16px] relative">
             <div className="absolute top-[8%] left-[6.5%] mix-blend-screen">
               <BisatLogo />
             </div>

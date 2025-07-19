@@ -201,7 +201,7 @@ export const renderParsedText = (
 							className: `
               ${className}
               ${isMobile ? "ml-3" : "ml-4"} ${baseMargin} ${baseTextSize}
-              text-[#606C82] font-[400] leading-relaxed
+              text-[#606C82] font-normal leading-relaxed
               list-disc list-inside
             `,
 						},
@@ -216,7 +216,7 @@ export const renderParsedText = (
 							className: `
               ${className}
               ${isMobile ? "ml-3" : "ml-4"} ${baseMargin} ${baseTextSize}
-              text-[#606C82] font-[400] leading-relaxed
+              text-[#606C82] font-normal leading-relaxed
               list-decimal list-inside
             `,
 						},
@@ -236,7 +236,7 @@ export const renderParsedText = (
 									{
 										key: `${key}-item-${idx}`,
 										className: `
-                    ${baseTextSize} text-[#606C82] font-[400] leading-relaxed
+                    ${baseTextSize} text-[#606C82] font-normal leading-relaxed
                     list-disc list-inside
                   `,
 									},
@@ -268,7 +268,7 @@ export const renderParsedText = (
 							className: `
               ${className} ${baseMargin} ${baseTextSize}
               border-l-4 border-[#F5BB00] pl-4 italic
-              text-[#606C82] font-[400] leading-relaxed
+              text-[#606C82] font-normal leading-relaxed
             `,
 						},
 						item.content
@@ -282,7 +282,7 @@ export const renderParsedText = (
 							key,
 							className: `
               ${className} ${baseMargin} ${baseTextSize}
-              text-[#606C82] font-[400] leading-relaxed
+              text-[#606C82] font-normal leading-relaxed
             `,
 						},
 						item.content

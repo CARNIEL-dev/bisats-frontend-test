@@ -24,7 +24,7 @@ const DateTimePicker = ({ label, onChange }: { label: string, onChange: (timesta
                     showTimeSelect
                     dateFormat="yyyy-MM-dd h:mm aa"
                     placeholderText="Select date and time"
-                    className="w-full p-3 pl-4 pr-10 rounded-xl bg-gray-100 text-gray-600 focus:outline-none"
+                    className="w-full p-3 pl-4 pr-10 rounded-xl bg-gray-100 text-gray-600 focus:outline-hidden"
                 />
                 <div className="absolute top-3 right-3 text-gray-500">
                     <Calendar size={20} />

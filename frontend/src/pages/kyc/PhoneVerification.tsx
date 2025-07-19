@@ -114,7 +114,7 @@ const PhoneVerifcation = () => {
                 <OtherSide
                     header="Verify your Phone number"
                     subHeader="We need your phone number to authenticate your details and secure your account"
-                    upperSubHeader={<><p className="text-[14px] text-[#707D96] leading-[24px] font-[600] text-left flex items-center cursor-pointer mb-2">Bisats KYC Verification</p>
+                    upperSubHeader={<><p className="text-[14px] text-[#707D96] leading-[24px] font-semibold text-left flex items-center cursor-pointer mb-2">Bisats KYC Verification</p>
                     </>} />
                 {
                     verficationScreen ?
@@ -125,7 +125,7 @@ const PhoneVerifcation = () => {
                                 type="code"
                                 name="code"
                                 label="code"
-                                css="w-full h-[48px] px-3 outline-none "
+                                css="w-full h-[48px] px-3 outline-hidden "
                                 error={formik1.errors.code}
                                 touched={formik1.touched.code}
                                 value={formik1.values.code}
@@ -136,8 +136,8 @@ const PhoneVerifcation = () => {
                                 <PrimaryButton css={"w-full"} text={"Enter code"} loading={isLoading} type="submit" />
                             </div>
                             <div className="flex items-center justify-between">
-                                <p className="text-[14px] text-[#515B6E] leading-[24px] font-[400] text-left">00:31</p>
-                                <span className="text-[#C49600] text-[14px] leading-[24px] font-[600] " onClick={()=>resendOTP()}>{resendLoading?"loading...":"Resend OTP"}</span>
+                                <p className="text-[14px] text-[#515B6E] leading-[24px] font-normal text-left">00:31</p>
+                                <span className="text-[#C49600] text-[14px] leading-[24px] font-semibold " onClick={()=>resendOTP()}>{resendLoading?"loading...":"Resend OTP"}</span>
                             </div>
 
 
@@ -152,7 +152,7 @@ const PhoneVerifcation = () => {
                                     <select
                                         value={selectedCountry}
                                         onChange={(e) => setSelectedCountry(e.target.value)}
-                                        className="w-fit  cursor-pointer py-1 border rounded-md absolute top-9 left-1 h-[39px] outline-none curor-pointer border-[transparent]"
+                                        className="w-fit  cursor-pointer py-1 border rounded-md absolute top-9 left-1 h-[39px] outline-hidden curor-pointer border-transparent"
                                     >
                                         {countryDataForPhone.map((country) => (
                                             <option key={country.code} value={country.code}>
@@ -177,7 +177,7 @@ const PhoneVerifcation = () => {
                                 <div className="w-full mb-3">
                                     <PrimaryButton css={"w-full"} text={"Send code"} loading={isLoading} type="submit" onSubmit={()=>formik.handleSubmit()} />
                                 </div>
-                                {/* <p className="text-[14px] text-[#515B6E] leading-[24px] font-[600] text-left">Need help?<span className="text-[#C49600] pl-2 cursor-pointer">Contact Support</span></p> */}
+                                {/* <p className="text-[14px] text-[#515B6E] leading-[24px] font-semibold text-left">Need help?<span className="text-[#C49600] pl-2 cursor-pointer">Contact Support</span></p> */}
                             </div>
                         </form>
                 }

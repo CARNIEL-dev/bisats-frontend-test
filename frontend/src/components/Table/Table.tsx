@@ -42,7 +42,7 @@ const Table: React.FC<TableProps> = ({
 								{headers.map((header, index) => (
 									<th
 										key={header}
-										className="text-left py-3 px-4 text-[#515B6E] text-[12px] md:text-[14px] font-[600]"
+										className="text-left py-3 px-4 text-[#515B6E] text-[12px] md:text-[14px] font-semibold"
 									>
 										{header}
 									</th>
@@ -63,8 +63,8 @@ const Table: React.FC<TableProps> = ({
 											key={`${rowIndex}-${colIndex}`}
 											className={`px-4 py-2 text-[14px] ${
 												boldColumns.includes(colIndex)
-													? "font-[600] text-[#0A0E12]"
-													: "font-[400] text-[#515B6E]"
+													? "font-semibold text-[#0A0E12]"
+													: "font-normal text-[#515B6E]"
 											}`}
 										>
 											{renderCell(item, header, rowIndex)}
@@ -93,7 +93,7 @@ const Table: React.FC<TableProps> = ({
 								{headers.map((header, index) => (
 									<th
 										key={header}
-										className="text-left py-3 px-4 text-[#515B6E] text-[12px] font-[600] uppercase tracking-wider"
+										className="text-left py-3 px-4 text-[#515B6E] text-[12px] font-semibold uppercase tracking-wider"
 									>
 										{header}
 									</th>
@@ -114,8 +114,8 @@ const Table: React.FC<TableProps> = ({
 											key={`${rowIndex}-${colIndex}`}
 											className={`px-4 py-2 text-[14px] ${
 												boldColumns.includes(colIndex)
-													? "font-[600] text-[#0A0E12]"
-													: "font-[400] text-[#515B6E]"
+													? "font-semibold text-[#0A0E12]"
+													: "font-normal text-[#515B6E]"
 											}`}
 										>
 											{renderCell(item, header, rowIndex)}

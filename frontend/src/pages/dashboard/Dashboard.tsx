@@ -36,7 +36,7 @@ const Dashboard = () => {
     <>
       <MaxWidth
         as="section"
-        className="space-y-8 max-w-[72rem] lg:pb-5 mb-10 mt-6"
+        className="space-y-8 max-w-6xl lg:pb-5 mb-10 mt-6"
       >
         {openKycModal && <KycBanner />}
         <div className="w-full flex justify-center ">
@@ -69,7 +69,7 @@ const Dashboard = () => {
               </div>
               <Ads />
             </div>
-            <div className="lg:border-[1px] mt-4  flex flex-col gap-4  rounded-2xl sm:p-[24px]">
+            <div className="lg:border mt-4  flex flex-col gap-4  rounded-2xl sm:p-[24px]">
               <div className="flex items-center gap-2">
                 <p className=" text-lg sm:text-base font-semibold">
                   Order History

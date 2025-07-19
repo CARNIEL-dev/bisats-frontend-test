@@ -40,7 +40,7 @@ export const CountrySelect = ({ parentId, title, label, error, touched, handleCh
             <button
                 id={`${parentId}Btn`}
                 data-dropdown-toggle={parentId}
-                className={`text-[#515B6E] p-2.5 bg-gradient-to-r from-[#FFFFFF] to-[#EEEFF2] border border-[#E2E4E8] h-[48px] rounded-[8px] rounded inline-flex items-center w-full flex justify-between font-[600] text-[14px] leading-[24px]  ${error && touched ? "border-[#EF4444] outline-0 focus:border-[#EF4444]" : ""}`}
+                className={`text-[#515B6E] p-2.5 bg-linear-to-r from-[#FFFFFF] to-[#EEEFF2] border border-[#E2E4E8] h-[48px] rounded-[8px] rounded inline-flex items-center w-full flex justify-between font-semibold text-[14px] leading-[24px]  ${error && touched ? "border-[#EF4444] outline-0 focus:border-[#EF4444]" : ""}`}
                 type="button"
                 onClick={toggleDropdown}
             >

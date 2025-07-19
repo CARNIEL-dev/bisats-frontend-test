@@ -43,7 +43,7 @@ const OTP = () => {
             <OtherSide
                 header="Enter OTP"
                 subHeader="Type in the code sent to your email to reset your password"
-                upperSubHeader={<>            <p className="text-[14px] text-[#707D96] leading-[24px] font-[600] text-left flex items-center cursor-pointer mb-2"> <span className="mr-2"><BackArrow /></span> Back to Log in</p>
+                upperSubHeader={<>            <p className="text-[14px] text-[#707D96] leading-[24px] font-semibold text-left flex items-center cursor-pointer mb-2"> <span className="mr-2"><BackArrow /></span> Back to Log in</p>
                 </>} />
             <form onSubmit={formik.handleSubmit}>
 
@@ -52,7 +52,7 @@ const OTP = () => {
                         type="code"
                         name="code"
                         label="code"
-                        css="w-full h-[48px] px-3 outline-none "
+                        css="w-full h-[48px] px-3 outline-hidden "
                         error={formik.errors.code}
                         touched={formik.touched.code}
                         value={formik.values.code}
@@ -67,8 +67,8 @@ const OTP = () => {
 
 
                 <div className="flex items-center justify-between">
-                    <p className="text-[14px] text-[#515B6E] leading-[24px] font-[400] text-left">00:31</p>
-                    <span className="text-[#C49600] text-[14px] leading-[24px] font-[600] ">Contact Support</span>
+                    <p className="text-[14px] text-[#515B6E] leading-[24px] font-normal text-left">00:31</p>
+                    <span className="text-[#C49600] text-[14px] leading-[24px] font-semibold ">Contact Support</span>
                 </div>
 
 

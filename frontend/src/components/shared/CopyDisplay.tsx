@@ -35,11 +35,11 @@ const CopyDisplay = ({
 
   return (
     <div className="lg:h-[84px]  border border-dashed  border-[#F59E0C] bg-[#FFFBEB] rounded-[12px]  lg:py-3 p-2 lg:px-5 mt-3 space-y-2">
-      <p className="text-[#2B313B] text-sm font-[600]">{title}</p>
+      <p className="text-[#2B313B] text-sm font-semibold">{title}</p>
       <div className="flex gap-1 flex-wrap lg:flex-nowrap text-wrap items-center justify-between">
         <p
           className={cn(
-            "text-[#515B6E] text-[10px] sm:text-xs lg:text-sm  font-[400] break-all"
+            "text-[#515B6E] text-[10px] sm:text-xs lg:text-sm  font-normal break-all"
           )}
         >
           {text || placeholder}

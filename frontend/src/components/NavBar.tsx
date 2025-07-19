@@ -29,7 +29,7 @@ const NavBar = () => {
 
   return (
     <>
-      <div className="bg-white w-full fixed inset-x-0 top-0 z-50 shadow-sm">
+      <div className="bg-white w-full fixed inset-x-0 top-0 z-50 shadow-xs">
         <MaxWidth
           as="header"
           className="flex items-center justify-between  py-5 "
@@ -49,7 +49,7 @@ const NavBar = () => {
                 key={index}
                 to={link.href}
                 onClick={isMobile ? closeMenu : undefined}
-                className="font-[400] text-sm leading-[24px] text-slate-600 text-center whitespace-nowrap cursor-pointer"
+                className="font-normal text-sm leading-[24px] text-slate-600 text-center whitespace-nowrap cursor-pointer"
               >
                 {link.title}
               </NavLink>
@@ -109,12 +109,12 @@ const NavBar = () => {
           <Button
             variant="ghost"
             onClick={() => setToggleMenu((prev) => !prev)}
-            className={cn(" !p-0 w-fit h-fit bg-transparent lg:hidden")}
+            className={cn(" p-0! w-fit h-fit bg-transparent lg:hidden")}
           >
             {toggleMenu ? (
-              <X className="!w-6 !h-6" />
+              <X className="w-6! h-6!" />
             ) : (
-              <Menu className="!w-6 !h-6" />
+              <Menu className="w-6! h-6!" />
             )}
           </Button>
         </MaxWidth>

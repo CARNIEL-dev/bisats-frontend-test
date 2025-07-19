@@ -31,13 +31,13 @@ const SettingsLayOut = () => {
                 <Header currentPage={""} />
 
                 <div className='w-11/12 lg:w-2/3 mx-auto py-10 lg:pt-20'>
-                    <h1 className='text-[28px] lg:text-[34px] leading-[40px] font-[600] text-[#0A0E12] mr-4 '>Settings</h1>
+                    <h1 className='text-[28px] lg:text-[34px] leading-[40px] font-semibold text-[#0A0E12] mr-4 '>Settings</h1>
 
                 </div>
-                <div className=" border-b-[1px] border-[#F3F4F6] h-[48px] ">
+                <div className=" border-b border-[#F3F4F6] h-[48px] ">
                     <div className=" hidden lg:flex justify-between px-[8px] pt-4 w-2/3 items-center mx-auto flex-nowrap " style={{ color: "#515B6E" }}>
                         {
-                            PageData.map((page, idx) => <Link to={`${page.link}`} className={`${activePage === idx ? "border-b-4" : ""} text-[14px] text-[#515B6E] leading-[24px] font-[600] px-5`} style={activePage === idx ? { color: "#937000", borderBottomColor: "#F5BB00", borderRadius: "2px" } : {}} onClick={() => setActivePage(idx)}>{page.tab}</Link>
+                            PageData.map((page, idx) => <Link to={`${page.link}`} className={`${activePage === idx ? "border-b-4" : ""} text-[14px] text-[#515B6E] leading-[24px] font-semibold px-5`} style={activePage === idx ? { color: "#937000", borderBottomColor: "#F5BB00", borderRadius: "2px" } : {}} onClick={() => setActivePage(idx)}>{page.tab}</Link>
                             )
                         }
                     </div>

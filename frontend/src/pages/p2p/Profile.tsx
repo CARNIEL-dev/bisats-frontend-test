@@ -129,22 +129,22 @@ const Profile = () => {
   }, [user?.userId]);
   return (
     <>
-      <MaxWidth className=" space-y-8 min-h-[80dvh] max-w-[72rem]" as="section">
+      <MaxWidth className=" space-y-8 min-h-[80dvh] max-w-6xl" as="section">
         <div className="flex items-center my-6 mx-3">
-          <p className="text-[28px] md:text-[34px] leading-[40px] font-[600] text-[#0A0E12] mr-4">
+          <p className="text-[28px] md:text-[34px] leading-[40px] font-semibold text-[#0A0E12] mr-4">
             {user?.userName}
           </p>
           <BadgeCheck fill="#22C55D" stroke="#fff" />
         </div>
 
         <div
-          className="border-[1px] border-[#F3F4F6] p-3 lg:p-5 rounded-[12px] bg-linear-to-r from-[#FFFFFF] to-[#F6F7F8] w-full mx-3"
+          className="border border-[#F3F4F6] p-3 lg:p-5 rounded-[12px] bg-linear-to-r from-[#FFFFFF] to-[#F6F7F8] w-full mx-3"
           style={{
             background:
               "linear-gradient(103.09deg, #FFFFFF 7.36 %, #F6F7F8 95.14 %)",
           }}
         >
-          <div className="flex items-center text-[18px]  leading-[32px] font-[600] mb-3">
+          <div className="flex items-center text-[18px]  leading-[32px] font-semibold mb-3">
             <h1 className="text-[#515B6E] ">Account Tier:</h1>
             <h1 className="text-[#17A34A] mx-2">
               Level{" "}
@@ -159,7 +159,7 @@ const Profile = () => {
             {(!user?.accountLevel || user?.accountLevel !== "level_3") && (
               <button
                 type="submit"
-                className={`h-[24px]  px-3 rounded-[6px] bg-[#F5BB00] text-[#0A0E12] text-[12px] leading-[24px] font-[600] text-center  shadow-[0_0_0.8px_#000] `}
+                className={`h-[24px]  px-3 rounded-[6px] bg-[#F5BB00] text-[#0A0E12] text-[12px] leading-[24px] font-semibold text-center  shadow-[0_0_0.8px_#000] `}
                 onClick={() => {
                   !user?.accountLevel
                     ? navigate(APP_ROUTES.KYC.PHONEVERIFICATION)
@@ -188,7 +188,7 @@ const Profile = () => {
                     fill={item.verified ? "#22C55D" : "#606C82"}
                   />
                 </svg>
-                <p className="text-[12px]  leading-[16px] font-[400] text-[#606C82] ml-1">
+                <p className="text-[12px]  leading-[16px] font-normal text-[#606C82] ml-1">
                   {item.type}
                 </p>
               </div>
@@ -198,11 +198,11 @@ const Profile = () => {
           <div className="flex flex-wrap items-center justify-between mt-5 ">
             {Limits?.map((item, idx) => (
               <div key={idx} className="my-3 lg:my-0 text-left w-1/2 lg:w-fit">
-                <p className="text-[12px]  leading-[16px] font-[400] text-[#707D96] mb-2">
+                <p className="text-[12px]  leading-[16px] font-normal text-[#707D96] mb-2">
                   {" "}
                   {item.limit}
                 </p>
-                <h1 className="text-[14px]  leading-[24px] font-[600] text-[#515B6E]">
+                <h1 className="text-[14px]  leading-[24px] font-semibold text-[#515B6E]">
                   {item.amount}
                 </h1>
               </div>
@@ -211,24 +211,24 @@ const Profile = () => {
         </div>
 
         <div
-          className="border-[1px] border-[#F3F4F6] rounded-[12px] p-3 lg:p-5 bg-linear-to-r from-[#FFFFFF] to-[#F6F7F8] w-full mx-3"
+          className="border border-[#F3F4F6] rounded-[12px] p-3 lg:p-5 bg-linear-to-r from-[#FFFFFF] to-[#F6F7F8] w-full mx-3"
           style={{
             background:
               "linear-gradient(103.09deg, #FFFFFF 7.36 %, #F6F7F8 95.14 %)",
           }}
         >
-          <div className="flex items-center text-[18px]  leading-[32px] font-[600] mb-3">
+          <div className="flex items-center text-[18px]  leading-[32px] font-semibold mb-3">
             <h1 className="text-[#515B6E] ">Activity Summary</h1>
           </div>
 
           <div className="flex  flex-wrap items-center justify-between mt-0 lg:my-5">
             {ActivitySummary.slice(0, 4)?.map((item, idx) => (
               <div key={idx} className="my-3 lg:my-0 text-left w-1/2 lg:w-fit">
-                <p className="text-[12px]  leading-[16px] font-[400] text-[#707D96] mb-2">
+                <p className="text-[12px]  leading-[16px] font-normal text-[#707D96] mb-2">
                   {" "}
                   {item.type}
                 </p>
-                <h1 className="text-[14px]  leading-[24px] font-[600] text-[#515B6E]">
+                <h1 className="text-[14px]  leading-[24px] font-semibold text-[#515B6E]">
                   {item.value}
                 </h1>
               </div>
@@ -238,11 +238,11 @@ const Profile = () => {
           <div className="flex flex-wrap items-center justify-between mt-0 lg:mt-5">
             {ActivitySummary.slice(4)?.map((item, idx) => (
               <div key={idx} className="my-3 lg:my-0 text-left w-1/2 lg:w-fit">
-                <p className="text-[12px]  leading-[16px] font-[400] text-[#707D96] mb-2">
+                <p className="text-[12px]  leading-[16px] font-normal text-[#707D96] mb-2">
                   {" "}
                   {item.type}
                 </p>
-                <h1 className="text-[14px]  leading-[24px] font-[600] text-[#515B6E]">
+                <h1 className="text-[14px]  leading-[24px] font-semibold text-[#515B6E]">
                   {item.value}
                 </h1>
               </div>

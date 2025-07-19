@@ -22,13 +22,13 @@ export const HeroSectionAbout = ({
 			<div className="relative z-10 h-full w-full flex flex-col lg:flex-row items-center justify-center gap-[20px] px-[20px] md:px-[40px] lg:px-[80px] my-[40px] lg:my-0">
 				<div className="w-full max-w-[700px]">
 					<h1
-						className={`text-white lg:text-[#F7F7F7] font-[500] text-[34px] lg:text-[42px] w-full ${titleAlignment} mb-[8px]`}
+						className={`text-white lg:text-[#F7F7F7] font-medium text-[34px] lg:text-[42px] w-full ${titleAlignment} mb-[8px]`}
 					>
 						{title}
 					</h1>
 					{desc && (
 						<p
-							className={`font-[400] text-[16px] lg:text-[18px] text-white lg:text-[#F7F7F7] w-full ${descAlignment}`}
+							className={`font-normal text-[16px] lg:text-[18px] text-white lg:text-[#F7F7F7] w-full ${descAlignment}`}
 						>
 							{desc}
 						</p>

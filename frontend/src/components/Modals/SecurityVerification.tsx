@@ -51,7 +51,7 @@ const SecurityVerification: React.FC<Props> = ({ close, func }) => {
   return (
     <ModalTemplate onClose={close}>
       <div className="flex flex-col justify-center w-full  mx-auto">
-        <p className="text-[#0A0E12] text-[22px] leading-[32px] font-[600] text-left mt-5">
+        <p className="text-[#0A0E12] text-[22px] leading-[32px] font-semibold text-left mt-5">
           Security Verification
         </p>
         <form className="mt-5">

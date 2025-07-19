@@ -42,7 +42,7 @@ const Payment = () => {
             
             <div className="flex justify-between my-5">
 
-                <h1 className="text-[18px] lg:text-[18px] leading-[32px] font-[600] text-[#2B313B]">Withdrawal Accounts</h1>
+                <h1 className="text-[18px] lg:text-[18px] leading-[32px] font-semibold text-[#2B313B]">Withdrawal Accounts</h1>
                 <WhiteTransparentButton text={<><span className='text-[#624B00]'>+</span> Add</>} size='sm' css='w-[137px]' loading={false} onClick={() => setOpenAddBankAccount(true)} />
            
 
@@ -53,8 +53,8 @@ const Payment = () => {
                 BankDetails.map((details: TBank, idx:number) =>
                     <div className='bg-[#F9F9FB] rounded-[8px] p-3 px-10 my-5' key={idx}>
                         <div className='flex items-center justify-between'>
-                            <h1 className='text-[14px] leading-[24px] font-[400] text-[#2B313B]'>Account { idx+1}</h1>
-                            <div className='flex items-center w-[9%] justify-between text-[12px] font-[600]'>
+                            <h1 className='text-[14px] leading-[24px] font-normal text-[#2B313B]'>Account { idx+1}</h1>
+                            <div className='flex items-center w-[9%] justify-between text-[12px] font-semibold'>
                                 <p className='text-[#515B6E] cursor-pointer' onClick={() => {
                                     setSelectedBank(details);
                                     setOpenEditBankAccount(true)
@@ -69,20 +69,20 @@ const Payment = () => {
                         </div>
                         <div className="flex  flex-wrap items-center justify-between mt-0 lg:my-5">
                                 <div  className="my-3 lg:my-0 text-left w-1/2 lg:w-fit">
-                                <p className="text-[12px]  leading-[16px] font-[400] text-[#515B6E] mb-2"> Account Name</p>
-                                    <h1 className="text-[12px]  leading-[16px] font-[400] text-[#2B313B]">{details?.accountName}</h1>
+                                <p className="text-[12px]  leading-[16px] font-normal text-[#515B6E] mb-2"> Account Name</p>
+                                    <h1 className="text-[12px]  leading-[16px] font-normal text-[#2B313B]">{details?.accountName}</h1>
                             </div>
                             <div  className="my-3 lg:my-0 text-left w-1/2 lg:w-fit">
-                                <p className="text-[12px]  leading-[16px] font-[400] text-[#515B6E] mb-2"> Account Number</p>
-                                <h1 className="text-[12px]  leading-[16px] font-[400] text-[#2B313B]">{details?.accountNumber}</h1>
+                                <p className="text-[12px]  leading-[16px] font-normal text-[#515B6E] mb-2"> Account Number</p>
+                                <h1 className="text-[12px]  leading-[16px] font-normal text-[#2B313B]">{details?.accountNumber}</h1>
                             </div>
                             <div  className="my-3 lg:my-0 text-left w-1/2 lg:w-fit">
-                                <p className="text-[12px]  leading-[16px] font-[400] text-[#515B6E] mb-2"> Bank Name</p>
-                                <h1 className="text-[12px]  leading-[16px] font-[400] text-[#2B313B]">{details?.bankName}</h1>
+                                <p className="text-[12px]  leading-[16px] font-normal text-[#515B6E] mb-2"> Bank Name</p>
+                                <h1 className="text-[12px]  leading-[16px] font-normal text-[#2B313B]">{details?.bankName}</h1>
                             </div>
                             <div  className="my-3 lg:my-0 text-left w-1/2 lg:w-fit">
-                                <p className="text-[12px]  leading-[16px] font-[400] text-[#515B6E] mb-2"> Bank Branch</p>
-                                <h1 className="text-[12px]  leading-[16px] font-[400] text-[#2B313B]">{"-"}</h1>
+                                <p className="text-[12px]  leading-[16px] font-normal text-[#515B6E] mb-2"> Bank Branch</p>
+                                <h1 className="text-[12px]  leading-[16px] font-normal text-[#2B313B]">{"-"}</h1>
                             </div>
                         </div>
 

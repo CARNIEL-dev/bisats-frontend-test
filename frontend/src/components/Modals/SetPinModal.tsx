@@ -66,7 +66,7 @@ const SetPinModal: React.FC<Props> = ({ close, type }) => {
 				className="flex flex-col justify-center w-full mx-auto"
 				onClick={handleModalContentClick}
 			>
-				<h1 className="text-[#0A0E12] text-[22px] leading-[32px] font-[600] text-left mt-5">
+				<h1 className="text-[#0A0E12] text-[22px] leading-[32px] font-semibold text-left mt-5">
 					Security Verification
 				</h1>
 				<div className="mt-5">
