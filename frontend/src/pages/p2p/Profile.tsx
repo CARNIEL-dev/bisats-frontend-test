@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { AccountLevel, bisats_limit } from "@/utils/transaction_limits";
+import BackButton from "@/components/shared/BackButton";
 
 type TActivitySummary = {
   currentActiveAds: number;
@@ -129,8 +130,12 @@ const Profile = () => {
   }, [user?.userId]);
   return (
     <>
-      <MaxWidth className=" space-y-8 min-h-[80dvh] max-w-6xl" as="section">
-        <div className="flex items-center my-6 mx-3">
+      <MaxWidth
+        className="flex flex-col gap-4 min-h-[80dvh] max-w-6xl mt-6"
+        as="section"
+      >
+        <BackButton />
+        <div className="flex items-center mx-3">
           <p className="text-[28px] md:text-[34px] leading-[40px] font-semibold text-[#0A0E12] mr-4">
             {user?.userName}
           </p>

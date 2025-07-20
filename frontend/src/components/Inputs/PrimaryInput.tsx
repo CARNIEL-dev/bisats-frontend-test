@@ -24,10 +24,6 @@ const PrimaryInput: React.FC<TInput> = ({
 }) => {
   const [isFocused, setIsFocused] = useState(false);
 
-  const displayValue =
-    format && !isFocused && typeof props.value === "string"
-      ? formatNumberInput(props.value)
-      : props.value;
   function formatNumberInput(value: string): string {
     if (!value) return "";
     const [integer, decimal] = value.split(".");
@@ -62,14 +58,14 @@ const PrimaryInput: React.FC<TInput> = ({
         }
       />
       {info && (
-        <div className="flex items-center">
+        <div className="flex items-center mt-2 gap-1">
           <svg
             width="16"
             height="16"
             viewBox="0 0 16 16"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            className="w-[25px] h-[25px]"
+            className="w-[25px] h-[25px] shrink-0"
           >
             <path
               d="M7.9987 14.6663C11.6654 14.6663 14.6654 11.6663 14.6654 7.99967C14.6654 4.33301 11.6654 1.33301 7.9987 1.33301C4.33203 1.33301 1.33203 4.33301 1.33203 7.99967C1.33203 11.6663 4.33203 14.6663 7.9987 14.6663Z"
@@ -90,19 +86,18 @@ const PrimaryInput: React.FC<TInput> = ({
               stroke-linejoin="round"
             />
           </svg>
-          <small className="text-[#606C82] text-[12px] leading-[16px] font-normal text-left ml-1">
-            {info}
-          </small>
+          <small className="text-[#606C82] text-xs text-left">{info}</small>
         </div>
       )}
       {maxFnc && (
-        <span
-          className="flex justify-end px-3 -mb-1.5 text-right text-[#C49600] text-[12px] cursor-pointer"
+        <button
+          type="button"
+          className="flex justify-end px-3 py-1 rounded-md -mb-1.5 text-xs text-[#C49600] text-[12px w-fit ml-auto hover:bg-primary-light ease transition-all duration-300"
           onClick={() => maxFnc && maxFnc()}
         >
           {" "}
           Max{" "}
-        </span>
+        </button>
       )}
       <span className="text-red-500 text-xs">{error}</span>
     </div>

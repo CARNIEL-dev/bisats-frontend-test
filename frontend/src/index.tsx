@@ -4,18 +4,30 @@ import App from "./App";
 import store from "./redux/store";
 import reportWebVitals from "./reportWebVitals";
 import "./index.css";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      // e.g. don’t retry failed queries by default
+      retry: false,
+      staleTime: 1000 * 60 * 5,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
-  // <React.StrictMode>
-  <Provider store={store}>
-    <div className="max-w-[1500px] mx-auto relative">
+  <QueryClientProvider client={queryClient}>
+    <Provider store={store}>
       <App />
-    </div>
-  </Provider>
-  // </React.StrictMode>
+    </Provider>
+    <ReactQueryDevtools initialIsOpen={false} />
+  </QueryClientProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function

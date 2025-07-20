@@ -20,6 +20,8 @@ type IAProps = {
   touched: boolean | undefined;
   handleChange: (prop: string) => void;
   removexNGN?: boolean;
+  showBalance?: boolean;
+  disabled?: boolean;
 };
 
 const TokenSelection = ({
@@ -29,6 +31,8 @@ const TokenSelection = ({
   error,
   touched,
   handleChange,
+  showBalance = true,
+  disabled,
 }: IAProps) => {
   const [selected, setSelected] = useState<string | null>(null);
   const walletState: WalletState = useSelector((state: any) => state.wallet);
@@ -36,10 +40,11 @@ const TokenSelection = ({
 
   //   SUB: Calculate total Balance
   const calculateCurrentWalletBallance = useMemo(() => {
+    if (!showBalance) return undefined;
     return walletData
       ? `${formatNumber(walletData[selected ?? "xNGN"])} ${selected}`
       : 0;
-  }, [selected, walletData]);
+  }, [selected, walletData, showBalance]);
 
   const tokenOptions = useMemo(() => {
     if (removexNGN) return TokenData.slice(1);
@@ -61,6 +66,7 @@ const TokenSelection = ({
             setSelected(val);
           }}
           defaultValue={title || undefined}
+          disabled={disabled}
         >
           <SelectTrigger
             className={cn("w-full ", error && touched && "border-red-500")}
@@ -80,7 +86,7 @@ const TokenSelection = ({
         </Select>
       </div>
 
-      {selected && (
+      {showBalance && selected && (
         <p className="text-[#606C82] text-[12px] leading-[16px] font-normal mt-2.5">
           Current Balance:{" "}
           <span className="font-semibold text-[#515B6E]">

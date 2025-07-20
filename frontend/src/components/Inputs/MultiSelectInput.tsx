@@ -34,11 +34,15 @@ export const MultiSelectDropDown = ({
 }: IMultiSelectDropDownProps) => {
   const { ref, visible, setVisible } = useClickOutside(false);
 
-  const [selected, setSelected] = useState<string | React.ReactNode>("");
+  const [selected, setSelected] = useState<string | React.ReactNode>(
+    title || ""
+  );
   usePreventScroll(visible);
 
   useEffect(() => {
-    setSelected("");
+    return () => {
+      setSelected(title || "");
+    };
   }, [choices]);
 
   return (
@@ -83,7 +87,7 @@ export const MultiSelectDropDown = ({
         >
           <ul
             className={cn(
-              `p-3 space-y-2 text-xs font-secondary h-fit w-full `,
+              `p-3 space-y-1 text-xs font-secondary h-fit w-full `,
               scrollHeight && "overflow-y-scroll max-h-[300px]"
             )}
             aria-labelledby={`${parentId}Btn`}

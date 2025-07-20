@@ -1,56 +1,65 @@
-import React, { useState } from 'react'
-import { APP_ROUTES } from '../constants/app_route'
-import Header from '../components/Header'
-import { Link, Outlet } from 'react-router-dom'
-import { Footer } from '../components/Footer'
+import BackButton from "@/components/shared/BackButton";
+import MaxWidth from "@/components/shared/MaxWith";
+import { APP_ROUTES } from "@/constants/app_route";
+import { cn } from "@/utils";
+import { Link, Outlet, useLocation } from "react-router-dom";
+
+const PageData = [
+  {
+    tab: "User info",
+    link: APP_ROUTES.SETTINGS.PROFILE,
+  },
+  {
+    tab: "Security",
+    link: APP_ROUTES.SETTINGS.SECURITY,
+  },
+  {
+    tab: "Payment",
+    link: APP_ROUTES.SETTINGS.PAYMENT,
+  },
+  {
+    tab: "Support",
+    link: APP_ROUTES.SETTINGS.SUPPORT,
+  },
+];
 
 const SettingsLayOut = () => {
-    const [activePage, setActivePage] = useState(0)
+  const location = useLocation();
+  const pathname = location.pathname;
 
-    const PageData = [
-        {
-            tab: "User info",
-            link: APP_ROUTES.SETTINGS.PROFILE
-        },
-        {
-            tab: "Security",
-            link: APP_ROUTES.SETTINGS.SECURITY
-        },
-        {
-            tab: "Payment",
-            link: APP_ROUTES.SETTINGS.PAYMENT
-        },
-        {
-            tab: "Support",
-            link: APP_ROUTES.SETTINGS.SUPPORT
-        },
-    ]
-    return (
-        <div>
-            <div className="w-full">
-                <Header currentPage={""} />
-
-                <div className='w-11/12 lg:w-2/3 mx-auto py-10 lg:pt-20'>
-                    <h1 className='text-[28px] lg:text-[34px] leading-[40px] font-semibold text-[#0A0E12] mr-4 '>Settings</h1>
-
-                </div>
-                <div className=" border-b border-[#F3F4F6] h-[48px] ">
-                    <div className=" hidden lg:flex justify-between px-[8px] pt-4 w-2/3 items-center mx-auto flex-nowrap " style={{ color: "#515B6E" }}>
-                        {
-                            PageData.map((page, idx) => <Link to={`${page.link}`} className={`${activePage === idx ? "border-b-4" : ""} text-[14px] text-[#515B6E] leading-[24px] font-semibold px-5`} style={activePage === idx ? { color: "#937000", borderBottomColor: "#F5BB00", borderRadius: "2px" } : {}} onClick={() => setActivePage(idx)}>{page.tab}</Link>
-                            )
-                        }
-                    </div>
-
-                    <div className='py-10 w-11/12 lg:w-2/3 mx-auto'>
-                        <Outlet />
-
-                    </div>
-                </div>
-
+  return (
+    <div>
+      <div className="md:top-[5rem] top-[4rem] space-y-4 fixed pt-4 pb-4 bg-neutral-50 border-b inset-x-0 z-10">
+        <MaxWidth className="space-y-4 max-w-[65rem] ">
+          <div className=" flex items-center gap-4">
+            <BackButton />
+            <h1 className="text-[28px] lg:text-[34px] font-semibold">
+              Settings
+            </h1>
+          </div>
+          <div className=" ">
+            <div className="w-fit md:px-8 px-6 mx-auto flex justify-center md:gap-10 gap-4  items-center flex-nowrap text-[#515B6E] dashboard-navbar border border-primary  py-3 rounded-full">
+              {PageData.map((page) => (
+                <Link
+                  to={`${page.link}`}
+                  key={page.link}
+                  className={cn(
+                    "font-semibold text-sm ",
+                    pathname === page.link && "active"
+                  )}
+                >
+                  {page.tab}
+                </Link>
+              ))}
             </div>
-        </div>
-    )
-}
+          </div>
+        </MaxWidth>
+      </div>
+      <MaxWidth className=" md:mt-40 mt-36 max-w-[45rem]  md:min-h-[65dvh] mb-10 min-h-[75dvh]">
+        <Outlet />
+      </MaxWidth>
+    </div>
+  );
+};
 
-export default SettingsLayOut
+export default SettingsLayOut;

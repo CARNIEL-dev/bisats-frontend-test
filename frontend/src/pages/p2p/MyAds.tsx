@@ -1,298 +1,278 @@
-import { PrimaryButton } from "../../components/buttons/Buttons";
-import TableActionMenu from "../../components/Modals/TableActionMenu";
-import { useEffect, useState } from "react";
-import Bisatsfetch from "../../redux/fetchWrapper";
+import TableActionMenu from "@/components/Modals/TableActionMenu";
+import Switch from "@/components/Switch";
+import Toast from "@/components/Toast";
+import { DataTable } from "@/components/ui/data-table";
+import Header from "@/pages/p2p/components/Header";
+import Bisatsfetch from "@/redux/fetchWrapper";
+import { cn, formatter } from "@/utils";
+import { ColumnDef } from "@tanstack/react-table";
+import dayjs from "dayjs";
+import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import Header from "./components/Header";
-import Switch from "../../components/Switch";
 
-interface Ad {
-	id: string;
-	type: string;
-	asset: string;
-	price: number;
-	quantity?: number;
-	amountFilled: number;
-	status: string;
-	createdAt?: string;
-	closedAt?: string;
-	priceType: string;
-	priceMargin: number;
+import { buttonVariants } from "@/components/ui/Button";
+import { APP_ROUTES } from "@/constants/app_route";
+import { Link } from "react-router-dom";
 
-
+export interface Ad {
+  id: string;
+  type: string;
+  asset: string;
+  price: number;
+  quantity?: number;
+  amountFilled: number;
+  status: string;
+  createdAt?: string;
+  closedAt?: string;
+  priceType: string;
+  priceMargin: number;
 }
 
 interface RootState {
-	user: {
-		user: {
-			userId: string;
-		} | null;
-	};
-}
-
-interface FormatPriceParams {
-	price: number | undefined;
+  user: {
+    user: {
+      userId: string;
+    } | null;
+  };
 }
 
 const MyAds = () => {
-	const [userAds, setUserAds] = useState<Ad[]>([]);
-	const user = useSelector((state: RootState) => state.user.user);
-	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState<string | null>(null);
-	const [updatingAdId, setUpdatingAdId] = useState<string | null>(null);
-	const formattedDate=(prop: string | number | Date) => new Date(prop).toLocaleString("en-US", {
-			month: "2-digit",
-			day: "2-digit",
-			hour: "2-digit",
-			minute: "2-digit",
-			hour12: false,
-		})
-		
-	useEffect(() => {
-		if (user?.userId) {
-			fetchUserAds();
-		}
-	}, [user?.userId]);
+  const [userAds, setUserAds] = useState<Ad[]>([]);
+  const user = useSelector((state: RootState) => state.user.user);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [updatingAdId, setUpdatingAdId] = useState<string | null>(null);
 
-	const fetchUserAds = async () => {
-		setLoading(true);
-		setError(null);
+  useEffect(() => {
+    if (user?.userId) {
+      fetchUserAds();
+    }
+  }, [user?.userId]);
 
-		try {
-			const endpoint = `/api/v1/user/${user?.userId}/ads/get-user-ads`;
+  const fetchUserAds = async () => {
+    setLoading(true);
+    setError(null);
 
-			console.log("Fetching ads using endpoint:", endpoint);
+    try {
+      const endpoint = `/api/v1/user/${user?.userId}/ads/get-user-ads`;
 
-			const response = await Bisatsfetch(endpoint, {
-				method: "GET",
-			});
+      const response = await Bisatsfetch(endpoint, {
+        method: "GET",
+      });
 
-			console.log("User Ads API Response:", response);
+      if (response.status) {
+        setUserAds(response.data || []);
+      } else {
+        setUserAds([]);
+        if (response.message) {
+          setError(response.message);
+        }
+      }
+    } catch (err) {
+      console.error("Error fetching user ads:", err);
+      setError("Failed to fetch ads. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-			if (response.status) {
-				setUserAds(response.data || []);
-			} else {
-				setUserAds([]);
-				if (response.message) {
-					setError(response.message);
-				}
-			}
-		} catch (err) {
-			console.error("Error fetching user ads:", err);
-			setError("Failed to fetch ads. Please try again.");
-		} finally {
-			setLoading(false);
-		}
-	};
+  //   HDR: Update ads status
+  const updateAdStatus = useCallback(
+    async (adId: string, newStatus: string) => {
+      setUpdatingAdId(adId);
 
-	const updateAdStatus = async (adId: string, newStatus: string) => {
-		console.log("🔄 Starting updateAdStatus:", { adId, newStatus });
-		setUpdatingAdId(adId);
+      try {
+        const endpoint = `/api/v1/user/${user?.userId}/ads/${adId}/update-ads-status`;
 
-		try {
-			const endpoint = `/api/v1/user/${user?.userId}/ads/${adId}/update-ads-status`;
+        const response = await Bisatsfetch(endpoint, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ status: newStatus }),
+        });
 
-			console.log("Updating ad status:", { adId, newStatus, endpoint });
+        if (response.status) {
+          setUserAds((prevAds) =>
+            prevAds.map((ad) =>
+              ad.id === adId ? { ...ad, status: newStatus } : ad
+            )
+          );
+        } else {
+          Toast.error(
+            response.message || "Failed to update ad status",
+            "Failed"
+          );
+        }
+      } catch (err) {
+        console.error("Error updating ad status:", err);
+        Toast.error("Failed to update ad status. Please try again.", "Failed");
+      } finally {
+        setUpdatingAdId(null);
+      }
+    },
+    [user?.userId, setUserAds] // include necessary dependencies
+  );
 
-			const response = await Bisatsfetch(endpoint, {
-				method: "PUT",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					status: newStatus,
-				}),
-			});
+  const handleStatusToggle = (ad: Ad) => {
+    const newStatus = ad.status === "active" ? "disabled" : "active";
+    updateAdStatus(ad.id, newStatus);
+  };
 
-			console.log("Update status response:", response);
+  const handleCloseAd = (adId: string) => {
+    updateAdStatus(adId, "closed");
+  };
 
-			if (response.status) {
-				setUserAds((prevAds) =>
-					prevAds.map((ad) =>
-						ad.id === adId ? { ...ad, status: newStatus } : ad
-					)
-				);
-				console.log("✅ Ad status updated successfully");
-			} else {
-				console.error("❌ Failed to update ad status:", response.message);
-				alert(response.message || "Failed to update ad status");
-			}
-		} catch (err) {
-			console.error("Error updating ad status:", err);
-			alert("Failed to update ad status. Please try again.");
-		} finally {
-			setUpdatingAdId(null);
-		}
-	};
+  //   HDR: Columns
+  const column: ColumnDef<Ad>[] = [
+    {
+      accessorKey: "type",
+      header: "Type",
+      cell: ({ row }) => {
+        const ad = row.original.type;
 
-	const handleStatusToggle = (ad: Ad) => {
-		console.log(
-			"🎯 Switch clicked for ad:",
-			ad.id,
-			"current status:",
-			ad.status
-		);
-		const newStatus = ad.status === "active" ? "disabled" : "active";
-		console.log("🔀 Toggling to new status:", newStatus);
-		updateAdStatus(ad.id, newStatus);
-	};
+        return (
+          <span
+            className={cn(
+              "font-semibold capitalize",
+              ad.toLowerCase() === "sell" ? "text-red-500" : "text-green-600"
+            )}
+          >
+            {ad}
+          </span>
+        );
+      },
+    },
+    {
+      accessorKey: "asset",
+      header: "Asset",
+      cell: ({ row }) => {
+        const asset = row.original.asset;
+        return <span className="font-semibold text-gray-600 ">{asset}</span>;
+      },
+    },
+    {
+      accessorKey: "price",
+      header: "Price",
+      cell: ({ row }) => {
+        const price = row.original.price;
+        return (
+          <span className="text-gray-600 ">
+            {formatter({
+              decimal: 0,
+              currency: "NGN",
+              style: "currency",
+            }).format(price || 0)}
+          </span>
+        );
+      },
+    },
+    {
+      accessorKey: "quantity",
+      header: "Quantity",
+      cell: ({ row }) => {
+        const quantity = row.original.quantity;
+        return <span className="text-gray-500 ">{quantity || "N/A"}</span>;
+      },
+    },
+    {
+      accessorKey: "amountFilled",
+      header: "Amount Filled",
+      cell: ({ row }) => {
+        const amountFilled = row.original.amountFilled;
+        return (
+          <span className="text-gray-500 ">
+            {amountFilled
+              ? formatter({
+                  decimal: 0,
+                  currency: "NGN",
+                  style: "currency",
+                }).format(amountFilled)
+              : "N/A"}
+          </span>
+        );
+      },
+    },
+    {
+      accessorKey: "createdAt",
+      header: "Created",
+      cell: ({ row }) => {
+        const created = row.original.createdAt;
+        return (
+          <span className="text-gray-500">
+            {created ? dayjs(created).format("DD/MM/YYYY") : "N/A"}
+          </span>
+        );
+      },
+    },
+    {
+      accessorKey: "status",
+      header: "Status",
+      cell: ({ row }) => {
+        const status = row.original.status;
+        return (
+          <div className="flex items-center gap-2">
+            <span
+              className={cn(
+                "font-medium capitalize text-xs",
+                status.toLowerCase() === "active"
+                  ? "text-green-600"
+                  : status.toLowerCase() === "closed"
+                  ? "text-red-500"
+                  : "text-gray-500"
+              )}
+            >
+              {status}
+            </span>
+            {status.toLowerCase() !== "closed" &&
+              (updatingAdId === row.original.id ? (
+                <div className="w-5 h-5 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin" />
+              ) : (
+                <Switch
+                  checked={status === "active"}
+                  onCheckedChange={() => {
+                    handleStatusToggle(row.original);
+                  }}
+                  disabled={updatingAdId === row.original.id}
+                  className="data-[state=checked]:bg-green-600"
+                />
+              ))}
+          </div>
+        );
+      },
+    },
+    {
+      id: "actions",
+      header: "Actions",
+      cell: ({ row }) => {
+        const ad = row.original;
 
-	const formatPrice = ({ price }: FormatPriceParams): string => {
-		return price?.toLocaleString() || "0";
-	};
+        return <TableActionMenu adDetail={ad} onCloseAd={handleCloseAd} />;
+      },
+    },
+  ];
 
-	const formatDate = (dateString?: string): string => {
-		if (!dateString) return "N/A";
-		try {
-			return new Date(dateString).toLocaleDateString();
-		} catch (e) {
-			return "N/A";
-		}
-	};
+  return (
+    <div className="w-full space-y-8">
+      <div className="flex flex-col p-4 rounded-xl bg-neutral-100 md:flex-row md:items-center justify-between gap-2">
+        <Header
+          text="My Ads"
+          subtext="Create, view and manage your ads on Bisats here"
+        />
 
-	const handleCloseAd = (adId: string) => {
-		updateAdStatus(adId, "closed");
-	};
+        <Link to={APP_ROUTES.P2P.CREATE_AD} className={cn(buttonVariants())}>
+          Create Ad
+        </Link>
+      </div>
 
-	return (
-		<div className="w-full max-w-[1200px] mx-auto px-[16px]">
-			<div className="flex flex-col bg-gray-100">
-				<Header
-					text="My Ads"
-					subtext="Create, view and manage your ads on Bisats here"
-				/>
-				<PrimaryButton text="Create Ad" loading={false} css="w-full lg:w-fit" />
-			</div>
-
-			{loading ? (
-				<div className="text-center py-8">Loading your ads...</div>
-			) : error ? (
-				<div className="text-center py-8 text-red-500">{error}</div>
-			) : (
-				<>
-					<div>
-						<div className="h-auto m-[15px] p-[24px]">
-							<div className="mb-[12px]">
-								<p style={{ fontSize: "15px" }}>
-									<span
-										style={{
-											fontSize: "18px",
-											fontWeight: "600",
-											color: "#0A0E12",
-										}}
-										className="mr-[8px]"
-									>
-										All ads
-									</span>
-								</p>
-							</div>
-							<table
-								className="table-auto w-full"
-								style={{ color: "#515B6E", fontSize: "14px" }}
-							>
-								<thead className="text-justify">
-									<tr style={{ backgroundColor: "#F9F9FB" }}>
-										<th className="text-left px-4 py-4">Type</th>
-										<th className="text-left px-4 py-4">Asset</th>
-										<th className="text-left px-4 py-4">Price</th>
-										<th className="text-left px-4 py-4">Quantity</th>
-										<th className="text-right px-4 py-3">Amount Filled</th>
-										<th className="text-right px-4 py-3">Created</th>
-										<th className="text-right px-4 py-3">Status</th>
-										<th className="text-right px-4 py-3">Action</th>
-									</tr>
-								</thead>
-								<tbody>
-									{userAds.length > 0 ? (
-										userAds.map((ad) => (
-											<tr key={ad.id}>
-												<td className="text-left px-4 py-2 font-semibold">
-													<span
-														style={{
-															color:
-																ad.type.toLowerCase() === "sell"
-																	? "#DC2625"
-																	: "#17A34A",
-														}}
-													>
-														{ad.type.charAt(0).toUpperCase() + ad.type.slice(1)}
-													</span>
-												</td>
-												<td className="text-left px-4 py-2 font-semibold">
-													{ad.asset}
-												</td>
-												<td className="text-left px-4 py-2">
-													{formatPrice({ price: ad.price })}
-												</td>
-												<td className="text-left px-4 py-2">
-													{ad.quantity || "N/A"}
-												</td>
-												<td className="text-right px-4 py-2">
-													{ad.amountFilled || 0}
-												</td>
-												<td className="text-right px-4 py-3">
-													{formatDate(ad.createdAt)}
-												</td>
-												<td className="text-right px-4 py-3">
-													<div className="flex items-center justify-end space-x-3">
-														<span
-															className={`text-sm font-medium ${
-																ad.status === "active"
-																	? "text-green-600"
-																	: "text-gray-500"
-															}`}
-														>
-															{ad.status === "active" ? "Active" : "Inactive"}
-														</span>
-														{updatingAdId === ad.id ? (
-															<div className="w-5 h-5 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin"></div>
-														) : (
-															<div
-																onClick={() => {
-																	console.log(
-																		"🖱️ Switch container clicked for ad:",
-																		ad.id
-																	); // Debug log
-																	handleStatusToggle(ad);
-																}}
-																className="cursor-pointer"
-															>
-																<Switch
-																	checked={ad.status === "active"}
-																	onCheckedChange={() => {
-																		console.log(
-																			"🎛️ onCheckedChange triggered for ad:",
-																			ad.id
-																		); // Debug log
-																		handleStatusToggle(ad);
-																	}}
-																	disabled={updatingAdId === ad.id}
-																	className="data-[state=checked]:bg-green-600"
-																/>
-															</div>
-														)}
-													</div>
-												</td>
-												<td className="text-right px-4 py-3 relative">
-													<TableActionMenu adDetail={ad} onCloseAd={handleCloseAd }/>
-												</td>
-											</tr>
-										))
-									) : (
-										<tr>
-											<td colSpan={8} className="text-center py-4">
-												No ads found
-											</td>
-										</tr>
-									)}
-								</tbody>
-							</table>
-						</div>
-					</div>
-				</>
-			)}
-		</div>
-	);
+      <div>
+        <p className="text-lg font-semibold mb-3 text-gray-600">All Ads</p>
+        <div className="hidden md:block">
+          <DataTable columns={column} data={userAds} />
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default MyAds;

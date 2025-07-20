@@ -31,11 +31,12 @@ export const APP_ROUTES = {
     TRANSACTION_BREAKDOWN: "/wallet/deposit/transaction-breakdown",
   },
   P2P: {
+    HOME: "/p2p",
     MARKETPLACE: "/p2p/market-place",
     EXPRESS: "/p2p/express",
     ORDER_HISTORY: "/p2p/orders",
     MY_ADS: "/p2p/my-ads",
-    AD_DETAILS: "/p2p/ad",
+    AD_DETAILS: "/p2p/my-ads/ad",
     CREATE_AD: "/p2p/ad/create",
     MY_PROFILE: "/p2p/my-profile",
     SELL: "/p2p/market-place/sell",

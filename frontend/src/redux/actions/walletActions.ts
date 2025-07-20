@@ -386,12 +386,7 @@ export const GetSearchAds = async (payload: TAddSearchRequest) => {
         method: "GET",
       }
     );
-    const data = response.data;
-    console.log(response);
-    if (response.status) {
-      return data;
-    } else {
-    }
+    return response;
   } catch (error) {
     return error;
   }

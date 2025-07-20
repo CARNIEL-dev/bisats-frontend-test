@@ -1,11 +1,14 @@
+const Header = ({ text, subtext }: { text: string; subtext: string }) => {
+  return (
+    <div>
+      <h2 className="font-semibold text-[28px] lg:text-[34px]  text-[#0A0E12] mb-1">
+        {text}
+      </h2>
+      <p className="font-normal text-xs lg:text-[14px]  text-[#515B6E]">
+        {subtext}
+      </p>
+    </div>
+  );
+};
 
-const Header = ({ text, subtext }: { text: string, subtext: string }) => {
-    return (
-        <div>
-            <h1 className="font-semibold text-[28px] lg:text-[34px] leading-[40px] text-[#0A0E12] mb-4">{text}</h1>
-            <p className="font-normal text-[px] lg:text-[14px] leading-[24px] text-[#515B6E]">{subtext}</p>
-        </div>
-    )
-}
-
-export default Header
+export default Header;

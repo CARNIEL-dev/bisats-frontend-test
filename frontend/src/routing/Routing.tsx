@@ -76,6 +76,8 @@ const Routing = () => {
               <Route path={APP_ROUTES?.KYC.POA} Component={POA} />
               <Route path={APP_ROUTES?.KYC.IDENTITY} Component={Identity} />
             </Route>
+
+            {/* SUB: Transaction PAGES */}
             <Route element={<TranscLayOut />}>
               <Route
                 path={APP_ROUTES.WALLET.DEPOSIT}
@@ -91,11 +93,9 @@ const Routing = () => {
               />
             </Route>
 
+            {/* SUB: P2P PAGES */}
             <Route element={<P2PLayOut />}>
-              <Route
-                path={APP_ROUTES.P2P.MARKETPLACE}
-                element={<MarketPlace />}
-              />
+              <Route path={APP_ROUTES.P2P.HOME} element={<MarketPlace />} />
               <Route path={APP_ROUTES.P2P.EXPRESS} element={<Express />} />
               <Route
                 path={APP_ROUTES.P2P.ORDER_HISTORY}
@@ -109,6 +109,8 @@ const Routing = () => {
               <Route path={APP_ROUTES.P2P.BUY} element={<Buy />} />
               <Route path={APP_ROUTES.P2P.RECEIPT} element={<Receipt />} />
             </Route>
+
+            {/* SUB: SETTINGS PAGES */}
             <Route element={<SettingsLayOut />}>
               <Route
                 path={APP_ROUTES.SETTINGS.PROFILE}
@@ -126,6 +128,8 @@ const Routing = () => {
             <Route path={APP_ROUTES.WALLET.HOME} element={<Wallet />} />
             <Route path={APP_ROUTES.PROFILE} element={<Profile />} />
           </Route>
+
+          {/* SUB: KYC PAGES */}
           <Route
             path={APP_ROUTES?.KYC.PHONEVERIFICATION}
             Component={PhoneVerifcation}

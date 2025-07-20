@@ -9,6 +9,7 @@ module.exports = {
         priYellow: "#F5BB00",
         priWhite: "#F7F7F7",
         priBlack: "#0A0E12",
+        "primary-light": "#fff9e4",
 
         // OKLCH-based colors
         background: "oklch(1 0 0)",

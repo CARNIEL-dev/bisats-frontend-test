@@ -26,7 +26,7 @@ import { getUserTokenData } from "@/helpers";
 import { GET_WITHDRAWAL_LIMIT } from "@/redux/actions/userActions";
 import { WalletState } from "@/redux/reducers/walletSlice";
 import { formatNumber } from "@/utils/numberFormat";
-import KycManager from "../../kyc/KYCManager";
+import KycManager from "@/pages/kyc/KYCManager";
 
 export type TNetwork = {
   label: string;

@@ -56,7 +56,7 @@ const mobileMenuItems = [
   },
   {
     text: "P2P Marketplace",
-    link: APP_ROUTES.P2P.MARKETPLACE,
+    link: APP_ROUTES.P2P.HOME,
     icon: P2PMC,
     subMenu: [
       {
@@ -96,10 +96,9 @@ const ProfileDropdown = () => {
             {mobileMenuItems.map((item, index) => {
               if (item.subMenu) {
                 return (
-                  <div>
+                  <div key={index}>
                     <NavLink
                       to={item.link}
-                      key={index}
                       className={cn(
                         "group flex items-center gap-2 py-2.5  font-normal cursor-pointer text-slate-700 text-sm  hover:bg-[#F5FEF8] px-3 hover:font-medium hover:text-green-600 "
                       )}
