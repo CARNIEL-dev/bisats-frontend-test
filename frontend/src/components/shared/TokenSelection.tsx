@@ -66,6 +66,7 @@ const TokenSelection = ({
             setSelected(val);
           }}
           defaultValue={title || undefined}
+          value={title || undefined}
           disabled={disabled}
         >
           <SelectTrigger

@@ -1,4 +1,6 @@
 import { Search } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/utils";
 
 interface SearchInputProps {
   placeholder?: string;
@@ -6,6 +8,7 @@ interface SearchInputProps {
   handleChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   className?: string;
   iconSize?: number;
+  inputClassName?: string;
 }
 
 const SearchInput: React.FC<SearchInputProps> = ({
@@ -13,17 +16,22 @@ const SearchInput: React.FC<SearchInputProps> = ({
   value,
   handleChange,
   className = "",
-  iconSize = 14,
+  iconSize = 18,
+  inputClassName,
 }) => {
   return (
-    <div className={`relative w-full max-w-md ${className}`}>
-      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2" color="#99A2B4" size={iconSize} />
-      <input
+    <div className={cn(`relative w-full`, className)}>
+      <Search
+        className="absolute left-3 top-1/2 transform -translate-y-1/2"
+        color="#99A2B4"
+        size={iconSize}
+      />
+      <Input
         type="text"
         placeholder={placeholder}
         value={value}
         onChange={handleChange}
-        className="w-full pr-4 py-2 px-3 pl-10 font-light text-[14px] text-[#606C82] rounded-[6px] border border-[#D6DAE1] outline-hidden leading-[24px] focus:border-[#F5BB00] focus:ring-1 focus:ring-[#F5BB00]"
+        className={cn("w-full  pl-9 h-12 ", inputClassName)}
       />
     </div>
   );

@@ -168,7 +168,7 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
             </span>
             {showBalance ? (
               totalBalance ? (
-                <p className="font-semibold">
+                <p className="font-extrabold font-mono">
                   <span className="text-2xl md:text-4xl">
                     {
                       formatter({})

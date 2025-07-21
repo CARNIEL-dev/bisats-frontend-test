@@ -1,18 +1,16 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
 import App from "./App";
+import "./index.css";
 import store from "./redux/store";
 import reportWebVitals from "./reportWebVitals";
-import "./index.css";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      // e.g. don’t retry failed queries by default
       retry: false,
-      staleTime: 1000 * 60 * 5,
+      staleTime: 1000 * 60 * 10, // 10 minutes
       refetchOnWindowFocus: false,
     },
   },
@@ -26,7 +24,7 @@ root.render(
     <Provider store={store}>
       <App />
     </Provider>
-    <ReactQueryDevtools initialIsOpen={false} />
+    {/* <ReactQueryDevtools initialIsOpen={false} /> */}
   </QueryClientProvider>
 );
 

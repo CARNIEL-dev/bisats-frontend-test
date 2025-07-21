@@ -3,16 +3,18 @@ import Switch from "@/components/Switch";
 import Toast from "@/components/Toast";
 import { DataTable } from "@/components/ui/data-table";
 import Header from "@/pages/p2p/components/Header";
-import Bisatsfetch from "@/redux/fetchWrapper";
 import { cn, formatter } from "@/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
-import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 import { buttonVariants } from "@/components/ui/Button";
 import { APP_ROUTES } from "@/constants/app_route";
+import { getUserAds, updateAdStatus } from "@/redux/actions/walletActions";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
+import PreLoader from "@/layouts/PreLoader";
+import ErrorDisplay from "@/components/shared/ErrorDisplay";
 
 export interface Ad {
   id: string;
@@ -36,91 +38,72 @@ interface RootState {
   };
 }
 
+type UpdateAdStatusVars = {
+  userId: string;
+  adId: string;
+  status: string;
+};
+type UpdateAdStatusResponse = {
+  success: boolean;
+  // …any other fields your API returns…
+};
+
 const MyAds = () => {
-  const [userAds, setUserAds] = useState<Ad[]>([]);
-  const user = useSelector((state: RootState) => state.user.user);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [updatingAdId, setUpdatingAdId] = useState<string | null>(null);
+  const userId =
+    useSelector((state: RootState) => state.user.user?.userId) || "";
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    if (user?.userId) {
-      fetchUserAds();
-    }
-  }, [user?.userId]);
+  const {
+    data: userAds = [],
+    isError,
+    error,
+    refetch,
+    isFetching,
+  } = useQuery<Ad[], Error>({
+    queryKey: ["userAds", userId],
+    queryFn: () => getUserAds(userId),
+    retry: false,
+    refetchOnMount: false,
+    staleTime: Infinity,
+    enabled: !!userId,
+  });
 
-  const fetchUserAds = async () => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const endpoint = `/api/v1/user/${user?.userId}/ads/get-user-ads`;
-
-      const response = await Bisatsfetch(endpoint, {
-        method: "GET",
+  // 3️⃣ Define the mutation
+  const mutation = useMutation<
+    UpdateAdStatusResponse,
+    Error,
+    UpdateAdStatusVars
+  >({
+    mutationFn: ({ userId, adId, status }: UpdateAdStatusVars) =>
+      updateAdStatus({ userId, adId, newStatus: status }),
+    onSuccess(_, variables) {
+      queryClient.invalidateQueries({
+        queryKey: ["userAds", variables.userId],
       });
-
-      if (response.status) {
-        setUserAds(response.data || []);
-      } else {
-        setUserAds([]);
-        if (response.message) {
-          setError(response.message);
-        }
-      }
-    } catch (err) {
-      console.error("Error fetching user ads:", err);
-      setError("Failed to fetch ads. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+    onError(err) {
+      console.log(err);
+      Toast.error(err.message || "Failed to update ad status", "Failed");
+    },
+  });
 
   //   HDR: Update ads status
-  const updateAdStatus = useCallback(
-    async (adId: string, newStatus: string) => {
-      setUpdatingAdId(adId);
-
-      try {
-        const endpoint = `/api/v1/user/${user?.userId}/ads/${adId}/update-ads-status`;
-
-        const response = await Bisatsfetch(endpoint, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ status: newStatus }),
-        });
-
-        if (response.status) {
-          setUserAds((prevAds) =>
-            prevAds.map((ad) =>
-              ad.id === adId ? { ...ad, status: newStatus } : ad
-            )
-          );
-        } else {
-          Toast.error(
-            response.message || "Failed to update ad status",
-            "Failed"
-          );
-        }
-      } catch (err) {
-        console.error("Error updating ad status:", err);
-        Toast.error("Failed to update ad status. Please try again.", "Failed");
-      } finally {
-        setUpdatingAdId(null);
-      }
-    },
-    [user?.userId, setUserAds] // include necessary dependencies
-  );
 
   const handleStatusToggle = (ad: Ad) => {
     const newStatus = ad.status === "active" ? "disabled" : "active";
-    updateAdStatus(ad.id, newStatus);
+    mutation.mutate({
+      userId,
+      adId: ad.id,
+      status: newStatus,
+    });
   };
 
   const handleCloseAd = (adId: string) => {
-    updateAdStatus(adId, "closed");
+    mutation.mutate({
+      userId,
+      adId,
+      status: "closed",
+    });
   };
 
   //   HDR: Columns
@@ -210,6 +193,8 @@ const MyAds = () => {
       header: "Status",
       cell: ({ row }) => {
         const status = row.original.status;
+        const isUpdating =
+          mutation.isPending && mutation.variables?.adId === row.original.id;
         return (
           <div className="flex items-center gap-2">
             <span
@@ -224,8 +209,9 @@ const MyAds = () => {
             >
               {status}
             </span>
+
             {status.toLowerCase() !== "closed" &&
-              (updatingAdId === row.original.id ? (
+              (isUpdating ? (
                 <div className="w-5 h-5 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin" />
               ) : (
                 <Switch
@@ -233,7 +219,7 @@ const MyAds = () => {
                   onCheckedChange={() => {
                     handleStatusToggle(row.original);
                   }}
-                  disabled={updatingAdId === row.original.id}
+                  disabled={isUpdating}
                   className="data-[state=checked]:bg-green-600"
                 />
               ))}
@@ -267,9 +253,17 @@ const MyAds = () => {
 
       <div>
         <p className="text-lg font-semibold mb-3 text-gray-600">All Ads</p>
-        <div className="hidden md:block">
-          <DataTable columns={column} data={userAds} />
-        </div>
+        {isFetching ? (
+          <PreLoader />
+        ) : isError ? (
+          <ErrorDisplay message={error.message} />
+        ) : (
+          <>
+            <div className="hidden md:block">
+              <DataTable columns={column} data={userAds} />
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

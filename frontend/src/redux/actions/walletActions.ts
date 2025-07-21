@@ -1,11 +1,4 @@
-/** @format */
-
-import {
-  getToken,
-  getUser,
-  setLivePrices,
-  setUserTokenData,
-} from "../../helpers";
+import { getToken, getUser, setLivePrices, setUserTokenData } from "@/helpers";
 import {
   T2FARequest,
   TAddSearchRequest,
@@ -16,11 +9,14 @@ import {
   TTopUpNGN,
   TWithdrawalBankAccount,
   TWithdrawalRequest,
-} from "../../types/wallet";
-import { BACKEND_URLS } from "../../utils/backendUrls";
-import dispatchWrapper from "../../utils/dispatchWrapper";
-import Bisatsfetch from "../fetchWrapper";
-import { WalletActionypes } from "../types";
+} from "@/types/wallet";
+import { BACKEND_URLS } from "@/utils/backendUrls";
+import dispatchWrapper from "@/utils/dispatchWrapper";
+import Bisatsfetch from "@/redux/fetchWrapper";
+import { WalletActionypes } from "@/redux/types";
+import { useQuery } from "@tanstack/react-query";
+import { formatDate } from "@/layouts/utils/Dates";
+import { ITransaction, RawTx } from "@/pages/wallet/Transaction";
 
 export const GetWallet = async () => {
   const user = getUser();
@@ -374,7 +370,9 @@ export const GetExpressAds = async (payload: TAddSearchRequest) => {
   }
 };
 
-export const GetSearchAds = async (payload: TAddSearchRequest) => {
+export const GetSearchAds = async (
+  payload: Omit<TAddSearchRequest, "amount">
+) => {
   try {
     const response = await Bisatsfetch(
       `/api/v1/user/${payload.userId}${
@@ -454,7 +452,6 @@ export const Fetch_CryptoAssets = async (payload: string) => {
       body: JSON.stringify(payload),
     });
     const data = response;
-    console.log(data);
     return data;
   } catch (error) {
     // throw handleApiError(error);
@@ -477,10 +474,127 @@ export const GetWalletTransactions = async (payload: TPayloadTransHistory) => {
       }
     );
     const data = response.data;
+    if (!response.status) {
+      throw new Error(response.message);
+    }
     return data;
   } catch (error) {
-    // logoutUser();
-    // throw handleApiError(error);
     return error;
   }
 };
+
+// HDR: GET USER ADS
+const getUserAds = async (userId: string) => {
+  try {
+    const endpoint = `/api/v1/user/${userId}/ads/get-user-ads`;
+
+    const response = await Bisatsfetch(endpoint, {
+      method: "GET",
+    });
+
+    if (!response.status) {
+      throw new Error(response.data.message);
+    }
+    return response.data;
+  } catch (err) {
+    throw err;
+  }
+};
+const updateAdStatus = async ({
+  adId,
+  newStatus,
+  userId,
+}: {
+  adId: string;
+  newStatus: string;
+  userId: string;
+}) => {
+  try {
+    const endpoint = `/api/v1/user/${userId}/ads/${adId}/update-ads-status`;
+
+    const response = await Bisatsfetch(endpoint, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ status: newStatus }),
+    });
+
+    if (!response.status) {
+      throw new Error(response.message);
+    }
+    return response.data;
+  } catch (err) {
+    throw err;
+  }
+};
+
+const useUserWalletHistory = ({
+  userId,
+  reason,
+  asset,
+  date,
+  type,
+  searchWord,
+}: {
+  userId: string;
+  reason: string;
+  asset: string;
+  date: string;
+  type: string;
+  searchWord: string;
+}) => {
+  return useQuery<
+    ITransaction[], // TData
+    Error, // TError
+    ITransaction[], // TSelectResult (same here)
+    [
+      "userWalletHistory",
+      string, // userId
+      string, // reason
+      string, // asset
+      string, // date
+      string, // type
+      string // searchWord
+    ]
+  >({
+    queryKey: [
+      "userWalletHistory",
+      userId,
+      reason,
+      asset,
+      date,
+      type,
+      searchWord,
+    ],
+    queryFn: async ({ queryKey }) => {
+      const [_key, u, r, a, d, t, s] = queryKey;
+      const res = await GetWalletTransactions({
+        userID: u,
+        reason: r,
+        asset: a,
+        type: t,
+        date: d,
+        searchWord: s,
+      });
+      if (!res?.transactions) {
+        throw new Error("No Wallet History found");
+      }
+      return res.transactions.map((t: RawTx) => ({
+        Asset: t.asset,
+        Type: t.reason,
+        Date: formatDate(t.createdAt),
+        Reference: t.reference ?? "-",
+        Network: t.network ?? t.paymentMethod,
+        Amount: t.amount,
+        Status: t.status,
+        txHash: t.txHash,
+        bankDetails: t.bankDetails,
+      }));
+    },
+    // staleTime: 1000 * 60 * 5,
+    enabled: Boolean(userId),
+  });
+};
+
+export { getUserAds, updateAdStatus, useUserWalletHistory };

@@ -6,71 +6,24 @@ import Transactions from "@/pages/wallet/Transaction";
 const Wallet = () => {
   return (
     <>
-      <MaxWidth
-        as="section"
-        className="space-y-8 max-w-6xl lg:pb-5 mb-10 mt-6"
-      >
+      <MaxWidth as="section" className="space-y-8 max-w-6xl lg:pb-5 mb-10 mt-6">
         <div className="w-full space-y-4  ">
-          <div className="sm:w-[40%]">
+          <div className="sm:w-fit sm:min-w-[28rem] max-w-[40rem]">
             <Balance showWithdraw />
           </div>
-          <div
-            className="sm:border w-full sm:p-6 p-4"
-            style={{ borderRadius: "12px", borderColor: "#D6DAE1" }}
-          >
-            <div className="mb-[12px]">
-              <p style={{ fontSize: "15px" }}>
-                <span
-                  style={{
-                    fontSize: "18px",
-                    fontWeight: "600",
-                    color: "#0A0E12",
-                  }}
-                  className="mr-[8px]"
-                >
-                  Your assets
-                </span>
-                {/* <button
-									style={{
-										color: "#C49600",
-										fontSize: "14px",
-										fontWeight: "600",
-									}}
-								>
-									view all
-								</button> */}
-              </p>
-            </div>
+
+          <div className="sm:border space-y-4 rounded-2xl p-4 sm:p-6">
+            <p className="font-semibold md:text-lg text-gray-700">
+              Your assets
+            </p>
             <Assets />
           </div>
-          <div
-            className="sm:border w-full sm:p-6 p-4"
-            style={{ borderRadius: "12px", borderColor: "#D6DAE1" }}
-          >
-            <div className="mb-[12px]">
-              <p style={{ fontSize: "15px" }}>
-                <span
-                  style={{
-                    fontSize: "18px",
-                    fontWeight: "600",
-                    color: "#0A0E12",
-                  }}
-                  className="mr-[8px]"
-                >
-                  Wallet History
-                </span>
-                {/* <button
-									style={{
-										color: "#C49600",
-										fontSize: "14px",
-										fontWeight: "600",
-									}}
-								>
-									view all
-								</button> */}
-              </p>
-              <Transactions />
-            </div>
+
+          <div className="sm:border space-y-4 rounded-2xl p-4 sm:p-6">
+            <p className="font-semibold md:text-lg text-gray-700">
+              Wallet History
+            </p>
+            <Transactions />
           </div>
         </div>
       </MaxWidth>

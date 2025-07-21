@@ -1,16 +1,19 @@
-import { useLocation } from 'react-router-dom';
-import Swap, { typeofSwam } from './components/Swap'
+import BackButton from "@/components/shared/BackButton";
+import MaxWidth from "@/components/shared/MaxWith";
+import { useLocation } from "react-router-dom";
+import Swap from "@/pages/p2p/components/Swap";
 
 const Sell = () => {
-     const location = useLocation();
-        const adDetail = location.state?.adDetail;
-    return (
-        <div className='w-full'>
-            <div className='w-full lg:w-3/5 mx-auto px-3'>
-                <Swap type={"sell"} adDetail={adDetail}/>
-            </div>
-        </div>
-    )
-}
+  const location = useLocation();
+  const adDetail = location.state?.adDetail;
+  return (
+    <div className="space-y-4">
+      <BackButton />
+      <MaxWidth className="max-w-[35rem]">
+        <Swap type={"sell"} adDetail={adDetail} />
+      </MaxWidth>
+    </div>
+  );
+};
 
-export default Sell
+export default Sell;

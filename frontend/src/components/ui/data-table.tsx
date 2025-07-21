@@ -68,7 +68,7 @@ export function DataTable<TData, TValue>({
                   className={cn(index % 2 === 1 && "bg-gray-50", "border-0")}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="p-4">
+                    <TableCell key={cell.id} className="p-4 text-gray-600">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()

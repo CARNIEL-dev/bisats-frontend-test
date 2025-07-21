@@ -25,7 +25,6 @@ import AdDetails from "@/pages/p2p/AdDetails";
 import CreateAd from "@/pages/p2p/ads/Ad";
 import Buy from "@/pages/p2p/Buy";
 import Express from "@/pages/p2p/Express";
-import MarketPlace from "@/pages/p2p/MarketPlace";
 import MyAds from "@/pages/p2p/MyAds";
 import OrderHistory from "@/pages/p2p/OrderHistory";
 import Profile from "@/pages/p2p/Profile";
@@ -41,10 +40,11 @@ import Wallet from "@/pages/wallet/Wallet";
 import WithdrawalPage from "@/pages/wallet/withdrawal";
 import ProtectedRoute from "@/utils/protectedRoutes";
 
-import { Navigate, Route, Routes } from "react-router-dom";
+import DashboardLayout from "@/layouts/DashboardLayout";
 import Layout from "@/layouts/Layout";
 import { LandingPage } from "@/pages/landing-page/src/screens/Bisats/LandingPage";
-import DashboardLayout from "@/layouts/DashboardLayout";
+import MarketPlacePage from "@/pages/p2p/MarketPlacePage";
+import { Navigate, Route, Routes } from "react-router-dom";
 
 const Routing = () => {
   return (
@@ -95,7 +95,7 @@ const Routing = () => {
 
             {/* SUB: P2P PAGES */}
             <Route element={<P2PLayOut />}>
-              <Route path={APP_ROUTES.P2P.HOME} element={<MarketPlace />} />
+              <Route path={APP_ROUTES.P2P.HOME} element={<MarketPlacePage />} />
               <Route path={APP_ROUTES.P2P.EXPRESS} element={<Express />} />
               <Route
                 path={APP_ROUTES.P2P.ORDER_HISTORY}
