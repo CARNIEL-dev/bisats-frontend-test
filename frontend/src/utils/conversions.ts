@@ -1,5 +1,5 @@
-import { LiveAssets, TestAssets } from "./assets";
-import { getLivePrice } from "../helpers";
+import { LiveAssets, TestAssets } from "@/utils/assets";
+import { getLivePrice } from "@/helpers";
 
 /** @format */
 const isDev = process.env.REACT_APP_NODE_ENV === "development";

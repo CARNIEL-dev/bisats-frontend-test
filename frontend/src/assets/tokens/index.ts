@@ -6,4 +6,12 @@ import SOL from "./solana.svg";
 import NGN from "./xNGN.svg";
 import USDT from "./usdt.svg";
 
-export { BTC, ETH, SOL, NGN, USDT };
+const tokenLogos = {
+  USDT,
+  BTC,
+  ETH,
+  SOL,
+  xNGN: NGN,
+};
+
+export { BTC, ETH, SOL, NGN, USDT, tokenLogos };

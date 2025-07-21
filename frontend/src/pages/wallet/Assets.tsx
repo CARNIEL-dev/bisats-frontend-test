@@ -166,10 +166,7 @@ const Assets: React.FC = () => {
             <Link
               to={APP_ROUTES.WALLET.DEPOSIT}
               state={{ asset: row.original.Asset }}
-              className={cn(
-                buttonVariants(),
-                "bg-primary/30 text-xs hover:bg-primary/50"
-              )}
+              className={cn(buttonVariants(), " text-xs text-black")}
             >
               Deposit
             </Link>

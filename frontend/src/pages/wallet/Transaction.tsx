@@ -1,24 +1,16 @@
-import { BTC, ETH, NGN, SOL, USDT } from "@/assets/tokens";
+import { tokenLogos } from "@/assets/tokens";
 import Empty from "@/components/Empty";
 import TransactionDetails from "@/components/Modals/TransactionDetails";
+import ErrorDisplay from "@/components/shared/ErrorDisplay";
 import { Button } from "@/components/ui/Button";
 import { DataTable } from "@/components/ui/data-table";
+import PreLoader from "@/layouts/PreLoader";
 import { useUserWalletHistory } from "@/redux/actions/walletActions";
 import { UserState } from "@/redux/reducers/userSlice";
 import { cn, formatter } from "@/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-export enum Fields {
-  Asset = "Asset",
-  Network = "Network",
-  Amount = "Amount",
-  Type = "Type",
-
-  Reference = "Reference",
-  Date = "Date",
-  Status = "Status",
-}
 
 export interface ITransaction {
   Asset: string;
@@ -61,7 +53,6 @@ const Transactions: React.FC = () => {
 
   const {
     data: transactionsData = [],
-    refetch,
     isFetching,
     isError,
     error,
@@ -74,14 +65,6 @@ const Transactions: React.FC = () => {
     searchWord: searchTerm,
   });
 
-  const logos = {
-    USDT,
-    BTC,
-    ETH,
-    SOL,
-    xNGN: NGN,
-  };
-
   //   HDR: Columns
   const columns: ColumnDef<ITransaction>[] = [
     {
@@ -92,7 +75,7 @@ const Transactions: React.FC = () => {
         return (
           <div className="flex items-center gap-2 text-sm text-gray-600">
             <img
-              src={logos[item.Asset as keyof typeof logos]}
+              src={tokenLogos[item.Asset as keyof typeof tokenLogos]}
               alt={item.Asset}
               className="size-5 "
             />
@@ -288,11 +271,20 @@ const Transactions: React.FC = () => {
           </div>
         </div>
       </div> */}
-      {transactionsData?.length === 0 ? (
-        <Empty />
+      {isFetching ? (
+        <div className="h-[40dvh] grid place-content-center">
+          <PreLoader />
+        </div>
+      ) : isError ? (
+        <div className="h-[40dvh] grid place-content-center">
+          <ErrorDisplay
+            message={error?.message || "Failed to load wallet transactions"}
+          />
+        </div>
+      ) : transactionsData?.length === 0 ? (
+        <Empty text="No transactions found" />
       ) : (
         <>
-          {/* <Table fields={fields} data={transactionsData} /> */}
           <DataTable
             columns={columns}
             data={transactionsData}

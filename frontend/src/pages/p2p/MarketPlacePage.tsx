@@ -153,7 +153,7 @@ const MarketPlacePage = () => {
 
         {!isError && (
           <>
-            <div className="grid grid-cols-[1fr_3rem] gap-2 md:w-1/4 items-center">
+            <div className="grid grid-cols-[1fr_6rem] gap-2 md:w-[25%] items-end">
               <TokenSelection
                 title={adsParam.asset}
                 error={undefined}

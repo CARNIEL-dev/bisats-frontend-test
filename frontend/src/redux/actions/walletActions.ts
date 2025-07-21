@@ -14,7 +14,7 @@ import { BACKEND_URLS } from "@/utils/backendUrls";
 import dispatchWrapper from "@/utils/dispatchWrapper";
 import Bisatsfetch from "@/redux/fetchWrapper";
 import { WalletActionypes } from "@/redux/types";
-import { useQuery } from "@tanstack/react-query";
+import { QueryFunctionContext, useQuery } from "@tanstack/react-query";
 import { formatDate } from "@/layouts/utils/Dates";
 import { ITransaction, RawTx } from "@/pages/wallet/Transaction";
 
@@ -594,7 +594,29 @@ const useUserWalletHistory = ({
     },
     // staleTime: 1000 * 60 * 5,
     enabled: Boolean(userId),
+    refetchOnMount: false,
   });
 };
 
-export { getUserAds, updateAdStatus, useUserWalletHistory };
+const useFetchOrder = (userId: string) => {
+  return useQuery<Order[], Error>({
+    queryKey: ["orders", userId],
+    queryFn: async ({ queryKey }) => {
+      const [, uid] = queryKey;
+      const response = await Bisatsfetch(
+        `/api/v1/user/${uid}${BACKEND_URLS.P2P.ADS.FETCH_ORDERS}`,
+        { method: "GET" }
+      );
+
+      if (response.status === true && Array.isArray(response.data)) {
+        return response.data as Order[];
+      }
+      throw new Error("Failed to fetch orders");
+    },
+    enabled: Boolean(userId),
+    // staleTime:    1000 * 60 * 5,    // 5 minutes
+    refetchOnMount: false,
+  });
+};
+
+export { getUserAds, updateAdStatus, useUserWalletHistory, useFetchOrder };

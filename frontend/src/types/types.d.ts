@@ -28,3 +28,15 @@ interface WalletState {
 interface RootState {
   wallet: WalletState;
 }
+
+interface Order {
+  type: string;
+  reference: string;
+  asset: string;
+  amount: number;
+  price: number;
+  quantity: number;
+  createdAt: string;
+  merchant?: { userName: string };
+  buyer?: { userName: string };
+}
