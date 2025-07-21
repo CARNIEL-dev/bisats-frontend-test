@@ -4,7 +4,6 @@ import {
   getCoreRowModel,
   getPaginationRowModel,
   useReactTable,
-  type HeaderContext,
 } from "@tanstack/react-table";
 
 import {
@@ -28,7 +27,7 @@ export function DataTable<TData, TValue>({
   data,
   paginated = true,
 }: DataTableProps<TData, TValue>) {
-  const table = useReactTable<TData>({
+  const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
@@ -40,7 +39,7 @@ export function DataTable<TData, TValue>({
   return (
     <div className="space-y-8">
       {/* ─────────────────────────────────────── 
-         HDR: Desktop: full grid table 
+         SUB: Desktop: full grid table 
       ─────────────────────────────────────── */}
       <div className="hidden sm:block rounded-md overflow-hidden">
         <Table>
@@ -94,8 +93,8 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
 
-      {/*  ─────────────────────────────────────── 
-          HDR:Mobile: card list layout 
+      {/* ─────────────────────────────────────── 
+         SUB: Mobile: card list layout 
       ─────────────────────────────────────── */}
       <div className="sm:hidden space-y-3">
         {table.getRowModel().rows.map((row) => (
@@ -110,7 +109,7 @@ export function DataTable<TData, TValue>({
                 <div key={cell.id} className="flex justify-between py-1">
                   <span className="text-sm font-medium text-gray-500">
                     {header
-                      ? flexRender<HeaderContext<TData, TValue>>(
+                      ? flexRender(
                           header.column.columnDef.header,
                           header.getContext()
                         )
