@@ -8,15 +8,21 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { cn } from "@/utils";
 
 interface ModalProps {
   children: ReactNode;
   onClose: () => void;
+  className?: string;
 }
-const ModalTemplate: React.FC<ModalProps> = ({ children, onClose }) => {
+const ModalTemplate: React.FC<ModalProps> = ({
+  children,
+  onClose,
+  className,
+}) => {
   return (
     <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent>
+      <DialogContent className={cn(className)}>
         <DialogHeader className="hidden">
           <DialogTitle>Bisat modal</DialogTitle>
           <DialogDescription>

@@ -1,19 +1,14 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import Empty from "@/components/Empty";
-import { MultiSelectDropDown } from "@/components/Inputs/MultiSelectInput";
-import SearchInput from "@/components/Inputs/SearchInput";
-import Table from "@/components/Table/TransactionHistory";
-import { formatDate } from "@/layouts/utils/Dates";
-import {
-  GetWalletTransactions,
-  useUserWalletHistory,
-} from "@/redux/actions/walletActions";
-import { UserState } from "@/redux/reducers/userSlice";
-import { ColumnDef } from "@tanstack/react-table";
-import { DataTable } from "@/components/ui/data-table";
-import { cn, formatter } from "@/utils";
 import { BTC, ETH, NGN, SOL, USDT } from "@/assets/tokens";
+import Empty from "@/components/Empty";
+import TransactionDetails from "@/components/Modals/TransactionDetails";
+import { Button } from "@/components/ui/Button";
+import { DataTable } from "@/components/ui/data-table";
+import { useUserWalletHistory } from "@/redux/actions/walletActions";
+import { UserState } from "@/redux/reducers/userSlice";
+import { cn, formatter } from "@/utils";
+import { ColumnDef } from "@tanstack/react-table";
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
 export enum Fields {
   Asset = "Asset",
   Network = "Network",
@@ -62,6 +57,7 @@ const Transactions: React.FC = () => {
   const [selectedType, setSelectedType] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDate, setSelectedDate] = useState<string>("");
+  const [selectedData, setSelectedData] = useState<ITransaction | undefined>();
 
   const {
     data: transactionsData = [],
@@ -86,6 +82,7 @@ const Transactions: React.FC = () => {
     xNGN: NGN,
   };
 
+  //   HDR: Columns
   const columns: ColumnDef<ITransaction>[] = [
     {
       header: "Asset",
@@ -132,8 +129,8 @@ const Transactions: React.FC = () => {
         return (
           <p
             className={cn(
-              "capitalize font-medium",
-              type === "withdrawal" ? "text-red-400" : "text-green-500"
+              "capitalize"
+              //   type === "withdrawal" ? "text-red-400" : "text-green-500"
             )}
           >
             {type === "top_up" ? "Deposit" : type}
@@ -148,10 +145,48 @@ const Transactions: React.FC = () => {
     {
       header: "Reference",
       accessorKey: "Reference",
+      cell: ({ row }) => {
+        const reference = row.original.Reference;
+        return <p className="text-xs ">{reference}</p>;
+      },
     },
     {
       header: "Status",
       accessorKey: "Status",
+      cell: ({ row }) => {
+        const status = row.original.Status;
+
+        const colorClass =
+          status === "Pending"
+            ? "text-amber-600"
+            : status === "success" || status === "active"
+            ? "text-green-600"
+            : "text-red-700";
+
+        return (
+          <p className={cn("font-medium capitalize", colorClass)}>{status}</p>
+        );
+      },
+    },
+    {
+      id: "actions",
+      header: "",
+      cell: ({ row }) => {
+        const item = row.original;
+        return (
+          <div className="flex justify-end">
+            <Button
+              size={"sm"}
+              variant={"outline"}
+              className={cn("w-fit text-xs bg-transparent")}
+              type="button"
+              onClick={() => setSelectedData(item)}
+            >
+              View details
+            </Button>
+          </div>
+        );
+      },
     },
   ];
 
@@ -264,6 +299,13 @@ const Transactions: React.FC = () => {
             // paginated={false}
           />
         </>
+      )}
+
+      {selectedData && (
+        <TransactionDetails
+          close={() => setSelectedData(undefined)}
+          details={selectedData}
+        />
       )}
     </div>
   );
