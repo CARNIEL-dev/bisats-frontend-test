@@ -259,9 +259,7 @@ const MyAds = () => {
           <ErrorDisplay message={error.message} />
         ) : (
           <>
-            <div className="hidden md:block">
-              <DataTable columns={column} data={userAds} />
-            </div>
+            <DataTable columns={column} data={userAds} />
           </>
         )}
       </div>

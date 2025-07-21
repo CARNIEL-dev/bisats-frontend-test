@@ -121,7 +121,7 @@ const Assets: React.FC = () => {
         return (
           <div className="flex items-center gap-2 text-sm text-gray-600">
             <img src={item.logo} alt={item.name} className="h-6 w-6 " />
-            <div>
+            <div className="flex md:flex-col items-center md:items-start gap-x-1">
               <p className="font-semibold">{item.Asset}</p>
               <p className="text-xs">{item.name}</p>
             </div>
@@ -137,9 +137,9 @@ const Assets: React.FC = () => {
         const USDPrice =
           convertAssetToUSD(item.Asset, item.Balance, livePrices!) || 0;
         return (
-          <div className="flex items-center gap-2 text-sm text-gray-600">
-            <p className="font-semibold ">
-              <span className="font-mono">
+          <div className="flex md:items-center items-end md:flex-row flex-col gap-x-2 gap-y-1 text-sm text-gray-600">
+            <p className="font-semibold  ">
+              <span className="font-mono text-xl md:text-sm">
                 {formatter({ decimal: 2 }).format(item.Balance)}
               </span>{" "}
               <span className="font-normal">{item.Asset}</span>
@@ -202,13 +202,11 @@ const Assets: React.FC = () => {
         <Empty />
       ) : (
         <>
-          <div className="hidden sm:block">
-            <DataTable
-              columns={column}
-              data={defaultAssetsData}
-              paginated={false}
-            />
-          </div>
+          <DataTable
+            columns={column}
+            data={defaultAssetsData}
+            paginated={false}
+          />
 
           {/* Mobile table for xs screens */}
           {/* <MobileTable data={openAssets} livePrices={tokenLivePrices} /> */}

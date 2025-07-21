@@ -1,4 +1,8 @@
 import { getToken, getUser, setLivePrices, setUserTokenData } from "@/helpers";
+import { formatDate } from "@/layouts/utils/Dates";
+import { ITransaction, RawTx } from "@/pages/wallet/Transaction";
+import Bisatsfetch from "@/redux/fetchWrapper";
+import { WalletActionypes } from "@/redux/types";
 import {
   T2FARequest,
   TAddSearchRequest,
@@ -12,11 +16,7 @@ import {
 } from "@/types/wallet";
 import { BACKEND_URLS } from "@/utils/backendUrls";
 import dispatchWrapper from "@/utils/dispatchWrapper";
-import Bisatsfetch from "@/redux/fetchWrapper";
-import { WalletActionypes } from "@/redux/types";
-import { QueryFunctionContext, useQuery } from "@tanstack/react-query";
-import { formatDate } from "@/layouts/utils/Dates";
-import { ITransaction, RawTx } from "@/pages/wallet/Transaction";
+import { useQuery } from "@tanstack/react-query";
 
 export const GetWallet = async () => {
   const user = getUser();
@@ -28,7 +28,6 @@ export const GetWallet = async () => {
       }
     );
     const data = response.data;
-    console.log(response);
     if (response.status) {
       dispatchWrapper({
         type: WalletActionypes.GET_WALLET,
@@ -619,4 +618,4 @@ const useFetchOrder = (userId: string) => {
   });
 };
 
-export { getUserAds, updateAdStatus, useUserWalletHistory, useFetchOrder };
+export { getUserAds, updateAdStatus, useFetchOrder, useUserWalletHistory };

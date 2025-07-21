@@ -8,7 +8,7 @@ export interface KycStatus {
   utilityBillVerified: boolean;
   proofOfProfileVerified: boolean;
   sourceOfWealthVerified: boolean;
-  bvnVerified:boolean
+  bvnVerified: boolean;
 }
 
 export interface UserState {
@@ -23,7 +23,7 @@ export interface UserState {
   token: string | null;
   kyc: KycStatus | null;
 
-  twoFactorAuthEnabled:boolean;
+  twoFactorAuthEnabled: boolean;
   wallet: {
     pinSet: boolean;
   } | null;
@@ -40,7 +40,7 @@ const initialState: UserState = {
   token: null,
   kyc: null,
   wallet: null,
-  twoFactorAuthEnabled:false,
+  twoFactorAuthEnabled: false,
 };
 
 const userReducer = (state = initialState, action: UserActionProp) => {
@@ -60,7 +60,6 @@ const userReducer = (state = initialState, action: UserActionProp) => {
         loading: false,
       };
     case UserActionTypes.SIGN_UP:
-      console.log(action.payload, action.type);
       return {
         ...state,
         isAuthenticated: true,

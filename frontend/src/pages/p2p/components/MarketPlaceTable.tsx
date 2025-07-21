@@ -39,16 +39,19 @@ const MarketPlaceTable = ({ type, ads, asset }: MarketPlaceContentProps) => {
   const column: ColumnDef<AdSchema>[] = [
     {
       accessorKey: "user",
-      header: "Merchant",
+      header: () => {
+        return <span className="">Merchant</span>;
+      },
+
       cell: ({ row }) => {
         const ad = row.original.user.userName;
         const initials = ad.charAt(0);
 
         return (
-          <div className=" flex items-center gap-3">
+          <div className=" flex items-center md:gap-3 gap-1">
             <div
               className={cn(
-                "flex items-center justify-center size-10 border rounded-full",
+                "flex items-center justify-center md:size-10 size-6 border rounded-full",
                 type.toLowerCase() === "sell"
                   ? "bg-red-500/10 text-red-600 border-red-300"
                   : "bg-green-600/20 text-green-600 border-green-300"
@@ -70,7 +73,11 @@ const MarketPlaceTable = ({ type, ads, asset }: MarketPlaceContentProps) => {
           currency: "NGN",
           decimal: 0,
         }).format(row.original.price);
-        return <span className="text-gray-600 font-medium  ">{price}</span>;
+        return (
+          <span className="text-gray-600 md:font-medium text-2xl font-bold md:text-sm ">
+            {price}
+          </span>
+        );
       },
     },
     {
@@ -139,12 +146,12 @@ const MarketPlaceTable = ({ type, ads, asset }: MarketPlaceContentProps) => {
         </div>
       ) : (
         <div className="w-full">
-          <div className="hidden md:block">
-            <DataTable data={ads} columns={column} paginated={false} />
-          </div>
-          <div className="md:hidden  w-full">
+          {/* <div className="hidden md:block">
+          </div> */}
+          <DataTable data={ads} columns={column} paginated={false} />
+          {/* <div className="md:hidden  w-full">
             <MobileP2PMP data={ads} type={type} />
-          </div>
+          </div> */}
         </div>
       )}
       {/* 

@@ -1,11 +1,10 @@
-"use client";
-
 import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
   getPaginationRowModel,
   useReactTable,
+  type HeaderContext,
 } from "@tanstack/react-table";
 
 import {
@@ -17,7 +16,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { DataTablePagination } from "@/components/ui/pagination";
-import { cn } from "@/utils";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -30,42 +28,47 @@ export function DataTable<TData, TValue>({
   data,
   paginated = true,
 }: DataTableProps<TData, TValue>) {
-  const table = useReactTable({
+  const table = useReactTable<TData>({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     ...(paginated && { getPaginationRowModel: getPaginationRowModel() }),
   });
+
+  const topHeaders = table.getHeaderGroups()[0].headers;
+
   return (
-    <div className="space-y-10">
-      <div className="rounded-md overflow-hidden">
+    <div className="space-y-8">
+      {/* ─────────────────────────────────────── 
+         HDR: Desktop: full grid table 
+      ─────────────────────────────────────── */}
+      <div className="hidden sm:block rounded-md overflow-hidden">
         <Table>
-          <TableHeader className="bg-gray-100  ">
-            {table.getHeaderGroups().map((headerGroup, index) => (
-              <TableRow key={index}>
-                {headerGroup.headers.map((header, idx) => {
-                  return (
-                    <TableHead key={idx} className="text-gray-600 font-medium">
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  );
-                })}
+          <TableHeader className="bg-gray-100">
+            {table.getHeaderGroups().map((hg) => (
+              <TableRow key={hg.id}>
+                {hg.headers.map((header) => (
+                  <TableHead
+                    key={header.id}
+                    className="text-gray-600 font-medium"
+                  >
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </TableHead>
+                ))}
               </TableRow>
             ))}
           </TableHeader>
-
           <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row, index) => (
+            {table.getRowModel().rows.length > 0 ? (
+              table.getRowModel().rows.map((row, i) => (
                 <TableRow
-                  key={row.id + index}
-                  data-state={row.getIsSelected() && "selected"}
-                  className={cn(index % 2 === 1 && "bg-gray-50", "border-0")}
+                  key={row.id}
+                  className={i % 2 === 1 ? "bg-gray-50" : ""}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id} className="p-4 text-gray-600">
@@ -90,6 +93,39 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
+
+      {/*  ─────────────────────────────────────── 
+          HDR:Mobile: card list layout 
+      ─────────────────────────────────────── */}
+      <div className="sm:hidden space-y-3">
+        {table.getRowModel().rows.map((row) => (
+          <div
+            key={row.id}
+            className="bg-white p-4 rounded-lg shadow-sm border"
+          >
+            {row.getVisibleCells().map((cell) => {
+              const header = topHeaders.find((h) => h.id === cell.column.id);
+
+              return (
+                <div key={cell.id} className="flex justify-between py-1">
+                  <span className="text-sm font-medium text-gray-500">
+                    {header
+                      ? flexRender<HeaderContext<TData, TValue>>(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )
+                      : cell.column.id}
+                  </span>
+                  <span className="text-sm text-gray-800">
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        ))}
+      </div>
+
       {paginated && <DataTablePagination table={table} />}
     </div>
   );

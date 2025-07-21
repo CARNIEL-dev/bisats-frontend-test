@@ -34,10 +34,7 @@ const Dashboard = () => {
 
   return (
     <>
-      <MaxWidth
-        as="section"
-        className="space-y-8 max-w-6xl lg:pb-5 mb-10 mt-6"
-      >
+      <MaxWidth as="section" className="space-y-8 max-w-6xl lg:pb-5 mb-10 mt-6">
         {openKycModal && <KycBanner />}
         <div className="w-full flex justify-center ">
           <div className="w-full">
