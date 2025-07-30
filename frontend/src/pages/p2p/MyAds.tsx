@@ -15,6 +15,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import PreLoader from "@/layouts/PreLoader";
 import ErrorDisplay from "@/components/shared/ErrorDisplay";
+import { useMemo } from "react";
 
 export interface Ad {
   id: string;
@@ -45,7 +46,6 @@ type UpdateAdStatusVars = {
 };
 type UpdateAdStatusResponse = {
   success: boolean;
-  // …any other fields your API returns…
 };
 
 const MyAds = () => {
@@ -68,7 +68,16 @@ const MyAds = () => {
     enabled: !!userId,
   });
 
-  // 3️⃣ Define the mutation
+  const adsData = useMemo(() => {
+    const activeAds = userAds.filter((ad) => ad.status !== "closed");
+    const closedAds = userAds.filter((ad) => ad.status === "closed");
+    return {
+      activeAds,
+      closedAds,
+    };
+  }, [userAds]);
+
+  //HDR: Mutation function
   const mutation = useMutation<
     UpdateAdStatusResponse,
     Error,
@@ -88,7 +97,6 @@ const MyAds = () => {
   });
 
   //   HDR: Update ads status
-
   const handleStatusToggle = (ad: Ad) => {
     const newStatus = ad.status === "active" ? "disabled" : "active";
     mutation.mutate({
@@ -252,15 +260,27 @@ const MyAds = () => {
       </div>
 
       <div>
-        <p className="text-lg font-semibold mb-3 text-gray-600">All Ads</p>
         {isFetching ? (
           <PreLoader />
         ) : isError ? (
           <ErrorDisplay message={error.message} />
         ) : (
-          <>
-            <DataTable columns={column} data={userAds} />
-          </>
+          <div className="space-y-16">
+            <div className="space-y-3">
+              <p className="text-lg font-semibold mb-3 text-green-600 border border-green-500 rounded-lg px-3 py-2 bg-green-500/10">
+                Active Ads
+              </p>
+
+              <DataTable columns={column} data={adsData.activeAds} />
+            </div>
+            <div className="space-y-3">
+              <p className="text-lg font-semibold text-red-600 border border-red-500 rounded-lg px-3 py-2 bg-red-500/10">
+                Closed Ads
+              </p>
+
+              <DataTable columns={column} data={adsData.closedAds} />
+            </div>
+          </div>
         )}
       </div>
     </div>

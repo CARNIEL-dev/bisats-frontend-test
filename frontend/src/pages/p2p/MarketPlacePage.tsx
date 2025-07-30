@@ -65,6 +65,7 @@ const MarketPlacePage = () => {
 
   //SUB: React Query
   const userId = useSelector((state: any) => state.user.user?.userId) || "";
+  // const [refreshInterval, setRefreshInterval] = useState(2 * 60 * 1000);
 
   const {
     data: searchAds,
@@ -82,7 +83,7 @@ const MarketPlacePage = () => {
     queryFn: fetchAds,
     retry: false,
     refetchOnMount: false,
-    staleTime: Infinity,
+    // staleTime: refreshInterval,
     enabled: Boolean(userId),
   });
 
@@ -163,6 +164,15 @@ const MarketPlacePage = () => {
                 showBalance={false}
                 disabled={isFetching}
               />
+              {/* <TokenSelection
+                  title={refreshInterval / 1000 + "s"}
+                  error={undefined}
+                  touched={undefined}
+                  handleChange={handleTokenChange}
+                  removexNGN
+                  showBalance={false}
+                  disabled={isFetching}
+                  /> */}
 
               <div className="flex gap-1 items-center">
                 <Button

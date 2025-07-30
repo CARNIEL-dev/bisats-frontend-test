@@ -34,54 +34,19 @@ const Dashboard = () => {
 
   return (
     <>
-      <MaxWidth as="section" className="space-y-8 max-w-6xl lg:pb-5 mb-10 mt-6">
+      <MaxWidth
+        as="section"
+        className="space-y-8 min-h-[75dvh] max-w-6xl lg:pb-5 mb-10 mt-6"
+      >
         {openKycModal && <KycBanner />}
-        <div className="w-full flex justify-center ">
-          <div className="w-full">
-            <h2 className="text-xl text-slate-700  font-semibold">
-              Hello, {user?.userName || "User"}
-            </h2>
+        <div className="">
+          <h2 className="text-xl text-slate-700  font-semibold">
+            Hello, {user?.userName || "User"}
+          </h2>
 
-            <div className="grid md:grid-cols-2 gap-4 my-4  items-start">
-              <div className="h-full">
-                <Balance />
-              </div>
-              <div className="h-full">
-                <MarketRate />
-              </div>
-            </div>
-
-            <div className="lg:border flex flex-col gap-4   sm:p-[24px] rounded-2xl">
-              <div className="flex items-center gap-2">
-                <p className=" text-lg sm:text-base font-semibold">
-                  My Open ads
-                </p>
-                <Link
-                  to={APP_ROUTES.P2P.MY_ADS}
-                  className="text-[#C49600] text-sm font-semibold"
-                >
-                  {" "}
-                  view all
-                </Link>
-              </div>
-              <Ads />
-            </div>
-            <div className="lg:border mt-4  flex flex-col gap-4  rounded-2xl sm:p-[24px]">
-              <div className="flex items-center gap-2">
-                <p className=" text-lg sm:text-base font-semibold">
-                  Order History
-                </p>
-                <Link
-                  to={APP_ROUTES.P2P.ORDER_HISTORY}
-                  className="text-[#C49600] text-sm font-semibold"
-                >
-                  {" "}
-                  view all
-                </Link>
-              </div>
-
-              <Orders />
-            </div>
+          <div className="grid md:grid-cols-2 gap-4 my-4  items-start">
+            <Balance />
+            <MarketRate />
           </div>
         </div>
       </MaxWidth>

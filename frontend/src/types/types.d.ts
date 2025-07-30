@@ -19,12 +19,6 @@ interface CryptoRates {
   usd?: { usd: number; ngn: number };
 }
 
-interface WalletState {
-  wallet: WalletData | null;
-  loading: boolean;
-  error: string | null;
-}
-
 interface RootState {
   wallet: WalletState;
 }

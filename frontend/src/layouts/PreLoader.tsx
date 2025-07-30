@@ -1,27 +1,9 @@
-import { CSSProperties } from "react";
-import {  GridLoader,  } from "react-spinners";
+import BisatLogo from "@/components/shared/Logo";
 
 const PreLoader = () => {
-  const override: CSSProperties = {
-    display: "block",
-    margin: "0 auto",
-    borderColor: "red",
-  };
   return (
-    <div className=" mx-auto w-full h-fit">
-      <div className="flex flex-col items-center">
-        {/* <img src={favicon} alt="Loading..." className="w-[100px]" /> */}
-        <div className="mt-5">
-          <GridLoader
-            color={"#000"}
-            loading={true}
-            cssOverride={override}
-            size={20}
-            aria-label="Loading Spinner"
-            data-testid="loader"
-          />
-        </div>
-      </div>
+    <div className="flex flex-col items-center animate-pulse mt-10">
+      <BisatLogo className="md:scale-110" />
     </div>
   );
 };

@@ -5,8 +5,6 @@ import OtherSide from "./auth/OtherSide";
 const KycLayOut = () => {
   return (
     <div>
-      <Header currentPage={""} />
-
       <div className={`bg-white bg-no-repeat bg-cover h-full w-full py-20`}>
         <div className="w-full lg:w-2/5 mx-auto h-full px-3 lg:items-center ">
           <OtherSide

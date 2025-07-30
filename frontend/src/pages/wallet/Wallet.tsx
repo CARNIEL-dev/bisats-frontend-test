@@ -12,14 +12,14 @@ const Wallet = () => {
             <Balance showWithdraw />
           </div>
 
-          <div className="sm:border space-y-4 rounded-2xl p-4 sm:p-6">
+          <div className="sm:border md:space-y-4 space-y-2 rounded-2xl  sm:p-6">
             <p className="font-semibold md:text-lg text-gray-700">
               Your assets
             </p>
             <Assets />
           </div>
 
-          <div className="sm:border space-y-4 rounded-2xl p-4 sm:p-6">
+          <div className="sm:border md:space-y-4 space-y-2 rounded-2xl  sm:p-6">
             <p className="font-semibold md:text-lg text-gray-700">
               Wallet History
             </p>

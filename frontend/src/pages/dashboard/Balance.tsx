@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useMemo, useState } from "react";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 import { Button, buttonVariants } from "@/components/ui/Button";
@@ -12,140 +12,102 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Skeleton } from "@/components/ui/skeleton";
 import { APP_ROUTES } from "@/constants/app_route";
 import { GetWallet } from "@/redux/actions/walletActions";
 import { cn, formatter } from "@/utils";
+import { useQuery } from "@tanstack/react-query";
 import { ChevronDown, Eye, EyeClosed } from "lucide-react";
+import { ThreeDot } from "react-loading-indicators";
+
+const getCryptoRates = async () => {
+  const response = await fetch(
+    "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,tron,usd&vs_currencies=usd,ngn"
+  );
+
+  if (!response.ok) throw new Error("Failed to fetch crypto rates");
+  const data = await response.json();
+  return data;
+};
 
 const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
-  const dispatch = useDispatch();
-
   const [showBalance, setShowBalance] = useState(true);
-  const [currency, setCurrency] = useState<string>("USD");
-  const [cryptoRates, setCryptoRates] = useState<CryptoRates | null>(null);
-  const [totalBalance, setTotalBalance] = useState<number | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [currency, setCurrency] = useState<"usd" | "ngn">("usd");
 
   const walletData = useSelector((state: RootState) => state.wallet.wallet);
-  const walletError = useSelector((state: RootState) => state.wallet.error);
+  const walletSettings = useSelector((state: RootState) => state.wallet);
 
-  console.log(walletError, "walletError");
+  //? Fetch wallet data
+  // useEffect(() => {
+  //   const fetchWalletData = async () => {
+  //     try {
+  //       await GetWallet();
+  //     } catch (err) {
+  //       console.error("Error fetching wallet:", err);
+  //     }
+  //   };
 
-  // Fetch wallet data
-  useEffect(() => {
-    const fetchWalletData = async () => {
-      try {
-        await dispatch(GetWallet() as any);
-      } catch (err) {
-        console.error("Error fetching wallet:", err);
-      }
-    };
+  //   fetchWalletData();
+  // }, []);
 
-    fetchWalletData();
-  }, [dispatch]);
+  console.log("Settings", walletSettings);
 
-  // Fetch crypto rates when wallet data is available
-  useEffect(() => {
-    const fetchCryptoRates = async () => {
-      setIsLoading(true);
-      try {
-        const response = await fetch(
-          "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,tron,usd&vs_currencies=usd,ngn"
-        );
+  //SUB: Query function
+  const {
+    data: currencyRate,
+    isFetching,
+    isError,
+  } = useQuery<CryptoRates, Error>({
+    queryKey: ["balance"],
+    queryFn: getCryptoRates,
+    refetchOnMount: false,
+    enabled: Boolean(walletData),
+  });
 
-        if (response.ok) {
-          const data = await response.json();
-          setCryptoRates(data);
-        }
-      } catch (err) {
-        console.error("Error fetching crypto rates:", err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  const userBalance = useMemo<number | undefined>(() => {
+    if (!walletData || !currencyRate) return;
 
-    if (walletData && !cryptoRates) {
-      fetchCryptoRates();
-    }
-  }, [walletData, cryptoRates]);
-
-  //? Calculate total balance when rates are available
-  useEffect(() => {
-    if (walletData && cryptoRates) {
-      calculateTotalBalance();
-    }
-  }, [walletData, cryptoRates, currency]);
-
-  //? Simple function to calculate the total balance
-  const calculateTotalBalance = () => {
-    if (!walletData || !cryptoRates) return;
-
-    const currencyKey = currency.toLowerCase() as "usd" | "ngn";
-    let total = 0;
-
-    // Bitcoin
-    if (walletData.BTC && cryptoRates.bitcoin) {
-      total += walletData.BTC * cryptoRates.bitcoin[currencyKey];
-    }
-
-    // Ethereum
-    if (walletData.ETH && cryptoRates.ethereum) {
-      total += walletData.ETH * cryptoRates.ethereum[currencyKey];
-    }
-
-    // Solana
-    if (walletData.SOL && cryptoRates.solana) {
-      total += walletData.SOL * cryptoRates.solana[currencyKey];
-    }
-
-    // Tron
-    if (walletData.TRX && cryptoRates.tron) {
-      total += walletData.TRX * cryptoRates.tron[currencyKey];
-    }
-
-    // USDT (all types)
+    //? Sum up USDT variants into one total
     const usdtTotal =
-      (walletData.USDT_ETH || 0) +
-      (walletData.USDT_TRX || 0) +
-      (walletData.USDT_SOL || 0);
+      (walletData.USDT_ETH ?? 0) +
+      (walletData.USDT_TRX ?? 0) +
+      (walletData.USDT_SOL ?? 0);
 
-    if (usdtTotal > 0 && cryptoRates.usd) {
-      total += usdtTotal * cryptoRates.usd[currencyKey];
-    }
+    //? Build an array of [assetKey, amount] pairs
+    const entries: [string, number][] = [
+      ["bitcoin", walletData.BTC ?? 0],
+      ["ethereum", walletData.ETH ?? 0],
+      ["solana", walletData.SOL ?? 0],
+      ["tron", walletData.TRX ?? 0],
+      ["usd", usdtTotal],
+      ["xNGN", walletData.xNGN ?? 0],
+    ];
 
-    // xNGN
-    if (walletData.xNGN) {
-      if (currency === "NGN") {
-        total += walletData.xNGN;
-      } else if (cryptoRates.usd && cryptoRates.usd.ngn) {
-        // Convert NGN to USD
-        total += walletData.xNGN / cryptoRates.usd.ngn;
+    return entries.reduce((total, [asset, amount]) => {
+      if (amount <= 0) return total;
+
+      let rate = currencyRate[asset as keyof CryptoRates]?.[currency] ?? 0;
+
+      //? Special xNGN handling: if we're not viewing NGN, convert via the NGN rate
+      if (asset === "xNGN" && currency !== "ngn") {
+        const ngnRate = currencyRate.usd?.ngn ?? 1;
+        rate = 1 / ngnRate;
       }
-    }
 
-    setTotalBalance(total);
-  };
-
-  const toggleBalanceVisibility = () => {
-    setShowBalance(!showBalance);
-  };
-
-  const getCurrencySymbol = () => {
-    return currency === "USD" ? "$" : "₦";
-  };
+      return total + amount * rate;
+    }, 0);
+  }, [walletData, currencyRate, currency]);
 
   return (
     <div className="border  flex flex-col gap-2 p-4 md:p-6 rounded-2xl">
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1">
         <p className="font-semibold text-neutral-800">Total Balance</p>
         <Button
           variant="ghost"
-          disabled={isLoading}
+          disabled={isFetching}
           className={cn(
             "p-0! h-fit w-fit hover:bg-transparent hover:scale-110"
           )}
-          onClick={toggleBalanceVisibility}
+          onClick={() => setShowBalance(!showBalance)}
         >
           {showBalance ? (
             <EyeClosed className="w-5! h-5!" />
@@ -155,32 +117,37 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
         </Button>
       </div>
       <div className="flex items-baseline gap-3">
-        {isLoading ? (
-          <Skeleton className="w-24 h-10" />
-        ) : walletError ? (
-          <span className="text-red-500 font-normal ">
-            Error loading balance
-          </span>
+        {isFetching ? (
+          <ThreeDot
+            variant="pulsate"
+            color={["#F5BB00", "#000"]}
+            size="small"
+            text=""
+            textColor=""
+            speedPlus={-2}
+          />
+        ) : isError ? (
+          <span className="text-red-500 font-normal ">Error</span>
         ) : (
           <div className="flex items-center gap-0.5">
-            <span className="text-[28px] md:text-[34px] font-medium inline-block">
-              {getCurrencySymbol()}
+            <span className="text-[28px] md:text-[34px] font-extrabold inline-block">
+              {currency === "usd" ? "$" : "₦"}
             </span>
             {showBalance ? (
-              totalBalance ? (
-                <p className="font-extrabold font-mono">
+              userBalance ? (
+                <p className="font-extrabold space-x-0.5">
                   <span className="text-2xl md:text-4xl">
                     {
                       formatter({})
-                        .format(totalBalance ?? 0)
+                        .format(userBalance ?? 0)
                         .split(".")[0]
                     }
                   </span>
-                  <span className={`mr-[4px] text-lg md:text-2xl `}>
-                    .
+                  <span className={`mr-[4px] text-base md:text-xl `}>
+                    .{" "}
                     {
                       formatter({})
-                        .format(totalBalance ?? 0)
+                        .format(userBalance ?? 0)
                         .split(".")[1]
                     }
                   </span>
@@ -196,8 +163,8 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
 
         <div>
           <DropdownMenu>
-            <DropdownMenuTrigger className="outline-hidden text-sm">
-              <div className="flex items-center gap-0.5">
+            <DropdownMenuTrigger className="outline-none text-sm">
+              <div className="flex items-center gap-0.5 uppercase">
                 {currency}
                 <ChevronDown className="w-4 h-4" />
               </div>
@@ -207,10 +174,10 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
               <DropdownMenuSeparator />
               <DropdownMenuRadioGroup
                 value={currency}
-                onValueChange={(val) => setCurrency(val)}
+                onValueChange={(val) => setCurrency(val as "usd" | "ngn")}
               >
-                <DropdownMenuRadioItem value="USD">USD</DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value="NGN">NGN</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="usd">USD</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="ngn">NGN</DropdownMenuRadioItem>
               </DropdownMenuRadioGroup>
             </DropdownMenuContent>
           </DropdownMenu>

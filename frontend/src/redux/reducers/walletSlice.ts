@@ -31,7 +31,7 @@ const walletReducer = (state = initialState, action: WalletActionProp) => {
         id: action.payload.id,
         userId: action.payload.userId,
         wallet: action.payload,
-        loading:false
+        loading: false,
       };
     default:
       return state;

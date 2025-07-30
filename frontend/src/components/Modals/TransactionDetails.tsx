@@ -83,7 +83,10 @@ const TransactionDetails: React.FC<Props> = ({ close, details }) => {
               decimal: details?.Asset === "xNGN" ? 0 : 4,
             }).format(details?.Amount || 0)}
           />
-          <TextBetweenDisplay label="Network" value={details?.Network} />
+          <TextBetweenDisplay
+            label="Network"
+            value={details?.Asset === "xNGN" ? "Bank" : details?.Network || ""}
+          />
           <TextBetweenDisplay label="Reference" value={details?.Reference} />
           {isXNGN && (
             <>

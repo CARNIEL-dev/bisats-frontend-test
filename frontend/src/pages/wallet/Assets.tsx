@@ -187,7 +187,7 @@ const Assets: React.FC = () => {
   ];
 
   return (
-    <div>
+    <div className="">
       {isFetching ? (
         <div className="h-[40dvh] grid place-content-center">
           <PreLoader />
