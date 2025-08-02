@@ -1,505 +1,416 @@
-import React, { useEffect, useMemo, useState } from 'react'
-import PrimaryInput from '../../../components/Inputs/PrimaryInput'
-import { PrimaryButton } from '../../../components/buttons/Buttons'
-import { TokenData } from '../../../data'
-import { AdSchema } from './ExpressSwap'
-import { useNavigate } from 'react-router-dom'
-import { assets } from '../../../utils/conversions'
-import { useSelector } from 'react-redux'
-import { WalletState } from '../../../redux/reducers/walletSlice'
-import SwapConfirmation from '../../../components/Modals/SwapConfirmation'
-import { ACTIONS, bisats_charges } from '../../../utils/transaction_limits'
-import Toast from '../../../components/Toast'
-import Bisatsfetch from '../../../redux/fetchWrapper'
-import { UserState } from '../../../redux/reducers/userSlice'
-import KycManager from '../../kyc/KYCManager'
-import { formatNumber } from '../../../utils/numberFormat'
-import { APP_ROUTES } from '../../../constants/app_route'
+import PrimaryInput from "@/components/Inputs/PrimaryInput";
+import SwapConfirmation from "@/components/Modals/SwapConfirmation";
+import { PrimaryButton } from "@/components/buttons/Buttons";
+import { Badge } from "@/components/ui/badge";
+import { TokenData } from "@/data";
+import { swapSchema } from "@/formSchemas";
+import KycManager from "@/pages/kyc/KYCManager";
+import { AdSchema } from "@/pages/p2p/components/ExpressSwap";
+import { UserState } from "@/redux/reducers/userSlice";
+import { WalletState } from "@/redux/reducers/walletSlice";
+import { formatter } from "@/utils";
+import { assets } from "@/utils/conversions";
+import { formatNumber } from "@/utils/numberFormat";
+import { ACTIONS, bisats_charges } from "@/utils/transaction_limits";
+import { FormikProps, useFormik } from "formik";
+import React, { ChangeEventHandler, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 // assets = isDev ? TestAssets : LiveAssets
 
-export const assetIndexMap: Record<string, number> = Object.values(assets).reduce((acc, asset, index) => {
-    acc[asset] = index;
-    return acc;
+export const assetIndexMap: Record<string, number> = Object.values(
+  assets
+).reduce((acc, asset, index) => {
+  acc[asset] = index;
+  return acc;
 }, {} as Record<string, number>);
 
+export enum typeofSwam {
+  "Buy",
+  "Sell",
+}
+const Swap = ({
+  type,
+  adDetail,
+}: {
+  type: "buy" | "sell";
+  adDetail?: AdSchema | undefined;
+}) => {
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [focusedField, setFocusedField] = useState<
+    "amount" | "otherAmount" | null
+  >(null);
 
-export enum typeofSwam { "Buy", "Sell" }
-const Swap = ({ type, adDetail }: { type: "buy" | "sell", adDetail?: AdSchema | undefined }) => {
-    const [showConfirmation, setShowConfirmation] = useState(false);
-    // const [amount, setAmount] = useState("0.00")
-    // const [otherAmount, setOtherAmount] = useState("0.00")
+  const walletState: WalletState = useSelector((state: any) => state.wallet);
+  const user = useSelector((state: { user: UserState }) => state.user);
 
-    const [amount, setAmount] = useState("");
-    const [otherAmount, setOtherAmount] = useState("");
-    const [focusedField, setFocusedField] = useState<"amount" | "otherAmount" | null>(null);
+  const navigate = useNavigate();
 
-    const [confirmLoading, setConfirmLoading] = useState(false);
-    const [orderError, setOrderError] = useState<string | null>(null);
-    const [networkFee, setNetworkFee] = useState<string | null>(null);
-    const [transactionFee, setTransactionFee] = useState<string | null>(null);
-    const [error, setError] = useState<string | null>(null);
-    const walletState: WalletState = useSelector((state: any) => state.wallet);
-    const user = useSelector((state: { user: UserState }) => state.user);
-    const userId = user?.user?.userId || "";    
-    const navigate = useNavigate()
-    useEffect(() => {
-        setFocusedField("amount")
-        if (!adDetail) navigate(-1);
+  useEffect(() => {
+    if (!adDetail) navigate(-1);
+  }, []);
 
-    },[])
-
-    
-    const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        // setAmount(e.target.value);
-        setAmount( e.target.value )
-    };
-
-    const handleOtherAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        // setAmount(e.target.value);
-        setOtherAmount(e.target.value)
-    };
-
-    const fetchNetworkFee = async () => {
-        if ( !amount) return null;
-
-        try {
-            const adsId = adDetail?.id;
-            const amountValue = parseFloat(amount);
-
-            const response = await Bisatsfetch(
-                `/api/v1/user/${userId}/ads/${adsId}/networkFee`,
-                {
-                    method: "POST",
-                    body: JSON.stringify({
-                        userId: userId,
-                        amount: amountValue,
-                    }),
-                }
-            );
-            if (response.status) {
-                console.log(response)
-                setNetworkFee(response?.data?.networkFee);
-                setTransactionFee(response?.data?.transactionFee);
-                return response;
-            } else {
-                setError("Failed to fetch network fee: " + response.message);
-                return response;
-            }
-
-        } catch (err) {
-            console.error("Error fetching network fee:", err);
-            setError("Failed to fetch network fee. Please try again.");
-            return null;
+  // SUB: Formik
+  const formik = useFormik({
+    initialValues: {
+      amount: "",
+      otherAmount: "",
+    },
+    validate: async (values) => {
+      try {
+        await swapSchema.validate(values, {
+          abortEarly: false,
+          context: { focusedField, walletState, adDetail, type },
+        });
+        return {};
+      } catch (err: any) {
+        const errors: Record<string, string> = {};
+        if (err.inner) {
+          err.inner.forEach((e: any) => {
+            if (e.path) errors[e.path] = e.message;
+          });
         }
-    };
+        return errors;
+      }
+    },
+    onSubmit: (values) => {
+      setShowConfirmation(true);
+      // console.log(values);
+    },
+  });
 
+  const calculateFee = () => {
+    if (!formik.values.amount || parseFloat(formik.values.amount) <= 0)
+      return "0";
+    const feePercentage = bisats_charges.crypto_buy;
+    return (parseFloat(formik.values.amount) * feePercentage).toFixed(2);
+  };
 
-    const handleConfirmTransaction = async () => {
-        if ( !amount) return;
-        if (adDetail?.orderType === "buy") {
-            if (Number(amount) > Number(walletState?.wallet?.xNGN)) {
-                Toast.error("Your xNGN balance is not enough to carry out this transaction", "Insufficient Wallet Balance")
-                return
-            }
-        } else {
-            if (Number(amount) > Number(walletState?.wallet?.[adDetail?.asset??"BTC"])) {
-                Toast.error(`Your ${adDetail?.asset} balance is not enough to carry out this transaction`, "Insufficient Wallet Balance")
-                return
-            }
-        }
-        setConfirmLoading(true);
-        setOrderError(null);
+  // SUB: Converts the equivalent values
+  useEffect(() => {
+    const price = adDetail?.price ?? 0;
+    if (!price) return;
+    const amt = parseFloat(formik.values.amount);
+    const otherAmt = parseFloat(formik.values.otherAmount);
 
-        try {
-            const feeData = await fetchNetworkFee();
-            console.log(feeData)
-            if (!feeData.status) {
-                setOrderError(feeData?.message);
-                Toast.error(feeData?.message, "Failed")
-                setConfirmLoading(false);
-                setShowConfirmation(false)
-                return;
-            }
+    if (focusedField === "amount" && !isNaN(amt)) {
+      if (adDetail?.orderType === "buy") {
+        formik.setFieldValue("otherAmount", (amt / price).toFixed(2));
+      } else if (adDetail?.orderType === "sell") {
+        formik.setFieldValue("otherAmount", (amt * price).toFixed(4));
+      }
+    } else if (focusedField === "otherAmount" && !isNaN(otherAmt)) {
+      if (adDetail?.orderType === "buy") {
+        formik.setFieldValue("amount", (otherAmt * price).toFixed(2));
+      } else if (adDetail?.orderType === "sell") {
+        formik.setFieldValue("amount", (otherAmt / price).toFixed(4));
+      }
+    }
+  }, [
+    adDetail?.orderType,
+    adDetail?.price,
+    focusedField,
+    formik.values.amount,
+    formik.values.otherAmount,
+  ]);
 
-            const orderResult = await placeOrder(feeData);
-            if (orderResult?.success) {
-                setShowConfirmation(false);
-                setAmount("");
-                setNetworkFee(null);
-                setTransactionFee(null);
+  return (
+    <div className="flex flex-col gap-3">
+      <p
+        className={`${
+          type === "buy" ? "text-green-600" : "text-red-600"
+        } text-sm font-semibold`}
+      >
+        {" "}
+        {type === "buy" ? "You're Buying from" : "You're Selling to"}
+      </p>
 
-                // TODO: Show success notification
-                Toast.success(orderResult?.message, "Success");
-                navigate(APP_ROUTES.P2P.MARKETPLACE)
-            } else {
-                Toast.error(orderResult?.message, "Failed");
-            }
-        } catch (err) {
-            console.error(err)
-            Toast.error("An eeror occured", "Error");
-            setOrderError("An unexpected error occurred. Please try again.");
-        } finally {
-            setConfirmLoading(false);
-        }
-    };
-    const placeOrder = async (feeData: any) => {
-        if (!amount) return;
-        console.log(amount)
-        try {
-            const adsId = adDetail?.id;
-            const type=adDetail?.type?.toLowerCase()
-            const amountValue = parseFloat(type!=="buy"? amount:otherAmount);
-            console.log(amountValue)
-            const response = await Bisatsfetch(
-                `/api/v1/user/${userId}/ads/${adsId}/order`,
-                {
-                    method: "POST",
-                    body: JSON.stringify({
-                        userId: userId,
-                        amount: amountValue,
-                        networkFee: feeData.networkFee,
-                        transactionFee: feeData.transactionFee,
-                    }),
-                }
-            );
+      <h3 className="text-[28px] md:text-[34px]  font-semibold leading-[40px]">
+        {adDetail?.user?.userName}
+      </h3>
 
-            console.log("Place Order API Response:", response);
-
-            if (response.status) {
-                return { success: true, data: response.data };
-            } else {
-                setOrderError(response.message);
-                return { success: false, message: response.message };
-            }
-        } catch (err) {
-            console.error("Error placing order:", err);
-            setOrderError("Failed to place order. Please try again.");
-            return { success: false, message: "Failed to place order." };
-        }
-    };
-    const calculateFee = () => {
-            if (!amount || parseFloat(amount) <= 0) return "0";
-            const feePercentage = bisats_charges.crypto_buy;
-            return (parseFloat(amount) * feePercentage).toFixed(2);
-        };
-
-    const getCurrencyName = () =>
-        adDetail?.orderType === "buy" ? adDetail?.asset : "xNGN";
-    // const calculateReceiveAmount = useMemo(() => {
-    //         const inputAmount = parseFloat(amount??0);
-    //         const price = adDetail?.price??0;
-    //         if (adDetail?.orderType=== "buy") {
-    //             // Buy
-    //             const amount = inputAmount / price
-    //             return amount !== null ? amount.toFixed(2) : "0.00";
-    //         } else if (adDetail?.orderType === "sell") {
-    //             // Sell
-    //             const amount = inputAmount * price
-    //             return amount !== null ? amount.toFixed(2) : "0.00";
-    //         } else return "0.00"
-    
-    // }, [adDetail?.orderType, adDetail?.price, amount])
-    // const calculateDepositAmount = useMemo(() => {
-    //     const inputAmount = parseFloat(otherAmount??0);
-    //     const price = adDetail?.price ?? 0;
-
-    //     if (adDetail?.orderType === "buy") {
-    //         // Buy
-    //         const amount = inputAmount * price
-    //         return amount !== null ? amount.toFixed(2) : "0.00";
-    //     } else if (adDetail?.orderType === "sell") {
-    //         // Sell
-    //         const amount = inputAmount/price
-    //         return amount !== null ? amount.toFixed(2) : "0.00";
-    //     }else return"0.00"
-
-    // }, [adDetail?.orderType, adDetail?.price, otherAmount])
-    useEffect(() => {
-        const price = adDetail?.price ?? 0;
-        if (!price) return;
-        const amt = parseFloat(amount);
-        const oth = parseFloat(otherAmount);
-
-        if (focusedField === "amount" && !isNaN(amt)) {
-            if (adDetail?.orderType === "buy") {
-                setOtherAmount((amt / price).toFixed(2));
-            } else if (adDetail?.orderType === "sell") {
-                setOtherAmount((amt * price).toFixed(2));
-            }
-        } else if (focusedField === "otherAmount" && !isNaN(oth)) {
-            if (adDetail?.orderType === "buy") {
-                setAmount((oth * price).toFixed(2));
-            } else if (adDetail?.orderType === "sell") {
-                setAmount((oth / price).toFixed(2));
-            }
-        }
-    }, [amount, otherAmount, adDetail?.orderType, adDetail?.price, focusedField, setAmount,setOtherAmount]);
-      
-    const sellError = useMemo(() => {
-        if (((adDetail?.minimumLimit ?? 0)) > Number(otherAmount)) return "the value is below the lower limit"
-        if (((adDetail?.maximumLimit ?? 0) / (adDetail?.price ?? 0)) < Number(amount)) return "the value is above the upper limit"
-
-        if (amount > walletState?.wallet?.[adDetail?.asset??"USDT"]) return "Insufficient wallet balance"
-        if (Number(amount) > (adDetail?.amountAvailable??0)) return "Available amount exceeded"
-    }, [adDetail?.amountAvailable, adDetail?.asset, adDetail?.maximumLimit, adDetail?.minimumLimit, adDetail?.price, amount, walletState?.wallet])
-    const buyError = useMemo(() => {
-        if ((adDetail?.minimumLimit ?? 0) > Number(amount)) return "the value is below the lower limit"
-        if ((adDetail?.maximumLimit ?? 0) < Number(amount)) return "the value is above the upper limit"
-
-        if (amount > walletState?.wallet?.xNGN) return "Insufficient wallet balance"
-        if (Number(amount)/Number(adDetail?.price) > (adDetail?.amountAvailable ?? 0)) return "Available amount exceeded"
-    }, [adDetail?.amountAvailable, adDetail?.maximumLimit, adDetail?.minimumLimit, adDetail?.price, amount, walletState?.wallet?.xNGN])
-    
-    return (
-        <div>
-            <p className={`${type === "buy" ? "text-[#17A34A]" : "text-[#DC2625]"} text-[14px] font-semibold my-3`}> {type === "buy" ? "You’re Buying from" : "You’re Selling to"}</p>
-
-            <h1 className='text-[28px] md:text-[34px] text-[#0A0E12] font-semibold leading-[40px] my-3'>{adDetail?.user?.userName}</h1>
-
-            <p className='text-[#515B6E] text-[14px] font-normal my-2'><span>1 {type==="buy"?"USDT":adDetail?.asset}</span>  ≈ <span>{formatNumber(Number(adDetail?.price))} xNGN</span>
-                {/* <span className='text-[#17A34A] text-[12px] font-semibold bg-[#F5FEF8]'> 30 s</span> */}
+      <p className="text-[#515B6E] text-[14px] font-normal ">
+        <span>1 {type === "buy" ? "USDT" : adDetail?.asset}</span>  ≈ 
+        <span>{formatNumber(Number(adDetail?.price))} xNGN</span>
+      </p>
+      <div className="flex items-center w-2/3 justify-between">
+        <div className="text-[12px] text-[#515B6E]">
+          <h4 className="font-semibold">Available</h4>
+          {type === "buy" ? (
+            <p>
+              {adDetail?.amountAvailable} {adDetail?.asset}
             </p>
-            <div className='flex items-center my-1 w-2/3 justify-between'>
-                <div className='text-[12px] text-[#515B6E]'>
-                    <h2 className='font-semibold'>Available</h2>
-                    {type === "buy" ?
-                        <p>{adDetail?.amountAvailable} {adDetail?.asset}</p> :
-                        <p>{adDetail && formatNumber(adDetail?.amountAvailable / adDetail?.price)} {adDetail?.asset}</p> 
-                    }
-                </div>
-                <div className='text-[12px] text-[#515B6E]'>
-                    <h2 className='font-semibold'>Limit</h2>
-                    <p>{formatNumber(Number(adDetail?.minimumLimit))} - {formatNumber(Number(adDetail?.maximumLimit))} NGN</p>
-                </div>
-            </div>
-            {
-                type === "buy" ?
-                    <div>
-                        <div className='relative'>
-                            {/* <PrimaryInput css={'w-full h-[64px]'} label={'Amount'}
-                                error={buyError}
-                                touched={undefined}
-                                min={adDetail?.minimumLimit}
-                                max={adDetail?.maximumLimit}
-                                value={calculateDepositAmount==="0.00"? amount:calculateDepositAmount}
-                                onChange={handleAmountChange}
-                                maxFnc={() => setAmount(`${(adDetail?.maximumLimit ?? 0)}`)}
-
-                            /> */}
-                            <PrimaryInput
-                                css="w-full h-[64px]"
-                                label="Amount"
-                                error={buyError}
-                                min={adDetail?.minimumLimit}
-                                max={adDetail?.maximumLimit}
-                                format
-                                value={(amount)}
-                                onFocus={() => setFocusedField("amount")}
-                                onChange={(e) => {
-                                    const value = e.target.value;
-
-                                    // Allow only valid decimal numbers (e.g., "0", "0.", "0.2", ".2", "10.55")
-                                    const isValidDecimal = /^(\d+(\.\d*)?|\.\d+)?$/.test(value);
-
-                                    if (isValidDecimal) {
-                                        setAmount(value); // Keep it as a string
-                                    }
-                                }}
-                                maxFnc={() => { setFocusedField("amount"); setAmount(`${adDetail?.maximumLimit ?? 0}`); }}
-                                touched={undefined} />
-                            <div className='absolute right-3 top-10'>
-
-                                <button
-
-                                    className={`text-[#515B6E] p-2.5 px-4 bg-linear-to-r from-[#FFFFFF] to-[#EEEFF2] border border-[#E2E4E8] h-[48px] rounded-[8px] rounded inline-flex items-center w-[120px] flex justify-between font-semibold text-[14px] leading-[24px] `}
-                                    type="button"
-                                >
-                                    {/* <Typography.Text> */}
-                                    {TokenData[0].tokenLogo}
-
-                                    <div className="mx-3">
-
-                                        {TokenData[0].tokenName}
-                                    </div>
-                                    {/* </Typography.Text> */}
-
-                                </button>
-                                {/* <CryptoFilter error={undefined} touched={undefined} handleChange={() => console.log("mms")} /> */}
-                            </div>
-                            <small className='text-[#606C82] text-[12px] font-normal'>Balance: {formatNumber(walletState?.wallet?.xNGN)} xNGN</small>
-                        </div>
-                        {/* <p className="text-[#FFCCCB] text-[12px] font-normal mt-2">{amount></p> */}
-
-
-                        <div className='relative my-10'>
-                            {/* <PrimaryInput css={'w-full h-[64px]'}
-                                label={'You’ll receive at least'}
-                                error={undefined}
-                                touched={undefined}
-                                onChange={handleOtherAmountChange}
-                                value={calculateReceiveAmount==="0.00"? otherAmount:calculateReceiveAmount}
-                            /> */}
-                            <PrimaryInput
-                                css="w-full h-[64px]"
-                                label="You’ll receive at least"
-                                value={otherAmount}
-                                format
-
-                                maxFnc={() => { setFocusedField("otherAmount"); setOtherAmount(`${(Number(adDetail?.maximumLimit)/Number(adDetail?.price))}`) }}
-                                onFocus={() => setFocusedField("otherAmount")}
-                                onChange={(e) => {
-                                    const value = e.target.value;
-
-                                    // Allow only valid decimal numbers (e.g., "0", "0.", "0.2", ".2", "10.55")
-                                    const isValidDecimal = /^(\d+(\.\d*)?|\.\d+)?$/.test(value);
-
-                                    if (isValidDecimal) {
-                                        setOtherAmount(value); // Keep it as a string
-                                    }
-                                }}
-                                                                  error={undefined}
-                                touched={undefined} />
-                            <div className='absolute right-3 top-10'>
-                                <button
-                                    className={`text-[#515B6E] p-2.5 px-4 bg-linear-to-r from-[#FFFFFF] to-[#EEEFF2] border border-[#E2E4E8] h-[48px] rounded-[8px] rounded inline-flex items-center w-[120px] flex justify-between font-semibold text-[14px] leading-[24px] `}
-                                    type="button"
-                                >
-                                    {/* <Typography.Text> */}
-                                    {TokenData?.[assetIndexMap?.[adDetail?.asset??"BTC"]]?.tokenLogo}
-
-                                    <div className="mx-3">
-
-                                        {TokenData?.[assetIndexMap?.[adDetail?.asset ?? "BTC"]]?.tokenName}
-                                    </div>
-                                    {/* </Typography.Text> */}
-                                </button>
-                                {/* <CryptoFilter error={undefined} touched={undefined} handleChange={() => console.log("mms")} /> */}
-                            </div>
-                        </div>
-
-
-                    </div> :
-                    <div>
-                        <div className='relative'>
-                            <PrimaryInput css={'w-full h-[64px]'} label={'Quanity'}
-                                error={sellError}
-                                touched={undefined}
-                                value={amount}
-                                onFocus={() => setFocusedField("amount")}
-                                format
-                                onChange={(e) => {
-                                    const value = e.target.value;
-                                    const isValidDecimal = /^(\d+(\.\d*)?|\.\d+)?$/.test(value);
-                                    if (isValidDecimal) {
-                                        setAmount(value); // Keep it as a string
-                                    }
-                                }}
-                                maxFnc={() => { setFocusedField("amount"); setAmount(`${(Number(adDetail?.maximumLimit) / Number(adDetail?.price)) }`) }}
-                            
-                            />
-                            
-                            <div className='absolute right-3 top-10'>
-
-                                <button
-
-                                    className={`text-[#515B6E] p-2.5 px-4 bg-linear-to-r from-[#FFFFFF] to-[#EEEFF2] border border-[#E2E4E8] h-[48px] rounded-[8px] rounded inline-flex items-center w-[120px] flex justify-between font-semibold text-[14px] leading-[24px] `}
-                                    type="button"
-                                >
-                                    {/* <Typography.Text> */}
-                                    {TokenData[assetIndexMap?.[adDetail?.asset ?? "BTC"]].tokenLogo}
-
-                                    <div className="mx-3">
-
-                                        {TokenData[assetIndexMap?.[adDetail?.asset ?? "BTC"]].tokenName}
-                                    </div>
-                                    {/* </Typography.Text> */}
-
-                                </button>
-                                {/* <CryptoFilter error={undefined} touched={undefined} handleChange={() => console.log("mms")} /> */}
-                            </div>
-                            <small className='text-[#606C82] text-[12px] font-normal'>Balance: {walletState?.wallet?.[adDetail?.asset ?? "USDT"]} {adDetail?.asset }</small>
-                        </div>
-
-                        <div className='relative my-10'>
-                            {/* <PrimaryInput css={'w-full h-[64px]'} label={'You’ll receive at least'} error={undefined} touched={undefined}
-                            
-                                readOnly
-                                value={calculateReceiveAmount}
-                            /> */}
-                            <PrimaryInput
-                                css="w-full h-[64px]"
-                                label="You’ll receive at least"
-                                value={otherAmount}
-                                maxFnc={() => { setFocusedField("otherAmount"); setOtherAmount(`${(adDetail?.maximumLimit ?? 0)}`) }}
-                                onFocus={() => { setFocusedField("otherAmount") }}
-
-                                format
-                                onChange={(e) => {
-                                    const value = e.target.value;
-                                    const isValidDecimal = /^(\d+(\.\d*)?|\.\d+)?$/.test(value);
-                                    if (isValidDecimal) {
-                                        setOtherAmount(value); // Keep it as a string
-                                    }
-                                }}
-                                                                  error={undefined} touched={undefined} />
-                            <div className='absolute right-3 top-10'>
-                                <button
-
-                                    className={`text-[#515B6E] p-2.5 px-4 bg-linear-to-r from-[#FFFFFF] to-[#EEEFF2] border border-[#E2E4E8] h-[48px] rounded-[8px] rounded inline-flex items-center w-[120px] flex justify-between font-semibold text-[14px] leading-[24px] `}
-                                    type="button"
-                                >
-                                    {/* <Typography.Text> */}
-                                    {TokenData[0].tokenLogo}
-
-                                    <div className="mx-3">
-
-                                        {TokenData[0].tokenName}
-                                    </div>
-                                    {/* </Typography.Text> */}
-                                </button>
-                                {/* <CryptoFilter error={undefined} touched={undefined} handleChange={() => console.log("mms")} /> */}
-                            </div>
-                        </div>
-
-
-                    </div>
-}
-            <KycManager
-                action={ACTIONS.SWAP}
-                func={() => setShowConfirmation(true)}
-            >
-                {(validateAndExecute) => (
-                    type==='buy'?
-                    <PrimaryButton text={`${type} ${TokenData?.[assetIndexMap?.[adDetail?.asset ?? "BTC"]]?.tokenName}`} loading={false} css='w-full capitalize'
-                        disabled={buyError?true:false}
-
-                        onClick={validateAndExecute}
-                        />:
-                        <PrimaryButton text={`${type} ${TokenData?.[assetIndexMap?.[adDetail?.asset ?? "BTC"]]?.tokenName}`} loading={false} css='w-full capitalize'
-                            disabled={ sellError ? true : false}
-
-                            onClick={validateAndExecute}
-                        />
-                    )}
-                </KycManager>
-            {showConfirmation && (
-                <SwapConfirmation
-                    close={() => setShowConfirmation(false)}
-                    type={adDetail?.orderType === "buy" ? typeofSwam.Buy : typeofSwam.Sell}
-                    amount={amount}
-                    receiveAmount={otherAmount ??"0"}
-                    fee={calculateFee()}
-                    token={adDetail?.orderType === "buy" ? "xNGN" : adDetail?.asset}
-                    currency={getCurrencyName()}
-                    loading={confirmLoading}
-                    onConfirm={handleConfirmTransaction}
-                    networkFee={networkFee}
-                    transactionFee={transactionFee}
-                    error={orderError}
-                />
-            )}
+          ) : (
+            <p>
+              {adDetail &&
+                formatNumber(adDetail?.amountAvailable / adDetail?.price)}{" "}
+              {adDetail?.asset}
+            </p>
+          )}
         </div>
-    )
-}
+        <div className="text-[12px] text-[#515B6E]">
+          <h2 className="font-semibold">Limit</h2>
+          <p>
+            {formatNumber(Number(adDetail?.minimumLimit))} -{" "}
+            {formatNumber(Number(adDetail?.maximumLimit))} xNGN
+          </p>
+        </div>
+      </div>
 
-export default Swap
+      <div className="mt-2 mb-3">
+        {type === "buy" ? (
+          <BuyForm
+            adDetail={adDetail}
+            walletState={walletState}
+            formik={formik}
+            setFocusedField={setFocusedField}
+          />
+        ) : (
+          <SellForm
+            adDetail={adDetail}
+            walletState={walletState}
+            formik={formik}
+            setFocusedField={setFocusedField}
+          />
+        )}
+      </div>
+
+      <KycManager action={ACTIONS.SWAP} func={() => setShowConfirmation(true)}>
+        {(validateAndExecute) => (
+          <PrimaryButton
+            text={`${type} ${
+              TokenData?.[assetIndexMap?.[adDetail?.asset ?? "BTC"]]?.tokenName
+            }`}
+            loading={false}
+            css="w-full capitalize"
+            disabled={!(formik.isValid && formik.dirty)}
+            onClick={validateAndExecute}
+          />
+        )}
+      </KycManager>
+
+      {showConfirmation && (
+        <SwapConfirmation
+          close={() => setShowConfirmation(false)}
+          type={
+            adDetail?.orderType === "buy" ? typeofSwam.Buy : typeofSwam.Sell
+          }
+          amount={formik.values.amount}
+          receiveAmount={formik.values.otherAmount}
+          fee={calculateFee()}
+          token={adDetail?.orderType === "buy" ? adDetail?.asset : "xNGN"}
+          currency={adDetail?.orderType === "sell" ? adDetail?.asset : "xNGN"}
+          userId={user?.user?.userId || ""}
+          adsId={adDetail?.id || ""}
+          setShowConfirmation={setShowConfirmation}
+        />
+      )}
+    </div>
+  );
+};
+
+export default Swap;
+
+type SwapFormType = {
+  adDetail: AdSchema | undefined;
+  walletState: WalletState;
+  formik: FormikProps<{
+    amount: string;
+    otherAmount: string;
+  }>;
+  setFocusedField: React.Dispatch<
+    React.SetStateAction<"amount" | "otherAmount" | null>
+  >;
+};
+
+// HDR: BuyForm
+const BuyForm = ({
+  adDetail,
+  walletState,
+  formik,
+  setFocusedField,
+}: SwapFormType) => {
+  return (
+    <>
+      <div className="space-y-4">
+        <div>
+          <InputField
+            label="Amount"
+            id="amt"
+            logoName={TokenData[0].tokenName}
+            logo={TokenData[0].tokenLogo}
+            value={formik.values.amount}
+            error={formik.errors.amount}
+            onChange={(e) => {
+              const value = e.target.value;
+              const isValidDecimal = /^(\d+(\.\d*)?|\.\d+)?$/.test(value);
+              if (isValidDecimal) {
+                formik.setFieldValue("amount", value);
+              }
+            }}
+            onFocus={() => {
+              setFocusedField("amount");
+            }}
+          />
+
+          <Badge variant={"success"}>
+            Balance:{" "}
+            {formatter({ decimal: 2 }).format(walletState?.wallet?.xNGN)} xNGN
+          </Badge>
+        </div>
+
+        <InputField
+          label="You'll receive at least"
+          id="otherAmount"
+          logoName={
+            TokenData[assetIndexMap?.[adDetail?.asset ?? "BTC"]].tokenName
+          }
+          logo={TokenData[assetIndexMap?.[adDetail?.asset ?? "BTC"]].tokenLogo}
+          value={formik.values.otherAmount}
+          error={formik.errors.otherAmount}
+          onChange={(e) => {
+            const value = e.target.value;
+            const isValidDecimal = /^(\d+(\.\d*)?|\.\d+)?$/.test(value);
+            if (isValidDecimal) {
+              formik.setFieldValue("otherAmount", value);
+            }
+          }}
+          onFocus={() => {
+            setFocusedField("otherAmount");
+          }}
+          maxFunc={() => {
+            const maxVal = walletState?.wallet?.[adDetail?.asset ?? "USDT"];
+            const availableAmount = adDetail?.amountAvailable || 0;
+            const maxValue = Math.min(maxVal, availableAmount);
+            setFocusedField("otherAmount");
+            formik.setFieldTouched("otherAmount", true);
+            formik.setFieldValue("otherAmount", `${maxValue.toFixed(5)}`);
+          }}
+        />
+      </div>
+    </>
+  );
+};
+
+// HDR: SellForm
+const SellForm = ({
+  adDetail,
+  walletState,
+  formik,
+  setFocusedField,
+}: SwapFormType) => {
+  return (
+    <>
+      <div className="space-y-4">
+        <div className="space-y-0.5">
+          <InputField
+            label="Quanity"
+            id="quantity"
+            logoName={
+              TokenData[assetIndexMap?.[adDetail?.asset ?? "BTC"]].tokenName
+            }
+            logo={
+              TokenData[assetIndexMap?.[adDetail?.asset ?? "BTC"]].tokenLogo
+            }
+            value={formik.values.amount}
+            error={formik.errors.amount}
+            onChange={(e) => {
+              const value = e.target.value;
+              const isValidDecimal = /^(\d+(\.\d*)?|\.\d+)?$/.test(value);
+              if (isValidDecimal) {
+                formik.setFieldValue("amount", value);
+              }
+            }}
+            onFocus={() => {
+              setFocusedField("amount");
+            }}
+            maxFunc={() => {
+              const maxVal = walletState?.wallet?.[adDetail?.asset ?? "USDT"];
+              const availableAmount =
+                (adDetail?.amountAvailable || 0) / (adDetail?.price || 0);
+              const maxValue = Math.min(maxVal, availableAmount);
+              setFocusedField("amount");
+              formik.setFieldValue("amount", `${maxValue.toFixed(5)}`);
+            }}
+          />
+
+          <Badge variant={"success"}>
+            Balance: {walletState?.wallet?.[adDetail?.asset ?? "USDT"]}{" "}
+            {adDetail?.asset}
+          </Badge>
+        </div>
+
+        <InputField
+          label="You'll receive at least"
+          id="otherAmount"
+          logoName={TokenData[0].tokenName}
+          logo={TokenData[0].tokenLogo}
+          value={formik.values.otherAmount}
+          error={formik.errors.otherAmount}
+          onChange={(e) => {
+            const value = e.target.value;
+            const isValidDecimal = /^(\d+(\.\d*)?|\.\d+)?$/.test(value);
+            if (isValidDecimal) {
+              formik.setFieldValue("otherAmount", value);
+            }
+          }}
+          onFocus={() => {
+            setFocusedField("otherAmount");
+          }}
+        />
+      </div>
+    </>
+  );
+};
+
+type InputFieldProps = {
+  label: string;
+  id: string;
+  onChange: ChangeEventHandler<HTMLInputElement>;
+  logo: JSX.Element;
+  logoName: string;
+  maxFunc?: () => void;
+  onFocus: () => void;
+  value: string;
+  error: string | boolean | undefined | null;
+};
+const InputField = ({
+  label,
+  id,
+  onChange,
+  logo,
+  logoName,
+  maxFunc,
+  value,
+  onFocus,
+  error,
+}: InputFieldProps) => {
+  return (
+    <div className="relative h-32">
+      <PrimaryInput
+        css={"w-full h-[58px] no-spinner"}
+        label={label}
+        type="number"
+        inputMode="decimal"
+        error={error}
+        id={id}
+        touched={undefined}
+        value={value}
+        onFocus={onFocus}
+        onChange={onChange}
+        maxFnc={maxFunc ? maxFunc : undefined}
+      />
+
+      <div className="absolute right-1 top-1/2 -translate-y-[63%]">
+        <button
+          className={`text-gray-600 p-2.5 px-4  border cursor-default h-[48px] rounded-md items-center bg-gradient-to-r from-[#FFFFFF] to-[#dfe2e9]  flex justify-center gap-2 font-semibold text-sm `}
+          type="button"
+        >
+          <span className="shrink-0">{logo}</span>
+
+          <div className="">{logoName}</div>
+        </button>
+      </div>
+    </div>
+  );
+};

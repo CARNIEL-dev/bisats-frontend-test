@@ -1,20 +1,51 @@
-import { Info, TriangleAlert } from "lucide-react";
-import { MultiSelectDropDown } from "../../../components/Inputs/MultiSelectInput";
-import PrimaryInput from "../../../components/Inputs/PrimaryInput";
-import TokenSelect from "../../../components/Inputs/TokenSelect";
-import { PrimaryButton } from "../../../components/buttons/Buttons";
-import { AdsProps } from "./Ad";
-import Toast from "../../../components/Toast";
-import DateInput from "../../../components/Inputs/DateInput";
-import TimePicker from "../../../components/Inputs/TimePicker";
-import { useMemo, useState } from "react";
-import { AccountLevel, bisats_limit } from "../../../utils/transaction_limits";
-import { UserState } from "../../../redux/reducers/userSlice";
-import { useSelector } from "react-redux";
-import { formatNumber } from "../../../utils/numberFormat";
-// import DateInput from "../../../components/Inputs/DateInput";
-import { convertAssetToNaira } from "../../../utils/conversions";
+import Label from "@/components/Inputs/Label";
+import PrimaryInput from "@/components/Inputs/PrimaryInput";
+import Toast from "@/components/Toast";
+import { PrimaryButton } from "@/components/buttons/Buttons";
+import Divider from "@/components/shared/Divider";
 import TokenSelection from "@/components/shared/TokenSelection";
+import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { AdsProps } from "@/pages/p2p/ads/CreateAds";
+import { UserState } from "@/redux/reducers/userSlice";
+import { cn } from "@/utils";
+import { convertAssetToNaira } from "@/utils/conversions";
+import { formatNumber } from "@/utils/numberFormat";
+import { AccountLevel, bisats_limit } from "@/utils/transaction_limits";
+import { Info, TriangleAlert } from "lucide-react";
+import { useMemo, useState } from "react";
+import { useSelector } from "react-redux";
+
+const requiredFields = [
+  "type",
+  "asset",
+  "amount",
+  "minimumLimit",
+  "maximumLimit",
+  "expiryDate",
+  "expiryTime",
+  "price",
+  "priceLowerLimit",
+  "priceUpperLimit",
+];
+const requiredFieldsForToken = [
+  "type",
+  "asset",
+  "amountToken",
+  "minimumLimit",
+  "maximumLimit",
+  "expiryDate",
+  "expiryTime",
+  "price",
+  "priceLowerLimit",
+  "priceUpperLimit",
+];
 
 const CreateAdDetails: React.FC<AdsProps> = ({
   formik,
@@ -22,11 +53,9 @@ const CreateAdDetails: React.FC<AdsProps> = ({
   wallet,
   liveRate,
 }) => {
-  const [pricingType, setPricingType] = useState("Static");
   const [adType, setAdType] = useState("Buy");
   const [token, setToken] = useState("");
 
-  const currency = [{ value: "NGN", label: "NGN" }];
   const loading = false;
   const walletData = wallet?.wallet;
 
@@ -35,47 +64,17 @@ const CreateAdDetails: React.FC<AdsProps> = ({
   const account_level = user?.accountLevel as AccountLevel;
   const userTransactionLimits = bisats_limit[account_level];
 
-  const type = [
-    { value: "Buy", label: "Buy" },
-    { value: "Sell", label: "Sell" },
-  ];
-
+  //SUB: Handle Next Stage
   const handleNextStage = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
       let errors = await formik.validateForm();
-      console.log("errors", errors);
-      const requiredFields = [
-        "type",
-        "asset",
-        "amount",
-        "minimumLimit",
-        "maximumLimit",
-        "expiryDate",
-        "expiryTime",
-        "price",
-        "priceLowerLimit",
-        "priceUpperLimit",
-      ];
-      const requiredFieldsForToken = [
-        "type",
-        "asset",
-        "amountToken",
-        "minimumLimit",
-        "maximumLimit",
-        "expiryDate",
-        "expiryTime",
-        "price",
-        "priceLowerLimit",
-        "priceUpperLimit",
-      ];
 
       let updatedErrors = Object.keys(errors).filter((field) => {
         return formik.values.type.toLowerCase() === "buy"
           ? requiredFields.includes(field)
           : requiredFieldsForToken.includes(field);
       });
-      console.log("errors", errors, updatedErrors);
       if (updatedErrors.length === 0) {
         setStage("review");
       } else {
@@ -99,6 +98,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
     }
   };
 
+  // SUB: Calculate wallet balance
   const calculateDisplayWalletBallance = useMemo(() => {
     if (adType.toLowerCase() === "buy") {
       return `${formatNumber(walletData?.xNGN)} xNGN`;
@@ -107,53 +107,77 @@ const CreateAdDetails: React.FC<AdsProps> = ({
     }
   }, [adType, token, walletData]);
 
+  const walletBalance: number = useMemo(() => {
+    if (formik.values.type.toLowerCase() === "buy") {
+      return walletData?.xNGN;
+    } else {
+      return walletData ? walletData?.[formik.values.asset] : 0;
+    }
+  }, [adType, token, walletData]);
+
+  // SUB: Rate
   const rate = convertAssetToNaira(
     formik.values.asset as keyof typeof liveRate,
     1,
     0,
     liveRate
   );
+
   return (
-    <>
-      <div className="my-4">
-        <MultiSelectDropDown
-          parentId=""
-          title="Buy"
-          choices={type}
-          error={formik.errors.type}
-          touched={formik.touched.type}
-          label="Transaction Type"
-          handleChange={(value) => {
+    <section className="flex flex-col gap-5">
+      {/* SUB: TRANSACTION TYPE */}
+      <div className="flex gap-2 flex-col">
+        <Label text="Transaction Type" css="" />
+        <Select
+          onValueChange={(value) => {
             formik.setFieldValue("type", value);
             setAdType(value);
           }}
-        />
+          defaultValue={formik.values.type}
+        >
+          <SelectTrigger
+            className={cn(
+              "w-full ",
+              formik.errors.type && formik.touched.type && "border-red-500"
+            )}
+          >
+            <SelectValue placeholder="Select option" />
+          </SelectTrigger>
+          <SelectContent className="!w-full">
+            {[
+              { value: "Buy", label: "Buy" },
+              { value: "Sell", label: "Sell" },
+            ].map((item) => (
+              <SelectItem key={item.value} value={item.value}>
+                {item.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
-      <div className="my-4">
-        <TokenSelection
-          title=""
-          label="Asset"
-          error={formik.errors.asset}
-          touched={formik.touched.asset}
-          handleChange={(value) => {
-            localStorage.setItem("bst_ad_asset", value);
-            formik.setFieldValue("asset", value);
-            setToken(value);
-          }}
-          removexNGN={true}
-        />
-      </div>
+      {/* SUB: ASSET */}
+      <TokenSelection
+        title={formik.values.asset || ""}
+        label="Asset"
+        error={formik.errors.asset}
+        touched={formik.touched.asset}
+        handleChange={(value) => {
+          formik.setFieldValue("asset", value);
+          setToken(value);
+        }}
+        removexNGN={true}
+        showBalance={false}
+      />
 
-      <div className="mb-4">
+      {/* SUB: AMOUNT */}
+      <div className="space-y-2">
         <PrimaryInput
-          css="w-full p-2.5"
+          css=""
           label="Amount to be deposited in Ad Escrow"
-          placeholder="0"
-          type="text" // or at least if it's number, make sure you add step="any"
+          type="number"
           step="any"
           inputMode="decimal"
-          format={true}
           name={
             formik.values.type.toLowerCase() === "buy"
               ? "amount"
@@ -193,64 +217,87 @@ const CreateAdDetails: React.FC<AdsProps> = ({
                 formik.values.type.toLowerCase() === "buy"
                   ? "amount"
                   : "amountToken";
-              formik.setFieldValue(fieldName, value);
+
+              if (Number(value) >= walletBalance) {
+                formik.setFieldError(fieldName, "Insufficient wallet balance");
+              } else {
+                formik.setFieldValue(fieldName, value);
+              }
             }
           }}
         />
-        <p className="text-[#515B6E] text-xs font-light">
+
+        <Badge variant={"success"}>
           Wallet Balance: {calculateDisplayWalletBallance}
-        </p>
+        </Badge>
       </div>
-      <div className="flex mb-1">
-        <div className="w-[90%] mr-1">
+
+      <div className="flex items-start gap-1">
+        {/* SUB: PRICE */}
+        <div className="flex-[80%]">
           <PrimaryInput
-            css="w-full p-2.5"
-            label={pricingType === "Static" ? "Price" : "Current Market Price"}
-            // disabled={pricingType === "Static" ? false : true}
-            placeholder="0.00 xNGN"
-            type="text"
+            css=""
+            label="Price"
+            type="number"
             step="any"
             inputMode="decimal"
             name="price"
-            format={true}
             error={formik.errors.price}
-            value={
-              pricingType === "Static" ? formik.values.price : liveRate?.xNGN
-            }
+            value={formik.values.price}
             touched={formik.touched.price}
             onChange={(e) => {
               const value = e.target.value;
               const isValidDecimal = /^(\d+(\.\d*)?|\.\d+)?$/.test(value);
               if (isValidDecimal) {
-                formik.setFieldValue("price", value === "" ? 0 : value);
+                formik.setFieldValue("price", value === "" ? undefined : value);
               }
             }}
           />
         </div>
-        <div className="w-[20%]">
-          <MultiSelectDropDown
-            parentId=""
-            title="NGN"
-            choices={currency}
-            error={formik.errors.currency}
-            touched={formik.touched.currency}
-            label="Currency"
-            handleChange={(value) => formik.setFieldValue("currency", value)}
-          />
+
+        {/* SUB: CURRENCY */}
+        <div className="flex-[20%] flex gap-1 flex-col">
+          <Label text="Currency" css="" />
+          <Select
+            onValueChange={(value) => {
+              formik.setFieldValue("currency", value);
+            }}
+            defaultValue={"NGN"}
+          >
+            <SelectTrigger
+              className={cn(
+                "w-full  !h-11",
+                formik.errors.currency &&
+                  formik.touched.currency &&
+                  "border-red-500"
+              )}
+            >
+              <SelectValue placeholder="Select option" />
+            </SelectTrigger>
+            <SelectContent className="!w-full">
+              {[{ value: "NGN", label: "NGN" }].map((item) => (
+                <SelectItem key={item.value} value={item.value}>
+                  {item.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
-
-      <p className="text-[12px]">
+      <Badge variant={"secondary"}>
         Market Price: xNGN {formatNumber(rate ?? 0)}{" "}
-      </p>
-      <div className="mb-4">
-        <div className="flex justify-between mb-px">
+      </Badge>
+
+      {/* SUB: PRICE RANGE */}
+      <div className="space-y-4">
+        <div className="flex justify-between gap-1">
+          {/* SUB: Lower Limit */}
           <PrimaryInput
-            css="w-[98%] p-2.5 mr-1"
+            css="w-full"
             label="Lower Price Limit"
-            placeholder="0.00 xNGN"
             name="priceLowerLimit"
-            format
+            type="number"
+            step="any"
             error={formik.errors.priceLowerLimit}
             value={formik.values.priceLowerLimit}
             touched={formik.touched.priceLowerLimit}
@@ -261,17 +308,19 @@ const CreateAdDetails: React.FC<AdsProps> = ({
               if (isValidDecimal) {
                 formik.setFieldValue(
                   "priceLowerLimit",
-                  value === "" ? 0 : Number(value)
+                  value === "" ? undefined : Number(value)
                 );
               }
             }}
           />
+
+          {/* SUB: Upper Limit */}
           <PrimaryInput
             css="w-full p-2.5"
             label="Upper price Limit"
             name="priceUpperLimit"
-            placeholder="0.00 xNGN"
-            format
+            type="number"
+            step="any"
             error={formik.errors.priceUpperLimit}
             value={formik.values.priceUpperLimit}
             touched={formik.touched.priceUpperLimit}
@@ -282,37 +331,38 @@ const CreateAdDetails: React.FC<AdsProps> = ({
               if (isValidDecimal) {
                 formik.setFieldValue(
                   "priceUpperLimit",
-                  value === "" ? 0 : Number(value)
+                  value === "" ? undefined : Number(value)
                 );
               }
             }}
           />
         </div>
-        <p>
-          <TriangleAlert color="#F59E0C" size={12} className="inline mr-1" />
-          <span className="text-[#515B6E] text-xs font-light">
-            Your ad will be paused if the market price gets to these prices
+        <Badge
+          variant={"secondary"}
+          className="animate-pulse flex items-center gap-1"
+        >
+          <TriangleAlert color="#F59E0C" />
+          <span>
+            Your ad would be paused if the market price gets to these prices
           </span>
-        </p>
+        </Badge>
       </div>
 
-      <div className="mb-4">
-        <p className="mb-3 text-[#515B6E] font-semibold text-sm">
-          Limits (in NGN)
-        </p>
-        <div className="flex flex-col lg:flex-wrap   justify-between mb-px">
+      <Divider text=" Limits (in NGN)" />
+      <div className="space-y-2">
+        <div className="flex flex-col gap-4 lg:flex-wrap justify-between ">
           <PrimaryInput
-            css="w-[98%] p-2.5 mr-1"
+            css="w-full"
             label={`Minimum (xNGN${
-              formik.values.type === "buy"
+              adType === "Buy"
                 ? formatNumber(userTransactionLimits?.lower_limit_buy_ad)
                 : formatNumber(userTransactionLimits?.lower_limit_sell_ad)
             })`}
-            placeholder="0"
             name="minimumLimit"
-            format
+            type="number"
+            step="any"
             min={
-              formik.values.type === "buy"
+              adType === "Buy"
                 ? userTransactionLimits?.lower_limit_buy_ad
                 : userTransactionLimits?.lower_limit_sell_ad
             }
@@ -321,26 +371,32 @@ const CreateAdDetails: React.FC<AdsProps> = ({
             touched={formik.touched.minimumLimit}
             onChange={(e) => {
               const value = e.target.value;
-              if (/^\d+(\.\d{0,})?$/.test(value)) {
+              if (value === "" || /^\d+(\.\d{0,})?$/.test(value)) {
                 formik.setFieldValue(
                   "minimumLimit",
-                  value === "" ? 0 : Number(value)
+                  value === "" ? undefined : Number(value)
                 );
               }
             }}
           />
           <PrimaryInput
             css="w-full p-2.5"
-            label={`Maximum (xNGN  ${formatNumber(
-              formik.values.type === "buy"
-                ? userTransactionLimits?.upper_limit_buy_ad
-                : userTransactionLimits?.upper_limit_sell_ad
-            )})`}
-            placeholder="0"
+            label={`Maximum (xNGN ${
+              adType === "Buy"
+                ? formatNumber(userTransactionLimits?.upper_limit_buy_ad)
+                : formatNumber(
+                    Math.min(
+                      userTransactionLimits?.upper_limit_sell_ad || Infinity,
+                      Number(formik.values.amountToken) *
+                        Number(formik.values.price)
+                    )
+                  )
+            })`}
             name="maximumLimit"
-            format
+            type="number"
+            step="any"
             max={
-              formik.values.type === "buy"
+              adType === "Buy"
                 ? userTransactionLimits?.upper_limit_buy_ad
                 : userTransactionLimits?.upper_limit_sell_ad
             }
@@ -349,15 +405,15 @@ const CreateAdDetails: React.FC<AdsProps> = ({
             touched={formik.touched.maximumLimit}
             maxFnc={() => {
               if (adType.toLowerCase() === "sell") {
-                console.log(formik.values.amountToken, formik.values.price);
+                const tokenPrice =
+                  Number(formik.values.amountToken) *
+                  Number(formik.values.price);
+
                 return formik.setFieldValue(
                   "maximumLimit",
-                  Number(formik.values.amountToken) *
-                    Number(formik.values.price) >=
-                    userTransactionLimits?.upper_limit_buy_ad
-                    ? userTransactionLimits?.upper_limit_buy_ad
-                    : Number(formik.values.amountToken) *
-                        Number(formik.values.price)
+                  tokenPrice >= userTransactionLimits?.upper_limit_sell_ad
+                    ? userTransactionLimits?.upper_limit_sell_ad
+                    : tokenPrice
                 );
               } else {
                 return formik.setFieldValue(
@@ -371,58 +427,32 @@ const CreateAdDetails: React.FC<AdsProps> = ({
             }}
             onChange={(e) => {
               const value = e.target.value;
-              if (/^\d+(\.\d{0,})?$/.test(value)) {
+              if (value === "" || /^\d+(\.\d{0,})?$/.test(value)) {
                 formik.setFieldValue(
                   "maximumLimit",
-                  value === "" ? 0 : Number(value)
+                  value === "" ? undefined : Number(value)
                 );
               }
             }}
           />
         </div>
-        <p>
-          <Info color="#17A34A" size={12} className="inline mr-1" />
-          <span className="text-[#515B6E] text-xs font-light">
+        <Badge variant={"success"}>
+          <Info />
+          <span>
             Set limits to control the size of transactions for this ad.
           </span>
-        </p>
+        </Badge>
       </div>
 
-      <div className="mb-4 w-full flex items-center">
-        <div className="flex justify-between mb-px w-1/2">
-          {/* <DateInput 
-                        name="expiryDate"
-                        label="Expiry Date"
-                        error={formik.errors.expiryDate}
-                        touched={formik.errors.expiryDate}
-                        handleChange={(e) => {
-                            const value = e.target.value;
-                            
-                                formik.setFieldValue('expiryDate', value);
-                            
-                        } } title="expiryDate" /> */}
-          {/* <p className="mb-3 text-[#515B6E] font-semibold text-sm">Expiry Date</p> */}
-        </div>
-        {/* <div className="flex justify-between mb-px w-1/2 ml-3">
-
-                <TimePicker
-                    label="Expiry Time"
-                    error={formik.errors.expiryTime}
-                    touched={formik.errors.expiryTime}
-                    handleChange={(value) => { formik.setFieldValue('expiryTime', value.target.value) }}
-                    title={"expiryTime"}
-                    name={"expiryTime"} />
-</div> */}
-      </div>
       <PrimaryButton
-        css={`w-full `}
-        // disabled={formik.errors ? true : false}
-        text="Continue"
+        css={`w-full mt-8 `}
+        disabled={!formik.isValid || !formik.dirty}
+        text={"Continue"}
         type="button"
         loading={loading}
         onClick={(e) => handleNextStage(e)}
       />
-    </>
+    </section>
   );
 };
 

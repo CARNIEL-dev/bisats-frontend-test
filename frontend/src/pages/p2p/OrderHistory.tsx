@@ -1,13 +1,16 @@
 import { tokenLogos } from "@/assets/tokens";
 import Empty from "@/components/Empty";
 import ErrorDisplay from "@/components/shared/ErrorDisplay";
+import { Button } from "@/components/ui/Button";
 import { DataTable } from "@/components/ui/data-table";
+import { getToken } from "@/helpers";
 import PreLoader from "@/layouts/PreLoader";
 import { useFetchOrder } from "@/redux/actions/walletActions";
 import { UserState } from "@/redux/reducers/userSlice";
 import { cn, formatter } from "@/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
+import { RotateCw } from "lucide-react";
 import { useSelector } from "react-redux";
 
 const OrderHistory = () => {
@@ -17,6 +20,7 @@ const OrderHistory = () => {
   const {
     data: orders = [],
     error,
+    refetch,
     isFetching,
     isError,
   } = useFetchOrder(userId);
@@ -30,6 +34,15 @@ const OrderHistory = () => {
         >
           Order History
         </h2>
+        <Button
+          variant="ghost"
+          onClick={() => refetch()}
+          disabled={isFetching}
+          className="bg-gray-100 hover:bg-gray-200"
+        >
+          <RotateCw className={cn(isFetching && "animate-spin")} />
+          <span className="sr-only">Refresh</span>
+        </Button>
       </div>
 
       {isFetching ? (
@@ -54,7 +67,7 @@ const OrderHistory = () => {
 export default OrderHistory;
 
 //   HDR: Columns
-const columns: ColumnDef<Order>[] = [
+const columns: ColumnDef<OrderHistory>[] = [
   {
     header: "Type",
     accessorKey: "Type",
@@ -104,7 +117,8 @@ const columns: ColumnDef<Order>[] = [
     header: "Amount",
     cell: ({ row }) => {
       const amount = row.original.amount;
-      const price = formatter({ decimal: 0 }).format(amount);
+      const assetPrice = row.original.price;
+      const price = formatter({ decimal: 0 }).format(amount * assetPrice);
       return (
         <p className="font-semibold text-gray-600 font-mono ">
           {price} <span className="text-xs font-normal">xNGN</span>
@@ -113,22 +127,9 @@ const columns: ColumnDef<Order>[] = [
     },
   },
   {
-    header: "Price",
-    cell: ({ row }) => {
-      const amount = row.original.price;
-      const price = formatter({
-        decimal: 0,
-        style: "currency",
-        currency: "NGN",
-      }).format(amount);
-
-      return <p className="font-medium text-gray-600  ">{price}</p>;
-    },
-  },
-  {
     header: "Quantity",
     cell: ({ row }) => {
-      const amount = row.original.quantity;
+      const amount = row.original.amount;
       const asset = row.original.asset;
       const quantity = amount
         ? formatter({ decimal: asset === "xNGN" ? 0 : 6 }).format(amount)
@@ -142,15 +143,11 @@ const columns: ColumnDef<Order>[] = [
     },
   },
   {
-    header: "Counter Party",
+    header: "Merchant",
 
     cell: ({ row }) => {
       const item = row.original;
-
-      const counterParty =
-        item.type?.toLowerCase() === "buy"
-          ? item.merchant?.userName
-          : item.buyer?.userName;
+      const counterParty = item.merchant?.userName;
       return <p className="text-sm">{counterParty}</p>;
     },
   },
@@ -162,6 +159,24 @@ const columns: ColumnDef<Order>[] = [
       return (
         <p className="text-sm">
           {date ? dayjs(date).format("DD/MM/YY HH:mm A") : "N/A"}
+        </p>
+      );
+    },
+  },
+  {
+    header: "Status",
+    cell: ({ row }) => {
+      const status = row.original.status;
+      return (
+        <p
+          className={cn(
+            "text-xs capitalize px-2.5 py-0.5 rounded-full border",
+            status === "completed"
+              ? "text-green-600 bg-green-300/10 border-green-600"
+              : "text-red-600 border-red-600 bg-red-300/10"
+          )}
+        >
+          {status}
         </p>
       );
     },

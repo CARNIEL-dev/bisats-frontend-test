@@ -1,3 +1,10 @@
+import {
+  PrimaryButton,
+  WhiteTransparentButton,
+} from "@/components/buttons/Buttons";
+import PrimaryInput from "@/components/Inputs/PrimaryInput";
+import ModalTemplate from "@/components/Modals/ModalTemplate";
+import Toast from "@/components/Toast";
 import { APP_ROUTES } from "@/constants/app_route";
 import { UpdateAd } from "@/redux/actions/adActions";
 import { UserState } from "@/redux/reducers/userSlice";
@@ -5,49 +12,29 @@ import { WalletState } from "@/redux/reducers/walletSlice";
 import { formatNumber } from "@/utils/numberFormat";
 import { AccountLevel, bisats_limit } from "@/utils/transaction_limits";
 import { useFormik } from "formik";
-import { Info } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
-import {
-  PrimaryButton,
-  WhiteTransparentButton,
-} from "@/components/buttons/Buttons";
-import PrimaryInput from "@/components/Inputs/PrimaryInput";
-import Toast from "@/components/Toast";
-import ModalTemplate from "@/components/Modals/ModalTemplate";
-import { IAd } from "@/components/Modals/TableActionMenu";
 
-import Divider from "../shared/Divider";
+import { UpdateAdStatusResponse } from "@/pages/p2p/MyAds";
 import { cn } from "@/utils";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface Props {
   close: () => void;
-  ad?: IAd;
+  ad?: AdsTypes;
 }
 
 type TEditAd = {
-  minimumLimit: string;
-  maximumLimit: string;
-  priceUpperLimit: string;
-  priceLowerLimit: string;
   amount: string;
   price: string;
-  agree?: boolean;
 };
 
 const EditAd: React.FC<Props> = ({ close, ad }) => {
-  const [amount, setAmount] = useState(`${ad?.amount}`);
-  const [price, setPrice] = useState(`${ad?.price}`);
-
   const initialAd: TEditAd = {
     amount: `${ad?.amount}`,
     price: `${ad?.price}`,
-    minimumLimit: ad?.minimumLimit ?? "0",
-    maximumLimit: ad?.maximumLimit ?? "0",
-    priceUpperLimit: ad?.priceUpperLimit ?? "0",
-    priceLowerLimit: ad?.priceLowerLimit ?? "0",
   };
   const navigate = useNavigate();
   const walletState: WalletState = useSelector((state: any) => state.wallet);
@@ -58,6 +45,7 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
   const userTransactionLimits = bisats_limit[account_level];
 
   const walletData = walletState?.wallet;
+  const queryClient = useQueryClient();
 
   //   SUB: Calculate balance
   const calculateDisplayWalletBallance: number = useMemo(() => {
@@ -94,54 +82,43 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
         then: (schema) => schema.required("Amount is required"),
         otherwise: (schema) => schema.notRequired(),
       }),
-
-    minimumLimit: Yup.number()
-      .min(15000, "Minimum must be greater than 15,000 xNGN")
-      .max(23000000, "Price must not exceed 23,000,000 xNGN")
-      .required()
-      .required("Minimum is required"),
-
-    maximumLimit: Yup.number()
-      .min(15000, "Maximum must be greater than Minimum")
-      .max(23000000, "Price must not exceed 23,000,000 xNGN")
-      .required(),
   });
 
-  const [isLoading, setIsLoading] = useState(false);
+  //HDR: Mutation function
+  const mutation = useMutation<
+    UpdateAdStatusResponse,
+    Error,
+    Partial<AdsPayload>
+  >({
+    mutationFn: (payload: Partial<AdsPayload>) => UpdateAd(payload),
+    onSuccess: (info, variables) => {
+      Toast.success(info?.message, "Ad Updated");
+      close();
+      navigate(APP_ROUTES.P2P.MY_ADS);
+      queryClient.invalidateQueries({
+        queryKey: ["userAds", variables.userId],
+      });
+    },
+    onError: (err) => {
+      Toast.error(err.message || "Failed to create ad", "Failed");
+    },
+  });
 
   const formik = useFormik<TEditAd>({
-    initialValues: { ...initialAd, agree: false },
+    initialValues: { ...initialAd },
     validationSchema: AdSchema,
     validateOnMount: false,
-    onSubmit: async (values) => {
-      setIsLoading(true);
-
-      try {
-        const payload = {
-          userId: user?.userId ?? "",
-          adId: ad?.id ?? "",
-          amount: Number(values.amount),
-          minimumLimit: Number(values.minimumLimit),
-          maximumLimit: Number(values.maximumLimit),
-          price: Number(values.price),
-          priceType: ad?.priceType ?? "",
-          priceMargin: ad?.priceMargin,
-        };
-
-        const response = await UpdateAd(payload);
-
-        if (response?.status) {
-          Toast.success(response?.message, "Add Updated");
-          close();
-          navigate(APP_ROUTES.P2P.MY_ADS);
-        } else {
-          Toast.error(response.message, "Failed to update");
-        }
-      } catch (error) {
-        Toast.error("Failed to create ad", "Error");
-      } finally {
-        setIsLoading(false);
-      }
+    onSubmit: (values) => {
+      const payload = {
+        userId: user?.userId ?? "",
+        adId: ad?.id ?? "",
+        amount: Number(values.amount),
+        minimumLimit: Number(ad?.minimumLimit),
+        maximumLimit: Number(ad?.maximumLimit),
+        price: Number(values.price),
+        priceType: ad?.priceType ?? "",
+      };
+      mutation.mutate(payload);
     },
   });
 
@@ -184,10 +161,9 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
                 const value = e.target.value;
                 // Allow only digits
                 const numericValue = value.replace(/\D/g, "");
-                setPrice(numericValue);
                 formik.setFieldValue("price", numericValue);
               }}
-              value={price}
+              defaultValue={formik.values.price}
             />
           </div>
           <div className="space-y-1">
@@ -201,10 +177,10 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
                 const value = e.target.value;
                 // Allow only digits
                 const numericValue = value.replace(/\D/g, "");
-                setAmount(numericValue);
+
                 formik.setFieldValue("amount", numericValue);
               }}
-              // value={amount}
+              defaultValue={formik.values.amount}
             />
             {ad?.type.toLowerCase() === "buy" ? (
               <small className="text-[#606C82] text-[12px] font-normal">
@@ -218,8 +194,8 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
             )}
           </div>
 
-          <div className="mb-4">
-            {/* SUB: Divider */}
+          {/* <div className="mb-4 ">
+         
             <Divider text="Limits (in NGN)" />
             <div className="flex flex-col md:flex-row gap-2  justify-between ">
               <PrimaryInput
@@ -291,21 +267,29 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
                 Set limits to control the size of transactions for this ad.
               </span>
             </p>
-          </div>
+          </div> */}
         </div>
         <div className="flex items-center w-full mt-4 gap-2">
           <WhiteTransparentButton
-            text={"Cancel"}
+            text={"Edit Ad details"}
             loading={false}
-            onClick={close}
+            onClick={() => {
+              navigate(APP_ROUTES.P2P.AD_DETAILS, {
+                state: {
+                  adDetail: ad,
+                  mode: "edit",
+                },
+              });
+            }}
             css=""
             style={{ width: "50%" }}
           />
           <PrimaryButton
             text={"Update Ad"}
-            loading={isLoading}
+            loading={mutation.isPending}
             css="w-1/2"
             onClick={formik.submitForm}
+            disabled={mutation.isPending || !formik.dirty}
           />
         </div>
       </div>

@@ -22,7 +22,7 @@ import FAQs from "@/pages/landing-page/src/screens/FAQs";
 import Policy from "@/pages/landing-page/src/screens/Policy";
 import TermsAndCondition from "@/pages/landing-page/src/screens/TermsAndCondition";
 import AdDetails from "@/pages/p2p/AdDetails";
-import CreateAd from "@/pages/p2p/ads/Ad";
+import CreateAd from "@/pages/p2p/ads/CreateAds";
 import Buy from "@/pages/p2p/Buy";
 import Express from "@/pages/p2p/Express";
 import MyAds from "@/pages/p2p/MyAds";

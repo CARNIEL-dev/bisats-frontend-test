@@ -1,7 +1,7 @@
+import EditAd from "@/components/Modals/EditAdModal";
 import { MoreVertical } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import EditAd from "./EditAdModal";
 
 import {
   DropdownMenu,
@@ -33,16 +33,12 @@ export interface IAd {
 }
 
 interface TableActionMenuProps {
-  adDetail: IAd;
+  adDetail: AdsTypes;
   onCloseAd: (adId: string) => void;
   isUpdating?: boolean;
 }
 
-const TableActionMenu = ({
-  adDetail,
-  onCloseAd,
-  isUpdating = false,
-}: TableActionMenuProps) => {
+const TableActionMenu = ({ adDetail, onCloseAd }: TableActionMenuProps) => {
   const [showEdit, setShowEdit] = useState(false);
 
   const handleCloseAd = () => {

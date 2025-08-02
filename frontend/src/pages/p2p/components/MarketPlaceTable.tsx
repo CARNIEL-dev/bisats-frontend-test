@@ -1,5 +1,4 @@
 import Empty from "@/components/Empty";
-import MobileP2PMP from "@/components/Table/MobileP2PMarketPlace";
 import { buttonVariants } from "@/components/ui/Button";
 import { DataTable } from "@/components/ui/data-table";
 import { APP_ROUTES } from "@/constants/app_route";

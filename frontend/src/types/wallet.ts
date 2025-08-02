@@ -56,7 +56,7 @@ export type TWithdrawalBankAccount = {
   accountName: string;
   bankName: string;
   bankCode?: string;
-  bankId?:string
+  bankId?: string;
 };
 export type TDeleteWithdrawalRequest = {
   userId: string;
@@ -66,7 +66,7 @@ export type TWithdrawalRequest = {
   userId: string;
   amount: number;
   bankAccountId: string;
-}
+};
 
 export type TCryptoWithdrawalRequest = {
   userId: string;
@@ -103,29 +103,24 @@ export type TCreateAdsRequest = {
 export type TUpdateAdsRequest = {
   userId: string;
   adId: string;
-  // asset: string;
-  // type: string;
+  asset: string;
+  type: string;
   amount: number;
   minimumLimit: number;
   maximumLimit: number;
-  // expiryDate: string;
   priceType: string;
   price: number;
-  priceMargin?: number;
-  // priceUpperLimit?: number;
-  // priceLowerLimit?: number;
+  priceUpperLimit: number;
+  priceLowerLimit: number;
 
-  
   // "price": 1600,
-
 };
 
-
-export type T2FARequest = { 
-    "userId": string, 
-    "code": string,
-    "pin": string
-}
+export type T2FARequest = {
+  userId: string;
+  code: string;
+  pin: string;
+};
 
 export type TAddSearchRequest = {
   userId: string;
@@ -133,7 +128,7 @@ export type TAddSearchRequest = {
   type: string;
   amount: string;
   limit?: string;
-  skip?:string
+  skip?: string;
 };
 
 export enum DepositStatus {
@@ -144,9 +139,9 @@ export enum DepositStatus {
 export type TPayloadTransHistory = {
   userID: string;
   reason?: string;
-  type?: string,
-  asset?: string,
-  date?: string,
-  searchWord?: string,
-  status?:string
-}
+  type?: string;
+  asset?: string;
+  date?: string;
+  searchWord?: string;
+  status?: string;
+};

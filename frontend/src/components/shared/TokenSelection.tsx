@@ -29,7 +29,6 @@ const TokenSelection = ({
   removexNGN,
   title,
   error,
-  touched,
   handleChange,
   showBalance = true,
   disabled,
@@ -65,13 +64,11 @@ const TokenSelection = ({
             handleChange(val);
             setSelected(val);
           }}
-          defaultValue={title || undefined}
-          value={title || undefined}
+          defaultValue={title || ""}
+          value={title || ""}
           disabled={disabled}
         >
-          <SelectTrigger
-            className={cn("w-full ", error && touched && "border-red-500")}
-          >
+          <SelectTrigger className={cn("w-full ", error && "border-red-500")}>
             <SelectValue placeholder="Select option" />
           </SelectTrigger>
           <SelectContent className="!w-full">
@@ -95,6 +92,8 @@ const TokenSelection = ({
           </span>
         </p>
       )}
+
+      {error && <p className="text-red-500 text-xs mt-2.5">{error}</p>}
     </div>
   );
 };

@@ -339,10 +339,12 @@ export const CreateAds = async (payload: TCreateAdsRequest) => {
     );
     const data = response;
     console.log(data);
-    return data;
+    if (data.status) {
+      return data;
+    }
+    throw new Error(data.message);
   } catch (error) {
-    // throw handleApiError(error);
-    return error;
+    throw error;
   }
 };
 
@@ -598,22 +600,22 @@ const useUserWalletHistory = ({
 };
 
 const useFetchOrder = (userId: string) => {
-  return useQuery<Order[], Error>({
+  return useQuery<OrderHistory[], Error>({
     queryKey: ["orders", userId],
     queryFn: async ({ queryKey }) => {
       const [, uid] = queryKey;
+      console.log("userId", uid);
       const response = await Bisatsfetch(
         `/api/v1/user/${uid}${BACKEND_URLS.P2P.ADS.FETCH_ORDERS}`,
         { method: "GET" }
       );
 
       if (response.status === true && Array.isArray(response.data)) {
-        return response.data as Order[];
+        return response.data as OrderHistory[];
       }
       throw new Error("Failed to fetch orders");
     },
     enabled: Boolean(userId),
-    // staleTime:    1000 * 60 * 5,    // 5 minutes
     refetchOnMount: false,
   });
 };

@@ -495,20 +495,21 @@ const ExpressSwap = () => {
       )}
 
       {showConfirmation && (
-        <SwapConfirmation
-          close={() => setShowConfirmation(false)}
-          type={adsParam?.type === "buy" ? typeofSwam.Buy : typeofSwam.Sell}
-          amount={adsParam?.amount}
-          receiveAmount={calculateReceiveAmount}
-          fee={calculateFee()}
-          token={adsParam?.type === "buy" ? "xNGN" : adsParam?.asset}
-          currency={getCurrencyName()}
-          loading={confirmLoading}
-          onConfirm={handleConfirmTransaction}
-          networkFee={networkFee}
-          transactionFee={transactionFee}
-          error={orderError}
-        />
+        // <SwapConfirmation
+        //   close={() => setShowConfirmation(false)}
+        //   type={adsParam?.type === "buy" ? typeofSwam.Buy : typeofSwam.Sell}
+        //   amount={adsParam?.amount}
+        //   receiveAmount={calculateReceiveAmount}
+        //   fee={calculateFee()}
+        //   token={adsParam?.type === "buy" ? "xNGN" : adsParam?.asset}
+        //   currency={getCurrencyName()}
+        //   loading={confirmLoading}
+        //   onConfirm={handleConfirmTransaction}
+        //   networkFee={networkFee}
+        //   transactionFee={transactionFee}
+        //   error={orderError}
+        // />
+        <div>Hello express</div>
       )}
     </div>
   );

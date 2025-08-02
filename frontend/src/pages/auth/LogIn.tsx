@@ -83,6 +83,7 @@ const LogIn = () => {
               text={"Log In"}
               type="submit"
               loading={isLoading}
+              disabled={isLoading}
             />
           </div>
           {/* </form> */}

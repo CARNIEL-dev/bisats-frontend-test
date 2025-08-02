@@ -1,33 +1,36 @@
-import React, { useState } from 'react'
-
-const HeaderTabs = ({ activePage, setActivePage }: { activePage: string, setActivePage: (page: string) => void }) => {
-  const [tab, setTab]=useState("details")
-
-   const PageData = [
-           {
-           tab: "Ad Details",
-               active: "details"
-           },
-          //  {
-          //      tab: "Pricing",
-          //      active: "pricing"
-          //  },
-           {
-               tab: "Review & Publish",
-               active: "summary"
-           },
-       
-    ]
+const PageData = [
+  {
+    tab: "Ad Details",
+    active: "details",
+  },
+  {
+    tab: "Review & Publish",
+    active: "review",
+  },
+];
+const HeaderTabs = ({
+  activePage,
+  setStage,
+}: {
+  activePage: string;
+  setStage: React.Dispatch<React.SetStateAction<"details" | "review">>;
+}) => {
   return (
-       <div className=" flex lg:flex justify-between  pt-4 w-full items-center mx-auto flex-nowrap " style={{ color: "#515B6E" }}>
-                        {
-        PageData.map((page, idx) => <div key={idx}  className={` ${tab === (page.active) ? "border-b-2 border-[#F5BB00] text-[#937000]" : ""} text-[14px] text-[#515B6E] leading-[24px] text-center cursor-pointer w-1/3 font-semibold `}
-          onClick={() => { setTab(page?.active); setActivePage(page.active) }}
-              >{page.tab}</div>
-                            )
-                        }
-    
-                 </div>
-  )
-}
-export default HeaderTabs
+    <div className=" flex justify-between w-full items-center mx-auto flex-nowrap text-gray-600 ">
+      {PageData.map((page, idx) => (
+        <button
+          key={idx}
+          className={` ${
+            activePage === page.active
+              ? "border-b-2 border-[#F5BB00] text-[#937000]"
+              : ""
+          } text-[14px] text-[#515B6E] py-2 text-center w-full font-semibold `}
+          onClick={() => setStage(page.active as "details" | "review")}
+        >
+          {page.tab}
+        </button>
+      ))}
+    </div>
+  );
+};
+export default HeaderTabs;

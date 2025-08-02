@@ -8,14 +8,14 @@ import { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
 import { useSelector } from "react-redux";
 
+import ErrorDisplay from "@/components/shared/ErrorDisplay";
 import { buttonVariants } from "@/components/ui/Button";
 import { APP_ROUTES } from "@/constants/app_route";
+import PreLoader from "@/layouts/PreLoader";
 import { getUserAds, updateAdStatus } from "@/redux/actions/walletActions";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Link } from "react-router-dom";
-import PreLoader from "@/layouts/PreLoader";
-import ErrorDisplay from "@/components/shared/ErrorDisplay";
 import { useMemo } from "react";
+import { Link } from "react-router-dom";
 
 export interface Ad {
   id: string;
@@ -39,13 +39,10 @@ interface RootState {
   };
 }
 
-type UpdateAdStatusVars = {
-  userId: string;
-  adId: string;
-  status: string;
-};
-type UpdateAdStatusResponse = {
-  success: boolean;
+export type UpdateAdStatusResponse = {
+  status: boolean;
+  data: any;
+  message: string;
 };
 
 const MyAds = () => {
@@ -57,9 +54,8 @@ const MyAds = () => {
     data: userAds = [],
     isError,
     error,
-    refetch,
     isFetching,
-  } = useQuery<Ad[], Error>({
+  } = useQuery<AdsTypes[], Error>({
     queryKey: ["userAds", userId],
     queryFn: () => getUserAds(userId),
     retry: false,
@@ -97,7 +93,7 @@ const MyAds = () => {
   });
 
   //   HDR: Update ads status
-  const handleStatusToggle = (ad: Ad) => {
+  const handleStatusToggle = (ad: AdsTypes) => {
     const newStatus = ad.status === "active" ? "disabled" : "active";
     mutation.mutate({
       userId,
@@ -115,7 +111,7 @@ const MyAds = () => {
   };
 
   //   HDR: Columns
-  const column: ColumnDef<Ad>[] = [
+  const column: ColumnDef<AdsTypes>[] = [
     {
       accessorKey: "type",
       header: "Type",
@@ -158,28 +154,20 @@ const MyAds = () => {
         );
       },
     },
-    {
-      accessorKey: "quantity",
-      header: "Quantity",
-      cell: ({ row }) => {
-        const quantity = row.original.quantity;
-        return <span className="text-gray-500 ">{quantity || "N/A"}</span>;
-      },
-    },
+
     {
       accessorKey: "amountFilled",
-      header: "Amount Filled",
+      header: "Amount Available",
       cell: ({ row }) => {
-        const amountFilled = row.original.amountFilled;
+        const amount = row.original.amountAvailable;
         return (
-          <span className="text-gray-500 ">
-            {amountFilled
+          <span className="text-gray-500 space-x-1">
+            {amount
               ? formatter({
-                  decimal: 0,
-                  currency: "NGN",
-                  style: "currency",
-                }).format(amountFilled)
-              : "N/A"}
+                  decimal: 2,
+                }).format(amount)
+              : "N/A"}{" "}
+            {row.original.asset}
           </span>
         );
       },

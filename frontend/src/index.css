@@ -307,3 +307,14 @@ a.active {
   background: linear-gradient(to bottom, transparent, #0a0e12);
   filter: blur(10px);
 }
+
+.no-spinner::-webkit-outer-spin-button,
+.no-spinner::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Hide the arrows/spinners in Firefox */
+.no-spinner[type="number"] {
+  -moz-appearance: textfield;
+}
