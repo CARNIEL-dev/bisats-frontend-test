@@ -21,7 +21,7 @@ export const countries = [
   { key: "SA", country: "Saudi Arabia" },
   { key: "AR", country: "Argentina" },
   { key: "EG", country: "Egypt" },
- ];
+];
 
 export const countryDataForPhone = [
   { code: "NG", dialCode: "234", name: "Nigeria", flag: "🇳🇬" },
@@ -30,10 +30,14 @@ export const countryDataForPhone = [
   { code: "GB", dialCode: "44", name: "United Kingdom", flag: "🇬🇧" },
   { code: "GH", dialCode: "233", name: "Ghana", flag: "🇬🇭" },
   { code: "KE", dialCode: "254", name: "Kenya", flag: "🇰🇪" },
+];
 
-]
-
-
+export const toke_100_ngn = {
+  BTC: 0.55,
+  USDT: 60000,
+  SOL: 370,
+  ETH: 20,
+};
 
 export const account_level_features = {
   level_2: [

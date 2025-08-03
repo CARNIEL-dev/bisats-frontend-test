@@ -9,13 +9,7 @@ import {
 import { formatNumber } from "@/utils/numberFormat";
 import { PriceData } from "@/pages/wallet/Assets";
 import { convertAssetToNaira } from "@/utils/conversions";
-
-const toke_100_ngn = {
-  BTC: 0.55,
-  USDT: 60000,
-  SOL: 370,
-  ETH: 20,
-};
+import { toke_100_ngn } from "@/utils/data";
 
 //SUB: Auth
 const SignupSchema = Yup.object().shape({
@@ -328,17 +322,27 @@ const AdSchema = Yup.object().shape({
       otherwise: (schema) =>
         schema
           .min(0, "Token amount must be greater than 0")
-          .when("asset", (assetValue, schema2) => {
-            const maxValue =
-              toke_100_ngn[
-                assetValue as unknown as keyof typeof toke_100_ngn
-              ] || 0;
+          .when(
+            ["asset", "$liveRate", "$userTransactionLimits"],
+            ([assetValue, liveRate, userTransactionLimits], schema2) => {
+              const tokenRate =
+                convertAssetToNaira(
+                  assetValue as keyof Prices,
+                  1,
+                  0,
+                  liveRate
+                ) || 0;
+              const MAX_NAIRA_LIMIT =
+                userTransactionLimits?.maximum_ad_creation_amount ?? 0;
+              const maxTokenValue =
+                tokenRate > 0 ? MAX_NAIRA_LIMIT / tokenRate : 0;
 
-            return schema2.max(
-              maxValue,
-              `Amount must not exceed ₦100,000,000 worth of ${assetValue}`
-            );
-          })
+              return schema2.max(
+                maxTokenValue,
+                `Amount must not exceed ₦100,000,000 worth of ${assetValue}`
+              );
+            }
+          )
           .required("Token amount is required"),
     }),
   minimumLimit: Yup.number()

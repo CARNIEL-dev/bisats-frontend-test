@@ -1,7 +1,8 @@
 import { Card, CardContent } from "@/components/ui/card";
-import DepositIcon from "../../../../../../../assets/icons/deposit 1.png";
-import Alter from "../../../../../../../assets/icons/alter 1.png";
-import Withdraw from "../../../../../../../assets/icons/withdraw 1.png";
+import DepositIcon from "@/assets/icons/deposit 1.png";
+import Alter from "@/assets/icons/alter 1.png";
+import Withdraw from "@/assets/icons/withdraw 1.png";
+import MaxWidth from "@/components/shared/MaxWith";
 
 export const HowItWorksByAnima = (): JSX.Element => {
   // Data for the steps cards
@@ -33,8 +34,8 @@ export const HowItWorksByAnima = (): JSX.Element => {
   ];
 
   return (
-    <section className="bg-[#FDFDFC]">
-      <div className="container mx-auto">
+    <MaxWidth as="section" className=" 2xl:max-w-[100rem] bg-[#FDFDFC]">
+      <div className="">
         <div className="flex flex-col items-center gap-1 mb-12">
           <h2 className="text-[28px] text-[#0A0E12] lg:text-[42px] text-center leading-[40px] lg:leading-[56px] lg:w-3/5">
             At Bisats, you start and end every transactions with peace of mind.
@@ -44,11 +45,11 @@ export const HowItWorksByAnima = (): JSX.Element => {
           </p>
         </div>
 
-        <div className="flex flex-wrap justify-center gap-6 lg:gap-[60px]">
+        <div className="flex mx-auto max-w-[70rem] 2xl:max-w-[80rem] flex-wrap justify-between gap-6">
           {steps.map((step) => (
             <Card
               key={step.id}
-              className="w-full lg:w-[356px] h-[464px] lg:h-[504px] rounded-xl border border-solid border-[#f3f3f6] [background:linear-gradient(135deg,rgba(255,255,255,1)_0%,rgba(246,247,248,1)_100%)] relative overflow-hidden"
+              className="w-full md:w-[280px] lg:w-[356px] h-[464px] lg:h-[504px] rounded-xl border [background:linear-gradient(135deg,rgba(255,255,255,1)_0%,rgba(246,247,248,1)_100%)] relative overflow-hidden md:last:mx-auto lg:last:mx-0"
             >
               <CardContent className="flex flex-col h-full items-start  lg:gap-2 p-4">
                 <img
@@ -74,6 +75,6 @@ export const HowItWorksByAnima = (): JSX.Element => {
           ))}
         </div>
       </div>
-    </section>
+    </MaxWidth>
   );
 };

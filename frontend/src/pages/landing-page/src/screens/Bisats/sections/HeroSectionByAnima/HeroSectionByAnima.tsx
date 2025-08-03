@@ -1,5 +1,6 @@
 import coinss from "@/assets/icons/coinss.png";
 import HeroImage from "@/assets/landingPage/heroPhone copy.png";
+import MaxWidth from "@/components/shared/MaxWith";
 import { buttonVariants } from "@/components/ui/Button";
 import { APP_ROUTES } from "@/constants/app_route";
 import { UserState } from "@/redux/reducers/userSlice";
@@ -12,14 +13,14 @@ export const HeroSectionByAnima = (): JSX.Element => {
   const isAuthenticated = user.isAuthenticated;
 
   return (
-    <section className="lg:h-[85vh] 2xl:h-fit">
-      <div className="flex flex-wrap lg:flex-nowrap justify-between items-center px-5  py-2 ">
+    <MaxWidth as="section" className="lg:max-h-[85vh] max-w-[90rem] 2xl:h-fit">
+      <div className="flex flex-wrap md:flex-nowrap justify-between items-center">
         {/* SUB: Left content */}
-        <div className="flex flex-col justify-center text-center  w-full lg:text-left lg:w-[740px] items-start gap-4 md:pt-14 pt-12">
+        <div className="flex flex-col justify-center text-center  w-full md:text-left lg:w-[740px] items-start gap-4 md:pt-14 pt-12">
           <img
             src={coinss}
             alt="logo-cluster"
-            className="h-[24px] mx-auto lg:mx-0"
+            className="h-[24px] mx-auto md:mx-0"
           />
           <h1 className="text-[42px] leading-[56px] w-full  lg:text-6xl font-semibold text-[#0A0E12]  lg:leading-[65px]">
             Trade, Rest, and <br /> Stay Happy
@@ -29,23 +30,23 @@ export const HeroSectionByAnima = (): JSX.Element => {
             peer-to-peer exchanges
           </p>
 
-          <div className="flex flex-wrap lg:flex-nowrap items-center w-full  lg:w-4/6 gap-4 ">
+          <div className="flex flex-wrap lg:flex-nowrap items-center w-full  lg:w-4/6 gap-4  ">
             {isAuthenticated ? (
-              <Link
-                to={APP_ROUTES.DASHBOARD}
+              <a
+                href={APP_ROUTES.DASHBOARD}
                 className={cn(
                   buttonVariants(),
-                  "px-8 lg:w-1/2 w-full  h-fit py-3 text-sm"
+                  "px-8 lg:w-1/2 w-full md:w-fit  h-fit py-3 text-sm"
                 )}
               >
                 Go to Dashboard
-              </Link>
+              </a>
             ) : (
               <>
                 <Link
                   className={cn(
                     buttonVariants(),
-                    "px-8 lg:w-1/2 w-full  h-fit py-3 text-sm"
+                    "px-8 lg:w-1/2 w-full md:w-fit   h-fit py-3 text-sm"
                   )}
                   to={APP_ROUTES.AUTH.SIGNUP}
                 >
@@ -54,7 +55,7 @@ export const HeroSectionByAnima = (): JSX.Element => {
                 <Link
                   className={cn(
                     buttonVariants({ variant: "secondary" }),
-                    "px-8 lg:w-1/2 w-full  h-fit py-3 text-sm"
+                    "px-8 lg:w-1/2 w-full md:w-fit    h-fit py-3 text-sm"
                   )}
                   to={APP_ROUTES.AUTH.LOGIN}
                 >
@@ -66,10 +67,14 @@ export const HeroSectionByAnima = (): JSX.Element => {
         </div>
 
         {/* SUB: Right content */}
-        <div className="w-full mt-5 lg:mt-0 lg:w-[539px] p-2 lg:p-6 pb-2 h-[404px] lg:h-[614px] rounded-xl ">
-          <img alt="hero-phone-image" src={HeroImage} />
+        <div className="w-full mt-5 lg:mt-0 lg:w-[539px]  h-[404px] lg:h-[600px] rounded-xl ">
+          <img
+            alt="hero-phone-image"
+            src={HeroImage}
+            className="w-auto mx-auto h-full"
+          />
         </div>
       </div>
-    </section>
+    </MaxWidth>
   );
 };

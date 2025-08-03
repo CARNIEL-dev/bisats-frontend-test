@@ -52,6 +52,26 @@ interface IAdRequest {
   agree?: boolean;
 }
 
+type Prices = {
+  xNGN: number;
+  BTC: number;
+  SOL: number;
+  ETH: number;
+  USDT: number;
+  BTC_TEST: number;
+  SOL_TEST: number;
+  ETH_TEST5: number;
+  USDT_ETH_TEST5_KDZ7: number;
+  TRX_TEST: number;
+  USDT_TRX_TEST: number;
+  USDT_SOL_TEST: number;
+  USDT_TRC20: number;
+  USDT_SOL: number;
+  TRX: number;
+  USDT_TRX: number;
+  // trx:usdt: number;,
+};
+
 type AdsPayload = {
   userId: any;
   asset: string;

@@ -16,6 +16,7 @@ import { AdsProps } from "@/pages/p2p/ads/CreateAds";
 import { UserState } from "@/redux/reducers/userSlice";
 import { cn } from "@/utils";
 import { convertAssetToNaira } from "@/utils/conversions";
+import { toke_100_ngn } from "@/utils/data";
 import { formatNumber } from "@/utils/numberFormat";
 import { AccountLevel, bisats_limit } from "@/utils/transaction_limits";
 import { Info, TriangleAlert } from "lucide-react";
@@ -198,17 +199,26 @@ const CreateAdDetails: React.FC<AdsProps> = ({
               ? formik.touched.amount
               : formik.touched.amountToken
           }
-          maxFnc={() =>
-            formik.values.type.toLowerCase() === "buy"
-              ? formik.setFieldValue(
-                  "amount",
-                  walletData?.xNGN === "" ? 0 : Number(walletData?.xNGN)
-                )
-              : formik.setFieldValue(
-                  "amountToken",
-                  walletData?.token === "" ? 0 : Number(walletData?.[token])
-                )
-          }
+          maxFnc={() => {
+            const isBuy = formik.values.type.toLowerCase() === "buy";
+
+            // Calculate maximum allowed value in token units (for sell transactions)
+            const maxTokenValue =
+              userTransactionLimits.maximum_ad_creation_amount / (rate || 0);
+
+            const limit = isBuy
+              ? userTransactionLimits.maximum_ad_creation_amount // Use normal limit for buy
+              : Number(maxTokenValue.toFixed(2)); // Use 100M naira equivalent for sell
+
+            // Get wallet balance in the relevant currency
+            const walletBal =
+              walletData?.[isBuy ? "xNGN" : formik.values.asset];
+
+            // Determine the actual maximum value (minimum between wallet balance and limit)
+            const val = Math.min(walletBal || 0, limit);
+
+            formik.setFieldValue(isBuy ? "amount" : "amountToken", val);
+          }}
           onChange={(e) => {
             const value = e.target.value;
             const isValidDecimal = /^(\d+(\.\d*)?|\.\d+)?$/.test(value);

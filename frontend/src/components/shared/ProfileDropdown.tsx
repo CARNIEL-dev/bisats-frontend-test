@@ -19,6 +19,7 @@ import { cn } from "@/utils";
 import { ChevronDown } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { Button } from "@/components/ui/Button";
+import { useState } from "react";
 
 const mainMenuItems = [
   {
@@ -76,8 +77,10 @@ const mobileMenuItems = [
 ];
 
 const ProfileDropdown = () => {
+  const [open, setOpen] = useState(false);
+
   return (
-    <DropdownMenu>
+    <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger className="outline-none relative flex items-center gap-2">
         <img
           src="/avatar.png"
@@ -102,6 +105,7 @@ const ProfileDropdown = () => {
                       className={cn(
                         "group flex items-center gap-2 py-2.5  font-normal cursor-pointer text-slate-700 text-sm  hover:bg-[#F5FEF8] px-3 hover:font-medium hover:text-green-600 "
                       )}
+                      onClick={() => setOpen(false)}
                     >
                       <item.icon />
                       <span>{item.text}</span>
@@ -112,6 +116,7 @@ const ProfileDropdown = () => {
                           to={subItem.link}
                           key={subIndex}
                           className="block py-2.5 text-sm text-slate-600 hover:text-green-500"
+                          onClick={() => setOpen(false)}
                         >
                           {subItem.text}
                         </NavLink>
@@ -127,6 +132,7 @@ const ProfileDropdown = () => {
                   className={cn(
                     "group flex items-center gap-2 py-2.5 hover:text-green-500 font-normal cursor-pointer text-slate-700 text-sm  hover:bg-[#F5FEF8] px-3 border-b "
                   )}
+                  onClick={() => setOpen(false)}
                 >
                   <item.icon />
                   <span className="group-hover:text-green-600 group-hover:font-medium">
@@ -140,6 +146,7 @@ const ProfileDropdown = () => {
             <NavLink
               to={item.link}
               key={index}
+              onClick={() => setOpen(false)}
               className={cn(
                 " flex items-center gap-2 py-2  font-normal cursor-pointer text-slate-700 text-sm  hover:bg-[#F5FEF8] px-3  hover:font-medium hover:text-green-600"
               )}

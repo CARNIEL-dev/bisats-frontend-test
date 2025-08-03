@@ -32,7 +32,7 @@ const NavBar = () => {
       <div className="bg-white w-full fixed inset-x-0 top-0 z-50 shadow-xs">
         <MaxWidth
           as="header"
-          className="flex items-center justify-between  py-5 "
+          className="flex items-center justify-between py-5 "
         >
           <div className="scale-75" onClick={isMobile ? closeMenu : undefined}>
             <BisatLogo />
@@ -58,12 +58,12 @@ const NavBar = () => {
             <div className="flex items-center gap-x-6 gap-y-4 md:flex-row flex-col w-full md:w-auto">
               {isAuthenticated ? (
                 <>
-                  <Link
-                    to={APP_ROUTES.DASHBOARD}
+                  <a
+                    href={APP_ROUTES.DASHBOARD}
                     className="text-sm text-slate-600"
                   >
                     Dashboard
-                  </Link>
+                  </a>
                   <Button
                     variant="secondary"
                     className={cn(
@@ -109,12 +109,12 @@ const NavBar = () => {
           <Button
             variant="ghost"
             onClick={() => setToggleMenu((prev) => !prev)}
-            className={cn(" p-0! w-fit h-fit bg-transparent lg:hidden")}
+            className={cn(" p-0! w-fit h-fit bg-transparent md:hidden")}
           >
             {toggleMenu ? (
-              <X className="w-6! h-6!" />
+              <X className="!size-8" />
             ) : (
-              <Menu className="w-6! h-6!" />
+              <Menu className="!size-6" />
             )}
           </Button>
         </MaxWidth>

@@ -1,39 +1,14 @@
-import React from "react";
+import Phones from "@/assets/landingPage/phone-mockup.png";
+import AppStores from "@/assets/mobil-stores.svg";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import AppStores from "../../../../../../../assets/mobil-stores.svg";
-import Phones from "../../../../../../../assets/landingPage/phone-mockup.png";
 
 export const MobileAppByAnima = (): JSX.Element => {
-  // App store data
-  const appStores = [
-    {
-      name: "Apple App Store",
-      icon: "/logos-apple-app-store.svg",
-      alt: "Logos apple app",
-    },
-    // Google Play store would be added here when available
-  ];
-
-  // Phone screen images
-  const phoneScreens = [
-    {
-      position: "right",
-      width: "201px",
-      height: "421px",
-    },
-    {
-      position: "left",
-      width: "217px",
-      height: "411px",
-    },
-  ];
-
   return (
     <section className="relative w-full py-28 mt-16 bg-[#0A0E12] bg-mobile-app">
-      <div className="container flex flex- md:flex-col relative items-center  w-[90%] justify-between mx-auto">
-        <div className="bottom-blur h-[20px] border w-full border-white absolute  -bottom-24 lg:-bottom-28 lg:left-0"></div>
-        <div className="flex lg:hidden">
+      <div className="container flex  md:flex-col relative items-center  w-[90%] justify-between mx-auto">
+        <div className="bottom-blur h-[20px] border w-full border-white absolute  -bottom-24 lg:-bottom-28 lg:left-0" />
+        <div className="flex md:hidden">
           <Card className="relative w-full md:w-[366px] h-[421px] bg-transparent border-0 shadow-none ">
             <CardContent className="p-0 relative h-full">
               <img

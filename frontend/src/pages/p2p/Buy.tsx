@@ -9,7 +9,7 @@ const Buy = () => {
   return (
     <div className="space-y-4">
       <BackButton />
-      <MaxWidth className="max-w-[35rem]">
+      <MaxWidth className="max-w-[35rem] 2xl:max-w-[45rem]">
         <Swap type={"buy"} adDetail={adDetail} />
       </MaxWidth>
     </div>

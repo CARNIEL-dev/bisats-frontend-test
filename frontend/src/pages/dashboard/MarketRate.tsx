@@ -37,9 +37,9 @@ const MarketRate: React.FC = () => {
   }, []);
 
   return (
-    <div className="border space-y-4 h-full w-full p-3 md:p-[16px] rounded-2xl">
+    <div className="border space-y-4 h-full w-full p-6 rounded-2xl">
       <div className="flex items-center justify-between gap-2">
-        <p className="text-sm font-semibold text-gray-700">
+        <p className="md:text-sm text-xs font-semibold text-gray-700">
           Market Rates (per unit)
         </p>
         <div className="flex items-center gap-4">
@@ -170,7 +170,9 @@ const CoinListItem = ({
       ) : (
         <div className="flex items-center text-sm gap-2">
           <p className="font-semibold  text-gray-800 space-x-1">
-            <span className="text-base">{formatter({}).format(rate)}</span>
+            <span className="md:text-base text-sm">
+              {formatter({}).format(rate)}
+            </span>
             <span className="text-xs font-normal text-gray-600">
               {currency}
             </span>

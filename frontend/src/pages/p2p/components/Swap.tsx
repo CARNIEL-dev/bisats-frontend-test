@@ -95,9 +95,9 @@ const Swap = ({
 
     if (focusedField === "amount" && !isNaN(amt)) {
       if (adDetail?.orderType === "buy") {
-        formik.setFieldValue("otherAmount", (amt / price).toFixed(2));
+        formik.setFieldValue("otherAmount", (amt / price).toFixed(4));
       } else if (adDetail?.orderType === "sell") {
-        formik.setFieldValue("otherAmount", (amt * price).toFixed(4));
+        formik.setFieldValue("otherAmount", (amt * price).toFixed(2));
       }
     } else if (focusedField === "otherAmount" && !isNaN(otherAmt)) {
       if (adDetail?.orderType === "buy") {
@@ -251,6 +251,17 @@ const BuyForm = ({
             onFocus={() => {
               setFocusedField("amount");
             }}
+            maxFunc={() => {
+              const walletBalance = walletState?.wallet?.xNGN;
+
+              const availableAmount = adDetail?.maximumLimit || 0;
+              const maxValue = Math.min(walletBalance, availableAmount);
+
+              setFocusedField("amount");
+              formik.setFieldTouched("amount", true);
+
+              formik.setFieldValue("amount", `${maxValue.toFixed(2)}`);
+            }}
           />
 
           <Badge variant={"success"}>
@@ -277,14 +288,6 @@ const BuyForm = ({
           }}
           onFocus={() => {
             setFocusedField("otherAmount");
-          }}
-          maxFunc={() => {
-            const maxVal = walletState?.wallet?.[adDetail?.asset ?? "USDT"];
-            const availableAmount = adDetail?.amountAvailable || 0;
-            const maxValue = Math.min(maxVal, availableAmount);
-            setFocusedField("otherAmount");
-            formik.setFieldTouched("otherAmount", true);
-            formik.setFieldValue("otherAmount", `${maxValue.toFixed(5)}`);
           }}
         />
       </div>

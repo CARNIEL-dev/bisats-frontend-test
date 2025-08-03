@@ -53,7 +53,7 @@
     "yup": "^1.4.0"
   },
   "scripts": {
-    "start-https": "HTTPS=true react-scripts start",
+    "start-https": "HTTPS=true craco start",
     "start": "craco start",
     "build": "craco build",
     "test": "craco test",
@@ -83,7 +83,6 @@
     "autoprefixer": "^10.4.20",
     "craco": "^0.0.3",
     "css-loader": "^7.1.2",
-    "http-proxy-middleware": "^3.0.5",
     "postcss": "^8.4.47",
     "postcss-loader": "^8.1.1",
     "style-loader": "^4.0.0",

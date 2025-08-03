@@ -622,7 +622,7 @@ const useFetchOrder = (userId: string) => {
 
 const getCryptoRates = async () => {
   const response = await fetch(
-    `/api/coingecko/simple/price` +
+    `https://api.coingecko.com/api/v3/simple/price` +
       `?ids=bitcoin,ethereum,solana,tron,usd` +
       `&vs_currencies=usd,ngn`
   );
@@ -636,7 +636,7 @@ const COIN_IDS = ["bitcoin", "ethereum", "solana", "tether"].join(",");
 
 const getCoinRates = async ({ isMarket = false }: { isMarket?: boolean }) => {
   const response = await fetch(
-    `/api/coingecko/coins/markets` +
+    ` https://api.coingecko.com/api/v3/coins/markets` +
       `?${isMarket ? "vs_currency=ngn" : "vs_currency=usd"}` +
       `&ids=${COIN_IDS}` +
       `&order=market_cap_desc` +

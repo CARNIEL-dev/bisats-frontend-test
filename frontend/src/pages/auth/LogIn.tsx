@@ -35,8 +35,9 @@ const LogIn = () => {
           ReSendverificationCode({ userId: response.data.userId });
           return navigate(APP_ROUTES.AUTH.VERIFY);
         }
-        navigate(APP_ROUTES.DASHBOARD);
+
         Toast.success("", response.message);
+        window.location.href = APP_ROUTES.DASHBOARD;
       } else {
         Toast.error(response.message, "Login Failed");
       }

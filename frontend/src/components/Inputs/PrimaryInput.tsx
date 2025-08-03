@@ -45,7 +45,7 @@ const PrimaryInput: React.FC<TInput> = ({
       <input
         type={props.type ?? "text"}
         style={{ outline: "none" }}
-        className={`rounded-sm text-sm font-normal border border-[#D6DAE1] outline-[none] focus:border-[#C49600] focus:shadow-[0_0_10px_#FEF8E5] text-[#606C82]  p-2.5  px-3 ${css} ${
+        className={`rounded-sm text-base font-normal border border-[#D6DAE1] outline-[none] focus:border-[#C49600] focus:shadow-[0_0_10px_#FEF8E5] text-[#606C82]  p-2.5  px-3 ${css} ${
           error ? "border-[#EF4444] outline-0 focus:border-[#EF4444]" : ""
         }`}
         {...props}

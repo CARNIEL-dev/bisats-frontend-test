@@ -86,7 +86,7 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
   }, [walletData, currencyRate, currency]);
 
   return (
-    <div className="border  flex flex-col gap-2 p-4 md:p-6 rounded-2xl">
+    <div className="border  flex flex-col gap-2 p-6 rounded-2xl">
       <div className="flex items-center gap-1">
         <p className="font-semibold text-neutral-800">Total Balance</p>
         <Button
@@ -98,9 +98,9 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
           onClick={() => setShowBalance(!showBalance)}
         >
           {showBalance ? (
-            <EyeClosed className="w-5! h-5!" />
+            <EyeClosed className="!size-5" />
           ) : (
-            <Eye className="w-5! h-5!" />
+            <Eye className="!size-5" />
           )}
         </Button>
       </div>
