@@ -1,7 +1,5 @@
-import React from "react";
-
 const AdsChart = () => {
-  return <div>AdsChart</div>;
+  return <div>AdsChart section</div>;
 };
 
 export default AdsChart;

@@ -10,7 +10,7 @@ const DashboardLayout: React.FC = () => {
 
     const script = document.createElement("script");
     script.async = true;
-    script.src = "https://embed.tawk.to/68792ed91786aa1911e6c5be/1j0clu16v";
+    script.src = process.env.REACT_APP_TAWK_URL!;
     script.charset = "UTF-8";
     script.setAttribute("crossorigin", "*");
 
