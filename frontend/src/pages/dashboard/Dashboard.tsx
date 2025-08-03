@@ -10,6 +10,7 @@ import Ads from "@/pages/dashboard/Ads";
 import Balance from "@/pages/dashboard/Balance";
 import MarketRate from "@/pages/dashboard/MarketRate";
 import Orders from "@/pages/dashboard/Orders";
+import AdsChart from "@/components/shared/AdsChart";
 
 const Dashboard = () => {
   const [openKycModal, setKycModalOpen] = useState(false);
@@ -40,14 +41,18 @@ const Dashboard = () => {
       >
         {openKycModal && <KycBanner />}
         <div className="">
-          <h2 className="text-xl text-slate-700  font-semibold">
-            Hello, {user?.userName || "User"}
-          </h2>
-
-          <div className="grid md:grid-cols-2 gap-4 my-4  items-start">
-            <Balance />
+          <div className="grid md:grid-cols-2 gap-4 my-4 ">
+            <div className="space-y-4">
+              <div className="border-0 rounded-2xl px-5 py-2 border-priYellow bg-priYellow/10 md:mt-4">
+                <h2 className="text-base font-medium">
+                  Hello, {user?.userName || "User"}
+                </h2>
+              </div>
+              <Balance />
+            </div>
             <MarketRate />
           </div>
+          <AdsChart />
         </div>
       </MaxWidth>
     </>

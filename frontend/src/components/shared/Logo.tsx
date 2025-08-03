@@ -3,7 +3,7 @@ import Logo from "@/assets/logo/blackTextLogo.png";
 import { cn } from "@/utils";
 const BisatLogo = ({ className }: { className?: string }) => {
   return (
-    <Link to="/" className="cursor-pointer">
+    <a href="/" className="cursor-pointer">
       <img
         className={cn(
           "w-[100px] lg:w-[132.92px] h-[24px] object-fit lg:h-8",
@@ -12,7 +12,7 @@ const BisatLogo = ({ className }: { className?: string }) => {
         alt="Bisats Logo"
         src={Logo}
       />
-    </Link>
+    </a>
   );
 };
 

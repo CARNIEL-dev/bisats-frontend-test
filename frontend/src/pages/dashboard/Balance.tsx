@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
@@ -13,28 +13,18 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { APP_ROUTES } from "@/constants/app_route";
-import { GetWallet } from "@/redux/actions/walletActions";
 import { cn, formatter } from "@/utils";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronDown, Eye, EyeClosed } from "lucide-react";
 import { ThreeDot } from "react-loading-indicators";
-
-const getCryptoRates = async () => {
-  const response = await fetch(
-    "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,tron,usd&vs_currencies=usd,ngn"
-  );
-
-  if (!response.ok) throw new Error("Failed to fetch crypto rates");
-  const data = await response.json();
-  return data;
-};
+import { getCryptoRates } from "@/redux/actions/walletActions";
 
 const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
   const [showBalance, setShowBalance] = useState(true);
   const [currency, setCurrency] = useState<"usd" | "ngn">("usd");
 
   const walletData = useSelector((state: RootState) => state.wallet.wallet);
-  const walletSettings = useSelector((state: RootState) => state.wallet);
+  // const walletSettings = useSelector((state: RootState) => state.wallet);
 
   //? Fetch wallet data
   // useEffect(() => {
@@ -48,8 +38,6 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
 
   //   fetchWalletData();
   // }, []);
-
-  console.log("Settings", walletSettings);
 
   //SUB: Query function
   const {
@@ -134,27 +122,23 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
               {currency === "usd" ? "$" : "₦"}
             </span>
             {showBalance ? (
-              userBalance ? (
-                <p className="font-extrabold space-x-0.5">
-                  <span className="text-2xl md:text-4xl">
-                    {
-                      formatter({})
-                        .format(userBalance ?? 0)
-                        .split(".")[0]
-                    }
-                  </span>
-                  <span className={`mr-[4px] text-base md:text-xl `}>
-                    .{" "}
-                    {
-                      formatter({})
-                        .format(userBalance ?? 0)
-                        .split(".")[1]
-                    }
-                  </span>
-                </p>
-              ) : (
-                <p className="text-red-500 text-sm">Error getting balance</p>
-              )
+              <p className="font-extrabold space-x-0.5">
+                <span className="text-2xl md:text-4xl">
+                  {
+                    formatter({})
+                      .format(userBalance ?? 0)
+                      .split(".")[0]
+                  }
+                </span>
+                <span className={`mr-[4px] text-base md:text-xl `}>
+                  .{" "}
+                  {
+                    formatter({})
+                      .format(userBalance ?? 0)
+                      .split(".")[1]
+                  }
+                </span>
+              </p>
             ) : (
               <p className="font-semibold text-xl md:text-3xl self-end"> ***</p>
             )}

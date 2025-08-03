@@ -210,6 +210,7 @@ export const rehydrateUser = () => {
 export const logoutUser = () => {
   localStorage.removeItem("_user");
   localStorage.removeItem("token");
+
   dispatchWrapper({ type: UserActionTypes?.LOG_OUT, payload: null });
 };
 

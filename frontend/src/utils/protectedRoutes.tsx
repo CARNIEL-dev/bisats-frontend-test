@@ -7,7 +7,8 @@ const ProtectedRoute = () => {
   const userState: UserState = useSelector((state: any) => state.user);
 
   if (!userState.isAuthenticated) {
-    return <Navigate to="/auth/login" />;
+    window.location.href = "/";
+    return null;
   }
 
   return <Outlet />;

@@ -494,7 +494,7 @@ const getUserAds = async (userId: string) => {
     });
 
     if (!response.status) {
-      throw new Error(response.data.message);
+      throw new Error(response.message);
     }
     return response.data;
   } catch (err) {
@@ -620,4 +620,41 @@ const useFetchOrder = (userId: string) => {
   });
 };
 
-export { getUserAds, updateAdStatus, useFetchOrder, useUserWalletHistory };
+const getCryptoRates = async () => {
+  const response = await fetch(
+    `/api/coingecko/simple/price` +
+      `?ids=bitcoin,ethereum,solana,tron,usd` +
+      `&vs_currencies=usd,ngn`
+  );
+
+  if (!response.ok) throw new Error("Failed to fetch crypto rates");
+  const data = await response.json();
+  return data;
+};
+
+const COIN_IDS = ["bitcoin", "ethereum", "solana", "tether"].join(",");
+
+const getCoinRates = async ({ isMarket = false }: { isMarket?: boolean }) => {
+  const response = await fetch(
+    `/api/coingecko/coins/markets` +
+      `?${isMarket ? "vs_currency=ngn" : "vs_currency=usd"}` +
+      `&ids=${COIN_IDS}` +
+      `&order=market_cap_desc` +
+      `&per_page=4&page=1` +
+      `&sparkline=false` +
+      `&price_change_percentage=24h`
+  );
+
+  if (!response.ok) throw new Error("Failed to fetch crypto rates");
+  const data = await response.json();
+  return data;
+};
+
+export {
+  getUserAds,
+  updateAdStatus,
+  useFetchOrder,
+  useUserWalletHistory,
+  getCryptoRates,
+  getCoinRates,
+};

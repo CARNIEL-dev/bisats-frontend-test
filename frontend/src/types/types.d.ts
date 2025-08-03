@@ -148,3 +148,37 @@ type AdsType = {
     userName: string;
   };
 };
+
+interface Coin {
+  id: string;
+  symbol: string;
+  name: string;
+  image: string; // URL to coin’s logo
+  current_price: number; // in selected vs_currency
+  market_cap: number;
+  market_cap_rank: number;
+  fully_diluted_valuation: number | null;
+  total_volume: number;
+  high_24h: number;
+  low_24h: number;
+  price_change_24h: number;
+  price_change_percentage_24h: number;
+  price_change_percentage_24h_in_currency: number;
+  market_cap_change_24h: number;
+  market_cap_change_percentage_24h: number;
+  circulating_supply: number;
+  total_supply: number | null;
+  max_supply: number | null;
+  ath: number; // all-time high
+  ath_change_percentage: number;
+  ath_date: string; // ISO timestamp
+  atl: number; // all-time low
+  atl_change_percentage: number;
+  atl_date: string; // ISO timestamp
+  roi: {
+    times: number;
+    currency: string;
+    percentage: number;
+  } | null;
+  last_updated: string; // ISO timestamp
+}

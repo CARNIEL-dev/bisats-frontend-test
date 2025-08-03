@@ -73,6 +73,8 @@ const MyAds = () => {
     };
   }, [userAds]);
 
+  console.log(isError, error);
+
   //HDR: Mutation function
   const mutation = useMutation<
     UpdateAdStatusResponse,

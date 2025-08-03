@@ -1,5 +1,5 @@
 import React, { ButtonHTMLAttributes } from "react";
-import { DotLoader } from "react-spinners";
+import { ClipLoader } from "react-spinners";
 
 interface TButtons extends ButtonHTMLAttributes<HTMLButtonElement> {
   css?: string;
@@ -24,7 +24,7 @@ export const PrimaryButton: React.FC<TButtons> = ({
       aria-disabled={props.disabled}
     >
       {loading ? (
-        <DotLoader
+        <ClipLoader
           color={"#0A0E12"}
           loading={loading}
           size={30}
@@ -51,7 +51,7 @@ export const RedTransparentButton: React.FC<TButtons> = ({
       {...props}
     >
       {loading ? (
-        <DotLoader
+        <ClipLoader
           color={"#0A0E12"}
           loading={loading}
           // cssOverride={override}
@@ -84,7 +84,7 @@ export const WhiteTransparentButton: React.FC<TButtons> = ({
       {...props}
     >
       {loading ? (
-        <DotLoader
+        <ClipLoader
           color={"#0A0E12"}
           loading={loading}
           // cssOverride={override}
