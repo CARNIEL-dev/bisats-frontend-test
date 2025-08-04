@@ -1,9 +1,30 @@
 import BisatLogo from "@/components/shared/Logo";
+import { cn } from "@/utils";
+import { PuffLoader } from "react-spinners";
 
-const PreLoader = () => {
+type Props = {
+  primary?: boolean;
+};
+
+const PreLoader = ({ primary = true }: Props) => {
   return (
-    <div className="flex flex-col items-center animate-pulse mt-10">
-      <BisatLogo className="md:scale-110" />
+    <div
+      className={cn(
+        "flex flex-col items-center",
+        primary && "animate-pulse mt-10"
+      )}
+    >
+      {primary ? (
+        <BisatLogo className="md:scale-110" />
+      ) : (
+        <PuffLoader
+          color={"#F5BB00"}
+          loading={true}
+          aria-label="Loading Spinner"
+          data-testid="loader"
+          size={100}
+        />
+      )}
     </div>
   );
 };

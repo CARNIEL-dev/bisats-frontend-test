@@ -16,6 +16,7 @@ import { updateAdStatus, useFetchUserAds } from "@/redux/actions/walletActions";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
+import KycManager from "../kyc/KYCManager";
 
 export interface Ad {
   id: string;

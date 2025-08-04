@@ -1,16 +1,12 @@
-import MaxWidth from "@/components/shared/MaxWith";
-import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
 import KycBanner from "@/components/KycBanner";
-import { APP_ROUTES } from "@/constants/app_route";
+import MaxWidth from "@/components/shared/MaxWith";
+import OrdersChart from "@/components/shared/OrdersChart";
+import Balance from "@/pages/dashboard/Balance";
 import { GetWallet } from "@/redux/actions/walletActions";
 import { UserState } from "@/redux/reducers/userSlice";
-import Ads from "@/pages/dashboard/Ads";
-import Balance from "@/pages/dashboard/Balance";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import MarketRate from "@/pages/dashboard/MarketRate";
-import Orders from "@/pages/dashboard/Orders";
-import AdsChart from "@/components/shared/AdsChart";
 
 const Dashboard = () => {
   const [openKycModal, setKycModalOpen] = useState(false);
@@ -30,7 +26,6 @@ const Dashboard = () => {
     ) {
       setKycModalOpen(true);
     }
-    // GetKYCStatus({ userId: user?.userId })
   }, []);
 
   return (
@@ -52,7 +47,7 @@ const Dashboard = () => {
             </div>
             <MarketRate />
           </div>
-          <AdsChart />
+          <OrdersChart />
         </div>
       </MaxWidth>
     </>

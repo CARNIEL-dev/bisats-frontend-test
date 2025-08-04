@@ -1,208 +1,92 @@
 import { subDays } from "date-fns";
 
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-import React, { useState, useMemo } from "react";
 import {
-  ResponsiveContainer,
-  ComposedChart,
-  BarChart,
   Bar,
-  Area,
+  BarChart,
+  CartesianGrid,
+  Legend,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  Tooltip as BarTooltip,
-  PieChart,
-  Pie,
-  Cell,
-  Legend as PieLegend,
-  Tooltip as PieTooltip,
-  CartesianGrid,
-  Tooltip,
-  Legend,
 } from "recharts";
 
-interface ChartDataPoint {
-  date: string;
-  buyPrice?: number;
-  sellPrice?: number;
-  activeBuys: number;
-  activeSells: number;
-  inactiveBuys: number;
-  inactiveSells: number;
-}
-
-const PIE_COLORS = ["#0088FE", "#FF8042"];
-
-export const AdsBarOrPieChart: React.FC<{ ads: AdsTypes[] }> = ({ ads }) => {
-  const [showActive, setShowActive] = useState(true);
-  const [chartType, setChartType] = useState<"bar" | "pie">("bar");
-
-  // 1️⃣ Filter by status
-  const filtered = useMemo(
-    () =>
-      ads.filter((ad) =>
-        showActive ? ad.status === "active" : ad.status !== "active"
-      ),
-    [ads, showActive]
-  );
-
-  // 2️⃣ Prepare data for BarChart: sum NGN‐price per YYYY-MM-DD
-  const barData = useMemo(() => {
-    const sums: Record<string, number> = {};
-    filtered.forEach((ad) => {
-      const date = ad.createdAt.slice(0, 10);
-      sums[date] = (sums[date] || 0) + ad.price;
-    });
-    return Object.entries(sums).map(([date, totalPrice]) => ({
-      date,
-      totalPrice,
-    }));
-  }, [filtered]);
-
-  // 3️⃣ Prepare data for PieChart: sum NGN‐price by buy vs sell
-  const pieData = useMemo(() => {
-    const sums: Record<string, number> = { buy: 0, sell: 0 };
-    filtered.forEach((ad) => {
-      sums[ad.type] += ad.price;
-    });
-    return (["buy", "sell"] as const).map((type, i) => ({
-      name: type,
-      value: sums[type],
-      fill: PIE_COLORS[i],
-    }));
-  }, [filtered]);
-
-  return (
-    <div className="w-full h-[400px]">
-      <div className="flex flex-wrap gap-2 mb-4">
-        <button
-          className="px-3 py-1 bg-gray-200 rounded"
-          onClick={() => setShowActive((v) => !v)}
-        >
-          {showActive ? "Showing: Active" : "Showing: Inactive"}
-        </button>
-        <button
-          className={`px-3 py-1 rounded ${
-            chartType === "bar" ? "bg-blue-500 text-white" : "bg-gray-200"
-          }`}
-          onClick={() => setChartType("bar")}
-        >
-          Bar Chart
-        </button>
-        <button
-          className={`px-3 py-1 rounded ${
-            chartType === "pie" ? "bg-blue-500 text-white" : "bg-gray-200"
-          }`}
-          onClick={() => setChartType("pie")}
-        >
-          Pie Chart
-        </button>
-      </div>
-
-      <ResponsiveContainer width="100%" height="100%">
-        {chartType === "bar" ? (
-          <BarChart data={barData}>
-            <XAxis dataKey="date" />
-            <YAxis />
-            <BarTooltip />
-            <Bar dataKey="totalPrice" name="Total ₦ Price" />
-          </BarChart>
-        ) : (
-          <PieChart>
-            <Pie
-              data={pieData}
-              dataKey="value"
-              nameKey="name"
-              outerRadius={120}
-              label
-            >
-              {pieData.map((entry) => (
-                <Cell key={entry.name} fill={entry.fill} />
-              ))}
-            </Pie>
-            <PieLegend />
-            <PieTooltip />
-          </PieChart>
-        )}
-      </ResponsiveContainer>
-    </div>
-  );
-};
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart";
 
 interface Props {
-  orders: OrderHistory[];
-  userId: string;
+  data: ChartData[];
+  title: string;
+  showXNgn?: boolean;
 }
 
-export function VolumeByAssetChart({ orders, userId }: Props) {
-  const data = useMemo(() => {
-    // 1) Filter to last 30 days
-    const cutoff = subDays(new Date(), 30).getTime();
-    const recent = orders.filter(
-      (o) => new Date(o.createdAt).getTime() >= cutoff
-    );
-
-    // 2) Initialise buckets for each asset
-    const assets = ["BTC", "ETH", "SOL", "USDT"];
-    const map: Record<string, { asset: string; buy: number; sell: number }> =
-      {};
-    assets.forEach((a) => {
-      map[a] = { asset: a, buy: 0, sell: 0 };
-    });
-
-    // 3) Roll up volumes
-    recent.forEach((o) => {
-      const whoIsBuyer = userId != o.buyerId ? "buyer" : "merchant";
-      const logicalType =
-        o.adType === "buy"
-          ? whoIsBuyer === "buyer"
-            ? "sell"
-            : "buy"
-          : whoIsBuyer === "buyer"
-          ? "buy"
-          : "sell";
-
-      // choose your “volume” field here – e.g. o.quantity or o.amount
-      const volume = o.quantity;
-
-      if (map[o.asset]) {
-        map[o.asset][logicalType] += volume;
-      }
-    });
-
-    return Object.values(map);
-  }, [orders, userId]);
+const VolumeByAssetChart = ({ data, title, showXNgn }: Props) => {
+  const chartConfig = {
+    buy: {
+      label: "Buy",
+    },
+    sell: {
+      label: "Sell",
+    },
+  } satisfies ChartConfig;
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-sm">30 Day Volume by Asset</CardTitle>
+        <CardTitle className="text-sm text-gray-500">
+          {title} {showXNgn && "(xNGN)"}{" "}
+        </CardTitle>
       </CardHeader>
-      <CardContent style={{ height: 300 }}>
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart
-            data={data}
-            margin={{ top: 10, right: 20, left: 0, bottom: 5 }}
-          >
-            <XAxis dataKey="asset" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Bar dataKey="buy" name="Buy Volume" />
-            <Bar dataKey="sell" name="Sell Volume" />
+      <CardContent>
+        <ChartContainer config={chartConfig} className="h-[20rem] w-full">
+          <BarChart data={data} accessibilityLayer>
+            <CartesianGrid strokeDasharray="3 3" vertical={false} />
+            <XAxis
+              dataKey="asset"
+              axisLine={false}
+              tickLine={false}
+              tickMargin={10}
+              tickFormatter={(value) => value.slice(0, 4)}
+            />
+
+            <YAxis
+              tickFormatter={(value) => ` ${value}`}
+              axisLine={false}
+              tickLine={false}
+              tick={{ fill: "#6b7280" }}
+            />
+
+            <ChartTooltip
+              content={<ChartTooltipContent label="Asset" indicator="line" />}
+            />
+
+            <ChartLegend content={<ChartLegendContent payload={undefined} />} />
+            <Bar
+              dataKey="buy"
+              name="Buy"
+              fill="var(--chart-2)"
+              radius={[4, 4, 0, 0]}
+            />
+            <Bar
+              dataKey="sell"
+              name="Sell"
+              fill="var(--chart-4)"
+              radius={[4, 4, 0, 0]}
+            />
           </BarChart>
-        </ResponsiveContainer>
+        </ChartContainer>
       </CardContent>
     </Card>
   );
-}
-
-interface ChartData {
-  asset: string;
-  buy: number;
-  sell: number;
-}
+};
 
 export const OrderVolumeChart = ({
   orders,
@@ -217,10 +101,19 @@ export const OrderVolumeChart = ({
     (order) => new Date(order.createdAt) >= thirtyDaysAgo
   );
 
+  // All assets we want to display
+  const allAssets = ["BTC", "ETH", "USDT", "SOL"];
+
   // Process data to get volume by asset and type
   const processData = (): ChartData[] => {
     const assetMap: Record<string, { buy: number; sell: number }> = {};
 
+    // Initialize all assets with zero values
+    allAssets.forEach((asset) => {
+      assetMap[asset] = { buy: 0, sell: 0 };
+    });
+
+    // Process actual orders
     recentOrders.forEach((order) => {
       const buyer = userId === order.buyerId ? "buyer" : "merchant";
       const type =
@@ -232,17 +125,15 @@ export const OrderVolumeChart = ({
           ? "buy"
           : "sell";
 
-      if (!assetMap[order.asset]) {
-        assetMap[order.asset] = { buy: 0, sell: 0 };
+      if (allAssets.includes(order.asset)) {
+        assetMap[order.asset][type] += order.amount;
       }
-
-      assetMap[order.asset][type] += order.amount;
     });
 
-    return Object.entries(assetMap).map(([asset, volumes]) => ({
+    return allAssets.map((asset) => ({
       asset,
-      buy: volumes.buy,
-      sell: volumes.sell,
+      buy: assetMap[asset].buy,
+      sell: assetMap[asset].sell,
     }));
   };
 
@@ -250,23 +141,65 @@ export const OrderVolumeChart = ({
 
   return (
     <div className="w-full h-[400px]">
+      <h3 className="text-center mb-4 font-medium">
+        30-Day Trading Volume by Asset
+      </h3>
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
           data={chartData}
-          layout="vertical"
-          margin={{ top: 20, right: 30, left: 40, bottom: 5 }}
+          layout="horizontal" // Changed to horizontal
+          margin={{ top: 10, right: 20, left: 0, bottom: 5 }}
+          // barCategoryGap={20}
+          barGap={3}
         >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis type="number" />
-          <YAxis dataKey="asset" type="category" width={80} />
-          <Tooltip
-            formatter={(value) => [`${value} ${chartData[0]?.asset}`, ""]}
+          <CartesianGrid strokeDasharray="3 3" vertical={false} />
+          <XAxis
+            dataKey="asset"
+            axisLine={false}
+            tickLine={false}
+            tick={{ fill: "#6b7280" }}
           />
-          <Legend />
-          <Bar dataKey="buy" name="Buy Volume" fill="#8884d8" />
-          <Bar dataKey="sell" name="Sell Volume" fill="#82ca9d" />
+          <YAxis
+            width={120}
+            tickFormatter={(value) => `${value}`}
+            axisLine={false}
+            tickLine={false}
+            tick={{ fill: "#6b7280" }}
+          />
+          <Tooltip
+            formatter={(value, name) => [
+              `${Number(value).toFixed(4)} ${
+                name.toString().toLocaleLowerCase() === "buy"
+                  ? "Bought"
+                  : "Sold"
+              }`,
+              "",
+            ]}
+            contentStyle={{
+              backgroundColor: "#fff",
+              border: "1px solid #e5e7eb",
+              borderRadius: "0.5rem",
+              boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+            }}
+          />
+          <Legend
+            formatter={(value) => (
+              <span className="text-gray-600">
+                {value.toString().toLowerCase() === "buy" ? "Buy" : "Sell"}
+              </span>
+            )}
+          />
+          <Bar dataKey="buy" name="Buy" fill="#4f46e5" radius={[4, 4, 0, 0]} />
+          <Bar
+            dataKey="sell"
+            name="Sell"
+            fill="#10b981"
+            radius={[4, 4, 0, 0]}
+          />
         </BarChart>
       </ResponsiveContainer>
     </div>
   );
 };
+
+export { VolumeByAssetChart };

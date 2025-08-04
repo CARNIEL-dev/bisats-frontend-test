@@ -69,19 +69,18 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
           userTransactionLimits?.maximum_ad_creation_amount
         )} xNGN`
       )
+      .when("type", {
+        is: (val: string) => val?.toLowerCase() === "buy",
+        then: (schema) => schema.required("Amount is required"),
+        otherwise: (schema) => schema.notRequired(),
+      })
       .test(
         "max-wallet-balance",
         "Amount cannot exceed your current wallet balance",
         function (value) {
           return Number(value) <= calculateDisplayWalletBallance;
         }
-      )
-      .when("type", {
-        is: (val: string) => val?.toLowerCase() === "buy",
-        then: (schema) => schema.required("Amount is required"),
-        otherwise: (schema) => schema.notRequired(),
-      })
-      .required("Amount is required"),
+      ),
   });
 
   //HDR: Mutation function
@@ -104,8 +103,8 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
     },
   });
 
-  const formik = useFormik<TEditAd>({
-    initialValues: { ...initialAd },
+  const formik = useFormik<TEditAd & { type: string }>({
+    initialValues: { ...initialAd, type: ad?.type ?? "Buy" },
     validationSchema: AdSchema,
     validateOnMount: false,
     onSubmit: (values) => {

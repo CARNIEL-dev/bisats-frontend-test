@@ -210,3 +210,9 @@ interface Coin {
   } | null;
   last_updated: string; // ISO timestamp
 }
+
+interface ChartData {
+  asset: string;
+  buy: number;
+  sell: number;
+}
