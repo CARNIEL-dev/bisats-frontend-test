@@ -44,6 +44,9 @@ const P2PLayOut = () => {
                 pathname === page.link && "active",
                 page.link === APP_ROUTES.P2P.HOME &&
                   pathname.includes("market-place") &&
+                  "active",
+                page.link !== APP_ROUTES.P2P.HOME &&
+                  pathname.includes(page.link) &&
                   "active"
               )}
             >

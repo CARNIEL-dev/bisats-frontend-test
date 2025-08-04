@@ -10,6 +10,7 @@ import { formatNumber } from "@/utils/numberFormat";
 import { PriceData } from "@/pages/wallet/Assets";
 import { convertAssetToNaira } from "@/utils/conversions";
 import { toke_100_ngn } from "@/utils/data";
+import { formatter } from "@/utils";
 
 //SUB: Auth
 const SignupSchema = Yup.object().shape({
@@ -346,8 +347,27 @@ const AdSchema = Yup.object().shape({
           .required("Token amount is required"),
     }),
   minimumLimit: Yup.number()
-    .min(15000, "Minimum must be greater than 15,000 xNGN")
+
     .max(23000000, "Price must not exceed 23,000,000 xNGN")
+    .when(
+      ["type", "asset", "$walletData", "$liveRate", "$userTransactionLimits"],
+      (
+        [type, assetValue, walletData, liveRate, userTransactionLimits],
+        schema
+      ) => {
+        const limit =
+          type.toLowerCase() === "buy"
+            ? userTransactionLimits?.lower_limit_buy_ad
+            : userTransactionLimits?.lower_limit_sell_ad;
+
+        return schema.min(
+          limit,
+          `Minimum must be greater than ${formatter({ decimal: 0 }).format(
+            limit
+          )} xNGN`
+        );
+      }
+    )
     .required("Minimum is required"),
 
   maximumLimit: Yup.number()
@@ -358,24 +378,37 @@ const AdSchema = Yup.object().shape({
       )
     )
     .when(
-      ["type", "amount", "amountToken", "price"],
-      ([type, amount, amountToken, price], schema) => {
-        let computedMax = 23_000_000;
+      [
+        "type",
+        "amount",
+        "asset",
+        "$walletData",
+        "$liveRate",
+        "$userTransactionLimits",
+      ],
+      (
+        [type, amount, assetValue, walletData, liveRate, userTransactionLimits],
+        schema
+      ) => {
+        const limit =
+          type.toLowerCase() === "buy"
+            ? userTransactionLimits?.upper_limit_buy_ad
+            : userTransactionLimits?.upper_limit_sell_ad;
 
-        if (type?.toLowerCase() === "buy" && typeof amount === "number") {
-          // when you’re buying, you can’t spend more than your NGN budget
-          computedMax = Math.min(amount, 23_000_000);
-        }
+        const walletBalance =
+          type.toLowerCase() === "buy"
+            ? walletData?.xNGN
+            : walletData?.[assetValue];
 
-        if (
-          type?.toLowerCase() === "sell" &&
-          typeof amountToken === "number" &&
-          typeof price === "number"
-        ) {
-          // when you’re selling, you can’t list more than your token‐value
-          const possible = amountToken * price;
-          computedMax = Math.min(possible, 23_000_000);
-        }
+        const tokenRate =
+          convertAssetToNaira(assetValue as keyof Prices, 1, 0, liveRate) || 0;
+
+        const computedMax = Math.min(
+          limit || Infinity,
+          type.toLowerCase() === "sell"
+            ? Number(tokenRate) * Number(walletBalance)
+            : Number(amount)
+        );
 
         return schema.max(
           computedMax,

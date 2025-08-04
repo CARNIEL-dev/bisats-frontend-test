@@ -604,7 +604,6 @@ const useFetchOrder = (userId: string) => {
     queryKey: ["orders", userId],
     queryFn: async ({ queryKey }) => {
       const [, uid] = queryKey;
-      console.log("userId", uid);
       const response = await Bisatsfetch(
         `/api/v1/user/${uid}${BACKEND_URLS.P2P.ADS.FETCH_ORDERS}`,
         { method: "GET" }
@@ -617,6 +616,17 @@ const useFetchOrder = (userId: string) => {
     },
     enabled: Boolean(userId),
     refetchOnMount: false,
+  });
+};
+
+const useFetchUserAds = (userId: string) => {
+  return useQuery<AdsTypes[], Error>({
+    queryKey: ["userAds", userId],
+    queryFn: () => getUserAds(userId),
+    retry: false,
+    refetchOnMount: false,
+    staleTime: Infinity,
+    enabled: Boolean(userId),
   });
 };
 
@@ -657,4 +667,5 @@ export {
   useUserWalletHistory,
   getCryptoRates,
   getCoinRates,
+  useFetchUserAds,
 };

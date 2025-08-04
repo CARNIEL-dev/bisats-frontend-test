@@ -33,7 +33,7 @@ type TEditAd = {
 
 const EditAd: React.FC<Props> = ({ close, ad }) => {
   const initialAd: TEditAd = {
-    amount: `${ad?.amount}`,
+    amount: "",
     price: `${ad?.price}`,
   };
   const navigate = useNavigate();
@@ -73,15 +73,15 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
         "max-wallet-balance",
         "Amount cannot exceed your current wallet balance",
         function (value) {
-          if (typeof value !== "number") return false;
-          return value <= calculateDisplayWalletBallance;
+          return Number(value) <= calculateDisplayWalletBallance;
         }
       )
       .when("type", {
         is: (val: string) => val?.toLowerCase() === "buy",
         then: (schema) => schema.required("Amount is required"),
         otherwise: (schema) => schema.notRequired(),
-      }),
+      })
+      .required("Amount is required"),
   });
 
   //HDR: Mutation function
@@ -155,7 +155,7 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
             <PrimaryInput
               css={"w-full py-2 "}
               label={" Price"}
-              error={undefined}
+              error={formik.errors.price}
               touched={undefined}
               onChange={(e) => {
                 const value = e.target.value;
@@ -171,7 +171,7 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
             <PrimaryInput
               css={"w-full py-2 "}
               label={"Top Up Amount"}
-              error={undefined}
+              error={formik.errors.amount}
               touched={undefined}
               onChange={(e) => {
                 const value = e.target.value;
@@ -180,7 +180,6 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
 
                 formik.setFieldValue("amount", numericValue);
               }}
-              defaultValue={formik.values.amount}
             />
             {ad?.type.toLowerCase() === "buy" ? (
               <small className="text-[#606C82] text-[12px] font-normal">
@@ -289,7 +288,7 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
             loading={mutation.isPending}
             css="w-1/2"
             onClick={formik.submitForm}
-            disabled={mutation.isPending || !formik.dirty}
+            disabled={mutation.isPending || !formik.dirty || !formik.isValid}
           />
         </div>
       </div>

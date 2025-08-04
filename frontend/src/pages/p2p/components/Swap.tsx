@@ -135,7 +135,9 @@ const Swap = ({
       </p>
       <div className="flex items-center w-2/3 justify-between">
         <div className="text-[12px] text-[#515B6E]">
-          <h4 className="font-semibold">Available</h4>
+          <h4 className="font-semibold">
+            {type === "buy" ? "Available" : "Maximum"}
+          </h4>
           {type === "buy" ? (
             <p>
               {adDetail?.amountAvailable} {adDetail?.asset}

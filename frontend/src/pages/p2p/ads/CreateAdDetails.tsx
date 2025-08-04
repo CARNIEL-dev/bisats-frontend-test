@@ -16,7 +16,6 @@ import { AdsProps } from "@/pages/p2p/ads/CreateAds";
 import { UserState } from "@/redux/reducers/userSlice";
 import { cn } from "@/utils";
 import { convertAssetToNaira } from "@/utils/conversions";
-import { toke_100_ngn } from "@/utils/data";
 import { formatNumber } from "@/utils/numberFormat";
 import { AccountLevel, bisats_limit } from "@/utils/transaction_limits";
 import { Info, TriangleAlert } from "lucide-react";
@@ -54,8 +53,8 @@ const CreateAdDetails: React.FC<AdsProps> = ({
   wallet,
   liveRate,
 }) => {
-  const [adType, setAdType] = useState("Buy");
-  const [token, setToken] = useState("");
+  const [adType, setAdType] = useState(formik.values.type || "Buy");
+  const [token, setToken] = useState(formik.values.asset || "");
 
   const loading = false;
   const walletData = wallet?.wallet;
@@ -64,6 +63,9 @@ const CreateAdDetails: React.FC<AdsProps> = ({
   const user = userState.user;
   const account_level = user?.accountLevel as AccountLevel;
   const userTransactionLimits = bisats_limit[account_level];
+
+  console.log("User limit", userTransactionLimits);
+  console.log("level", account_level);
 
   //SUB: Handle Next Stage
   const handleNextStage = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -361,6 +363,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
       <Divider text=" Limits (in NGN)" />
       <div className="space-y-2">
         <div className="flex flex-col gap-4 lg:flex-wrap justify-between ">
+          {/* SUB: Minimum */}
           <PrimaryInput
             css="w-full"
             label={`Minimum (xNGN${
@@ -389,6 +392,8 @@ const CreateAdDetails: React.FC<AdsProps> = ({
               }
             }}
           />
+
+          {/* SUB: Maximum */}
           <PrimaryInput
             css="w-full p-2.5"
             label={`Maximum (xNGN ${
@@ -397,8 +402,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
                 : formatNumber(
                     Math.min(
                       userTransactionLimits?.upper_limit_sell_ad || Infinity,
-                      Number(formik.values.amountToken) *
-                        Number(formik.values.price)
+                      Number(rate) * Number(walletBalance)
                     )
                   )
             })`}
@@ -415,16 +419,12 @@ const CreateAdDetails: React.FC<AdsProps> = ({
             touched={formik.touched.maximumLimit}
             maxFnc={() => {
               if (adType.toLowerCase() === "sell") {
-                const tokenPrice =
-                  Number(formik.values.amountToken) *
-                  Number(formik.values.price);
-
-                return formik.setFieldValue(
-                  "maximumLimit",
-                  tokenPrice >= userTransactionLimits?.upper_limit_sell_ad
-                    ? userTransactionLimits?.upper_limit_sell_ad
-                    : tokenPrice
+                const tokenPrice = Math.min(
+                  userTransactionLimits?.upper_limit_sell_ad || Infinity,
+                  Number(rate) * Number(walletBalance)
                 );
+
+                return formik.setFieldValue("maximumLimit", tokenPrice);
               } else {
                 return formik.setFieldValue(
                   "maximumLimit",
@@ -467,3 +467,61 @@ const CreateAdDetails: React.FC<AdsProps> = ({
 };
 
 export default CreateAdDetails;
+
+/* 
+  .when(
+      ["type", "asset", "$liveRate", "$userTransactionLimits"],
+      ([type, assetValue, liveRate, userTransactionLimits], schema) => {
+        let computedMax = 23_000_000;
+
+        const limit =
+          type.toLowerCase() === "buy"
+            ? userTransactionLimits?.upper_limit_buy_ad
+            : userTransactionLimits?.upper_limit_sell_ad;
+
+        const tokenRate =
+          convertAssetToNaira(assetValue as keyof Prices, 1, 0, liveRate) || 0;
+
+        const tokenPrice = Math.min(
+          limit || Infinity,
+          Number( tokenRate) * Number(walletBalance)
+        );
+
+        if (type?.toLowerCase() === "buy" && typeof amount === "number") {
+          // when you’re buying, you can’t spend more than your NGN budget
+          computedMax = Math.min(amount, 23_000_000);
+        }
+
+        if (
+          type?.toLowerCase() === "sell" &&
+          typeof amountToken === "number" &&
+          typeof price === "number"
+        ) {
+          // when you’re selling, you can’t list more than your token‐value
+          const possible = amountToken * price;
+          computedMax = Math.min(possible, 23_000_000);
+        }
+
+        return schema.max(
+          computedMax,
+          `Maximum must not exceed ₦${formatNumber(computedMax)}`
+        );
+      }
+    )
+
+       .when(
+      ["type", "$userTransactionLimits"],
+      ([type, userTransactionLimits], schema) => {
+        const limit =
+          type.toLowerCase() === "buy"
+            ? userTransactionLimits?.upper_limit_buy_ad
+            : userTransactionLimits?.upper_limit_sell_ad;
+
+        return schema.max(
+          limit,
+          `Maximum must not exceed ₦${formatNumber(limit)}`
+        );
+      }
+    )
+
+*/

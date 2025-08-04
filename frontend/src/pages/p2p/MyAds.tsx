@@ -12,8 +12,8 @@ import ErrorDisplay from "@/components/shared/ErrorDisplay";
 import { buttonVariants } from "@/components/ui/Button";
 import { APP_ROUTES } from "@/constants/app_route";
 import PreLoader from "@/layouts/PreLoader";
-import { getUserAds, updateAdStatus } from "@/redux/actions/walletActions";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { updateAdStatus, useFetchUserAds } from "@/redux/actions/walletActions";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 
@@ -29,14 +29,6 @@ export interface Ad {
   closedAt?: string;
   priceType: string;
   priceMargin: number;
-}
-
-interface RootState {
-  user: {
-    user: {
-      userId: string;
-    } | null;
-  };
 }
 
 export type UpdateAdStatusResponse = {
@@ -55,14 +47,7 @@ const MyAds = () => {
     isError,
     error,
     isFetching,
-  } = useQuery<AdsTypes[], Error>({
-    queryKey: ["userAds", userId],
-    queryFn: () => getUserAds(userId),
-    retry: false,
-    refetchOnMount: false,
-    staleTime: Infinity,
-    enabled: !!userId,
-  });
+  } = useFetchUserAds(userId);
 
   const adsData = useMemo(() => {
     const activeAds = userAds.filter((ad) => ad.status !== "closed");
@@ -72,8 +57,6 @@ const MyAds = () => {
       closedAds,
     };
   }, [userAds]);
-
-  console.log(isError, error);
 
   //HDR: Mutation function
   const mutation = useMutation<
@@ -142,15 +125,41 @@ const MyAds = () => {
     },
     {
       accessorKey: "price",
-      header: "Price",
+      header: "Price (xNGN)",
       cell: ({ row }) => {
         const price = row.original.price;
         return (
           <span className="text-gray-600 ">
             {formatter({
               decimal: 0,
-              currency: "NGN",
-              style: "currency",
+            }).format(price || 0)}
+          </span>
+        );
+      },
+    },
+    {
+      accessorKey: "minimumLimit",
+      header: "Minimum Price (xNGN)",
+      cell: ({ row }) => {
+        const price = row.original.minimumLimit;
+        return (
+          <span className="text-gray-600 ">
+            {formatter({
+              decimal: 0,
+            }).format(price || 0)}
+          </span>
+        );
+      },
+    },
+    {
+      accessorKey: "maximumLimit",
+      header: "Maximum Price (xNGN)",
+      cell: ({ row }) => {
+        const price = row.original.maximumLimit;
+        return (
+          <span className="text-gray-600 ">
+            {formatter({
+              decimal: 0,
             }).format(price || 0)}
           </span>
         );

@@ -115,6 +115,14 @@ interface User {
   userName: string;
 }
 
+interface RootState {
+  user: {
+    user: {
+      userId: string;
+    } | null;
+  };
+}
+
 interface OrderHistory {
   adType: "sell" | "buy";
   adsId: string;

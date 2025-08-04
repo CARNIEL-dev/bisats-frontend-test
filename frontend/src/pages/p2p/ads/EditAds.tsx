@@ -136,6 +136,7 @@ const EditAds = ({
     },
     context: { liveRate: tokenLivePrices, userTransactionLimits, walletData },
   } as FormikConfig<IAdRequest> & { context: { liveRate: PriceData; userTransactionLimits: typeof userTransactionLimits; walletData: { [key: string]: any } | null } });
+
   return (
     <>
       <MaxWidth className="max-w-[38rem] mb-10 border py-4 px-6 rounded-2xl">
