@@ -279,6 +279,8 @@ const Transactions: React.FC = () => {
         <div className="h-[40dvh] grid place-content-center">
           <ErrorDisplay
             message={error?.message || "Failed to load wallet transactions"}
+            isError={false}
+            showIcon={false}
           />
         </div>
       ) : transactionsData?.length === 0 ? (

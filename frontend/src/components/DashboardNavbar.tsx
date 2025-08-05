@@ -13,7 +13,7 @@ import {
 } from "@/redux/reducers/notificationSlice";
 import { cn } from "@/utils";
 import dayjs from "dayjs";
-import { Bell, Check } from "lucide-react";
+import { Bell, Check, Loader } from "lucide-react";
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import BisatLogo from "@/components/shared/Logo";
@@ -26,6 +26,7 @@ import {
 } from "@/redux/actions/generalActions";
 import { UserState } from "@/redux/reducers/userSlice";
 import ProfileDropdown from "@/components/shared/ProfileDropdown";
+import { useState } from "react";
 
 dayjs.extend(relativeTime);
 
@@ -55,10 +56,23 @@ export default DashboardNavbar;
 
 // HDR: NOTIFICATION
 const Notification = () => {
+  const [isUpdatingId, setIsUpdatingId] = useState("");
+
   const user = useSelector((state: { user: UserState }) => state.user);
   const notificationState: NotificationState = useSelector(
     (state: any) => state.notification
   );
+
+  const markAsRead = async (id: string) => {
+    setIsUpdatingId(id);
+    await Read_Notification({
+      userId: user?.user?.userId,
+      notificationId: id,
+    });
+    await GetNotification();
+    setIsUpdatingId("");
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="outline-none relative">
@@ -103,15 +117,14 @@ const Notification = () => {
                           <Button
                             variant="secondary"
                             className={cn("text-xs py-1 !h-fit text-slate-600")}
-                            onClick={() => {
-                              Read_Notification({
-                                userId: user?.user?.userId,
-                                notificationId: notification?.id,
-                              });
-                              GetNotification();
-                            }}
+                            onClick={() => markAsRead(notification.id)}
+                            disabled={isUpdatingId === notification.id}
                           >
-                            <Check />
+                            {isUpdatingId === notification.id ? (
+                              <Loader className="animate-spin" />
+                            ) : (
+                              <Check />
+                            )}
                             Read
                           </Button>
                         </div>

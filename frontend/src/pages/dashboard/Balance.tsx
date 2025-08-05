@@ -48,6 +48,7 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
     queryKey: ["balance"],
     queryFn: getCryptoRates,
     refetchOnMount: false,
+    staleTime: 3 * 60 * 1000, // 3 minutes
     enabled: Boolean(walletData),
   });
 

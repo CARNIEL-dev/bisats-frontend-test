@@ -65,15 +65,14 @@ const SetPinModal: React.FC<Props> = ({ close, type }) => {
         className="flex flex-col justify-center w-full mx-auto"
         onClick={handleModalContentClick}
       >
-        <h1 className="text-[#0A0E12] text-[22px] leading-[32px] font-semibold text-left mt-5">
+        <h1 className="text-[#0A0E12] text-[22px] leading-[32px] font-semibold text-left mt-2">
           Security Verification
         </h1>
-        <div className="mt-5">
+        <div className="flex flex-col gap-2 mt-4">
           {type === "change" && (
             <PrimaryInput
-              css={"w-full p-2.5 mb-7"}
+              css={"w-full p-2.5 "}
               label={"Old PIN"}
-              placeholder="Old PIN"
               error={undefined}
               touched={undefined}
               value={oldPin}
@@ -83,12 +82,11 @@ const SetPinModal: React.FC<Props> = ({ close, type }) => {
               }}
             />
           )}
-          <div className="relative mb-4">
+          <div className="">
             <PrimaryInput
               css={"w-full p-2.5"}
               type="number"
               label={"Wallet PIN"}
-              placeholder="Enter PIN"
               error={undefined}
               touched={undefined}
               value={pin}
@@ -99,9 +97,8 @@ const SetPinModal: React.FC<Props> = ({ close, type }) => {
             />
           </div>
           <PrimaryInput
-            css={"w-full p-2.5 mb-7"}
+            css={"w-full p-2.5"}
             label={"Confirm PIN"}
-            placeholder="Confirm PIN"
             error={pin !== confirmPin ? true : false}
             touched={undefined}
             value={confirmPin}
@@ -112,11 +109,11 @@ const SetPinModal: React.FC<Props> = ({ close, type }) => {
           />
 
           <PrimaryButton
-            css={"w-full"}
+            css={"w-full mt-6"}
             text={"Confirm"}
             loading={loading}
             onClick={Submit}
-            disabled={loading}
+            disabled={loading || pin !== confirmPin || !pin || !confirmPin}
           />
         </div>
       </div>

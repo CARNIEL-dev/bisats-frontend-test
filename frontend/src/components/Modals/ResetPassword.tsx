@@ -17,22 +17,16 @@ interface Props {
 const ResetPasswordModal: React.FC<Props> = ({ close }) => {
   const userState: UserState = useSelector((state: any) => state.user);
   const user = userState.user;
-  const [isLoading, setIsLoading] = useState(false);
+
   const navigate = useNavigate();
-  const [passwordBody] = useState({
-    oldPassword: "",
-    newPassword: "",
-    confirmPassword: "",
-  });
+  const [passwordBody] = useState({});
 
   const formik = useFormik({
-    initialValues: { ...passwordBody },
+    initialValues: { oldPassword: "", newPassword: "", confirmPassword: "" },
     validationSchema: ChangePasswordSchema,
     validateOnMount: false,
     validateOnChange: false,
     onSubmit: async (values) => {
-      setIsLoading(true);
-
       const payload = { ...values, userId: user?.userId };
       const response = await UpdatePassword(payload);
       if (response?.statusCode === 200) {
@@ -42,7 +36,6 @@ const ResetPasswordModal: React.FC<Props> = ({ close }) => {
       } else {
         Toast.error(response.message, "Error");
       }
-      setIsLoading(false);
     },
   });
   return (
@@ -103,7 +96,8 @@ const ResetPasswordModal: React.FC<Props> = ({ close }) => {
             />
             <PrimaryButton
               text={"Proceed"}
-              loading={isLoading}
+              disabled={formik.isSubmitting || !formik.isValid}
+              loading={formik.isSubmitting}
               css="w-1/2 ml-3"
             />
           </div>

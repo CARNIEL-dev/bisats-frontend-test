@@ -45,7 +45,7 @@ const VolumeByAssetChart = ({ data, title, showXNgn }: Props) => {
           {title} {showXNgn && "(xNGN)"}{" "}
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="px-4 md:px-6">
         <ChartContainer config={chartConfig} className="h-[20rem] w-full">
           <BarChart data={data} accessibilityLayer>
             <CartesianGrid strokeDasharray="3 3" vertical={false} />

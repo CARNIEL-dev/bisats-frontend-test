@@ -74,17 +74,19 @@ const OrdersChart = () => {
   }, [orders, userId, showNaira, days]);
 
   return (
-    <div className="border rounded-2xl p-6 h-fit">
-      <div className="flex items-center gap-4 mb-4">
-        <h3 className="text-lg text-gray-800 font-semibold ">Ads Volume</h3>
-        <div className="flex items-center gap-1 text-xs text-gray-500">
+    <div className="border rounded-2xl md:p-6 p-3 h-fit">
+      <div className="flex items-center flex-wrap  md:gap-4 gap-2 mb-4">
+        <h3 className="md:text-lg text-base text-gray-800 font-semibold ">
+          Ads Volume
+        </h3>
+        <div className="flex items-center ml-auto md:ml-0 gap-1 text-xs text-gray-500">
           <span>Fiat</span>
           <Switch
             checked={showNaira}
             onCheckedChange={(val) => {
               setShowNaira(val);
             }}
-            disabled={isFetching}
+            disabled={isFetching || isError}
           />
           <span>xNGN</span>
         </div>
@@ -93,10 +95,11 @@ const OrdersChart = () => {
           refetch={refetch}
           refreshTime={2 * 60 * 1000}
         />
-        <div className="ml-auto">
+        <div className="md:ml-auto ">
           <Select
             defaultValue={days.toString()}
             onValueChange={(val) => setDays(Number(val))}
+            disabled={isError}
           >
             <SelectTrigger className="!h-10">
               <SelectValue placeholder="Select days" />
@@ -113,12 +116,16 @@ const OrdersChart = () => {
       </div>
 
       {isFetching ? (
-        <div className="h-[18rem] flex items-center justify-center">
+        <div className="h-[26rem] flex items-center justify-center">
           <PreLoader primary={false} />
         </div>
       ) : isError ? (
-        <div className="w-full text-xs animate-pulse h-[18rem] pt-10">
-          <ErrorDisplay message="Failed to load ads data" showIcon={false} />
+        <div className="w-full text-xs animate-pulse h-[23rem] pt-10">
+          <ErrorDisplay
+            message="No order history"
+            isError={false}
+            showIcon={false}
+          />
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-6">

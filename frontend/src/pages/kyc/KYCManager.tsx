@@ -17,6 +17,7 @@ interface TKycManager {
 const KycManager: React.FC<TKycManager> = ({ action, func, children }) => {
   const [modal, setModal] = useState<string | null>(null);
   const user: UserState = useSelector((state: any) => state.user);
+
   const userKycLevel =
     user.user?.accountLevel === null
       ? 0
@@ -29,15 +30,17 @@ const KycManager: React.FC<TKycManager> = ({ action, func, children }) => {
       : 10;
 
   const validateAndExecute = () => {
-    const rules = KYC_RULES[userKycLevel];
+    const level = Number(userKycLevel);
 
-    if (userKycLevel === null) {
+    const rules = KYC_RULES[level];
+
+    if (level === 0) {
       setModal("level_1");
       return;
     }
 
     if (!rules?.allowedActions.includes(action)) {
-      setModal(userKycLevel === 1 ? "level_2" : "level_3");
+      setModal(level === 1 ? "level_2" : "level_3");
       return;
     }
 
@@ -56,9 +59,7 @@ const KycManager: React.FC<TKycManager> = ({ action, func, children }) => {
       {children(validateAndExecute)}
 
       {modal === "level_1" && <KycVerification close={closeModal} />}
-      {(modal === "level_2" || modal === "level_3") && (
-        <KycUpgrade close={closeModal} />
-      )}
+      {modal === "level_2" && <KycUpgrade close={closeModal} />}
       {modal === "2fa" && (
         <SecurityVerification func={func} close={closeModal} />
       )}

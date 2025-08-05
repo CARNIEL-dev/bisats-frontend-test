@@ -64,9 +64,6 @@ const CreateAdDetails: React.FC<AdsProps> = ({
   const account_level = user?.accountLevel as AccountLevel;
   const userTransactionLimits = bisats_limit[account_level];
 
-  console.log("User limit", userTransactionLimits);
-  console.log("level", account_level);
-
   //SUB: Handle Next Stage
   const handleNextStage = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();

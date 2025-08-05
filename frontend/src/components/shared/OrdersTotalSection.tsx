@@ -11,7 +11,10 @@ const OrdersTotalSection = ({
   return (
     <div className="space-y-3">
       {data.map((d) => (
-        <div className=" text-[#515B6E] py-2.5 px-3 rounded-md border bg-neutral-50">
+        <div
+          key={d.asset}
+          className=" text-[#515B6E] py-2.5 px-3 rounded-md border bg-neutral-50"
+        >
           <div className="flex items-center gap-2  mb-1">
             <img
               src={tokenLogos[d.asset as keyof typeof tokenLogos]}

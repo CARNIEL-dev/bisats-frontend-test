@@ -1,11 +1,10 @@
 import DownTrend from "@/assets/icons/downTrend.svg";
 import UpTrend from "@/assets/icons/upTrend.svg";
-import ErrorDisplay from "@/components/shared/ErrorDisplay";
+import { NGN } from "@/assets/tokens/index";
 import { getCoinRates } from "@/redux/actions/walletActions";
 import { useQuery } from "@tanstack/react-query";
 import Marquee from "react-fast-marquee";
 import { BarLoader } from "react-spinners";
-import { NGN } from "@/assets/tokens/index";
 
 const RateBanner = () => {
   //SUB: Query function
@@ -33,9 +32,7 @@ const RateBanner = () => {
           />
         </>
       ) : isError ? (
-        <div className="w-full text-xs animate-pulse">
-          <ErrorDisplay message="Failed to fetch rate" showIcon={false} />
-        </div>
+        <span />
       ) : (
         <Marquee autoFill pauseOnHover>
           <div className="flex md:gap-12 gap-2  justify-between items-center animate-pulse">

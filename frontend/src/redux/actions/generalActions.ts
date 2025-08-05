@@ -35,9 +35,9 @@ export const GetNotification = async () => {
         payload: data,
       });
       return data;
-    } else {
     }
   } catch (error) {
+    // console.log("error notification catch", error);
     // throw handleApiError(error);
     return error;
   }
@@ -54,8 +54,7 @@ export const Read_Notification = async (payload: {
         method: "PUT",
       }
     );
-    const data = response.data;
-    console.log(data);
+    // const data = response.data;
     // dispatchWrapper({ type: GeneralTypes.SUCCESS, payload: data });
 
     return response;

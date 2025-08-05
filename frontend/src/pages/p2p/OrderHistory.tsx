@@ -1,16 +1,14 @@
 import { tokenLogos } from "@/assets/tokens";
 import Empty from "@/components/Empty";
+import RefreshButton from "@/components/RefreshButton";
 import ErrorDisplay from "@/components/shared/ErrorDisplay";
-import { Button } from "@/components/ui/Button";
 import { DataTable } from "@/components/ui/data-table";
-import { getToken } from "@/helpers";
 import PreLoader from "@/layouts/PreLoader";
 import { useFetchOrder } from "@/redux/actions/walletActions";
 import { UserState } from "@/redux/reducers/userSlice";
 import { cn, formatter } from "@/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
-import { RotateCw } from "lucide-react";
 import { useSelector } from "react-redux";
 
 const OrderHistory = () => {
@@ -165,15 +163,13 @@ const OrderHistory = () => {
         >
           Order History
         </h2>
-        <Button
-          variant="ghost"
-          onClick={() => refetch()}
+
+        <RefreshButton
+          isFetching={isFetching}
+          refetch={refetch}
           disabled={isFetching}
-          className="bg-gray-100 hover:bg-gray-200"
-        >
-          <RotateCw className={cn(isFetching && "animate-spin")} />
-          <span className="sr-only">Refresh</span>
-        </Button>
+          refreshTime={3 * 60 * 1000}
+        />
       </div>
 
       {isFetching ? (
@@ -182,7 +178,11 @@ const OrderHistory = () => {
         </div>
       ) : isError ? (
         <div className="h-[40dvh] grid place-content-center">
-          <ErrorDisplay message={error?.message || "Failed to load orders"} />
+          <ErrorDisplay
+            message={error?.message || "Failed to load orders"}
+            isError={false}
+            showIcon={false}
+          />
         </div>
       ) : orders?.length === 0 ? (
         <Empty text="No orders found" />

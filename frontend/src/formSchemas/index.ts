@@ -44,7 +44,7 @@ const ResetPasswordSchema = Yup.object().shape({
 });
 
 const ChangePasswordSchema = Yup.object().shape({
-  oldPassword: Yup.string().required(),
+  oldPassword: Yup.string().required("Enter your old password"),
   newPassword: Yup.string()
     .matches(lowerCaseRegex)
     .matches(upperCaseRegex)

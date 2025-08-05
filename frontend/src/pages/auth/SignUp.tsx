@@ -1,15 +1,16 @@
 import { useState } from "react";
-import PrimaryInput from "../../components/Inputs/PrimaryInput";
-import AuthPasswordInput from "../../components/Inputs/AuthPasswordInput";
-import { PrimaryButton } from "../../components/buttons/Buttons";
-import { InputCheck } from "../../components/Inputs/CheckBox";
-import OtherSide from "../../layouts/auth/OtherSide";
-import { SignUp as Signup } from "../../redux/actions/userActions";
-import GoogleButton from "../../components/buttons/GoogleButton";
-import { SignupSchema } from "../../formSchemas";
+import PrimaryInput from "@/components/Inputs/PrimaryInput";
+import AuthPasswordInput from "@/components/Inputs/AuthPasswordInput";
+import { PrimaryButton } from "@/components/buttons/Buttons";
+import { InputCheck } from "@/components/Inputs/CheckBox";
+import OtherSide from "@/layouts/auth/OtherSide";
+import { SignUp as Signup } from "@/redux/actions/userActions";
+import GoogleButton from "@/components/buttons/GoogleButton";
+import { SignupSchema } from "@/formSchemas";
 import { useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
-import { APP_ROUTES } from "../../constants/app_route";
+import { APP_ROUTES } from "@/constants/app_route";
+import Toast from "@/components/Toast";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -25,15 +26,14 @@ const SignUp = () => {
     validationSchema: SignupSchema,
     onSubmit: async (values) => {
       setIsLoading(true);
-      // if (formik.touched.agreeToTerms && formik.errors.agreeToTerms) {
-      //     Toast.warning(formik.errors.agreeToTerms, "Terms & Conditions")
-      // }
+
       const { agreeToTerms, ...payload } = values;
       const response = await Signup(payload);
 
-      console.log("sign Up", response);
       if (response?.statusCode === 200) {
         navigate(APP_ROUTES.AUTH.VERIFY);
+      } else {
+        Toast.error(response.message, "Sign Up Failed");
       }
       setIsLoading(false);
     },

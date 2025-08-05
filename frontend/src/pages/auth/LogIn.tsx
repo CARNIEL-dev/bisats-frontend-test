@@ -1,33 +1,28 @@
-import { useState } from "react";
-import PrimaryInput from "@/components/Inputs/PrimaryInput";
 import { PrimaryButton } from "@/components/buttons/Buttons";
-import OtherSide from "@/layouts/auth/OtherSide";
-import { Login, ReSendverificationCode } from "../../redux/actions/userActions";
 import GoogleButton from "@/components/buttons/GoogleButton";
-import Toast from "@/components/Toast";
-import { useFormik } from "formik";
-import { LogInSchema } from "../../formSchemas";
-import { APP_ROUTES } from "@/constants/app_route";
-import { useNavigate } from "react-router-dom";
 import AuthPasswordInput from "@/components/Inputs/AuthPasswordInput";
+import PrimaryInput from "@/components/Inputs/PrimaryInput";
+import Toast from "@/components/Toast";
+import { APP_ROUTES } from "@/constants/app_route";
+import { LogInSchema } from "@/formSchemas";
+import OtherSide from "@/layouts/auth/OtherSide";
+import { Login, ReSendverificationCode } from "@/redux/actions/userActions";
+import { useFormik } from "formik";
+import { useNavigate } from "react-router-dom";
 
 const LogIn = () => {
-  const [logInBody] = useState({
-    email: "",
-    password: "",
-  });
-
-  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const formik = useFormik({
-    initialValues: { ...logInBody },
+    initialValues: {
+      email: "",
+      password: "",
+    },
     validationSchema: LogInSchema,
     validateOnMount: false,
     validateOnChange: false,
     validateOnBlur: false,
     onSubmit: async (values) => {
-      setIsLoading(true);
       const { ...payload } = values;
       const response = await Login(payload);
       if (response.statusCode === 200) {
@@ -41,7 +36,6 @@ const LogIn = () => {
       } else {
         Toast.error(response.message, "Login Failed");
       }
-      setIsLoading(false);
     },
   });
 
@@ -83,8 +77,8 @@ const LogIn = () => {
               css={"w-full"}
               text={"Log In"}
               type="submit"
-              loading={isLoading}
-              disabled={isLoading}
+              loading={formik.isSubmitting}
+              disabled={formik.isSubmitting}
             />
           </div>
           {/* </form> */}

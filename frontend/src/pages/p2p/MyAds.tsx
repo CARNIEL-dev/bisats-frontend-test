@@ -15,8 +15,10 @@ import PreLoader from "@/layouts/PreLoader";
 import { updateAdStatus, useFetchUserAds } from "@/redux/actions/walletActions";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useMemo } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import KycManager from "../kyc/KYCManager";
+import { PrimaryButton } from "@/components/buttons/Buttons";
+import { ACTIONS } from "@/utils/transaction_limits";
 
 export interface Ad {
   id: string;
@@ -42,6 +44,8 @@ const MyAds = () => {
   const userId =
     useSelector((state: RootState) => state.user.user?.userId) || "";
   const queryClient = useQueryClient();
+
+  const navigate = useNavigate();
 
   const {
     data: userAds = [],
@@ -169,7 +173,7 @@ const MyAds = () => {
 
     {
       accessorKey: "amountFilled",
-      header: "Amount Available",
+      header: "Amount Filled",
       cell: ({ row }) => {
         const amount = row.original.amountAvailable;
         return (
@@ -254,16 +258,34 @@ const MyAds = () => {
           subtext="Create, view and manage your ads on Bisats here"
         />
 
-        <Link to={APP_ROUTES.P2P.CREATE_AD} className={cn(buttonVariants())}>
-          Create Ad
-        </Link>
+        <KycManager
+          action={ACTIONS.CREATE_AD}
+          func={() => navigate(APP_ROUTES.P2P.CREATE_AD)}
+        >
+          {(validateAndExecute) => (
+            <Link
+              to={APP_ROUTES.P2P.CREATE_AD}
+              className={cn(buttonVariants())}
+              onClick={(e) => {
+                e.preventDefault();
+                validateAndExecute();
+              }}
+            >
+              Create Ad
+            </Link>
+          )}
+        </KycManager>
       </div>
 
       <div>
         {isFetching ? (
           <PreLoader />
         ) : isError ? (
-          <ErrorDisplay message={error.message} />
+          <ErrorDisplay
+            message={error.message}
+            isError={false}
+            showIcon={false}
+          />
         ) : (
           <div className="space-y-16">
             <div className="space-y-3">

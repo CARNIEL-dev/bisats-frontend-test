@@ -7,7 +7,7 @@ import {
   setToken,
   setUser,
   setUserId,
-} from "../../helpers";
+} from "@/helpers";
 import {
   TIdentity,
   TLogin,
@@ -20,11 +20,11 @@ import {
   TUser,
   TVerify2FARequest,
   TVerifyPhone,
-} from "../../types/user";
-import { BACKEND_URLS } from "../../utils/backendUrls";
-import dispatchWrapper from "../../utils/dispatchWrapper";
-import Bisatsfetch from "../fetchWrapper";
-import { GeneralTypes, UserActionTypes } from "../types";
+} from "@/types/user";
+import { BACKEND_URLS } from "@/utils/backendUrls";
+import dispatchWrapper from "@/utils/dispatchWrapper";
+import Bisatsfetch from "@/redux/fetchWrapper";
+import { GeneralTypes, UserActionTypes } from "@/redux/types";
 
 export const Login = async (payload: TLogin) => {
   try {

@@ -7,9 +7,15 @@ interface Props {
   isFetching: boolean;
   refetch: () => void;
   refreshTime?: number;
+  disabled?: boolean;
 }
 
-const RefreshButton = ({ isFetching, refetch, refreshTime }: Props) => {
+const RefreshButton = ({
+  isFetching,
+  refetch,
+  refreshTime,
+  disabled: isDisabled,
+}: Props) => {
   const [cooldown, setCooldown] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout>>();
 
@@ -32,7 +38,7 @@ const RefreshButton = ({ isFetching, refetch, refreshTime }: Props) => {
   }, []);
 
   // disabled if we're already fetching or in cooldown
-  const disabled = isFetching || cooldown;
+  const disabled = isFetching || cooldown || isDisabled;
 
   return (
     <Button

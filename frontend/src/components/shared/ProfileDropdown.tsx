@@ -17,7 +17,7 @@ import { APP_ROUTES } from "@/constants/app_route";
 import { logoutUser } from "@/redux/actions/userActions";
 import { cn } from "@/utils";
 import { ChevronDown } from "lucide-react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/Button";
 import { useState } from "react";
 
@@ -78,6 +78,8 @@ const mobileMenuItems = [
 
 const ProfileDropdown = () => {
   const [open, setOpen] = useState(false);
+  const location = useLocation();
+  const pathname = location.pathname;
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
@@ -103,7 +105,8 @@ const ProfileDropdown = () => {
                     <NavLink
                       to={item.link}
                       className={cn(
-                        "group flex items-center gap-2 py-2.5  font-normal cursor-pointer text-slate-700 text-sm  hover:bg-[#F5FEF8] px-3 hover:font-medium hover:text-green-600 "
+                        "group flex items-center gap-2 py-2.5  font-normal cursor-pointer text-slate-700 text-sm  hover:bg-[#F5FEF8] px-3 hover:font-medium hover:text-green-600 ",
+                        pathname.includes(item.link) && "active"
                       )}
                       onClick={() => setOpen(false)}
                     >
@@ -115,7 +118,10 @@ const ProfileDropdown = () => {
                         <NavLink
                           to={subItem.link}
                           key={subIndex}
-                          className="block py-2.5 text-sm text-slate-600 hover:text-green-500"
+                          className={cn(
+                            "block py-2.5 text-sm text-slate-600 hover:text-green-500",
+                            pathname.includes(subItem.link) && "active"
+                          )}
                           onClick={() => setOpen(false)}
                         >
                           {subItem.text}

@@ -44,7 +44,7 @@ export const APP_ROUTES = {
     RECEIPT: "/p2p/market-place/receipt",
   },
   SETTINGS: {
-    PROFILE: "/settings/user-info",
+    PROFILE: "/settings",
     SECURITY: "/settings/security",
     PAYMENT: "/settings/payment",
     SUPPORT: "/settings/support",

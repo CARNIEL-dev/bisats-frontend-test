@@ -44,7 +44,8 @@ import DashboardLayout from "@/layouts/DashboardLayout";
 import Layout from "@/layouts/Layout";
 import { LandingPage } from "@/pages/landing-page/src/screens/Bisats/LandingPage";
 import MarketPlacePage from "@/pages/p2p/MarketPlacePage";
-import { Navigate, Route, Routes } from "react-router-dom";
+import NotFound from "@/routing/NotFound";
+import { Route, Routes } from "react-router-dom";
 
 const Routing = () => {
   return (
@@ -146,7 +147,7 @@ const Routing = () => {
 
         {/* SUB: MAIN PAGES */}
         <Route element={<Layout />}>
-          <Route path="*" element={<Navigate to="/404" />} />
+          <Route path="*" element={<NotFound />} />
           <Route path="/" element={<LandingPage />} />
           <Route path="/about" element={<About />} />
           <Route path="/terms&condition" element={<TermsAndCondition />} />

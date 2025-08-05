@@ -1,5 +1,5 @@
 import { FormikConfig, FormikProps, useFormik } from "formik";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useTransition } from "react";
 import { useSelector } from "react-redux";
 import * as Yup from "yup";
 
@@ -52,6 +52,7 @@ export interface AdsProps {
 }
 
 const CreateAd = () => {
+  const [isPending, startTransition] = useTransition();
   const [stage, setStage] = useState<"details" | "review">("details");
   const [fetching, setIsFetching] = useState(true);
   const user: UserState = useSelector((state: any) => state.user);
@@ -88,9 +89,16 @@ const CreateAd = () => {
     mutationFn: (payload: AdsPayload) => CreateAds(payload),
     onSuccess: (_, variables) => {
       Toast.success("Ad created successfully", "Success");
-      navigate(APP_ROUTES.P2P.MY_ADS);
-      queryClient.invalidateQueries({
-        queryKey: ["userAds", variables.userId],
+      startTransition(() => {
+        queryClient
+          .invalidateQueries({
+            queryKey: ["userAds", variables.userId],
+            exact: true,
+            refetchType: "all",
+          })
+          .then(() => {
+            navigate(APP_ROUTES.P2P.MY_ADS);
+          });
       });
     },
     onError: (err) => {
@@ -179,9 +187,11 @@ const CreateAd = () => {
                 css="w-full disabled"
                 type="button"
                 text="PublishAd"
-                loading={mutation.isPending}
+                loading={mutation.isPending || isPending}
                 disabled={
-                  !(formik.values.agree && formik.isValid) || mutation.isPending
+                  !(formik.values.agree && formik.isValid) ||
+                  mutation.isPending ||
+                  isPending
                 }
                 onClick={() => {
                   const newSchema =
