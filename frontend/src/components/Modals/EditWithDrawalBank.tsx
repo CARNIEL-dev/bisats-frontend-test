@@ -122,13 +122,14 @@ const EditWithdrawalBankAccount: React.FC<Props> = ({ close, bank }) => {
         </h1>
         <div className="my-5">
           <MultiSelectDropDown
-            title={bank?.bankName ?? "Select Bank"}
+            placeholder={"Select Bank"}
             choices={choices}
             error={undefined}
             touched={undefined}
             label={"Bank"}
             scrollHeight={"200px"}
             handleChange={(prop) => handleSelectBank(prop)}
+            value={bank?.bankName ?? selectedBank?.bank_name ?? ""}
           />
           <div className="my-3">
             <PrimaryInput

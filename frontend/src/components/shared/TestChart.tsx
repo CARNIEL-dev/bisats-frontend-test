@@ -21,6 +21,8 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { formatter } from "@/utils";
 
 interface Props {
   data: ChartData[];
@@ -29,6 +31,7 @@ interface Props {
 }
 
 const VolumeByAssetChart = ({ data, title, showXNgn }: Props) => {
+  const isMobile = useIsMobile();
   const chartConfig = {
     buy: {
       label: "Buy",
@@ -58,7 +61,14 @@ const VolumeByAssetChart = ({ data, title, showXNgn }: Props) => {
             />
 
             <YAxis
-              tickFormatter={(value) => ` ${value}`}
+              width={isMobile ? 0 : showXNgn ? 100 : undefined}
+              tickFormatter={(value) => {
+                const numVal = Number(value.toString().slice(0, 11));
+                if (showXNgn) {
+                  return formatter({ decimal: 0 }).format(numVal);
+                }
+                return numVal.toString();
+              }}
               axisLine={false}
               tickLine={false}
               tick={{ fill: "#6b7280" }}

@@ -68,7 +68,7 @@ const PhoneSchema = Yup.object().shape({
   phone: Yup.string().required(),
 });
 const BVNSchema = Yup.object().shape({
-  bvn: Yup.string().required(),
+  bvn: Yup.string().required("BVN is required"),
 });
 const LogInSchema = Yup.object().shape({
   email: Yup.string().email().required(),
@@ -437,6 +437,21 @@ const AdSchema = Yup.object().shape({
     .required("Upper limit price is required"),
 });
 
+const PersonalInformationSchema = Yup.object().shape({
+  firstName: Yup.string().required("First name is required"),
+  lastName: Yup.string().required("Last name is required"),
+  middleName: Yup.string().required("Middle name is required"),
+  dateOfBirth: Yup.string().required("Date of birth is required"),
+  nationality: Yup.string().required("Nationality is required"),
+  address: Yup.string().required("Address is required"),
+});
+
+const IdentificationSchema = Yup.object().shape({
+  docType: Yup.string().required("Document type is required"),
+  identificationNo: Yup.string().required("Identification number is required"),
+  selfie: Yup.string().required("Document is required"),
+});
+
 export {
   swapSchema,
   BVNSchema,
@@ -449,4 +464,6 @@ export {
   ResetPasswordSchema,
   SignupSchema,
   AdSchema,
+  PersonalInformationSchema,
+  IdentificationSchema,
 };

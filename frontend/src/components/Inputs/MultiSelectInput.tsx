@@ -7,7 +7,6 @@ import Label from "./Label";
 
 interface IMultiSelectDropDownProps {
   parentId?: string;
-  title: string;
   choices:
     | Array<{
         value: string;
@@ -20,30 +19,34 @@ interface IMultiSelectDropDownProps {
   label?: string;
   scrollHeight?: string;
   handleChange: (prop: string) => void;
+  value?: string | React.ReactNode;
+  placeholder?: string;
 }
 
 export const MultiSelectDropDown = ({
   parentId,
-  title,
+
   choices = [],
   label,
   error,
   touched,
   handleChange,
   scrollHeight,
+  value,
+  placeholder,
 }: IMultiSelectDropDownProps) => {
   const { ref, visible, setVisible } = useClickOutside(false);
 
   const [selected, setSelected] = useState<string | React.ReactNode>(
-    title || ""
+    value || ""
   );
   usePreventScroll(visible);
 
-  useEffect(() => {
-    return () => {
-      setSelected(title || "");
-    };
-  }, [choices]);
+  // useEffect(() => {
+  //   return () => {
+  //     setSelected(value || "");
+  //   };
+  // }, [choices]);
 
   return (
     <div>
@@ -69,7 +72,7 @@ export const MultiSelectDropDown = ({
           onClick={() => setVisible((prev) => !prev)}
         >
           <div className="truncate w-full text-left">
-            {selected ? selected : title}
+            {selected ? selected : placeholder}
           </div>
 
           <ChevronDown className="size-4" />
@@ -87,7 +90,7 @@ export const MultiSelectDropDown = ({
         >
           <ul
             className={cn(
-              `p-3 space-y-1 text-xs font-secondary h-fit w-full `,
+              `p-2 space-y-1 text-xs font-secondary h-fit w-full `,
               scrollHeight && "overflow-y-scroll max-h-[300px]"
             )}
             aria-labelledby={`${parentId}Btn`}

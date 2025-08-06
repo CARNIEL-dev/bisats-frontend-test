@@ -1,19 +1,31 @@
-import ModalTemplate from "./ModalTemplate";
-import StudentCard from "../../assets/student-card.svg";
-import { PrimaryButton, RedTransparentButton } from "../buttons/Buttons";
-import { useNavigate } from "react-router-dom";
-import { APP_ROUTES } from "../../constants/app_route";
 import { useSelector } from "react-redux";
-import { UserState } from "../../redux/reducers/userSlice";
-import { account_level_features } from "../../utils/data";
+import StudentCard from "@/assets/student-card.svg";
+import { APP_ROUTES } from "@/constants/app_route";
+import { UserState } from "@/redux/reducers/userSlice";
+import { account_level_features } from "@/utils/data";
+import { PrimaryButton, RedTransparentButton } from "../buttons/Buttons";
+import ModalTemplate from "./ModalTemplate";
 
 interface Props {
   close: () => void;
 }
 const KycUpgrade: React.FC<Props> = ({ close }) => {
-  const navigate = useNavigate();
   const userState: UserState = useSelector((state: any) => state.user);
   const user = userState;
+
+  const clickHandler = () => {
+    if (!user?.user?.phoneNumberVerified) {
+      window.location.href = APP_ROUTES.KYC.PHONEVERIFICATION;
+    } else if (!user.kyc?.personalInformationVerified) {
+      window.location.href = APP_ROUTES.KYC.PERSONAL;
+    } else if (!user?.kyc.identificationVerified) {
+      window.location.href = APP_ROUTES.KYC.IDENTITY;
+    } else if (!user?.kyc?.bvnVerified) {
+      window.location.href = APP_ROUTES.KYC.BVNVERIFICATION;
+    } else {
+      window.location.href = APP_ROUTES.KYC.LEVEL3VERIFICATION;
+    }
+  };
   return (
     <ModalTemplate onClose={close}>
       <div className="flex flex-col justify-center w-full text-center mx-auto">
@@ -47,17 +59,7 @@ const KycUpgrade: React.FC<Props> = ({ close }) => {
           css={"w-full"}
           text={"Upgrade"}
           loading={false}
-          onClick={() =>
-            !user?.user?.phoneNumberVerified
-              ? navigate(APP_ROUTES.KYC.PHONEVERIFICATION)
-              : !user.kyc?.personalInformationVerified
-              ? navigate(APP_ROUTES.KYC.PERSONAL)
-              : !user?.kyc.identificationVerified
-              ? navigate(APP_ROUTES.KYC.IDENTITY)
-              : !user?.kyc?.bvnVerified
-              ? navigate(APP_ROUTES.KYC.BVNVERIFICATION)
-              : navigate(APP_ROUTES.KYC.LEVEL3VERIFICATION)
-          }
+          onClick={clickHandler}
         />
         <RedTransparentButton
           css={"w-full my-3"}

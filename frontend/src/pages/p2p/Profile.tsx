@@ -128,6 +128,16 @@ const Profile = () => {
     };
     GetSummary();
   }, [user?.userId]);
+
+  const clickHandler = () => {
+    if (!user?.accountLevel) {
+      window.location.href = APP_ROUTES.KYC.PHONEVERIFICATION;
+    } else if (user?.accountLevel === "level_1") {
+      window.location.href = APP_ROUTES.KYC.BVNVERIFICATION;
+    } else {
+      window.location.href = APP_ROUTES.KYC.LEVEL3VERIFICATION;
+    }
+  };
   return (
     <>
       <MaxWidth
@@ -137,7 +147,7 @@ const Profile = () => {
         <BackButton />
         <div className="flex items-center mx-3">
           <p className="text-[28px] md:text-[34px] leading-[40px] font-semibold text-[#0A0E12] mr-4">
-            {user?.userName}
+            {user?.userName || "Hello, User"}
           </p>
           <BadgeCheck fill="#22C55D" stroke="#fff" />
         </div>
@@ -165,13 +175,7 @@ const Profile = () => {
               <button
                 type="submit"
                 className={`h-[24px]  px-3 rounded-[6px] bg-[#F5BB00] text-[#0A0E12] text-[12px] leading-[24px] font-semibold text-center  shadow-[0_0_0.8px_#000] `}
-                onClick={() => {
-                  !user?.accountLevel
-                    ? navigate(APP_ROUTES.KYC.PHONEVERIFICATION)
-                    : user?.accountLevel === "level_1"
-                    ? navigate(APP_ROUTES?.KYC.BVNVERIFICATION)
-                    : navigate(APP_ROUTES.KYC.LEVEL3VERIFICATION);
-                }}
+                onClick={clickHandler}
               >
                 Upgrade
               </button>

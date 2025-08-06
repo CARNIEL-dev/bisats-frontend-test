@@ -1,156 +1,157 @@
-import { CountrySelect } from "../../components/Inputs/CountrySelect"
-import PrimaryInput from "../../components/Inputs/PrimaryInput"
-import StepFlow from "./StepFlow"
-import DateInput from "../../components/Inputs/DateInput"
-import { PrimaryButton } from "../../components/buttons/Buttons"
-import { useFormik } from "formik"
-import { PersonalInformationSchema } from "../../formSchemas/KYC"
-import { useNavigate } from "react-router-dom"
-import { useEffect, useState } from "react"
-import { PostPersonalInformation_KYC, GetUserDetails } from "../../redux/actions/userActions"
-import Toast from "../../components/Toast"
-import { APP_ROUTES } from "../../constants/app_route"
-import { UserState } from "../../redux/reducers/userSlice"
-import { useSelector } from "react-redux"
+import { CountrySelect } from "@/components/Inputs/CountrySelect";
+import PrimaryInput from "@/components/Inputs/PrimaryInput";
+import Toast from "@/components/Toast";
+import { PrimaryButton } from "@/components/buttons/Buttons";
+import { APP_ROUTES } from "@/constants/app_route";
+
+import DatePicker from "@/components/ui/DatePicker";
+import { PersonalInformationSchema } from "@/formSchemas";
+import {
+  GetUserDetails,
+  PostPersonalInformation_KYC,
+} from "@/redux/actions/userActions";
+import { UserState } from "@/redux/reducers/userSlice";
+import { useFormik } from "formik";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import StepFlow from "./StepFlow";
 
 const PersonalInfo = () => {
-    const [isLoading, setIsLoading] = useState(false)
-    const [personalInfo] = useState({
-        firstName: "",
-        middleName: "",
-        lastName: "",
-        dateOfBirth: "",
-        nationality: "",
-        businessName:"",
-        address: ""
-    })
-    const navigate = useNavigate()
-    const user = useSelector((state: { user: UserState }) => state.user);
-    useEffect(() => {
-        if (user?.kyc?.personalInformationVerified) {
-            navigate(APP_ROUTES.KYC.IDENTITY)
-        }
-    }, [user])
+  const navigate = useNavigate();
+  const user = useSelector((state: { user: UserState }) => state.user);
+  useEffect(() => {
+    if (user?.kyc?.personalInformationVerified) {
+      navigate(APP_ROUTES.KYC.IDENTITY);
+    }
+  }, [user]);
 
-    const formik = useFormik({
-        initialValues: { ...personalInfo },
-        validationSchema: PersonalInformationSchema,
-        onSubmit: async (values) => {
-            setIsLoading(true)
-            const { ...payload } = values
-            const payloadd = {
-                ...payload,
-                userId: user?.user?.userId
-            }
-            const response = await PostPersonalInformation_KYC(payloadd)
-            setIsLoading(false)
-            if (response.statusCode === 200) {
-                Toast.success(response.message, "Success")
-                GetUserDetails()
-                navigate(APP_ROUTES.KYC.IDENTITY)
-                return
-            } else {
-                Toast.error(response.message, "Error")
-                return
-            }
-        },
-    });
-    return (
-        <div>
-            <div className="w-full py-3 px-5">
-                <StepFlow step={1} />
-                <form onSubmit={formik.handleSubmit}>
-                <div className="my-4">
-                        <div className="lg:flex items-center justify-between w-full  ">
-                            <div className="w-full lg:w-full">
-                                <PrimaryInput
-                                    name="firstName"
-                                    css={"w-full  h-[48px]"}
-                                    label={"First Name"}
-                                    error={formik.errors.firstName}
-                                    touched={formik.touched.firstName}
-                                    value={formik.values.firstName}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                />
-                            </div>
-                            <div className="w-full lg:w-full lg:mx-3">
-                                <PrimaryInput
-                                    name="middleName"
-                                    css={"w-full = h-[48px]"}
-                                    label={"Middle Name"}
-                                    error={formik.errors.middleName}
-                                    touched={formik.touched.middleName}
-                                    value={formik.values.middleName}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                />
-                        </div>
-                            <div className="w-full lg:w-full">
-                                <PrimaryInput
-                                    name="lastName"
-                                    css={"w-full  h-[48px]"}
-                                    label={"Last Name"}
-                                    error={formik.errors.lastName}
-                                    touched={formik.touched.lastName}
-                                    value={formik.values.lastName}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="my-4">
-                        <DateInput
-                            parentId={""}
-                            title={"Select a date"}
-                            label={"Date of Birth"}
-                            name="dateOfBirth"
-                            error={formik.errors.dateOfBirth}
-                            touched={formik.touched.dateOfBirth}
-                            handleChange={formik.handleChange}
-                        />
-                    </div>
-                    <div className="my-4">
-                        <CountrySelect
-                            parentId={""} title={"Select a country"}
-                            choices={[]} label={"Nationality"}
-                            error={formik.errors.nationality}
-                            touched={formik.touched.nationality}
-                            handleChange={(prop) => formik.setFieldValue("nationality", prop)}
+  const formik = useFormik({
+    initialValues: {
+      firstName: "",
+      middleName: "",
+      lastName: "",
+      dateOfBirth: "",
+      nationality: "",
+      businessName: "",
+      address: "",
+    },
+    validationSchema: PersonalInformationSchema,
 
-                        />
-                    </div>
+    validateOnMount: false,
+    onSubmit: async (values) => {
+      const { ...payload } = values;
+      const payloadd = {
+        ...payload,
+        userId: user?.user?.userId,
+      };
+      const response = await PostPersonalInformation_KYC(payloadd);
 
-                    <div className="w-full ">
-                        <PrimaryInput
-                            css="w-full h-[48px]" name="address" placeholder="Where you live"
-                            label={"Residential Address"} error={formik.errors.address} touched={formik.touched.address}
-                            value={formik.values.address}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
+      if (response.statusCode === 200) {
+        Toast.success(response.message, "Success");
+        GetUserDetails();
+        navigate(APP_ROUTES.KYC.IDENTITY);
+        return;
+      } else {
+        Toast.error(response.message, "Error");
+        return;
+      }
+    },
+  });
+  return (
+    <div>
+      <div className="">
+        <StepFlow step={1} />
+        <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4">
+          <div className="lg:flex items-start justify-between w-full gap-x-1.5 gap-y-2  ">
+            <PrimaryInput
+              name="firstName"
+              css={"w-full  h-[48px]"}
+              label={"First Name"}
+              error={formik.errors.firstName}
+              touched={formik.touched.firstName}
+              value={formik.values.firstName}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+            />
 
-                        />
-                    </div>
-                    <div className="w-full ">
-                        <PrimaryInput
-                            css="w-full h-[48px]" name="businessName" placeholder="Your business name"
-                            label={"Business Name"} error={formik.errors.businessName} touched={formik.touched.businessName}
-                            value={formik.values.businessName}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            info="This is very important in verifying your application to be a merchant"
+            <PrimaryInput
+              name="middleName"
+              css={"w-full h-[48px]"}
+              label={"Middle Name"}
+              error={formik.errors.middleName}
+              touched={formik.touched.middleName}
+              value={formik.values.middleName}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+            />
 
-                        />
-                    </div>
+            <PrimaryInput
+              name="lastName"
+              css={"w-full  h-[48px]"}
+              label={"Last Name"}
+              error={formik.errors.lastName}
+              touched={formik.touched.lastName}
+              value={formik.values.lastName}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+            />
+          </div>
 
-                    <div className="my-4">
-                        <PrimaryButton css={"w-full"} text={"Continue"} loading={isLoading} />
-                    </div>
-                </form>
-            </div>
+          <DatePicker
+            title="Select a date"
+            label={"Date of Birth"}
+            name="dateOfBirth"
+            error={formik.errors.dateOfBirth}
+            handleChange={formik.handleChange}
+            value={formik.values.dateOfBirth}
+          />
 
-        </div>
-    )
-}
-export default PersonalInfo
+          <CountrySelect
+            placeholder={"Select a country"}
+            label={"Nationality"}
+            error={formik.errors.nationality}
+            touched={formik.touched.nationality}
+            handleChange={(prop) => formik.setFieldValue("nationality", prop)}
+            value={formik.values.nationality}
+          />
+
+          <PrimaryInput
+            css="w-full h-[48px]"
+            name="address"
+            placeholder="Where you live"
+            label={"Residential Address"}
+            error={formik.errors.address}
+            touched={formik.touched.address}
+            value={formik.values.address}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+          />
+
+          <PrimaryInput
+            css="w-full h-[48px]"
+            name="businessName"
+            placeholder="Your business name"
+            label={"Business Name"}
+            error={formik.errors.businessName}
+            touched={formik.touched.businessName}
+            value={formik.values.businessName}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            info="This is very important in verifying your application to be a merchant"
+          />
+
+          <div className="mt-4">
+            <PrimaryButton
+              css={"w-full"}
+              text={"Continue"}
+              loading={formik.isSubmitting}
+              disabled={formik.isSubmitting || !formik.isValid || !formik.dirty}
+            />
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+export default PersonalInfo;

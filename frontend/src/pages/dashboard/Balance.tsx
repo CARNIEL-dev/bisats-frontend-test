@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
@@ -13,31 +13,23 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { APP_ROUTES } from "@/constants/app_route";
+import {
+  getCryptoRates,
+  setWalletCurrency,
+  toggleShowBalance,
+} from "@/redux/actions/walletActions";
+import { WalletState } from "@/redux/reducers/walletSlice";
 import { cn, formatter } from "@/utils";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronDown, Eye, EyeClosed } from "lucide-react";
 import { ThreeDot } from "react-loading-indicators";
-import { getCryptoRates } from "@/redux/actions/walletActions";
 
 const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
-  const [showBalance, setShowBalance] = useState(true);
-  const [currency, setCurrency] = useState<"usd" | "ngn">("usd");
+  const { showBalance, defaultCurrency: currency } = useSelector(
+    (state: { wallet: WalletState }) => state.wallet
+  );
 
   const walletData = useSelector((state: RootState) => state.wallet.wallet);
-  // const walletSettings = useSelector((state: RootState) => state.wallet);
-
-  //? Fetch wallet data
-  // useEffect(() => {
-  //   const fetchWalletData = async () => {
-  //     try {
-  //       await GetWallet();
-  //     } catch (err) {
-  //       console.error("Error fetching wallet:", err);
-  //     }
-  //   };
-
-  //   fetchWalletData();
-  // }, []);
 
   //SUB: Query function
   const {
@@ -96,7 +88,7 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
           className={cn(
             "p-0! h-fit w-fit hover:bg-transparent hover:scale-110"
           )}
-          onClick={() => setShowBalance(!showBalance)}
+          onClick={toggleShowBalance}
         >
           {showBalance ? (
             <EyeClosed className="!size-5" />
@@ -159,7 +151,7 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
               <DropdownMenuSeparator />
               <DropdownMenuRadioGroup
                 value={currency}
-                onValueChange={(val) => setCurrency(val as "usd" | "ngn")}
+                onValueChange={(val) => setWalletCurrency(val as "usd" | "ngn")}
               >
                 <DropdownMenuRadioItem value="usd">USD</DropdownMenuRadioItem>
                 <DropdownMenuRadioItem value="ngn">NGN</DropdownMenuRadioItem>

@@ -108,7 +108,7 @@ const AddWithdrawalBankAccount: React.FC<Props> = ({ close }) => {
         <div className="my-5">
           <div className="mb-4">
             <MultiSelectDropDown
-              title={"Select Bank"}
+              placeholder={"Select Bank"}
               choices={choices}
               error={undefined}
               touched={undefined}

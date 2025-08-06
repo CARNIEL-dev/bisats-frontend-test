@@ -216,23 +216,25 @@ const WithdrawalPage = () => {
               <div>
                 <MultiSelectDropDown
                   parentId={""}
-                  title={"Select"}
+                  placeholder={"Select"}
                   choices={bankList}
                   error={undefined}
                   touched={undefined}
                   label={"Select Bank"}
                   handleChange={(e) => setbankAccountId(e)}
+                  value={bankAccountId}
                 />
               </div>
             ) : (
               <MultiSelectDropDown
                 parentId={""}
-                title={"Select option"}
+                placeholder={"Select option"}
                 choices={networks}
                 error={undefined}
                 touched={undefined}
                 label={"Select Network"}
                 handleChange={(e) => setSelectedNetworks(e)}
+                value={selectedNetwork}
               />
             )}
           </div>

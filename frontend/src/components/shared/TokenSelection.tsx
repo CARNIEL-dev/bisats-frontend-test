@@ -9,9 +9,10 @@ import { TokenData } from "@/data";
 import { WalletState } from "@/redux/reducers/walletSlice";
 import { cn } from "@/utils";
 import { formatNumber } from "@/utils/numberFormat";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
-import Label from "../Inputs/Label";
+import Label from "@/components/Inputs/Label";
+import { Badge } from "../ui/badge";
 
 type IAProps = {
   title: string;
@@ -50,6 +51,19 @@ const TokenSelection = ({
     return TokenData;
   }, [removexNGN]);
 
+  useEffect(() => {
+    if (showBalance) {
+      if (title) {
+        const defaultSelected = tokenOptions.find(
+          (option) => option.tokenName === title
+        );
+        if (defaultSelected) {
+          setSelected(defaultSelected.id);
+        }
+      }
+    }
+  }, [title, showBalance]);
+
   return (
     <div>
       {label && (
@@ -85,12 +99,12 @@ const TokenSelection = ({
       </div>
 
       {showBalance && selected && (
-        <p className="text-[#606C82] text-[12px] leading-[16px] font-normal mt-2.5">
-          Current Balance:{" "}
-          <span className="font-semibold text-[#515B6E]">
+        <Badge variant={"success"} className="!text-sm font-normal mt-4">
+          Balance:{" "}
+          <span className="font-semibold ]">
             {calculateCurrentWalletBallance ?? 0}
           </span>
-        </p>
+        </Badge>
       )}
 
       {error && <p className="text-red-500 text-xs mt-2.5">{error}</p>}

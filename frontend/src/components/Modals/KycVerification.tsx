@@ -1,19 +1,25 @@
-import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import StudentCard from "@/assets/student-card.svg";
+import { PrimaryButton } from "@/components/buttons/Buttons";
+import ModalTemplate from "@/components/Modals/ModalTemplate";
+import { Button } from "@/components/ui/Button";
 import { APP_ROUTES } from "@/constants/app_route";
 import { UserState } from "@/redux/reducers/userSlice";
-import { PrimaryButton } from "@/components/buttons/Buttons";
-import { Button } from "@/components/ui/Button";
-import ModalTemplate from "@/components/Modals/ModalTemplate";
+import { useSelector } from "react-redux";
 
 interface Props {
   close: () => void;
 }
 const KycVerification: React.FC<Props> = ({ close }) => {
-  const navigate = useNavigate();
   const userState: UserState = useSelector((state: any) => state.user);
   const user = userState.user;
+
+  const clickHandler = () => {
+    if (!user?.phoneNumberVerified) {
+      window.location.href = APP_ROUTES.KYC.PHONEVERIFICATION;
+    } else {
+      window.location.href = APP_ROUTES.KYC.PERSONAL;
+    }
+  };
   return (
     <ModalTemplate onClose={close}>
       <div className="flex flex-col justify-center w-full text-center mx-auto">
@@ -34,11 +40,7 @@ const KycVerification: React.FC<Props> = ({ close }) => {
           css={"w-full"}
           text={"Start Verification"}
           loading={false}
-          onClick={() =>
-            !user?.phoneNumberVerified
-              ? navigate(APP_ROUTES.KYC.PHONEVERIFICATION)
-              : navigate(APP_ROUTES.KYC.PERSONAL)
-          }
+          onClick={clickHandler}
         />
 
         <Button

@@ -163,7 +163,6 @@ export const UpdatePassword = async (payload: {
         body: JSON.stringify(payload),
       }
     );
-    const data = response.data;
     return response;
   } catch (error) {
     // throw handleApiError(error);
@@ -174,7 +173,7 @@ export const UpdatePassword = async (payload: {
 export const refreshAccessToken = async (payload: { refreshToken: string }) => {
   try {
     const response = await Bisatsfetch("/api/v1/user/refresh-token", {
-      method: "GET",
+      method: "POST",
       body: JSON.stringify(payload),
     });
     const data = response.data;
@@ -196,15 +195,6 @@ export const rehydrateUser = () => {
   }
 
   GetUserDetails();
-  // if (data && token) {
-  //   dispatchWrapper({
-  //     type: UserActionTypes?.LOG_IN_SUCCESS,
-  //     payload: data,
-  //   });
-  //   setUser(data);
-  //   setToken(token);
-  //   setRefreshToken(data.refreshToken);
-  // }
 };
 
 export const logoutUser = () => {

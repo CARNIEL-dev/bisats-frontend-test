@@ -21,9 +21,11 @@ export enum UserActionTypes {
   LOG_OUT = "logout",
   // Add other action types here
 }
-export enum WalletActionypes {
+export enum WalletActionTypes {
   GET_WALLET = "getwallet",
   WALLET_SETTINGS = "getwalletsettings",
+  TOGGLE_SHOW_BALANCE = "TOGGLE_SHOW_BALANCE",
+  SET_DEFAULT_CURRENCY = "SET_DEFAULT_CURRENCY",
 }
 export enum NotificationsActionypes {
   GET_NOTIFICATIONS = "getNotifications",

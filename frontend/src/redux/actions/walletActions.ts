@@ -2,7 +2,7 @@ import { getToken, getUser, setLivePrices, setUserTokenData } from "@/helpers";
 import { formatDate } from "@/layouts/utils/Dates";
 import { ITransaction, RawTx } from "@/pages/wallet/Transaction";
 import Bisatsfetch from "@/redux/fetchWrapper";
-import { WalletActionypes } from "@/redux/types";
+import { WalletActionTypes } from "@/redux/types";
 import {
   T2FARequest,
   TAddSearchRequest,
@@ -30,7 +30,7 @@ export const GetWallet = async () => {
     const data = response.data;
     if (response.status) {
       dispatchWrapper({
-        type: WalletActionypes.GET_WALLET,
+        type: WalletActionTypes.GET_WALLET,
         payload: data,
       });
       const asset_list = transformAssets(data?.cryptoAssests);
@@ -660,6 +660,19 @@ const getCoinRates = async ({ isMarket = false }: { isMarket?: boolean }) => {
   return data;
 };
 
+const toggleShowBalance = () => {
+  dispatchWrapper({
+    type: WalletActionTypes.TOGGLE_SHOW_BALANCE,
+  });
+};
+
+const setWalletCurrency = (currency: "usd" | "ngn") => {
+  dispatchWrapper({
+    type: WalletActionTypes.SET_DEFAULT_CURRENCY,
+    payload: currency,
+  });
+};
+
 export {
   getUserAds,
   updateAdStatus,
@@ -668,4 +681,6 @@ export {
   getCryptoRates,
   getCoinRates,
   useFetchUserAds,
+  toggleShowBalance,
+  setWalletCurrency,
 };

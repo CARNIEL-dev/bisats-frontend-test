@@ -7,6 +7,7 @@ import { UserState } from "@/redux/reducers/userSlice";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import MarketRate from "@/pages/dashboard/MarketRate";
+import MetaTag from "@/components/shared/MetaTag";
 
 const Dashboard = () => {
   const [openKycModal, setKycModalOpen] = useState(false);
@@ -50,6 +51,10 @@ const Dashboard = () => {
           <OrdersChart />
         </div>
       </MaxWidth>
+      <MetaTag
+        title="Dashboard | Bisats"
+        description="View all your account details and transactions on Bisats."
+      />
     </>
   );
 };

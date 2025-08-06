@@ -177,7 +177,7 @@ const TransactionBreakdown = () => {
             <div className="h-fit border  border-[#F3F4F6] bg-[#F9F9FB] rounded-[12px] p-2  my-5 text-[14px] leading-[24px] ">
               <div>
                 <MultiSelectDropDown
-                  title={"Select a bank for payment"}
+                  placeholder={"Select a bank for payment"}
                   choices={banks}
                   error={undefined}
                   touched={undefined}

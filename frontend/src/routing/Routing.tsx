@@ -69,15 +69,6 @@ const Routing = () => {
         {/* SUB: PROTECTED || DASHBOARD  PAGES */}
         <Route element={<ProtectedRoute />}>
           <Route element={<DashboardLayout />}>
-            <Route element={<KycLayOut />}>
-              <Route
-                path={APP_ROUTES?.KYC.PERSONAL}
-                Component={PersonalInformation}
-              />
-              <Route path={APP_ROUTES?.KYC.POA} Component={POA} />
-              <Route path={APP_ROUTES?.KYC.IDENTITY} Component={Identity} />
-            </Route>
-
             {/* SUB: Transaction PAGES */}
             <Route element={<TranscLayOut />}>
               <Route
@@ -131,18 +122,28 @@ const Routing = () => {
           </Route>
 
           {/* SUB: KYC PAGES */}
-          <Route
-            path={APP_ROUTES?.KYC.PHONEVERIFICATION}
-            Component={PhoneVerifcation}
-          />
-          <Route
-            path={APP_ROUTES?.KYC.BVNVERIFICATION}
-            Component={BVNVerification}
-          />
-          <Route
-            path={APP_ROUTES?.KYC.LEVEL3VERIFICATION}
-            Component={Level3Verification}
-          />
+          <Route element={<KycLayOut isMain={false} />}>
+            <Route
+              path={APP_ROUTES?.KYC.PHONEVERIFICATION}
+              Component={PhoneVerifcation}
+            />
+            <Route
+              path={APP_ROUTES?.KYC.BVNVERIFICATION}
+              Component={BVNVerification}
+            />
+            <Route
+              path={APP_ROUTES?.KYC.LEVEL3VERIFICATION}
+              Component={Level3Verification}
+            />
+            <Route element={<KycLayOut />}>
+              <Route
+                path={APP_ROUTES?.KYC.PERSONAL}
+                Component={PersonalInformation}
+              />
+              <Route path={APP_ROUTES?.KYC.POA} Component={POA} />
+              <Route path={APP_ROUTES?.KYC.IDENTITY} Component={Identity} />
+            </Route>
+          </Route>
         </Route>
 
         {/* SUB: MAIN PAGES */}

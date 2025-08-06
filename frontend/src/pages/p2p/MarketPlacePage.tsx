@@ -1,4 +1,5 @@
 import ErrorDisplay from "@/components/shared/ErrorDisplay";
+import MetaTag from "@/components/shared/MetaTag";
 import TokenSelection from "@/components/shared/TokenSelection";
 import { Button } from "@/components/ui/Button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -119,94 +120,100 @@ const MarketPlacePage = () => {
   //     });
 
   return (
-    <div className="space-y-8">
-      <Header
-        text="P2P Market"
-        subtext="Fast, secure, and hassle-free. Complete your trades instantly—no waiting, no delays!"
-      />
+    <>
+      <div className="space-y-8">
+        <Header
+          text="P2P Market"
+          subtext="Fast, secure, and hassle-free. Complete your trades instantly—no waiting, no delays!"
+        />
 
-      <Tabs
-        defaultValue={adsParam.type}
-        className="gap-4"
-        onValueChange={onTabChange}
-      >
-        <div className="border-b">
-          <TabsList className="p-0 bg-transparent px-2 md:gap-4 justify-around w-full md:w-fit">
-            {["buy", "sell"].map((v) => (
-              <TabsTrigger
-                key={v}
-                value={v}
-                disabled={isFetching}
-                className={cn(
-                  "!w-fit  data-[state=active]:border-b-4 rounded-none  !shadow-none !bg-transparent font-semibold md:px-4 px-10 flex-none text-gray-500 text-base border-0 capitalize",
-                  v === "buy"
-                    ? "data-[state=active]:text-[#17A34A] data-[state=active]:border-b-[#49DE80]"
-                    : "data-[state=active]:text-[#DC2625] data-[state=active]:border-b-[#EF4444]"
-                )}
-              >
-                {v}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-        </div>
-
-        {!isError && (
-          <>
-            <div className="grid grid-cols-[1fr_6rem] gap-2 md:w-[25%] items-end">
-              <TokenSelection
-                title={adsParam.asset}
-                error={undefined}
-                touched={undefined}
-                handleChange={handleTokenChange}
-                removexNGN
-                showBalance={false}
-                disabled={isFetching}
-              />
-
-              <div className="flex gap-1 items-center">
-                <Button
-                  variant="ghost"
-                  onClick={() => refetch()}
+        <Tabs
+          defaultValue={adsParam.type}
+          className="gap-4"
+          onValueChange={onTabChange}
+        >
+          <div className="border-b">
+            <TabsList className="p-0 bg-transparent px-2 md:gap-4 justify-around w-full md:w-fit">
+              {["buy", "sell"].map((v) => (
+                <TabsTrigger
+                  key={v}
+                  value={v}
                   disabled={isFetching}
-                  className="bg-gray-100 hover:bg-gray-200"
+                  className={cn(
+                    "!w-fit  data-[state=active]:border-b-4 rounded-none  !shadow-none !bg-transparent font-semibold md:px-4 px-10 flex-none text-gray-500 text-base border-0 capitalize",
+                    v === "buy"
+                      ? "data-[state=active]:text-[#17A34A] data-[state=active]:border-b-[#49DE80]"
+                      : "data-[state=active]:text-[#DC2625] data-[state=active]:border-b-[#EF4444]"
+                  )}
                 >
-                  <RotateCw className={cn(isFetching && "animate-spin")} />
-                  <span className="sr-only">Refresh</span>
-                </Button>
-                <Button
-                  variant="ghost"
-                  onClick={handleClear}
+                  {v}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </div>
+
+          {!isError && (
+            <>
+              <div className="grid grid-cols-[1fr_6rem] gap-2 md:w-[25%] items-end">
+                <TokenSelection
+                  title={adsParam.asset}
+                  error={undefined}
+                  touched={undefined}
+                  handleChange={handleTokenChange}
+                  removexNGN
+                  showBalance={false}
                   disabled={isFetching}
-                  className="bg-gray-100 hover:bg-gray-200"
-                >
-                  <X />
-                  <span className="sr-only">Clear</span>
-                </Button>
+                />
+
+                <div className="flex gap-1 items-center">
+                  <Button
+                    variant="ghost"
+                    onClick={() => refetch()}
+                    disabled={isFetching}
+                    className="bg-gray-100 hover:bg-gray-200"
+                  >
+                    <RotateCw className={cn(isFetching && "animate-spin")} />
+                    <span className="sr-only">Refresh</span>
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    onClick={handleClear}
+                    disabled={isFetching}
+                    className="bg-gray-100 hover:bg-gray-200"
+                  >
+                    <X />
+                    <span className="sr-only">Clear</span>
+                  </Button>
+                </div>
               </div>
-            </div>
-            <p className="mb-2 md:mb-3 text-sm font-semibold lg:text-lg">
-              Open Ads - {adsParam.asset}
-            </p>
-          </>
-        )}
+              <p className="mb-2 md:mb-3 text-sm font-semibold lg:text-lg">
+                Open Ads - {adsParam.asset}
+              </p>
+            </>
+          )}
 
-        {isFetching ? (
-          <PreLoader />
-        ) : isError ? (
-          <ErrorDisplay message={error.message} />
-        ) : (
-          <TabsContent value={adsParam.type}>
-            <MarketPlaceTable
-              type={adsParam.type}
-              asset={adsParam.asset}
-              ads={searchAds || []}
-              pagination={pagination}
-              setPagination={setPagination}
-            />
-          </TabsContent>
-        )}
-      </Tabs>
-    </div>
+          {isFetching ? (
+            <PreLoader />
+          ) : isError ? (
+            <ErrorDisplay message={error.message} />
+          ) : (
+            <TabsContent value={adsParam.type}>
+              <MarketPlaceTable
+                type={adsParam.type}
+                asset={adsParam.asset}
+                ads={searchAds || []}
+                pagination={pagination}
+                setPagination={setPagination}
+              />
+            </TabsContent>
+          )}
+        </Tabs>
+      </div>
+      <MetaTag
+        title="P2P Marketplace | Bisats"
+        description="View all your account details and transactions on Bisats."
+      />
+    </>
   );
 };
 

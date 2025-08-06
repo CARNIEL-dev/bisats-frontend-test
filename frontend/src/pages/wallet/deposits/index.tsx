@@ -16,7 +16,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import CopyDisplay from "@/components/shared/CopyDisplay";
 import TokenSelection from "@/components/shared/TokenSelection";
 import KycManager from "@/pages/kyc/KYCManager";
-import { WalletState } from "@/redux/reducers/walletSlice";
 import { ACTIONS } from "@/utils/transaction_limits";
 
 export type TNetwork = {
@@ -138,7 +137,8 @@ const DepositPage = () => {
           <div className="my-3">
             <MultiSelectDropDown
               parentId={""}
-              title={"Select option"}
+              value={selectedNetwork}
+              placeholder="Select option"
               choices={networks}
               error={undefined}
               touched={undefined}

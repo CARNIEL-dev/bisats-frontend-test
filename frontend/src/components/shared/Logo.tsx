@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import Logo from "@/assets/logo/blackTextLogo.png";
 import { cn } from "@/utils";
 const BisatLogo = ({ className }: { className?: string }) => {

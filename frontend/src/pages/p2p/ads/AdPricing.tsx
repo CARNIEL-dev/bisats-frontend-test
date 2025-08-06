@@ -73,7 +73,7 @@ const CreateAdPricing: React.FC<AdsProps> = ({
       <div className="my-4">
         <MultiSelectDropDown
           parentId=""
-          title="Static"
+          placeholder="Static"
           choices={pricingTypes}
           error={formik.errors.priceType}
           touched={formik.touched.priceType}
@@ -82,6 +82,7 @@ const CreateAdPricing: React.FC<AdsProps> = ({
             setPricingType(value);
             formik.setFieldValue("priceType", value);
           }}
+          value={pricingType}
         />
         <p className="mt-1">
           <TriangleAlert color="#F59E0C" size={12} className="inline mr-1" />
@@ -116,12 +117,13 @@ const CreateAdPricing: React.FC<AdsProps> = ({
         <div className="w-[20%]">
           <MultiSelectDropDown
             parentId=""
-            title="NGN"
+            placeholder="NGN"
             choices={currency}
             error={formik.errors.currency}
             touched={formik.touched.currency}
             label="Currency"
             handleChange={(value) => formik.setFieldValue("currency", value)}
+            value={formik.values.currency}
           />
         </div>
       </div>

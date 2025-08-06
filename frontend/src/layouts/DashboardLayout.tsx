@@ -26,7 +26,7 @@ const DashboardLayout: React.FC = () => {
     <div className="grid md:grid-rows-[80px_1fr] grid-rows-[62px_1fr]">
       <DashboardNavbar />
       <div className="row-start-2 row-end-3">
-        <main>
+        <main className="min-h-[calc(100vh-90px)]">
           <Outlet />
         </main>
         <Footer />

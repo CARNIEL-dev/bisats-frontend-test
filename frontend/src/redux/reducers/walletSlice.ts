@@ -1,6 +1,6 @@
 /** @format */
 
-import { WalletActionypes } from "../types";
+import { WalletActionTypes } from "../types";
 
 export interface WalletState {
   id: string;
@@ -9,11 +9,13 @@ export interface WalletState {
   wallet: {
     [key: string]: any;
   } | null;
+  showBalance: boolean;
+  defaultCurrency: "usd" | "ngn";
 }
 
 interface WalletActionProp {
   type: string;
-  payload: Record<string, any>;
+  payload?: any;
 }
 
 const initialState: WalletState = {
@@ -21,17 +23,30 @@ const initialState: WalletState = {
   userId: "",
   wallet: null,
   loading: false,
+  showBalance: true,
+  defaultCurrency: "usd",
 };
 
 const walletReducer = (state = initialState, action: WalletActionProp) => {
   switch (action.type) {
-    case WalletActionypes.GET_WALLET:
+    case WalletActionTypes.GET_WALLET:
       return {
         ...state,
         id: action.payload.id,
         userId: action.payload.userId,
         wallet: action.payload,
         loading: false,
+      };
+    case WalletActionTypes.TOGGLE_SHOW_BALANCE:
+      return {
+        ...state,
+        showBalance: !state.showBalance,
+      };
+
+    case WalletActionTypes.SET_DEFAULT_CURRENCY:
+      return {
+        ...state,
+        defaultCurrency: action.payload,
       };
     default:
       return state;

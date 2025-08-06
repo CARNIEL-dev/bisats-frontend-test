@@ -203,9 +203,7 @@ const SwapConfirmation: React.FC<Props> = ({
             {type === typeofSwam.Buy && (
               <div className="flex justify-between items-center mb-1.5">
                 <p className="text-[#424A59] font-normal">Fee:</p>
-                <p className="text-[#606C82] font-semibold">
-                  {fee} {token}
-                </p>
+                <p className="text-[#606C82] font-semibold">{fee} xNGN</p>
               </div>
             )}
             {fees.network && (

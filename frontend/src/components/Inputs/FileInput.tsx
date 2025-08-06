@@ -1,6 +1,7 @@
 import React from "react";
-import { docUpload } from "../../assets/icons";
-import Label from "./Label";
+import { docUpload } from "@/assets/icons";
+import Label from "@/components/Inputs/Label";
+import { cn } from "@/utils";
 
 interface TFileInput {
   fileName: string;
@@ -25,12 +26,11 @@ const FileInput: React.FC<TFileInput> = ({
     <div>
       <div className="my-3">
         <Label text={label} css={""} />
-        <div
-          className={`file-upload-container  py-2 ${
-            error && "border border-red-400"
-          }`}
-        >
-          <label htmlFor="file-upload" className="file-upload-box">
+        <div className={`file-upload-container py-2 `}>
+          <label
+            htmlFor="file-upload"
+            className={cn("file-upload-box", error && "!border-red-400")}
+          >
             <img
               className="file-upload-icon w-[24px] h-[24px]"
               src={docUpload}
@@ -50,7 +50,9 @@ const FileInput: React.FC<TFileInput> = ({
               disabled={disabled}
             />
           </label>
-          {error && <p className="error-text">{error}</p>}
+          {error && (
+            <p className="text-xs mt-2 self-start text-red-500">{error}</p>
+          )}
         </div>
         {info && (
           <span className="text-left flex justify-start  items-start text-[12px] text-[#707D96] ">

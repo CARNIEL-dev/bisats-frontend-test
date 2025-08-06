@@ -15,7 +15,7 @@ export const PrimaryButton: React.FC<TButtons> = ({
 }) => {
   return (
     <button
-      type="submit"
+      type={props.type || "submit"}
       disabled={loading}
       className={`flex justify-center items-center h-[48px] px-5 rounded-[6px] bg-[#F5BB00] text-[#0A0E12] text-[14px] leading-[24px] font-semibold text-center py-3 shadow-[0_0_0.8px_#000] whitespace-nowrap hover:bg-primary/80 duration-300 ease gap-2 transition-all ${
         props.disabled ? "bg-primary/40 pointer-events-none text-gray-500" : ""
