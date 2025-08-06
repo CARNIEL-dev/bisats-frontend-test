@@ -13,12 +13,17 @@ import { buttonVariants } from "@/components/ui/Button";
 import { APP_ROUTES } from "@/constants/app_route";
 import PreLoader from "@/layouts/PreLoader";
 import { updateAdStatus, useFetchUserAds } from "@/redux/actions/walletActions";
+import { ACTIONS } from "@/utils/transaction_limits";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import KycManager from "../kyc/KYCManager";
-import { PrimaryButton } from "@/components/buttons/Buttons";
-import { ACTIONS } from "@/utils/transaction_limits";
+import KycManager from "@/pages/kyc/KYCManager";
+import { UserState } from "@/redux/reducers/userSlice";
+import KycBanner from "@/components/KycBanner";
+import {
+  collapseTextChangeRangesAcrossMultipleVersions,
+  isConstructorDeclaration,
+} from "typescript";
 
 export interface Ad {
   id: string;
@@ -41,19 +46,26 @@ export type UpdateAdStatusResponse = {
 };
 
 const MyAds = () => {
-  const userId =
-    useSelector((state: RootState) => state.user.user?.userId) || "";
+  const userState: UserState = useSelector((state: any) => state.user);
+  const userId: string = userState?.user?.userId || "";
   const queryClient = useQueryClient();
 
   const navigate = useNavigate();
+
+  const isKycVerified = [
+    userState?.kyc?.identificationVerified,
+    userState?.kyc?.personalInformationVerified,
+    userState.user?.phoneNumberVerified,
+  ].some(Boolean);
 
   const {
     data: userAds = [],
     isError,
     error,
     isFetching,
-  } = useFetchUserAds(userId);
+  } = useFetchUserAds({ userId, isKycVerified });
 
+  console.log("Isfetching", isFetching);
   const adsData = useMemo(() => {
     const activeAds = userAds.filter((ad) => ad.status !== "closed");
     const closedAds = userAds.filter((ad) => ad.status === "closed");
@@ -278,7 +290,9 @@ const MyAds = () => {
       </div>
 
       <div>
-        {isFetching ? (
+        {!isKycVerified ? (
+          <KycBanner />
+        ) : isFetching ? (
           <PreLoader />
         ) : isError ? (
           <ErrorDisplay

@@ -82,7 +82,7 @@ const BVNVerification = () => {
   const resendOTP = async () => {
     const response = await Resend_OTP_PhoneNumber_KYC(user?.user?.userId);
 
-    if (response?.ok) {
+    if (response?.staus) {
       Toast.success(response.message, "OTP Sent");
       // navigate(APP_ROUTES.WALLET.HOME)
       return true;
@@ -138,7 +138,7 @@ const BVNVerification = () => {
                 <ResendCodeButton
                   onClick={resendOTP}
                   text="Resend code"
-                  defaultTime={30 * 1000} // 30 seconds
+                  defaultTime={30} // in seconds
                 />
                 <div className="w-full mt-6 mb-3">
                   <PrimaryButton

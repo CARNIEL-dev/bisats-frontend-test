@@ -46,8 +46,8 @@ const LogIn = () => {
         subHeader="Exchange fiat and crypto fast, easy and securely."
         upperSubHeader={<></>}
       />
-      <form onSubmit={formik.handleSubmit}>
-        <div className="w-full mt-10">
+      <div>
+        <form className="w-full mt-10" onSubmit={formik.handleSubmit}>
           <PrimaryInput
             type="email"
             name="email"
@@ -81,33 +81,32 @@ const LogIn = () => {
               disabled={formik.isSubmitting}
             />
           </div>
-          {/* </form> */}
-          <p
-            className="text-[14px] text-[#C49600] leading-[24px] font-normal mt-1 cursor-pointer"
-            onClick={() => navigate(APP_ROUTES.AUTH.FORGOT_PASSWORD)}
-          >
-            Forgot password?
-          </p>
+        </form>
+        <p
+          className="text-[14px] text-[#C49600] leading-[24px] font-normal mt-1 cursor-pointer"
+          onClick={() => navigate(APP_ROUTES.AUTH.FORGOT_PASSWORD)}
+        >
+          Forgot password?
+        </p>
 
-          <div className="w-full flex items-center my-6">
-            <hr className="text-[#F3F4F6] w-1/2 h-[1.5px]" />
-            <span className="text-[12px] text-[#707D96] leading-[16px] font-normal mx-2">
-              Or
-            </span>
-            <hr className="text-[#F3F4F6] w-1/2 h-[1.5px]" />
-          </div>
-          <GoogleButton text="Sign in with Google" />
-          <p className="text-[14px] text-[#515B6E] leading-[24px] font-semibold text-center">
-            Don’t have an account?
-            <span
-              className="text-[#C49600] pl-3 cursor-pointer"
-              onClick={() => navigate(APP_ROUTES.AUTH.SIGNUP)}
-            >
-              Sign Up
-            </span>
-          </p>
+        <div className="w-full flex items-center my-6">
+          <hr className="text-[#F3F4F6] w-1/2 h-[1.5px]" />
+          <span className="text-[12px] text-[#707D96] leading-[16px] font-normal mx-2">
+            Or
+          </span>
+          <hr className="text-[#F3F4F6] w-1/2 h-[1.5px]" />
         </div>
-      </form>
+        <GoogleButton text="Sign in with Google" />
+        <p className="text-[14px] text-[#515B6E] leading-[24px] font-semibold text-center">
+          Don’t have an account?
+          <span
+            className="text-[#C49600] pl-3 cursor-pointer"
+            onClick={() => navigate(APP_ROUTES.AUTH.SIGNUP)}
+          >
+            Sign Up
+          </span>
+        </p>
+      </div>
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import { tokenLogos } from "@/assets/tokens";
 import Empty from "@/components/Empty";
+import KycBanner from "@/components/KycBanner";
 import RefreshButton from "@/components/RefreshButton";
 import ErrorDisplay from "@/components/shared/ErrorDisplay";
 import { DataTable } from "@/components/ui/data-table";
@@ -13,7 +14,13 @@ import { useSelector } from "react-redux";
 
 const OrderHistory = () => {
   const userState: UserState = useSelector((state: any) => state.user);
-  const userId = userState?.user?.userId || "";
+  const userId: string = userState?.user?.userId || "";
+
+  const isKycVerified = [
+    userState?.kyc?.identificationVerified,
+    userState?.kyc?.personalInformationVerified,
+    userState.user?.phoneNumberVerified,
+  ].some(Boolean);
 
   const {
     data: orders = [],
@@ -21,7 +28,11 @@ const OrderHistory = () => {
     refetch,
     isFetching,
     isError,
-  } = useFetchOrder(userId);
+  } = useFetchOrder({ userId, isKycVerified });
+
+  if (!isKycVerified) {
+    return <KycBanner />;
+  }
 
   //   HDR: Columns
   const columns: ColumnDef<OrderHistory>[] = [

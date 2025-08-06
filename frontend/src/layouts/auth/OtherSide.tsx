@@ -1,4 +1,4 @@
-import React, { ReactElement } from "react";
+import { ReactElement } from "react";
 
 type TOtherSideProp = {
   header: string;
@@ -6,15 +6,11 @@ type TOtherSideProp = {
   upperSubHeader?: ReactElement | string;
 };
 
-const OtherSide = ({
-  header,
-  subHeader,
-  upperSubHeader = <div></div>,
-}: TOtherSideProp) => {
+const OtherSide = ({ header, subHeader, upperSubHeader }: TOtherSideProp) => {
   return (
-    <div className="w-full lg:w-[452px]">
+    <div className="w-full lg:w-[452px] space-y-2">
       {upperSubHeader}
-      <h1 className="font-semibold lg:text-[42px] lg:leading-[56px]">
+      <h1 className="font-semibold lg:text-[42px] lg:leading-[40px]">
         {header}
       </h1>
       <p className="text-gray-600 font-normal text-sm">{subHeader}</p>

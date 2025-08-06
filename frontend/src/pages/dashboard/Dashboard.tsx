@@ -2,12 +2,11 @@ import KycBanner from "@/components/KycBanner";
 import MaxWidth from "@/components/shared/MaxWith";
 import OrdersChart from "@/components/shared/OrdersChart";
 import Balance from "@/pages/dashboard/Balance";
+import MarketRate from "@/pages/dashboard/MarketRate";
 import { GetWallet } from "@/redux/actions/walletActions";
 import { UserState } from "@/redux/reducers/userSlice";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import MarketRate from "@/pages/dashboard/MarketRate";
-import MetaTag from "@/components/shared/MetaTag";
 
 const Dashboard = () => {
   const [openKycModal, setKycModalOpen] = useState(false);
@@ -19,15 +18,20 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
-    const kyscStatus = user?.kyc;
-    if (
-      !kyscStatus?.identificationVerified ||
-      !kyscStatus?.personalInformationVerified ||
-      !user?.phoneNumberVerified
-    ) {
+    const unverifiedFields = [
+      !user?.kyc?.identificationVerified,
+      !user?.kyc?.personalInformationVerified,
+      !user?.phoneNumberVerified,
+    ];
+
+    if (unverifiedFields.some(Boolean)) {
       setKycModalOpen(true);
     }
-  }, []);
+  }, [
+    user?.kyc?.identificationVerified,
+    user?.kyc?.personalInformationVerified,
+    user?.phoneNumberVerified,
+  ]);
 
   return (
     <>
@@ -48,13 +52,9 @@ const Dashboard = () => {
             </div>
             <MarketRate />
           </div>
-          <OrdersChart />
+          {!openKycModal && <OrdersChart />}
         </div>
       </MaxWidth>
-      <MetaTag
-        title="Dashboard | Bisats"
-        description="View all your account details and transactions on Bisats."
-      />
     </>
   );
 };

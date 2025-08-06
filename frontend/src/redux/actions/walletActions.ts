@@ -537,6 +537,7 @@ const useUserWalletHistory = ({
   date,
   type,
   searchWord,
+  isKycVerified,
 }: {
   userId: string;
   reason: string;
@@ -544,6 +545,7 @@ const useUserWalletHistory = ({
   date: string;
   type: string;
   searchWord: string;
+  isKycVerified?: boolean;
 }) => {
   return useQuery<
     ITransaction[], // TData
@@ -594,12 +596,18 @@ const useUserWalletHistory = ({
       }));
     },
     // staleTime: 1000 * 60 * 5,
-    enabled: Boolean(userId),
+    enabled: Boolean(userId && isKycVerified),
     refetchOnMount: false,
   });
 };
 
-const useFetchOrder = (userId: string) => {
+const useFetchOrder = ({
+  userId,
+  isKycVerified,
+}: {
+  userId: string;
+  isKycVerified?: boolean;
+}) => {
   return useQuery<OrderHistory[], Error>({
     queryKey: ["orders", userId],
     queryFn: async ({ queryKey }) => {
@@ -614,19 +622,25 @@ const useFetchOrder = (userId: string) => {
       }
       throw new Error("Failed to fetch orders");
     },
-    enabled: Boolean(userId),
+    enabled: Boolean(userId && isKycVerified),
     refetchOnMount: false,
   });
 };
 
-const useFetchUserAds = (userId: string) => {
+const useFetchUserAds = ({
+  userId,
+  isKycVerified,
+}: {
+  userId: string;
+  isKycVerified?: boolean;
+}) => {
   return useQuery<AdsTypes[], Error>({
     queryKey: ["userAds", userId],
     queryFn: () => getUserAds(userId),
     retry: false,
     refetchOnMount: false,
     staleTime: Infinity,
-    enabled: Boolean(userId),
+    enabled: Boolean(userId && isKycVerified),
   });
 };
 

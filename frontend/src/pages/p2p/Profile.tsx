@@ -1,14 +1,17 @@
+import BackButton from "@/components/shared/BackButton";
+import ErrorDisplay from "@/components/shared/ErrorDisplay";
 import MaxWidth from "@/components/shared/MaxWith";
+import SEO from "@/components/shared/SEO";
 import { APP_ROUTES } from "@/constants/app_route";
+import PreLoader from "@/layouts/PreLoader";
 import { GET_ACTIVITY_SUMMARY } from "@/redux/actions/userActions";
 import { UserState } from "@/redux/reducers/userSlice";
 import { formatNumber } from "@/utils/numberFormat";
-import { BadgeCheck } from "lucide-react";
-import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { AccountLevel, bisats_limit } from "@/utils/transaction_limits";
-import BackButton from "@/components/shared/BackButton";
+import { useQuery } from "@tanstack/react-query";
+import { BadgeCheck, Info } from "lucide-react";
+import { useMemo } from "react";
+import { useSelector } from "react-redux";
 
 type TActivitySummary = {
   currentActiveAds: number;
@@ -20,22 +23,15 @@ type TActivitySummary = {
   totalOrderVolumeIn30d: number;
 };
 
-const Profile = () => {
-  const [activitySummary, setActivitySummary] = useState<TActivitySummary>();
-  const userState: UserState = useSelector((state: any) => state.user);
-  const user = userState.user;
-  const account_level = user?.accountLevel ?? "level_1";
-  const navigate = useNavigate();
-
-  const limits = bisats_limit[account_level as AccountLevel];
+const getKycStatus = (userState: UserState) => {
   const kycStatus = [
     {
       type: "Email",
-      verified: user?.emailVerified,
+      verified: userState?.user?.emailVerified,
     },
     {
       type: "Phone no",
-      verified: user?.phoneNumberVerified,
+      verified: userState?.user?.phoneNumberVerified,
     },
     {
       type: "Govt ID",
@@ -58,80 +54,104 @@ const Profile = () => {
       verified: userState?.kyc?.proofOfProfileVerified,
     },
   ];
+  return kycStatus;
+};
 
-  const Limits = [
-    {
-      limit: "Daily Fiat Withdrawal Limit",
-      amount: `${
-        limits?.daily_withdrawal_limit_fiat > 500000000
-          ? "Unlimited"
-          : limits?.daily_withdrawal_limit_fiat
-      } NGN`,
-    },
-    {
-      limit: "Daily Crypto Withdrawal Limit",
-      amount: `${formatNumber(limits?.daily_withdrawal_limit_crypto)} USD`,
-    },
-    {
-      limit: "Sell Ad Limit",
-      amount: `${formatNumber(limits.maximum_ad_creation_amount)} NGN`,
-    },
-    {
-      limit: "Buy Ad limit",
-      amount: `${formatNumber(limits.maximum_ad_creation_amount)} NGN`,
-    },
-  ];
+const Profile = () => {
+  const userState: UserState = useSelector((state: any) => state.user);
+  const user = userState.user;
+  const account_level = user?.accountLevel;
 
-  const ActivitySummary = [
-    {
-      type: "Volume Traded (30d)",
-      value: `${formatNumber(
-        activitySummary?.totalOrderVolumeIn30d ?? 0
-      )} xNGN`,
-    },
-    {
-      type: "Ads Created (30d) ",
-      value: `${formatNumber(activitySummary?.totalAdsCreatedIn30d ?? 0)} `,
-    },
-    {
-      type: "Completed Orders (30d)",
-      value: `${formatNumber(activitySummary?.totalOrderCompletedIn30d ?? 0)} `,
-    },
+  const limits = bisats_limit[account_level as AccountLevel] || null;
 
-    {
-      type: "Current Running Ads",
-      value: `${formatNumber(activitySummary?.currentActiveAds ?? 0)} `,
-    },
-    {
-      type: "Total Volume Traded",
-      value: `${formatNumber(activitySummary?.totalOrderVolume ?? 0)} xNGN`,
-    },
-    {
-      type: "Total Ads Created",
-      value: `${formatNumber(activitySummary?.totalAdsCreated ?? 0)} `,
-    },
-    {
-      type: "Total Completed Orders",
-      value: `${formatNumber(activitySummary?.totalOrderCompleted ?? 0)} `,
-    },
-    {
-      type: "Total Ads Created",
-      value: `${formatNumber(activitySummary?.totalAdsCreated ?? 0)} `,
-    },
-  ];
+  const userLimits = limits
+    ? [
+        {
+          limit: "Daily Fiat Withdrawal Limit",
+          amount: `${
+            limits?.daily_withdrawal_limit_fiat > 500000000
+              ? "Unlimited"
+              : formatNumber(limits?.daily_withdrawal_limit_fiat)
+          } NGN`,
+        },
+        {
+          limit: "Daily Crypto Withdrawal Limit",
+          amount: `${formatNumber(limits?.daily_withdrawal_limit_crypto)} USD`,
+        },
+        {
+          limit: "Sell Ad Limit",
+          amount: `${formatNumber(limits.maximum_ad_creation_amount)} NGN`,
+        },
+        {
+          limit: "Buy Ad limit",
+          amount: `${formatNumber(limits.maximum_ad_creation_amount)} NGN`,
+        },
+      ]
+    : [];
 
-  useEffect(() => {
-    const GetSummary = async () => {
-      const summary = await GET_ACTIVITY_SUMMARY(user?.userId);
-      console.log(summary);
-      setActivitySummary(summary?.data);
-    };
-    GetSummary();
-  }, [user?.userId]);
+  //SUB: Query function
+  const {
+    data: activitySummary,
+    isFetching,
+    isError,
+
+    error,
+  } = useQuery<TActivitySummary, Error, TActivitySummary, [string, string]>({
+    queryKey: ["activitySummary", user?.userId],
+    queryFn: async () => await GET_ACTIVITY_SUMMARY(user?.userId),
+    refetchOnMount: false,
+    enabled: Boolean(user?.userId),
+  });
+
+  const ActivitySummary = useMemo(() => {
+    return [
+      {
+        type: "Volume Traded (30d)",
+        value: `${formatNumber(
+          activitySummary?.totalOrderVolumeIn30d ?? 0
+        )} xNGN`,
+      },
+      {
+        type: "Ads Created (30d) ",
+        value: `${formatNumber(activitySummary?.totalAdsCreatedIn30d ?? 0)} `,
+      },
+      {
+        type: "Completed Orders (30d)",
+        value: `${formatNumber(
+          activitySummary?.totalOrderCompletedIn30d ?? 0
+        )} `,
+      },
+
+      {
+        type: "Current Running Ads",
+        value: `${formatNumber(activitySummary?.currentActiveAds ?? 0)} `,
+      },
+      {
+        type: "Total Volume Traded",
+        value: `${formatNumber(activitySummary?.totalOrderVolume ?? 0)} xNGN`,
+      },
+      {
+        type: "Total Ads Created",
+        value: `${formatNumber(activitySummary?.totalAdsCreated ?? 0)} `,
+      },
+      {
+        type: "Total Completed Orders",
+        value: `${formatNumber(activitySummary?.totalOrderCompleted ?? 0)} `,
+      },
+      {
+        type: "Total Ads Created",
+        value: `${formatNumber(activitySummary?.totalAdsCreated ?? 0)} `,
+      },
+    ];
+  }, [activitySummary]);
 
   const clickHandler = () => {
     if (!user?.accountLevel) {
-      window.location.href = APP_ROUTES.KYC.PHONEVERIFICATION;
+      if (!user?.phoneNumberVerified) {
+        window.location.href = APP_ROUTES.KYC.PHONEVERIFICATION;
+      } else {
+        window.location.href = APP_ROUTES.KYC.PERSONAL;
+      }
     } else if (user?.accountLevel === "level_1") {
       window.location.href = APP_ROUTES.KYC.BVNVERIFICATION;
     } else {
@@ -152,13 +172,7 @@ const Profile = () => {
           <BadgeCheck fill="#22C55D" stroke="#fff" />
         </div>
 
-        <div
-          className="border border-[#F3F4F6] p-3 lg:p-5 rounded-[12px] bg-linear-to-r from-[#FFFFFF] to-[#F6F7F8] w-full mx-3"
-          style={{
-            background:
-              "linear-gradient(103.09deg, #FFFFFF 7.36 %, #F6F7F8 95.14 %)",
-          }}
-        >
+        <div className="border border-[#F3F4F6] p-3 lg:p-5 rounded-[12px] bg-gradient-to-r from-[#FFFFFF] to-[#F6F7F8] w-full mx-3">
           <div className="flex items-center text-[18px]  leading-[32px] font-semibold mb-3">
             <h1 className="text-[#515B6E] ">Account Tier:</h1>
             <h1 className="text-[#17A34A] mx-2">
@@ -177,13 +191,13 @@ const Profile = () => {
                 className={`h-[24px]  px-3 rounded-[6px] bg-[#F5BB00] text-[#0A0E12] text-[12px] leading-[24px] font-semibold text-center  shadow-[0_0_0.8px_#000] `}
                 onClick={clickHandler}
               >
-                Upgrade
+                {!limits ? "Verify" : "Upgrade"}
               </button>
             )}
           </div>
 
           <div className="flex flex-wrap  items-center">
-            {kycStatus?.map((item, idx) => (
+            {getKycStatus(userState)?.map((item, idx) => (
               <div className="flex  items-center mr-3 my-1" key={idx}>
                 <svg
                   width="10"
@@ -205,60 +219,91 @@ const Profile = () => {
           </div>
 
           <div className="flex flex-wrap items-center justify-between mt-5 ">
-            {Limits?.map((item, idx) => (
-              <div key={idx} className="my-3 lg:my-0 text-left w-1/2 lg:w-fit">
-                <p className="text-[12px]  leading-[16px] font-normal text-[#707D96] mb-2">
-                  {" "}
-                  {item.limit}
+            {userLimits.length > 0 ? (
+              userLimits?.map((item, idx) => (
+                <div
+                  key={idx}
+                  className="my-3 lg:my-0 text-left w-1/2 lg:w-fit"
+                >
+                  <p className="text-[12px]  leading-[16px] font-normal text-[#707D96] mb-2">
+                    {" "}
+                    {item.limit}
+                  </p>
+                  <h1 className="text-[14px]  leading-[24px] font-semibold text-[#515B6E]">
+                    {item.amount}
+                  </h1>
+                </div>
+              ))
+            ) : (
+              <div className="my-3 flex items-center gap-1 text-gray-600 border border-[#F3F4F6] rounded-[8px] py-2 px-3 bg-priYellow/10">
+                <Info className="size-5" />
+                <p className="text-sm text-center ">
+                  Verify your account to get your limits
                 </p>
-                <h1 className="text-[14px]  leading-[24px] font-semibold text-[#515B6E]">
-                  {item.amount}
-                </h1>
               </div>
-            ))}
+            )}
           </div>
         </div>
 
-        <div
-          className="border border-[#F3F4F6] rounded-[12px] p-3 lg:p-5 bg-linear-to-r from-[#FFFFFF] to-[#F6F7F8] w-full mx-3"
-          style={{
-            background:
-              "linear-gradient(103.09deg, #FFFFFF 7.36 %, #F6F7F8 95.14 %)",
-          }}
-        >
-          <div className="flex items-center text-[18px]  leading-[32px] font-semibold mb-3">
+        {/* SUB: Activity section */}
+        <section className="border border-[#F3F4F6] rounded-[12px] p-3 lg:p-5 bg-gradient-to-r from-[#FFFFFF] to-[#F6F7F8] w-full mx-3">
+          <div className="flex items-center text-[18px]  leading-[32px] font-semibold ">
             <h1 className="text-[#515B6E] ">Activity Summary</h1>
           </div>
 
-          <div className="flex  flex-wrap items-center justify-between mt-0 lg:my-5">
-            {ActivitySummary.slice(0, 4)?.map((item, idx) => (
-              <div key={idx} className="my-3 lg:my-0 text-left w-1/2 lg:w-fit">
-                <p className="text-[12px]  leading-[16px] font-normal text-[#707D96] mb-2">
-                  {" "}
-                  {item.type}
-                </p>
-                <h1 className="text-[14px]  leading-[24px] font-semibold text-[#515B6E]">
-                  {item.value}
-                </h1>
+          {isFetching ? (
+            <div className="h-[8rem] flex items-center justify-center">
+              <PreLoader primary={false} />
+            </div>
+          ) : isError ? (
+            <div className="h-[8rem] text-sm flex items-center justify-center">
+              <ErrorDisplay
+                showIcon={false}
+                isError={false}
+                message={error?.message || "Failed to get summary"}
+              />
+            </div>
+          ) : (
+            <>
+              <div className="flex  flex-wrap items-center justify-between mt-0 lg:my-5">
+                {ActivitySummary.slice(0, 4)?.map((item, idx) => (
+                  <div
+                    key={idx}
+                    className="my-3 lg:my-0 text-left w-1/2 lg:w-fit"
+                  >
+                    <p className="text-[12px]  leading-[16px] font-normal text-[#707D96] mb-2">
+                      {" "}
+                      {item.type}
+                    </p>
+                    <h1 className="text-[14px]  leading-[24px] font-semibold text-[#515B6E]">
+                      {item.value}
+                    </h1>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
 
-          <div className="flex flex-wrap items-center justify-between mt-0 lg:mt-5">
-            {ActivitySummary.slice(4)?.map((item, idx) => (
-              <div key={idx} className="my-3 lg:my-0 text-left w-1/2 lg:w-fit">
-                <p className="text-[12px]  leading-[16px] font-normal text-[#707D96] mb-2">
-                  {" "}
-                  {item.type}
-                </p>
-                <h1 className="text-[14px]  leading-[24px] font-semibold text-[#515B6E]">
-                  {item.value}
-                </h1>
+              <div className="flex flex-wrap items-center justify-between mt-0 lg:mt-3">
+                {ActivitySummary.slice(4)?.map((item, idx) => (
+                  <div
+                    key={idx}
+                    className="my-2 lg:my-0 text-left w-1/2 lg:w-fit"
+                  >
+                    <p className="text-[12px]  leading-[16px] font-normal text-[#707D96] mb-2">
+                      {" "}
+                      {item.type}
+                    </p>
+                    <h1 className="text-[14px]  leading-[24px] font-semibold text-[#515B6E]">
+                      {item.value}
+                    </h1>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </div>
+            </>
+          )}
+        </section>
       </MaxWidth>
+
+      <SEO title="Profile" />
     </>
   );
 };

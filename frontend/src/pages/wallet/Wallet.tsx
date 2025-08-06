@@ -1,4 +1,5 @@
 import MaxWidth from "@/components/shared/MaxWith";
+import SEO from "@/components/shared/SEO";
 import Balance from "@/pages/dashboard/Balance";
 import Assets from "@/pages/wallet/Assets";
 import Transactions from "@/pages/wallet/Transaction";
@@ -27,6 +28,7 @@ const Wallet = () => {
           </div>
         </div>
       </MaxWidth>
+      <SEO title="Wallet" />
     </>
   );
 };

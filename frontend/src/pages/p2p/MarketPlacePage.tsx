@@ -1,5 +1,5 @@
 import ErrorDisplay from "@/components/shared/ErrorDisplay";
-import MetaTag from "@/components/shared/MetaTag";
+import SEO from "@/components/shared/SEO";
 import TokenSelection from "@/components/shared/TokenSelection";
 import { Button } from "@/components/ui/Button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -209,10 +209,7 @@ const MarketPlacePage = () => {
           )}
         </Tabs>
       </div>
-      <MetaTag
-        title="P2P Marketplace | Bisats"
-        description="View all your account details and transactions on Bisats."
-      />
+      <SEO title="P2P Marketplace " />
     </>
   );
 };

@@ -58,14 +58,14 @@ const ChangePasswordSchema = Yup.object().shape({
 });
 
 const VerificationSchema = Yup.object().shape({
-  code: Yup.string().length(6).required(),
+  code: Yup.string().length(6).required("Code is required"),
 });
 const EmailSchema = Yup.object().shape({
   email: Yup.string().email().required(),
 });
 
 const PhoneSchema = Yup.object().shape({
-  phone: Yup.string().required(),
+  phone: Yup.string().required("Phone number is required"),
 });
 const BVNSchema = Yup.object().shape({
   bvn: Yup.string().required("BVN is required"),

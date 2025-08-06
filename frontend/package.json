@@ -60,6 +60,7 @@
     "start-https": "HTTPS=true craco start",
     "start": "craco start",
     "build": "craco build",
+    "serve": "serve -s build",
     "test": "craco test",
     "eject": "react-scripts eject"
   },

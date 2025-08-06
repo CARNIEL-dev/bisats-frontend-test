@@ -55,7 +55,7 @@ const SettingsLayOut = () => {
           </div>
         </MaxWidth>
       </div>
-      <MaxWidth className=" md:mt-40 mt-36 max-w-[45rem]  md:min-h-[65dvh] mb-10 min-h-[75dvh]">
+      <MaxWidth className=" md:mt-40 mt-36 max-w-[45rem]  md:min-h-[45dvh] mb-10 min-h-[65dvh]">
         <Outlet />
       </MaxWidth>
     </div>

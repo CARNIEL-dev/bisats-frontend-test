@@ -15,7 +15,8 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
+} from "@/components/ui/select";
+import { UserState } from "@/redux/reducers/userSlice";
 
 const daysOption = [7, 14, 30, 60];
 
@@ -23,15 +24,21 @@ const OrdersChart = () => {
   const [showNaira, setShowNaira] = useState(true);
   const [days, setDays] = useState(7);
 
-  const userId =
-    useSelector((state: RootState) => state.user.user?.userId) || "";
+  const userState: UserState = useSelector((state: any) => state.user);
+  const userId: string = userState?.user?.userId || "";
+
+  const isKycVerified = [
+    userState?.kyc?.identificationVerified,
+    userState?.kyc?.personalInformationVerified,
+    userState.user?.phoneNumberVerified,
+  ].some(Boolean);
 
   const {
     data: orders = [],
     refetch,
     isFetching,
     isError,
-  } = useFetchOrder(userId);
+  } = useFetchOrder({ userId, isKycVerified });
 
   // HDR: Data
   const data = useMemo(() => {

@@ -45,11 +45,19 @@ export type RawTx = {
 const Transactions: React.FC = () => {
   const user = useSelector((state: { user: UserState }) => state.user);
 
+  const userId: string = user?.user?.userId || "";
+
   const [selectedAsset, setSelectedAsset] = useState<string>("");
   const [selectedType, setSelectedType] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [selectedData, setSelectedData] = useState<ITransaction | undefined>();
+
+  const isKycVerified = [
+    user?.kyc?.identificationVerified,
+    user?.kyc?.personalInformationVerified,
+    user.user?.phoneNumberVerified,
+  ].some(Boolean);
 
   const {
     data: transactionsData = [],
@@ -63,6 +71,7 @@ const Transactions: React.FC = () => {
     type: "",
     date: selectedDate,
     searchWord: searchTerm,
+    isKycVerified,
   });
 
   //   HDR: Columns
@@ -234,10 +243,6 @@ const Transactions: React.FC = () => {
     setSelectedType(type);
   };
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
-  };
-
   return (
     <div>
       {/* <div className="hidden md:block mb-6">
@@ -262,13 +267,6 @@ const Transactions: React.FC = () => {
               touched={false}
             />
           </div>
-          <div className="xl:w-80 lg:w-72 md:w-64">
-            <SearchInput
-              placeholder="Search by reference"
-              value={searchTerm}
-              handleChange={handleSearchChange}
-            />
-          </div>
         </div>
       </div> */}
       {isFetching ? (
@@ -291,6 +289,8 @@ const Transactions: React.FC = () => {
             columns={columns}
             data={transactionsData}
             // paginated={false}
+            enableFiltering
+            filterColumns={["Reference", "Date", "Amount"]}
           />
         </>
       )}

@@ -15,6 +15,7 @@ export const MobileAppByAnima = (): JSX.Element => {
                 className={` absolute top-0 left-0`}
                 src={Phones}
                 alt="Screen"
+                loading="lazy"
               />
             </CardContent>
           </Card>
@@ -44,6 +45,7 @@ export const MobileAppByAnima = (): JSX.Element => {
               className="h-[30px] lg:h-[44px]"
               alt={"app/google-stores"}
               src={AppStores}
+              loading="lazy"
             />
           </div>
         </div>
@@ -56,6 +58,7 @@ export const MobileAppByAnima = (): JSX.Element => {
                 className={` absolute top-0 left-0`}
                 src={Phones}
                 alt="Screen"
+                loading="lazy"
               />
             </CardContent>
           </Card>

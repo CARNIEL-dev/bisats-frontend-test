@@ -1,27 +1,33 @@
-import PrimaryInput from "../../components/Inputs/PrimaryInput";
-import { PrimaryButton } from "../../components/buttons/Buttons";
-import { BackArrow } from "../../assets/icons";
-import OtherSide from "../../layouts/auth/OtherSide";
+import ResendCodeButton from "@/components/shared/ResendCodeButton";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useFormik } from "formik";
-import { useState } from "react";
-import { PhoneSchema, VerificationSchema } from "../../formSchemas";
-import { useNavigate } from "react-router-dom";
-import { APP_ROUTES } from "../../constants/app_route";
-import Header from "../../components/Header";
-import { countryDataForPhone } from "../../utils/data";
+import { useMemo, useState } from "react";
 import { useSelector } from "react-redux";
-import { UserState } from "../../redux/reducers/userSlice";
+import { useNavigate } from "react-router-dom";
+import Flag from "react-world-flags";
+import PrimaryInput from "@/components/Inputs/PrimaryInput";
+import Toast from "@/components/Toast";
+import { PrimaryButton } from "@/components/buttons/Buttons";
+import { APP_ROUTES } from "@/constants/app_route";
+import { PhoneSchema, VerificationSchema } from "@/formSchemas";
+import OtherSide from "@/layouts/auth/OtherSide";
 import {
   PostPhoneNumber_KYC,
   Resend_OTP_PhoneNumber_KYC,
   Verify_OTP_PhoneNumber_KYC,
-} from "../../redux/actions/userActions";
-import Toast from "../../components/Toast";
+} from "@/redux/actions/userActions";
+import { UserState } from "@/redux/reducers/userSlice";
+import { countryDataForPhone } from "@/utils/data";
+
 const PhoneVerifcation = () => {
   const user: UserState = useSelector((state: any) => state.user);
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [resendLoading, setResendLoading] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState("NG");
   const [verficationScreen, setVerificationScreen] = useState(false);
   const navigate = useNavigate();
@@ -59,17 +65,40 @@ const PhoneVerifcation = () => {
     return countryDialCode + phone;
   };
 
+  const listOptions = useMemo(() => {
+    return countryDataForPhone.slice(0, 1).map((country) => ({
+      value: country.code,
+      label: (
+        <>
+          <div className="flex items-center gap-1.5 w-full">
+            {country.code && (
+              <Flag
+                code={country.code}
+                style={{
+                  width: "15px",
+                  height: "18px",
+                }}
+              />
+            )}
+            <span className="text-gray-600 text-sm">
+              + ( {country.dialCode} )
+            </span>
+          </div>
+        </>
+      ),
+    }));
+  }, [countryDataForPhone]);
+
   const formik1 = useFormik({
     initialValues: { code: "" },
     validationSchema: VerificationSchema,
     onSubmit: async (values) => {
-      setIsLoading(true);
       const payload = {
         userId: user.user?.userId ?? "",
         code: values.code ?? "",
       };
       const response = await Verify_OTP_PhoneNumber_KYC(payload);
-      setIsLoading(false);
+
       if (response?.statusCode === 200) {
         Toast.success(response.message, "Phone number verified");
         navigate(APP_ROUTES.KYC.PERSONAL);
@@ -83,14 +112,12 @@ const PhoneVerifcation = () => {
     initialValues: { phone: "" },
     validationSchema: PhoneSchema,
     onSubmit: async (values) => {
-      setIsLoading(true);
-
       const payload = {
         userId: user.user?.userId ?? "",
         phoneNumber: values.phone ?? "",
       };
       const response = await PostPhoneNumber_KYC(payload);
-      setIsLoading(false);
+
       if (response?.statusCode === 200) {
         setVerificationScreen(true);
       } else {
@@ -100,15 +127,13 @@ const PhoneVerifcation = () => {
   });
 
   const resendOTP = async () => {
-    setIsLoading(true);
     const response = await Resend_OTP_PhoneNumber_KYC(user?.user?.userId);
-    setIsLoading(false);
-    console.log(response);
-    if (response?.ok) {
+    if (response?.status) {
       Toast.success(response.message, "OTP Sent");
-      // navigate(APP_ROUTES.WALLET.HOME)
+      return true;
     } else {
       Toast.error(response.message, "");
+      return false;
     }
   };
 
@@ -132,7 +157,7 @@ const PhoneVerifcation = () => {
               <PrimaryInput
                 type="code"
                 name="code"
-                label="code"
+                label="Code"
                 css="w-full h-[48px] px-3 outline-hidden "
                 error={formik1.errors.code}
                 touched={formik1.touched.code}
@@ -144,38 +169,38 @@ const PhoneVerifcation = () => {
                 <PrimaryButton
                   css={"w-full"}
                   text={"Enter code"}
-                  loading={isLoading}
+                  loading={formik1.isSubmitting}
                   type="submit"
+                  disabled={formik1.isSubmitting || !formik1.isValid}
                 />
               </div>
-              <div className="flex items-center justify-between">
-                <p className="text-[14px] text-[#515B6E] leading-[24px] font-normal text-left">
-                  00:31
-                </p>
-                <span
-                  className="text-[#C49600] text-[14px] leading-[24px] font-semibold "
-                  onClick={() => resendOTP()}
-                >
-                  {resendLoading ? "loading..." : "Resend OTP"}
-                </span>
-              </div>
+
+              <ResendCodeButton
+                onClick={resendOTP}
+                defaultTime={30} // in seconds
+                text="Resend OTP"
+              />
             </div>
           </form>
         ) : (
           <form onSubmit={formik.handleSubmit}>
             <div className="w-full mt-10">
               <div className="w-full mb-4 relative">
-                <select
+                <Select
                   value={selectedCountry}
-                  onChange={(e) => setSelectedCountry(e.target.value)}
-                  className="w-fit  cursor-pointer py-1 border rounded-md absolute top-9 left-1 h-[39px] outline-hidden curor-pointer border-transparent"
+                  onValueChange={setSelectedCountry}
                 >
-                  {countryDataForPhone.map((country) => (
-                    <option key={country.code} value={country.code}>
-                      {country.flag} (+{country.dialCode})
-                    </option>
-                  ))}
-                </select>
+                  <SelectTrigger className="w-fit  bg-transparent cursor-pointer px-1  py-0 border rounded-md absolute top-1/2 -translate-y-1/2 left-1 !h-[30px] outline-hidden curor-pointer border-transparent">
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {listOptions.map((country) => (
+                      <SelectItem key={country.value} value={country.value}>
+                        {country.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
 
                 <PrimaryInput
                   css="w-full p-2.5 mb-7 pl-28"
@@ -191,7 +216,7 @@ const PhoneVerifcation = () => {
                     );
                     formik.setFieldValue("phone", normalized);
                   }}
-                  error={undefined}
+                  error={formik.errors.phone}
                   touched={undefined}
                 />
               </div>
@@ -199,12 +224,12 @@ const PhoneVerifcation = () => {
                 <PrimaryButton
                   css={"w-full"}
                   text={"Send code"}
-                  loading={isLoading}
+                  loading={formik.isSubmitting}
                   type="submit"
                   onSubmit={() => formik.handleSubmit()}
+                  disabled={formik.isSubmitting || !formik.isValid}
                 />
               </div>
-              {/* <p className="text-[14px] text-[#515B6E] leading-[24px] font-semibold text-left">Need help?<span className="text-[#C49600] pl-2 cursor-pointer">Contact Support</span></p> */}
             </div>
           </form>
         )}

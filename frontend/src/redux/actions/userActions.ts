@@ -521,7 +521,6 @@ export const Post_Proof_of_Profile_KYC = async (payload: TPOA) => {
 
     return data;
   } catch (error) {
-    console.log(error);
     // throw handleApiError(error);
     return error;
   }
@@ -578,8 +577,6 @@ export const Generate2FA_QRCODE = async (payload: string) => {
       return data;
     }
   } catch (error) {
-    logoutUser();
-    // throw handleApiError(error);
     return error;
   }
 };
@@ -654,10 +651,10 @@ export const GET_ACTIVITY_SUMMARY = async (payload: string) => {
     if (response.status) {
       return data;
     }
+
+    throw new Error(data.message);
   } catch (error) {
-    logoutUser();
-    // throw handleApiError(error);
-    return error;
+    throw error;
   }
 };
 
@@ -674,8 +671,6 @@ export const GET_WITHDRAWAL_LIMIT = async (payload: string) => {
       return data;
     }
   } catch (error) {
-    logoutUser();
-    // throw handleApiError(error);
     return error;
   }
 };

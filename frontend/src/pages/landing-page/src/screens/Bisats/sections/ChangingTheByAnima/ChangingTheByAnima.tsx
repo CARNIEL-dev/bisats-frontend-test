@@ -44,7 +44,7 @@ const featureCards = [
 
 export const ChangingTheByAnima = (): JSX.Element => {
   return (
-    <MaxWidth className=" 2xl:max-w-[100rem] md:mt-16 mt-8">
+    <MaxWidth className=" max-w-[78rem] 2xl:max-w-[90rem] md:mt-16 mt-8">
       <div className="">
         <h2 className="mb-8 lg:mb-16 text-[#2B313B] font-medium text-[28px] lg:text-[42px] text-center lg:text-start 2xl:text-center leading-[40px] lg:leading-[56px]">
           <span className="">
@@ -73,7 +73,12 @@ export const ChangingTheByAnima = (): JSX.Element => {
           <div className="absolute left-[50%] top-1/2 -translate-x-1/2 -translate-y-1/2 lg:w-[172px] size-[100px]  lg:h-[172px] bg-primaryprimary-1 rounded-full flex items-center justify-center z-10">
             <div className=" bg-primaryprimary-3 rounded-full flex items-center justify-center">
               <div className=" bg-primaryprimary-5 rounded-full border border-solid border-[#fdf1cc] flex items-center justify-center">
-                <img className="" alt="Logo transparency" src={LogoPulse} />
+                <img
+                  className="animate-pulse"
+                  alt="Logo transparency"
+                  src={LogoPulse}
+                  loading="lazy"
+                />
               </div>
             </div>
           </div>

@@ -21,6 +21,7 @@ const AuthLayout = () => {
               src={SideFrame}
               alt="side frame auth"
               className="w-full h-full"
+              loading="lazy"
             />
           </div>
           <div className="w-full lg:w-[50%] 2xl:w-[50%] flex justify-center items-center flex-col h-fit bg-white z-20">

@@ -1,11 +1,15 @@
 import {
   ColumnDef,
+  ColumnFiltersState,
+  FilterFn,
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
   getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 
+import { DataTablePagination } from "@/components/ui/pagination";
 import {
   Table,
   TableBody,
@@ -14,30 +18,82 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { DataTablePagination } from "@/components/ui/pagination";
+import { useState } from "react";
+import { Input } from "./input";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   paginated?: boolean;
+  enableFiltering?: boolean;
+  filterColumns?: string[];
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   paginated = true,
+  enableFiltering = false,
+  filterColumns = [],
 }: DataTableProps<TData, TValue>) {
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+
+  const [globalFilter, setGlobalFilter] = useState<string>("");
+
+  const customGlobalFilter: FilterFn<TData> = (row, columnId, filterValue) => {
+    const text = String(filterValue).toLowerCase();
+
+    // If filterColumns is set, and this column isn't one of them, skip it:
+    if (filterColumns.length > 0 && !filterColumns.includes(columnId)) {
+      return false;
+    }
+
+    // Otherwise do a case-insensitive contains check:
+    const cellValue = row.getValue(columnId);
+    return String(cellValue).toLowerCase().includes(text);
+  };
+
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     ...(paginated && { getPaginationRowModel: getPaginationRowModel() }),
+    ...(enableFiltering && {
+      getFilteredRowModel: getFilteredRowModel(),
+      onColumnFiltersChange: setColumnFilters,
+      onGlobalFilterChange: setGlobalFilter,
+      globalFilterFn: customGlobalFilter,
+    }),
+    state: {
+      columnFilters,
+      globalFilter,
+    },
   });
 
   const topHeaders = table.getHeaderGroups()[0].headers;
 
   return (
-    <div className="space-y-8">
+    <div className="flex flex-col gap-y-8 border-t md:border-t-0 pt-4 md:pt-0">
+      {/* ─────────────────────────────────────── 
+         SUB: Filtering 
+      ─────────────────────────────────────── */}
+      {enableFiltering && (
+        <div className="flex items-center py-4 -mt-4 -mb-8">
+          <Input
+            value={globalFilter}
+            onChange={(e) => {
+              const v = e.target.value;
+              setGlobalFilter(v);
+            }}
+            placeholder={
+              filterColumns.length > 0
+                ? `Search ${filterColumns.join(", ")}...`
+                : "Search..."
+            }
+            className="max-w-sm h-10"
+          />
+        </div>
+      )}
       {/* ─────────────────────────────────────── 
          SUB: Desktop: full grid table 
       ─────────────────────────────────────── */}

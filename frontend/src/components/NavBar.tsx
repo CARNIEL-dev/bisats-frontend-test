@@ -35,7 +35,7 @@ const NavBar = () => {
           className="flex items-center justify-between py-5 "
         >
           <div className="scale-75" onClick={isMobile ? closeMenu : undefined}>
-            <BisatLogo />
+            <BisatLogo reload={false} />
           </div>
 
           <nav

@@ -12,8 +12,6 @@ export const requestPermission = async () => {
         vapidKey: env.REACT_APP_FIREBASE_VAPIDID, // get this from Firebase console
       });
 
-      console.log("Token firebase", token);
-
       UpdateUserName({ deviceToken: token });
     } else {
       Toast.error(

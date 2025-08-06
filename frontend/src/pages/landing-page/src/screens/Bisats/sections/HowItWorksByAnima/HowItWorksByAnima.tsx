@@ -1,35 +1,47 @@
-import { Card, CardContent } from "@/components/ui/card";
-import DepositIcon from "@/assets/icons/deposit 1.png";
 import Alter from "@/assets/icons/alter 1.png";
+import DepositIcon from "@/assets/icons/deposit 1.png";
 import Withdraw from "@/assets/icons/withdraw 1.png";
 import MaxWidth from "@/components/shared/MaxWith";
+import { Card, CardContent } from "@/components/ui/card";
+import { useIsMobile } from "@/hooks/use-mobile";
+
+//? Mobile Images
 
 export const HowItWorksByAnima = (): JSX.Element => {
-  // Data for the steps cards
+  const isMobile = useIsMobile();
   const steps = [
     {
       id: 1,
       title: "Make a deposit",
-      image: "/landingpage/deposit.png",
+      image: isMobile
+        ? "/landingpage/deposit-mobile.png"
+        : "/landingpage/deposit.png",
       description: "Fund your wallets with cash or crypto",
       iconAlt: "Deposit",
-      iconSrc: DepositIcon, // Assuming the original had an image here
+      iconSrc: DepositIcon,
+      mobileImage: "/landingpage/deposit-mobile.png",
     },
     {
       id: 2,
       title: "Exchange your asset",
       description: "Make a p2p swap on Bisats, fast and easy",
       iconAlt: "Alter",
-      image: "/landingpage/exchange.png",
-      iconSrc: Alter, // Assuming the original had an image here
+      image: isMobile
+        ? "/landingpage/exchange-mobile.png"
+        : "/landingpage/exchange.png",
+      iconSrc: Alter,
+      mobileImage: "/landingpage/exchange-mobile.png",
     },
     {
       id: 3,
       title: "Make a withdrawal",
       description: "Make Withdrawals to your bank or cypto wallet.",
       iconAlt: "Withdraw",
-      image: "/landingpage/withdrawal.png",
-      iconSrc: Withdraw, // Assuming the original had an image here
+      image: isMobile
+        ? "/landingpage/withdrawal-mobile.png"
+        : "/landingpage/withdrawal.png",
+      iconSrc: Withdraw,
+      mobileImage: "/landingpage/withdrawal-mobile.png",
     },
   ];
 
@@ -56,11 +68,18 @@ export const HowItWorksByAnima = (): JSX.Element => {
                   className="w-full h-[300px] mb-3"
                   src={step.image}
                   alt={step.iconAlt}
+                  loading="lazy"
+                  srcSet={`
+${step.mobileImage} 480w,
+    ${step.image}       1024w
+  `}
+                  sizes="(max-width: 600px) 100vw, 1024px"
                 />
                 <img
                   className="w-12 h-12 object-cover"
                   alt={step.iconAlt}
                   src={step.iconSrc}
+                  loading="lazy"
                 />
 
                 <h3 className="font-desktop-header6 text-greysgrey-10 text-[22px] leading-[32px] font-semibold">

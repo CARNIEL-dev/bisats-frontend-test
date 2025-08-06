@@ -1,3 +1,4 @@
+import { Loader, Loader2 } from "lucide-react";
 import React, { ButtonHTMLAttributes } from "react";
 import { ClipLoader } from "react-spinners";
 
@@ -23,17 +24,7 @@ export const PrimaryButton: React.FC<TButtons> = ({
       {...props}
       aria-disabled={props.disabled}
     >
-      {loading ? (
-        <ClipLoader
-          color={"#0A0E12"}
-          loading={loading}
-          size={30}
-          aria-label="Loading Spinner"
-          data-testid="loader"
-        />
-      ) : (
-        text
-      )}
+      {loading ? <Loader2 className="animate-spin size-6" /> : text}
     </button>
   );
 };
@@ -50,18 +41,7 @@ export const RedTransparentButton: React.FC<TButtons> = ({
       className={`h-[48px] rounded-[6px] bg-transparent text-[#DC2625] text-[14px] leading-[24px] font-semibold text-center py-3 `}
       {...props}
     >
-      {loading ? (
-        <ClipLoader
-          color={"#0A0E12"}
-          loading={loading}
-          // cssOverride={override}
-          size={30}
-          aria-label="Loading Spinner"
-          data-testid="loader"
-        />
-      ) : (
-        text
-      )}
+      {loading ? <Loader className="animate-spin size-6" /> : text}
     </button>
   );
 };
@@ -83,18 +63,7 @@ export const WhiteTransparentButton: React.FC<TButtons> = ({
       }  rounded-[6px] bg-transparent text-[#525C76] border border-[#D6DAE1] hover:bg-neutral-50 transition-all duration-300 ease font-semibold items-center gap-2 text-center`}
       {...props}
     >
-      {loading ? (
-        <ClipLoader
-          color={"#0A0E12"}
-          loading={loading}
-          // cssOverride={override}
-          size={20}
-          aria-label="Loading Spinner"
-          data-testid="loader"
-        />
-      ) : (
-        text
-      )}
+      {loading ? <Loader className="animate-spin size-6" /> : text}
     </button>
   );
 };

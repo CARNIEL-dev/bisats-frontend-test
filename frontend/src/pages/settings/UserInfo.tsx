@@ -42,7 +42,9 @@ const UserInfo = () => {
 
     {
       label: "Phone Number",
-      value: user?.phoneNumber,
+      value: user?.phoneNumberVerified
+        ? user?.phoneNumber
+        : `Unverified : ${user?.phoneNumber}`,
     },
     {
       label: "KYC Status",
@@ -96,7 +98,7 @@ const UserInfo = () => {
               <p className="text-[#606C82]">{data.label}</p>
               <p
                 className={`${
-                  data.label === "KYC Status"
+                  data.label === "KYC Status" && data.value === "Verified"
                     ? "text-[#17A34A]"
                     : "text-[#707D96]"
                 } flex items-center`}
