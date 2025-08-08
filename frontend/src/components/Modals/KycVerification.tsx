@@ -37,7 +37,7 @@ const KycVerification: React.FC<Props> = ({ close }) => {
           all users.
         </p>
         <PrimaryButton
-          css={"w-full"}
+          className={"w-full"}
           text={"Start Verification"}
           loading={false}
           onClick={clickHandler}

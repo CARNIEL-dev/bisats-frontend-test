@@ -5,6 +5,7 @@ import { UserState } from "@/redux/reducers/userSlice";
 import { useState } from "react";
 import { UpdateUserName } from "@/redux/actions/userActions";
 import Toast from "@/components/Toast";
+import { cn, formatEmail, splitTextInMiddle } from "@/utils";
 const UserInfo = () => {
   const userState: UserState = useSelector((state: any) => state.user);
   const user = userState.user;
@@ -27,6 +28,7 @@ const UserInfo = () => {
       return;
     }
   };
+
   const UserData = [
     {
       label: "Full Name",
@@ -37,13 +39,20 @@ const UserInfo = () => {
 
     {
       label: "Email Address",
-      value: user?.email,
+      value: formatEmail({
+        email: user?.email,
+        maxChar: 4,
+      }),
     },
 
     {
       label: "Phone Number",
       value: user?.phoneNumberVerified
-        ? user?.phoneNumber
+        ? splitTextInMiddle({
+            str: user?.phoneNumber,
+            visibleChars: 5,
+            ellipsis: "***",
+          })
         : `Unverified : ${user?.phoneNumber}`,
     },
     {
@@ -56,6 +65,7 @@ const UserInfo = () => {
           : "Unverified",
     },
   ];
+
   return (
     <div>
       <div className="flex justify-between">
@@ -65,7 +75,7 @@ const UserInfo = () => {
         <WhiteTransparentButton
           text={"Save"}
           loading={loading}
-          css="px-7"
+          className="px-7"
           size="sm"
           onClick={() => onSubmit()}
         />
@@ -73,8 +83,8 @@ const UserInfo = () => {
       <div className="my-5">
         <div className="w-full mb-5">
           <PrimaryInput
-            css={"w-full py-3"}
-            placeholder={user?.userName}
+            className="w-full py-3 placeholder:capitalize capitalize"
+            defaultValue={user?.userName}
             label={"Display Name"}
             error={undefined}
             touched={undefined}
@@ -89,29 +99,29 @@ const UserInfo = () => {
           />
         </div>
 
-        <div>
+        <div className="flex flex-col gap-4">
           {UserData.map((data, idx) => (
-            <div
-              className="flex  justify-between text-[16px] leading-[28px] font-normal mb-5"
-              key={idx}
-            >
+            <div className="flex  justify-between font-normal" key={idx}>
               <p className="text-[#606C82]">{data.label}</p>
               <p
-                className={`${
+                className={cn(
+                  "flex items-center",
                   data.label === "KYC Status" && data.value === "Verified"
-                    ? "text-[#17A34A]"
-                    : "text-[#707D96]"
-                } flex items-center`}
+                    ? "text-[#17A34A] font-semibold text-sm"
+                    : "text-slate-500",
+                  data.label === "Full Name" && "capitalize"
+                )}
               >
                 {data.value}{" "}
-                <div
+                <span
                   className={`${
+                    data.label === "KYC Status" &&
                     (user?.accountLevel === "level_1" ||
                       user?.accountLevel === "level_2" ||
                       user?.accountLevel === "level_3") &&
                     "w-[4px] h-[4px] rounded-full  bg-[#BBF7D0] "
                   } mx-1`}
-                ></div>
+                ></span>
                 {data.label === "KYC Status" && user?.accountLevel}
               </p>
             </div>

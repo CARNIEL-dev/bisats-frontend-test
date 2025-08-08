@@ -41,7 +41,6 @@ const App: React.FC = () => {
           autoClose={5000}
           hideProgressBar={true}
           // newestOnTop={false}
-          stacked
           closeOnClick
           rtl={false}
           pauseOnFocusLoss

@@ -24,7 +24,7 @@ const SucessDisplay = ({
 
       <div className="w-1/2 mx-auto mb-3">
         <PrimaryButton
-          css={"w-full"}
+          className={"w-full"}
           text={"Continue"}
           loading={false}
           onClick={onClick}

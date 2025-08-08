@@ -37,7 +37,7 @@ const MarketPlaceTable = ({ type, ads, asset }: MarketPlaceContentProps) => {
   //   HDR: Columns
   const column: ColumnDef<AdSchema>[] = [
     {
-      accessorKey: "user",
+      accessorKey: "user.userName",
       header: () => {
         return <span className="">Merchant</span>;
       },
@@ -66,6 +66,7 @@ const MarketPlaceTable = ({ type, ads, asset }: MarketPlaceContentProps) => {
     {
       accessorKey: "price",
       header: "Unit Price",
+      sortingFn: "basic",
       cell: ({ row }) => {
         const price = formatter({
           style: "currency",
@@ -147,10 +148,14 @@ const MarketPlaceTable = ({ type, ads, asset }: MarketPlaceContentProps) => {
         <div className="w-full">
           {/* <div className="hidden md:block">
           </div> */}
-          <DataTable data={ads} columns={column} paginated={false} />
-          {/* <div className="md:hidden  w-full">
-            <MobileP2PMP data={ads} type={type} />
-          </div> */}
+          <DataTable
+            data={ads}
+            columns={column}
+            paginated={false}
+            sortColumns={[{ id: "price", desc: true }]}
+            filterColumns={["price"]}
+            enableFiltering
+          />
         </div>
       )}
       {/* 

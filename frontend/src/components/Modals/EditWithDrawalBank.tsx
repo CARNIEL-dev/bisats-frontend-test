@@ -133,7 +133,7 @@ const EditWithdrawalBankAccount: React.FC<Props> = ({ close, bank }) => {
           />
           <div className="my-3">
             <PrimaryInput
-              css={"w-full py-3 "}
+              className={"w-full py-3 "}
               label={"Account Number"}
               error={undefined}
               touched={undefined}
@@ -147,7 +147,7 @@ const EditWithdrawalBankAccount: React.FC<Props> = ({ close, bank }) => {
             />
           </div>
           <PrimaryInput
-            css={"w-full py-3"}
+            className={"w-full py-3"}
             label={"Account Name"}
             value={bankAccountName}
             error={!CheckNameMatch()}
@@ -161,13 +161,13 @@ const EditWithdrawalBankAccount: React.FC<Props> = ({ close, bank }) => {
             text={"Cancel"}
             loading={false}
             onClick={close}
-            css="w-[]"
+            className="w-[]"
             style={{ width: "50%" }}
           />
           <PrimaryButton
             text={"Update Account"}
             loading={isLoading}
-            css="w-1/2 ml-3"
+            className="w-1/2 ml-3"
             onClick={EditBankAccount}
           />
         </div>

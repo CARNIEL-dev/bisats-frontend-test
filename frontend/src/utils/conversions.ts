@@ -15,7 +15,6 @@ export function convertNairaToAsset(
   const usdPriceOfAsset = pricces[asset];
   const ngnToUsdRate = adPrice;
 
-  console.log(ngnToUsdRate, usdPriceOfAsset);
   if (!usdPriceOfAsset || !ngnToUsdRate || asset === "xNGN") return null;
 
   const amountInUsd = nairaAmount / ngnToUsdRate;

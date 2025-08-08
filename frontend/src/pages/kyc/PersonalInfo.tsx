@@ -53,6 +53,7 @@ const PersonalInfo = () => {
         navigate(APP_ROUTES.KYC.IDENTITY);
         return;
       } else {
+        console.log(response);
         Toast.error(response.message, "Error");
         return;
       }
@@ -66,7 +67,7 @@ const PersonalInfo = () => {
           <div className="lg:flex items-start justify-between w-full gap-x-1.5 gap-y-2  ">
             <PrimaryInput
               name="firstName"
-              css={"w-full  h-[48px]"}
+              className={"w-full  h-[48px]"}
               label={"First Name"}
               error={formik.errors.firstName}
               touched={formik.touched.firstName}
@@ -77,7 +78,7 @@ const PersonalInfo = () => {
 
             <PrimaryInput
               name="middleName"
-              css={"w-full h-[48px]"}
+              className={"w-full h-[48px]"}
               label={"Middle Name"}
               error={formik.errors.middleName}
               touched={formik.touched.middleName}
@@ -88,7 +89,7 @@ const PersonalInfo = () => {
 
             <PrimaryInput
               name="lastName"
-              css={"w-full  h-[48px]"}
+              className={"w-full  h-[48px]"}
               label={"Last Name"}
               error={formik.errors.lastName}
               touched={formik.touched.lastName}
@@ -117,7 +118,7 @@ const PersonalInfo = () => {
           />
 
           <PrimaryInput
-            css="w-full h-[48px]"
+            className="w-full h-[48px]"
             name="address"
             placeholder="Where you live"
             label={"Residential Address"}
@@ -129,7 +130,7 @@ const PersonalInfo = () => {
           />
 
           <PrimaryInput
-            css="w-full h-[48px]"
+            className="w-full h-[48px]"
             name="businessName"
             placeholder="Your business name"
             label={"Business Name"}
@@ -143,7 +144,7 @@ const PersonalInfo = () => {
 
           <div className="mt-4">
             <PrimaryButton
-              css={"w-full"}
+              className={"w-full"}
               text={"Continue"}
               loading={formik.isSubmitting}
               disabled={formik.isSubmitting || !formik.isValid || !formik.dirty}

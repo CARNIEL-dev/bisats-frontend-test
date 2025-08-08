@@ -13,6 +13,8 @@ const Dashboard = () => {
   const userState: UserState = useSelector((state: any) => state.user);
   const user = userState.user;
 
+  console.log("User state", userState);
+
   useEffect(() => {
     GetWallet();
   }, []);

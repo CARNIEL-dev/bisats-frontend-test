@@ -1,62 +1,43 @@
-import ResendCodeButton from "@/components/shared/ResendCodeButton";
-import { useFormik } from "formik";
-import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { useNavigate, useSearchParams } from "react-router-dom";
 import { PrimaryButton } from "@/components/buttons/Buttons";
 import PrimaryInput from "@/components/Inputs/PrimaryInput";
 import Toast from "@/components/Toast";
 import { APP_ROUTES } from "@/constants/app_route";
 import { VerificationSchema } from "@/formSchemas";
 import OtherSide from "@/layouts/auth/OtherSide";
-import {
-  ReSendverificationCode,
-  VerifyUser,
-} from "@/redux/actions/userActions";
+import { VerifyTwoFactorAuth } from "@/redux/actions/userActions";
+import { UserActionTypes } from "@/redux/types";
+import dispatchWrapper from "@/utils/dispatchWrapper";
+import { useFormik } from "formik";
+import { useSelector } from "react-redux";
 
-const VerifyEmail = () => {
+const Verify2FA = () => {
   const user = useSelector((state: any) => state.user.user);
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const userId = user.userId;
 
-  const codeLink = searchParams.get("code");
-  const userId = searchParams.get("email");
   const formik = useFormik({
-    initialValues: { code: codeLink ? codeLink : "" },
+    initialValues: { code: "", userId },
     validationSchema: VerificationSchema,
     onSubmit: async (values) => {
-      const payload =
-        codeLink && userId
-          ? {
-              userId: userId,
-              code: codeLink,
-            }
-          : {
-              userId: user.userId,
-              code: values.code,
-            };
-      const response = await VerifyUser(payload);
-      if (response?.statusCode === 200) {
-        Toast.success(response.message, "Email verified");
-
-        navigate(APP_ROUTES.AUTH.LOGIN);
+      const { ...payload } = values;
+      const response = await VerifyTwoFactorAuth(payload);
+      if (response?.status) {
+        Toast.success(response.message, "Code Verified");
+        dispatchWrapper({
+          type: UserActionTypes.LOG_IN_UPDATE,
+          payload: null,
+        });
+        window.location.href = APP_ROUTES.DASHBOARD;
       } else {
         Toast.error(response.message, "Verification failed");
       }
     },
   });
 
-  useEffect(() => {
-    if (codeLink && userId) {
-      formik.submitForm();
-    }
-  }, []);
-
   return (
     <div className="lg:w-[442px] mx-auto">
       <OtherSide
-        header="Verify your account"
-        subHeader="An verification code has been sent to your registered email. Enter the code below to verify your account."
+        header="Authentication Code"
+        subHeader="Enter the code from your authenticator app to login to your account."
         upperSubHeader={<></>}
       />
       <form onSubmit={formik.handleSubmit}>
@@ -77,21 +58,16 @@ const VerifyEmail = () => {
           <div className="w-full mb-3">
             <PrimaryButton
               className={"w-full"}
-              text={"Verify account"}
+              text={"Enter code"}
               type="submit"
               loading={formik.isSubmitting}
               disabled={formik.isSubmitting || !formik.isValid}
             />
           </div>
-          <ResendCodeButton
-            onClick={() => ReSendverificationCode({ userId: user?.userId })}
-            text="Resend a new code"
-            defaultTime={30}
-          />
         </div>
       </form>
     </div>
   );
 };
 
-export default VerifyEmail;
+export default Verify2FA;

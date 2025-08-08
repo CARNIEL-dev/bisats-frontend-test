@@ -59,19 +59,12 @@ const OrderHistory = () => {
               type === "sell" ? "text-red-600" : "text-green-600"
             )}
           >
-            {type}
+            {type === "sell" ? "Sold" : "Bought"}
           </p>
         );
       },
     },
-    {
-      header: "Order Ref",
-      accessorKey: "Reference",
-      cell: ({ row }) => {
-        const reference = row.original.reference;
-        return <p className="text-xs font-semibold">{reference}</p>;
-      },
-    },
+
     {
       header: "Asset",
       accessorKey: "Asset",
@@ -133,6 +126,14 @@ const OrderHistory = () => {
             ? item.buyer?.userName
             : item.merchant?.userName;
         return <p className="text-sm">{counterParty}</p>;
+      },
+    },
+    {
+      header: "Order Ref",
+      accessorKey: "Reference",
+      cell: ({ row }) => {
+        const reference = row.original.reference;
+        return <p className="text-xs font-semibold">{reference}</p>;
       },
     },
     {

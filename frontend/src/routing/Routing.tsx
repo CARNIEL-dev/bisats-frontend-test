@@ -46,6 +46,7 @@ import { LandingPage } from "@/pages/landing-page/src/screens/Bisats/LandingPage
 import MarketPlacePage from "@/pages/p2p/MarketPlacePage";
 import NotFound from "@/routing/NotFound";
 import { Route, Routes } from "react-router-dom";
+import Verify2FA from "@/pages/auth/Verify2FA";
 
 const Routing = () => {
   return (
@@ -65,6 +66,7 @@ const Routing = () => {
             path={APP_ROUTES?.AUTH.RESET_PASSWORD}
             Component={ResetPassword}
           />
+          <Route path={APP_ROUTES.AUTH.VERIFY_2FA} Component={Verify2FA} />
         </Route>
         {/* SUB: PROTECTED || DASHBOARD  PAGES */}
         <Route element={<ProtectedRoute />}>

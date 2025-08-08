@@ -43,7 +43,7 @@ const DateInput: React.FC<DateInputProps> = ({
 
   return (
     <div className="flex flex-col gap-2">
-      {label && <Label text={label} css="" />}
+      {label && <Label text={label} className="" />}
 
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger

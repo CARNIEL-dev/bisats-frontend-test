@@ -1,15 +1,16 @@
 import AuthPasswordInput from "@/components/Inputs/AuthPasswordInput";
-import { APP_ROUTES } from "@/constants/app_route";
+import ModalTemplate from "@/components/Modals/ModalTemplate";
+import Toast from "@/components/Toast";
 import { ChangePasswordSchema } from "@/formSchemas";
-import { logoutUser, UpdatePassword } from "@/redux/actions/userActions";
+import { rehydrateUser, UpdatePassword } from "@/redux/actions/userActions";
 import { UserState } from "@/redux/reducers/userSlice";
 import { useFormik } from "formik";
-import React, { useState } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { PrimaryButton, WhiteTransparentButton } from "../buttons/Buttons";
-import Toast from "@/components/Toast";
-import ModalTemplate from "@/components/Modals/ModalTemplate";
+import {
+  PrimaryButton,
+  WhiteTransparentButton,
+} from "@/components/buttons/Buttons";
 
 interface Props {
   close: () => void;
@@ -18,8 +19,7 @@ const ResetPasswordModal: React.FC<Props> = ({ close }) => {
   const userState: UserState = useSelector((state: any) => state.user);
   const user = userState.user;
 
-  const navigate = useNavigate();
-  const [passwordBody] = useState({});
+  // const navigate = useNavigate();
 
   const formik = useFormik({
     initialValues: { oldPassword: "", newPassword: "", confirmPassword: "" },
@@ -30,9 +30,11 @@ const ResetPasswordModal: React.FC<Props> = ({ close }) => {
       const payload = { ...values, userId: user?.userId };
       const response = await UpdatePassword(payload);
       if (response?.statusCode === 200) {
-        logoutUser();
-        navigate(APP_ROUTES.AUTH.LOGIN);
-        Toast.error(response.message, "Error");
+        close();
+        rehydrateUser();
+        // logoutUser();
+        // navigate(APP_ROUTES.AUTH.LOGIN);
+        Toast.success(response.message, "Success");
       } else {
         Toast.error(response.message, "Error");
       }
@@ -47,7 +49,7 @@ const ResetPasswordModal: React.FC<Props> = ({ close }) => {
         <form onSubmit={formik.handleSubmit}>
           <div className="w-full">
             <AuthPasswordInput
-              css="w-full h-[44px] px-3 outline-hidden"
+              className="w-full h-[44px] px-3 outline-hidden"
               handleChange={formik.handleChange}
               name="oldPassword"
               error={formik.errors.oldPassword}
@@ -61,7 +63,7 @@ const ResetPasswordModal: React.FC<Props> = ({ close }) => {
 
           <div className="w-full ">
             <AuthPasswordInput
-              css="w-full h-[44px] px-3 outline-hidden"
+              className="w-full h-[44px] px-3 outline-hidden"
               handleChange={formik.handleChange}
               name="newPassword"
               error={formik.errors.newPassword}
@@ -75,7 +77,7 @@ const ResetPasswordModal: React.FC<Props> = ({ close }) => {
 
           <div className="w-full ">
             <AuthPasswordInput
-              css="w-full h-[44px] px-3 outline-hidden"
+              className="w-full h-[44px] px-3 outline-hidden"
               check={false}
               text="Repeat password"
               name="confirmPassword"
@@ -91,14 +93,14 @@ const ResetPasswordModal: React.FC<Props> = ({ close }) => {
               text={"Cancel"}
               loading={false}
               onClick={close}
-              css="w-[]"
+              className="w-[]"
               style={{ width: "50%" }}
             />
             <PrimaryButton
               text={"Proceed"}
               disabled={formik.isSubmitting || !formik.isValid}
               loading={formik.isSubmitting}
-              css="w-1/2 ml-3"
+              className="w-1/2 ml-3"
             />
           </div>
         </form>

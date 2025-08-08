@@ -183,7 +183,7 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
 
           <div className="my-3">
             <PrimaryInput
-              css={"w-full py-2 "}
+              className={"w-full py-2 "}
               label={" Price"}
               error={formik.errors.price}
               touched={undefined}
@@ -206,7 +206,7 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
           <div className="">
             {/* SUB: Top Amount */}
             <PrimaryInput
-              css={"w-full py-2 "}
+              className={"w-full py-2 "}
               label={"Top Up Amount"}
               error={formik.errors.amount}
               touched={formik.touched.amount}
@@ -252,13 +252,13 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
                 },
               });
             }}
-            css=""
+            className=""
             style={{ width: "50%" }}
           />
           <PrimaryButton
             text={"Update Ad"}
             loading={mutation.isPending}
-            css="w-1/2"
+            className="w-1/2"
             onClick={formik.submitForm}
             disabled={mutation.isPending || !formik.dirty || !formik.isValid}
           />

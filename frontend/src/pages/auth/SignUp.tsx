@@ -49,7 +49,7 @@ const SignUp = () => {
               type="email"
               name="email"
               label="Email"
-              css="w-full h-[48px] px-3 outline-hidden "
+              className="w-full h-[48px] px-3 outline-hidden "
               error={formik.errors.email}
               touched={formik.touched.email}
               value={formik.values.email}
@@ -59,7 +59,7 @@ const SignUp = () => {
           </div>
           <div className="w-full mb-2">
             <AuthPasswordInput
-              css="w-full h-[48px] px-3 outline-hidden"
+              className="w-full h-[48px] px-3 outline-hidden"
               handleChange={formik.handleChange}
               name="password"
               error={formik.errors.password}
@@ -72,7 +72,7 @@ const SignUp = () => {
           </div>
           <div className="w-full mb-2">
             <AuthPasswordInput
-              css="w-full h-[48px] px-3 outline-hidden "
+              className="w-full h-[48px] px-3 outline-hidden "
               // handleChange={(e) => setSignUpBody({ ...signupBody, confirmPassword: e })}
               check={false}
               text="Repeat password"
@@ -109,7 +109,7 @@ const SignUp = () => {
           </div>
           <div className="w-full mb-3">
             <PrimaryButton
-              css={
+              className={
                 !formik.isValid || !formik.dirty
                   ? "bg-[lightGrey] w-full"
                   : "w-full"

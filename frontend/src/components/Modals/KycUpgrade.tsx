@@ -56,13 +56,13 @@ const KycUpgrade: React.FC<Props> = ({ close }) => {
           ))}
         </div>
         <PrimaryButton
-          css={"w-full"}
+          className={"w-full"}
           text={"Upgrade"}
           loading={false}
           onClick={clickHandler}
         />
         <RedTransparentButton
-          css={"w-full my-3"}
+          className={"w-full my-3"}
           text={"Maybe Later"}
           loading={false}
           onClick={close}

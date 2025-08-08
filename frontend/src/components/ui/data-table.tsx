@@ -6,6 +6,8 @@ import {
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
+  getSortedRowModel,
+  SortingState,
   useReactTable,
 } from "@tanstack/react-table";
 
@@ -27,6 +29,8 @@ interface DataTableProps<TData, TValue> {
   paginated?: boolean;
   enableFiltering?: boolean;
   filterColumns?: string[];
+  sortColumns?: SortingState;
+  filteredValue?: string;
 }
 
 export function DataTable<TData, TValue>({
@@ -35,10 +39,12 @@ export function DataTable<TData, TValue>({
   paginated = true,
   enableFiltering = false,
   filterColumns = [],
+  sortColumns = [],
+  filteredValue = "",
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-
-  const [globalFilter, setGlobalFilter] = useState<string>("");
+  const [sorting, setSorting] = useState<SortingState>(sortColumns);
+  const [globalFilter, setGlobalFilter] = useState<string>(filteredValue);
 
   const customGlobalFilter: FilterFn<TData> = (row, columnId, filterValue) => {
     const text = String(filterValue).toLowerCase();
@@ -57,6 +63,7 @@ export function DataTable<TData, TValue>({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
     ...(paginated && { getPaginationRowModel: getPaginationRowModel() }),
     ...(enableFiltering && {
       getFilteredRowModel: getFilteredRowModel(),
@@ -64,9 +71,11 @@ export function DataTable<TData, TValue>({
       onGlobalFilterChange: setGlobalFilter,
       globalFilterFn: customGlobalFilter,
     }),
+    onSortingChange: setSorting,
     state: {
       columnFilters,
       globalFilter,
+      sorting,
     },
   });
 

@@ -185,7 +185,7 @@ const CreateAd = () => {
             <>
               <AdReview formik={formik} setStage={setStage} />
               <PrimaryButton
-                css="w-full disabled"
+                className="w-full disabled"
                 type="button"
                 text="PublishAd"
                 loading={mutation.isPending || isPending}

@@ -160,7 +160,7 @@ const PhoneVerifcation = () => {
                 type="code"
                 name="code"
                 label="Code"
-                css="w-full h-[48px] px-3 outline-hidden "
+                className="w-full h-[48px] px-3 outline-hidden "
                 error={formik1.errors.code}
                 touched={formik1.touched.code}
                 value={formik1.values.code}
@@ -169,7 +169,7 @@ const PhoneVerifcation = () => {
               />
               <div className="w-full my-3">
                 <PrimaryButton
-                  css={"w-full"}
+                  className={"w-full"}
                   text={"Enter code"}
                   loading={formik1.isSubmitting}
                   type="submit"
@@ -205,7 +205,7 @@ const PhoneVerifcation = () => {
                 </Select>
 
                 <PrimaryInput
-                  css="w-full p-2.5 mb-7 pl-28"
+                  className="w-full p-2.5 mb-7 pl-28"
                   label="Phone Number"
                   placeholder="Enter phone number"
                   type="tel"
@@ -224,7 +224,7 @@ const PhoneVerifcation = () => {
               </div>
               <div className="w-full mb-3">
                 <PrimaryButton
-                  css={"w-full"}
+                  className={"w-full"}
                   text={"Send code"}
                   loading={formik.isSubmitting}
                   type="submit"

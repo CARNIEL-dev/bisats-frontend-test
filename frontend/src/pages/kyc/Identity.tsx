@@ -102,7 +102,7 @@ const Identity = () => {
         />
         <div className="w-full my-4 ">
           <PrimaryInput
-            css="w-full h-[48px]"
+            className="w-full h-[48px]"
             name="identificationNo"
             placeholder="Enter the identification number on your selected document type"
             label={"Identification Number"}
@@ -127,7 +127,7 @@ const Identity = () => {
 
         <div className="my-4">
           <PrimaryButton
-            css={"w-full"}
+            className={"w-full"}
             text={"Continue"}
             loading={formik.isSubmitting}
           />
@@ -207,7 +207,7 @@ const SelfieSnap = () => {
   };
   return (
     <div className="py-4">
-      <Label text={"Take a selfie"} css={""} />
+      <Label text={"Take a selfie"} className={""} />
       <div className="file-upload-container my-4">
         {isCapturing ? (
           <div className="camera-container relative">

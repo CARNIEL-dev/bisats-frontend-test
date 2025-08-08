@@ -160,6 +160,10 @@ const SwapConfirmation: React.FC<Props> = ({
           userId,
         ],
       });
+
+      queryClient.invalidateQueries({
+        queryKey: ["userNotifications", userId],
+      });
       navigate(
         `${APP_ROUTES.P2P.HOME}?type=${isBuy ? "buy" : "Sell"}&asset=${token}`
       );

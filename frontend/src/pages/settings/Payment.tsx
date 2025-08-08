@@ -56,7 +56,7 @@ const Payment = () => {
             </>
           }
           size="sm"
-          css="w-[6rem]"
+          className="w-[6rem]"
           loading={false}
           onClick={() => setOpenAddBankAccount(true)}
         />

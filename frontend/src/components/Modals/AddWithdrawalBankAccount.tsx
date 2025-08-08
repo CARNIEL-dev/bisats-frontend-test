@@ -119,7 +119,7 @@ const AddWithdrawalBankAccount: React.FC<Props> = ({ close }) => {
           </div>
 
           <PrimaryInput
-            css={"w-full "}
+            className={"w-full "}
             label={"Account Number"}
             error={undefined}
             touched={undefined}
@@ -133,7 +133,7 @@ const AddWithdrawalBankAccount: React.FC<Props> = ({ close }) => {
           />
 
           <PrimaryInput
-            css={"w-full "}
+            className={"w-full "}
             label={"Account Name"}
             error={undefined}
             touched={undefined}
@@ -146,13 +146,13 @@ const AddWithdrawalBankAccount: React.FC<Props> = ({ close }) => {
             text={"Cancel"}
             loading={false}
             onClick={close}
-            css="w-[]"
+            className="w-[]"
             style={{ width: "50%" }}
           />
           <PrimaryButton
             text={"Save Account"}
             loading={isLoading}
-            css="w-1/2 "
+            className="w-1/2 "
             onClick={AddBankAccount}
             disabled={!CheckNameMatch() || !selectedBank || !bankAccountNumber}
           />

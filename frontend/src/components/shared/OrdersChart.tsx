@@ -70,7 +70,7 @@ const OrdersChart = () => {
           : "sell";
 
       //? choose your “volume” field here – e.g. o.price(asset price * amount bought or sold)  or o.amount
-      const volume = showNaira ? o.amount * o.price : o.amount;
+      const volume = showNaira ? o.quantity * o.price : o.quantity;
 
       if (map[o.asset]) {
         map[o.asset][logicalType] += volume;

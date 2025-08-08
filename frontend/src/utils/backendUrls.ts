@@ -35,6 +35,7 @@ export const BACKEND_URLS = {
     GENERATE_2FA_QRCODE: "/get-two-factor-auth",
     ENABLE_2FA: "/enable-two-factor-auth",
     DISABLE_2FA: "/disable-two-factor-auth",
+    RESET_2FA: "/reset-two-factor-auth",
 
     VERIFY_2FA: "/verify-two-factor-auth",
     VALIDATE_2FA: "/verify-two-factor-and-pin-auth",

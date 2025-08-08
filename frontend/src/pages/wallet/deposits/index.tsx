@@ -108,7 +108,7 @@ const DepositPage = () => {
         {selectedToken === "xNGN" ? (
           <div className="space-y-4 mt-2">
             <PrimaryInput
-              css={"w-full"}
+              className={"w-full"}
               label={"Amount"}
               placeholder="Enter amount"
               name="amount"
@@ -125,7 +125,7 @@ const DepositPage = () => {
             <KycManager action={ACTIONS.DEPOSIT_NGN} func={formik.handleSubmit}>
               {(validateAndExecute) => (
                 <PrimaryButton
-                  css={"w-full"}
+                  className={"w-full"}
                   text={"Proceed"}
                   loading={isLoading}
                   onClick={validateAndExecute}

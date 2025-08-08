@@ -14,6 +14,7 @@ export const APP_ROUTES = {
     OTP: "/auth/otp",
     VERIFY: "/auth/verify",
     RESET_PASSWORD: "/auth/reset-password",
+    VERIFY_2FA: "/auth/verify-2fa",
   },
   KYC: {
     PERSONAL: "/kyc/personal-information",

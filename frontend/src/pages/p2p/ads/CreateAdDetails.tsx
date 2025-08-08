@@ -175,7 +175,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
     <section className="flex flex-col gap-5">
       {/* SUB: TRANSACTION TYPE */}
       <div className="flex gap-2 flex-col">
-        <Label text="Transaction Type" css="" />
+        <Label text="Transaction Type" className="" />
         <Select
           onValueChange={(value) => {
             formik.setFieldValue("type", value);
@@ -222,7 +222,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
       {/* SUB: AMOUNT */}
       <div className="space-y-2">
         <PrimaryInput
-          css=""
+          className=""
           label="Amount to be deposited in Ad Escrow"
           type="number"
           // key={
@@ -302,7 +302,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
         {/* SUB: PRICE */}
         <div className="flex-[80%]">
           <PrimaryInput
-            css=""
+            className=""
             label="Price"
             type="number"
             step="any"
@@ -324,7 +324,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
 
         {/* SUB: CURRENCY */}
         <div className="flex-[20%] flex gap-1.5 flex-col">
-          <Label text="Currency" css="" />
+          <Label text="Currency" className="" />
           <Select
             onValueChange={(value) => {
               formik.setFieldValue("currency", value);
@@ -372,7 +372,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
         <div className="flex justify-between gap-1">
           {/* SUB: Lower Limit */}
           <PrimaryInput
-            css="w-full"
+            className="w-full"
             label="Lower Price Limit"
             name="priceLowerLimit"
             type="number"
@@ -397,7 +397,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
 
           {/* SUB: Upper Limit */}
           <PrimaryInput
-            css="w-full p-2.5"
+            className="w-full p-2.5"
             label="Upper price Limit"
             name="priceUpperLimit"
             type="number"
@@ -456,7 +456,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
         <div className="flex flex-col gap-4 lg:flex-wrap justify-between ">
           {/* SUB: Minimum */}
           <PrimaryInput
-            css="w-full"
+            className="w-full"
             label={`Minimum (xNGN${
               adType === "Buy"
                 ? formatNumber(userTransactionLimits?.lower_limit_buy_ad)
@@ -487,7 +487,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
 
           {/* SUB: Maximum */}
           <PrimaryInput
-            css="w-full p-2.5"
+            className="w-full p-2.5"
             label={`Maximum (xNGN ${
               adType === "Buy"
                 ? formatNumber(userTransactionLimits?.upper_limit_buy_ad)
@@ -552,7 +552,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
       </div>
 
       <PrimaryButton
-        css={`w-full mt-8 `}
+        className={`w-full mt-8 `}
         disabled={!formik.isValid}
         text={"Continue"}
         type="button"

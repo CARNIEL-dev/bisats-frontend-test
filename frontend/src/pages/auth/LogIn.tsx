@@ -5,10 +5,15 @@ import PrimaryInput from "@/components/Inputs/PrimaryInput";
 import Toast from "@/components/Toast";
 import { APP_ROUTES } from "@/constants/app_route";
 import { LogInSchema } from "@/formSchemas";
+import { setRefreshToken, setToken, setUser, setUserId } from "@/helpers";
 import OtherSide from "@/layouts/auth/OtherSide";
 import { Login, ReSendverificationCode } from "@/redux/actions/userActions";
+import { UserActionTypes } from "@/redux/types";
+import dispatchWrapper from "@/utils/dispatchWrapper";
 import { useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
+
+const isProduction = process.env.REACT_APP_NODE_ENV === "production";
 
 const LogIn = () => {
   const navigate = useNavigate();
@@ -26,12 +31,33 @@ const LogIn = () => {
       const { ...payload } = values;
       const response = await Login(payload);
       if (response.statusCode === 200) {
-        if (!response.data.emailVerified) {
+        const data = response.data;
+
+        //? set user login infos
+        setUser(data);
+        setUserId(data?.userId);
+        setToken(data.token);
+        setRefreshToken(data.refreshToken);
+
+        if (!data.emailVerified) {
           ReSendverificationCode({ userId: response.data.userId });
           return navigate(APP_ROUTES.AUTH.VERIFY);
         }
 
+        if (data.twoFactorAuthEnabled && isProduction) {
+          dispatchWrapper({
+            type: UserActionTypes.LOG_IN_PENDING,
+            payload: data,
+          });
+          return navigate(APP_ROUTES.AUTH.VERIFY_2FA);
+        }
+
         Toast.success("", response.message);
+        dispatchWrapper({
+          type: UserActionTypes.LOG_IN_SUCCESS,
+          payload: data,
+        });
+
         window.location.href = APP_ROUTES.DASHBOARD;
       } else {
         Toast.error(response.message, "Login Failed");
@@ -52,7 +78,7 @@ const LogIn = () => {
             type="email"
             name="email"
             label="Email"
-            css="w-full h-[48px] px-3 outline-hidden "
+            className="w-full h-[48px] px-3 outline-hidden "
             error={formik.errors.email}
             touched={formik.touched.email}
             value={formik.values.email}
@@ -61,7 +87,7 @@ const LogIn = () => {
           />
 
           <AuthPasswordInput
-            css="w-full h-[48px] px-3 outline-hidden"
+            className="w-full h-[48px] px-3 outline-hidden"
             handleChange={formik.handleChange}
             name="password"
             error={formik.errors.password}
@@ -74,7 +100,7 @@ const LogIn = () => {
 
           <div className="w-full mt-4">
             <PrimaryButton
-              css={"w-full"}
+              className={"w-full"}
               text={"Log In"}
               type="submit"
               loading={formik.isSubmitting}

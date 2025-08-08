@@ -29,13 +29,13 @@ const LogOutModal: React.FC<Props> = ({ close }) => {
             text={"Cancel"}
             loading={false}
             onClick={close}
-            css="w-[]"
+            className="w-[]"
             style={{ width: "50%" }}
           />
           <PrimaryButton
             text={"Log Out"}
             loading={false}
-            css="w-1/2 ml-3"
+            className="w-1/2 ml-3"
             onClick={() => logoutUser()}
           />
         </div>

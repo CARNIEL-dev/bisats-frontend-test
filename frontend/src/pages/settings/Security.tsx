@@ -5,6 +5,11 @@ import SetPinModal from "@/components/Modals/SetPinModal";
 import { UserState } from "@/redux/reducers/userSlice";
 import { useSelector } from "react-redux";
 import TwoFactorAuthModal from "@/components/Modals/2FAModal";
+import {
+  rehydrateUser,
+  UpdateTwoFactorAuth,
+} from "@/redux/actions/userActions";
+import Toast from "@/components/Toast";
 
 const Security = () => {
   const userState: UserState = useSelector((state: any) => state.user);
@@ -12,20 +17,46 @@ const Security = () => {
   const [openResetPasswordModal, setOpenResetPasswordModal] = useState(false);
   const [pinModal, setPinModal] = useState(false);
   const [twoFAModal, setTwoFaModal] = useState(false);
+  const [show2FAModal, setShow2FAModal] = useState({
+    enable: false,
+    disable: false,
+  });
+
+  const [disableLoading, setDisableLoading] = useState({
+    "2fa": false,
+  });
+
+  const handleDisable2FA = async () => {
+    setDisableLoading({ ...disableLoading, "2fa": true });
+    await UpdateTwoFactorAuth({
+      userId: user?.userId,
+      code: "",
+      enable: false,
+    })
+      .then((res) => {
+        if (!res?.status) {
+          Toast.error(res.message, "2FA Verification failed");
+        } else {
+          Toast.success(res.message, "2FA Disabled");
+        }
+      })
+      .finally(() => {
+        setDisableLoading({ ...disableLoading, "2fa": false });
+        rehydrateUser();
+      });
+  };
 
   return (
     <div>
-      <h1 className="text-[22px] lg:text-[22px] leading-[32px] font-semibold text-[#2B313B]">
+      <h4 className="text-[22px] lg:text-[22px] leading-[32px] font-semibold text-[#2B313B]">
         Security
-      </h1>
+      </h4>
 
-      <div className="mt-5">
-        <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-6 md:gap-8 mt-5">
+        <div className="flex justify-between md:flex-row flex-col  md:items-center gap-4">
           <div className="text-[#606C82] font-normal">
-            <h1 className="text-[16px] lg:text-[16px] leading-[28px]   mb-2">
-              Password
-            </h1>
-            <p className="text-[12px] lg:text-[12px] leading-[16px]  ">
+            <h4 className="font-semibold mb-2">Password</h4>
+            <p className="text-xs ">
               Set a unique password for better protection
             </p>
           </div>
@@ -34,17 +65,17 @@ const Security = () => {
             text={"Change Password"}
             loading={false}
             size="sm"
-            css="w-[137px]"
+            className="w-[137px]"
             onClick={() => setOpenResetPasswordModal(true)}
           />
         </div>
 
-        <div className="flex items-center justify-between mt-5">
+        <div className="flex justify-between md:flex-row flex-col  md:items-center gap-4">
           <div className="text-[#606C82] font-normal">
-            <h1 className="text-[16px] lg:text-[16px] leading-[28px]   mb-2">
+            <h4 className="font-semibold mb-2">
               2FA (Two-Factor Authentication)
-            </h1>
-            <p className="text-[12px] lg:text-[12px] leading-[16px]  ">
+            </h4>
+            <p className="text-xs ">
               Status:{" "}
               <span
                 className={`${
@@ -58,22 +89,28 @@ const Security = () => {
             </p>
           </div>
 
-          {!user?.twoFactorAuthEnabled && (
+          {!user?.twoFactorAuthEnabled ? (
             <WhiteTransparentButton
               text={"Enable"}
               loading={false}
               size="sm"
-              css="w-[137px]"
-              onClick={() => setTwoFaModal(true)}
+              className="w-[137px]"
+              onClick={() => setShow2FAModal({ disable: false, enable: true })}
+            />
+          ) : (
+            <WhiteTransparentButton
+              text={"Disable"}
+              loading={false}
+              size="sm"
+              className="w-[137px] hidden"
+              onClick={() => setShow2FAModal({ disable: true, enable: false })}
             />
           )}
         </div>
-        <div className="flex justify-between my-3">
+        <div className="flex justify-between md:flex-row flex-col  md:items-center gap-4">
           <div className="text-[#606C82] font-normal">
-            <h1 className="text-[16px] lg:text-[16px] leading-[28px] font-normal text-[#606C82]">
-              Wallet Pin
-            </h1>
-            <p className="text-[12px] lg:text-[12px] leading-[16px]  ">
+            <h4 className="mb-2 font-semibold">Wallet Pin</h4>
+            <p className="text-xs ">
               Status:{" "}
               <span
                 className={`${
@@ -89,7 +126,7 @@ const Security = () => {
             <WhiteTransparentButton
               text={user?.wallet?.pinSet ? "Update Pin" : "Set Pin"}
               loading={false}
-              css="px-7 w-[137px]"
+              className="px-7 w-[137px]"
               size="sm"
               onClick={() => setPinModal(true)}
             />
@@ -106,7 +143,17 @@ const Security = () => {
           type={user?.wallet?.pinSet ? "change" : "create"}
         />
       )}
-      {twoFAModal && <TwoFactorAuthModal close={() => setTwoFaModal(false)} />}
+      {show2FAModal.enable && (
+        <TwoFactorAuthModal
+          close={() => setShow2FAModal({ disable: false, enable: false })}
+        />
+      )}
+      {show2FAModal.disable && (
+        <TwoFactorAuthModal
+          close={() => setShow2FAModal({ disable: false, enable: false })}
+          enable={false}
+        />
+      )}
     </div>
   );
 };

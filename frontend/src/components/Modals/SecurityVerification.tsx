@@ -57,7 +57,7 @@ const SecurityVerification: React.FC<Props> = ({ close, func }) => {
         <form className="mt-5">
           <div className="relative mb-4">
             <PrimaryInput
-              css={"w-full p-2.5"}
+              className={"w-full p-2.5"}
               label={"Autheticator app code"}
               placeholder="Enter code"
               error={undefined}
@@ -66,7 +66,7 @@ const SecurityVerification: React.FC<Props> = ({ close, func }) => {
             />
           </div>
           <PrimaryInput
-            css={"w-full p-2.5 mb-7"}
+            className={"w-full p-2.5 mb-7"}
             label={"Wallet PIN"}
             placeholder="Enter PIN"
             error={undefined}
@@ -75,7 +75,7 @@ const SecurityVerification: React.FC<Props> = ({ close, func }) => {
           />
 
           <PrimaryButton
-            css={"w-full"}
+            className={"w-full"}
             text={"Confirm"}
             loading={loading}
             onClick={handleVerify}

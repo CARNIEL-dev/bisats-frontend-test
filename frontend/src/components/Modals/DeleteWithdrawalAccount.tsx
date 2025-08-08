@@ -49,13 +49,13 @@ const DeleteWithdrawalAccount: React.FC<Props> = ({ close, bank }) => {
             text={"Cancel"}
             loading={false}
             onClick={close}
-            css="w-[]"
+            className="w-[]"
             style={{ width: "50%" }}
           />
           <PrimaryButton
             text={"Proceed"}
             loading={isLoading}
-            css="w-1/2 ml-3"
+            className="w-1/2 ml-3"
             onClick={() => DeleteBankAccount()}
           />
         </div>

@@ -2,7 +2,6 @@ import { cn } from "@/utils";
 import { InputHTMLAttributes } from "react";
 
 interface TInput extends InputHTMLAttributes<HTMLInputElement> {
-  css?: string;
   label: string;
   error: string | undefined | null | boolean;
   touched: boolean | undefined;
@@ -11,7 +10,7 @@ interface TInput extends InputHTMLAttributes<HTMLInputElement> {
   maxFnc?: () => void;
 }
 const PrimaryInput: React.FC<TInput> = ({
-  css,
+  className,
   label,
   error,
   touched,
@@ -46,7 +45,7 @@ const PrimaryInput: React.FC<TInput> = ({
         className={cn(
           `rounded-sm placeholder:text-sm text-base font-normal border border-[#D6DAE1] outline-[none] focus:border-[#C49600] focus:shadow-[0_0_10px_#FEF8E5] text-[#606C82]  p-2.5 no-spinner  px-3 `,
           error && "border-[#EF4444] outline-0 focus:border-[#EF4444] ",
-          css
+          className
         )}
         onFocus={onFocus}
         onBlur={onBlur}

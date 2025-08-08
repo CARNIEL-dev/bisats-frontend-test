@@ -124,7 +124,7 @@ const BVNVerification = () => {
               <div className="w-full mt-10">
                 <div className="w-full mb-1relative">
                   <PrimaryInput
-                    css="w-full p-2.5 "
+                    className="w-full p-2.5 "
                     type="code"
                     name="code"
                     label="Verification code"
@@ -142,7 +142,7 @@ const BVNVerification = () => {
                 />
                 <div className="w-full mt-6 mb-3">
                   <PrimaryButton
-                    css={"w-full"}
+                    className={"w-full"}
                     text={"Submit"}
                     loading={formik.isSubmitting}
                     type="submit"
@@ -181,7 +181,7 @@ const BVNVerification = () => {
                   type="bvn"
                   name="bvn"
                   label="Your BVN"
-                  css="w-full h-[48px] px-3 outline-hidden "
+                  className="w-full h-[48px] px-3 outline-hidden "
                   error={formik1.errors.bvn}
                   touched={formik1.touched.bvn}
                   value={formik1.values.bvn}
@@ -191,7 +191,7 @@ const BVNVerification = () => {
 
                 <div className="w-full my-3">
                   <PrimaryButton
-                    css={"w-full"}
+                    className={"w-full"}
                     text={"Submit"}
                     loading={formik1.isSubmitting}
                     disabled={

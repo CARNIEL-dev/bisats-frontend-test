@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
@@ -28,6 +28,7 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
   const { showBalance, defaultCurrency: currency } = useSelector(
     (state: { wallet: WalletState }) => state.wallet
   );
+  const [isLoading, setIsLoading] = useState(true);
 
   const walletData = useSelector((state: RootState) => state.wallet.wallet);
 
@@ -63,6 +64,7 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
       ["xNGN", walletData.xNGN ?? 0],
     ];
 
+    setIsLoading(false);
     return entries.reduce((total, [asset, amount]) => {
       if (amount <= 0) return total;
 
@@ -78,19 +80,14 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
     }, 0);
   }, [walletData, currencyRate, currency]);
 
-  console.log("currency", currency);
-  console.log("Show balance", showBalance);
-
   return (
     <div className="border  flex flex-col gap-2 p-6 rounded-2xl">
       <div className="flex items-center gap-1">
         <p className="font-semibold text-neutral-800">Total Balance</p>
         <Button
-          variant="ghost"
+          variant="default"
           disabled={isFetching}
-          className={cn(
-            "p-0! h-fit w-fit hover:bg-transparent hover:scale-110"
-          )}
+          className={cn("p-0! h-fit w-fit bg-primary/20 ")}
           onClick={toggleShowBalance}
         >
           {showBalance ? (
@@ -101,7 +98,7 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
         </Button>
       </div>
       <div className="flex items-baseline gap-3">
-        {isFetching ? (
+        {isFetching || isLoading ? (
           <ThreeDot
             variant="pulsate"
             color={["#F5BB00", "#000"]}
@@ -113,11 +110,11 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
         ) : isError ? (
           <span className="text-red-500 font-normal ">Error</span>
         ) : (
-          <div className="flex items-center gap-0.5">
+          <div className="flex items-center gap-0.5 mt-2">
             <span className="text-[28px] md:text-[34px] font-extrabold inline-block">
               {currency !== undefined && currency === "ngn" ? "₦" : "$"}
             </span>
-            {showBalance && userBalance ? (
+            {showBalance ? (
               <p className="font-extrabold space-x-0.5">
                 <span className="text-2xl md:text-4xl">
                   {
@@ -143,7 +140,7 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
 
         <div>
           <DropdownMenu>
-            <DropdownMenuTrigger className="outline-none text-sm">
+            <DropdownMenuTrigger className="outline-none text-sm bg-neutral-100 py-1 px-1.5 rounded-md border">
               <div className="flex items-center gap-0.5 uppercase">
                 {currency || "USD"}
                 <ChevronDown className="w-4 h-4" />

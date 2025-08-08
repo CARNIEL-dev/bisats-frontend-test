@@ -336,7 +336,7 @@ const ExpressSwap = () => {
         <div>
           <div className="relative">
             <PrimaryInput
-              css={"w-full h-[64px]"}
+              className={"w-full h-[64px]"}
               label={"Amount"}
               error={undefined}
               touched={undefined}
@@ -354,7 +354,7 @@ const ExpressSwap = () => {
           </div>
           <div className="relative my-10">
             <PrimaryInput
-              css={"w-full h-[64px]"}
+              className={"w-full h-[64px]"}
               label={"You'll receive at least"}
               error={undefined}
               touched={undefined}
@@ -404,7 +404,7 @@ const ExpressSwap = () => {
         <div>
           <div className="relative">
             <PrimaryInput
-              css={"w-full h-[64px]"}
+              className={"w-full h-[64px]"}
               label={"Amount"}
               error={undefined}
               touched={undefined}
@@ -429,7 +429,7 @@ const ExpressSwap = () => {
           </div>
           <div className="relative my-10">
             <PrimaryInput
-              css={"w-full h-[64px]"}
+              className={"w-full h-[64px]"}
               label={"You'll receive at least"}
               error={undefined}
               touched={undefined}
@@ -475,7 +475,7 @@ const ExpressSwap = () => {
         >
           {(validateAndExecute) => (
             <PrimaryButton
-              css={"w-full"}
+              className={"w-full"}
               text={"Sell"}
               loading={false}
               onClick={validateAndExecute}
@@ -488,7 +488,7 @@ const ExpressSwap = () => {
             adsParam?.asset
           }`}
           loading={false}
-          css="w-full"
+          className="w-full"
           onClick={() => setShowConfirmation(true)}
           disabled={error || adsParam?.amount === "0" ? true : false}
         />

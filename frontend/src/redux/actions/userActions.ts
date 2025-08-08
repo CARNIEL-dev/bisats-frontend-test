@@ -32,12 +32,7 @@ export const Login = async (payload: TLogin) => {
       method: "POST",
       body: JSON.stringify(payload),
     });
-    const data = response.data;
-    dispatchWrapper({ type: UserActionTypes.LOG_IN_SUCCESS, payload: data });
-    setUser(data);
-    setUserId(data?.userId);
-    setToken(data.token);
-    setRefreshToken(data.refreshToken);
+
     return response;
   } catch (error) {
     // throw handleApiError(error);
@@ -236,6 +231,7 @@ export const PostPersonalInformation_KYC = async (
       }
     );
     const data = response.data;
+    console.log(data);
     dispatchWrapper({ type: GeneralTypes.SUCCESS, payload: data });
 
     return response;
@@ -328,6 +324,8 @@ export const GetUserDetails = async () => {
     });
     const data = response.data;
 
+    // console.log("Data from getting profile", data);
+
     if (response.status) {
       dispatchWrapper({
         type: UserActionTypes.UPDATE_USER,
@@ -346,6 +344,7 @@ export const GetUserDetails = async () => {
       logoutUser();
     }
   } catch (error) {
+    // console.log("Errorfrom getting profile", error);
     logoutUser();
     // throw handleApiError(error);
     return error;
@@ -369,6 +368,8 @@ export const UpdateUserName = async (payload: {
       }
     );
     const data = response;
+
+    // console.log("After username update", data);
     GetUserDetails();
     // dispatchWrapper({ type: GeneralTypes.SUCCESS, payload: data });
     return data;

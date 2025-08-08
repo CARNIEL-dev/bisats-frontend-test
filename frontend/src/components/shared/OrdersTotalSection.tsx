@@ -28,7 +28,9 @@ const OrdersTotalSection = ({
             <p className="text-sm text-green-600 font-medium">
               Bought :{" "}
               <span className="font-medium text-base text-gray-700">
-                {formatter({ decimal: showXNgn ? 0 : 4 }).format(d.buy)}
+                {formatter({
+                  decimal: showXNgn ? 2 : d.asset === "USDT" ? 2 : 4,
+                }).format(d.buy)}
               </span>
               <span className="text-xs font-light text-gray-400 inline-block ml-2 ">
                 {showXNgn ? " xNGN" : d.asset}
@@ -37,7 +39,9 @@ const OrdersTotalSection = ({
             <p className="text-sm text-red-600 font-medium">
               Sold :{" "}
               <span className="font-medium text-base text-gray-700">
-                {formatter({ decimal: showXNgn ? 0 : 4 }).format(d.sell)}
+                {formatter({
+                  decimal: showXNgn ? 2 : d.asset === "USDT" ? 2 : 4,
+                }).format(d.sell)}
               </span>
               <span className="text-xs font-light text-gray-400 inline-block ml-2 ">
                 {showXNgn ? " xNGN" : d.asset}

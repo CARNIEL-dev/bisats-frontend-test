@@ -184,7 +184,7 @@ const Swap = ({
               TokenData?.[assetIndexMap?.[adDetail?.asset ?? "BTC"]]?.tokenName
             }`}
             loading={false}
-            css="w-full capitalize"
+            className="w-full capitalize"
             disabled={!(formik.isValid && formik.dirty)}
             onClick={validateAndExecute}
           />
@@ -411,7 +411,7 @@ const InputField = ({
   return (
     <div className="relative h-32">
       <PrimaryInput
-        css={"w-full h-[58px] no-spinner"}
+        className={"w-full h-[58px] no-spinner"}
         label={label}
         type="number"
         inputMode="decimal"

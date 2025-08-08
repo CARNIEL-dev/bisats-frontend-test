@@ -1,18 +1,20 @@
 import { BTC, ETH, NGN, SOL, USDT } from "@/assets/tokens";
 import Empty from "@/components/Empty";
 import ErrorDisplay from "@/components/shared/ErrorDisplay";
-import { buttonVariants } from "@/components/ui/Button";
+import { Button, buttonVariants } from "@/components/ui/Button";
 import { DataTable } from "@/components/ui/data-table";
 import { APP_ROUTES } from "@/constants/app_route";
 import { assets } from "@/data";
 import PreLoader from "@/layouts/PreLoader";
-import { GetLivePrice } from "@/redux/actions/walletActions";
+import { GetLivePrice, toggleShowBalance } from "@/redux/actions/walletActions";
+import { WalletState } from "@/redux/reducers/walletSlice";
 import { TWallet } from "@/types/wallet";
 import { cn, formatter } from "@/utils";
-import { convertAssetToUSD } from "@/utils/conversions";
+import { convertAssetToNaira, convertAssetToUSD } from "@/utils/conversions";
 import { useQuery } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
-import React, { useEffect, useMemo, useState } from "react";
+import { Eye, EyeClosed } from "lucide-react";
+import React, { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
@@ -54,7 +56,11 @@ export type PriceData = {
 };
 
 const Assets: React.FC = () => {
-  const wallet: TWallet = useSelector((state: any) => state.wallet).wallet;
+  const walletState: WalletState = useSelector((state: any) => state.wallet);
+
+  const wallet = walletState.wallet;
+
+  console.log("Wallet", walletState);
 
   const {
     data: livePrices,
@@ -111,6 +117,11 @@ const Assets: React.FC = () => {
     [livePrices, wallet]
   );
 
+  const nairaRate = useMemo(() => {
+    const rate = defaultAssetsData.find((item) => item.Asset === assets.xNGN);
+    return rate?.Rate || 0;
+  }, [defaultAssetsData]);
+
   //   HDR: columns
   const column: ColumnDef<Asset & { logo: string }>[] = [
     {
@@ -131,27 +142,71 @@ const Assets: React.FC = () => {
     },
     {
       accessorKey: "Balance",
-      header: "Balance",
+
+      header: () => {
+        return (
+          <div className="flex items-center gap-1">
+            <span>Balance</span>
+            <Button
+              variant="default"
+              disabled={isFetching}
+              className={cn("p-0! h-[1.5rem] w-fit bg-primary/20 ")}
+              onClick={toggleShowBalance}
+            >
+              {walletState.showBalance ? (
+                <EyeClosed className="!size-5" />
+              ) : (
+                <Eye className="!size-5" />
+              )}
+            </Button>
+          </div>
+        );
+      },
+
       cell: ({ row }) => {
         const item = row.original;
+        const isXNGN = item.Asset === assets.xNGN;
+        const isUSDT = item.Asset === assets.USDT;
+
         const USDPrice =
           convertAssetToUSD(item.Asset, item.Balance, livePrices!) || 0;
+        const NGNPrice = convertAssetToNaira(
+          item.Asset as keyof Prices,
+          item.Balance,
+          item.Rate,
+          livePrices!
+        );
+
         return (
           <div className="flex md:items-center items-end md:flex-row flex-col gap-x-2 gap-y-1 text-sm text-gray-600">
-            <p className="font-semibold  ">
-              <span className="font-mono text-xl md:text-sm">
-                {formatter({ decimal: 2 }).format(item.Balance)}
+            <p className="font-bold">
+              <span className="font-mono text-xl md:text-base">
+                {walletState.showBalance
+                  ? formatter({ decimal: isXNGN ? 2 : isUSDT ? 2 : 6 }).format(
+                      Number(item.Balance) || 0
+                    )
+                  : "***"}
               </span>{" "}
               <span className="font-normal">{item.Asset}</span>
             </p>
-            <p className="text-xs font-medium ">
-              ~{" "}
-              {formatter({
-                decimal: 0,
-                style: "currency",
-                currency: "USD",
-              }).format(USDPrice)}
-            </p>
+            {walletState.showBalance && (
+              <p className="text-xs font-medium">
+                ~{" "}
+                {formatter({
+                  decimal: 0,
+                  style: "currency",
+                  currency: walletState.defaultCurrency,
+                }).format(
+                  walletState.defaultCurrency === "usd"
+                    ? Number(USDPrice) || 0
+                    : isXNGN
+                    ? Number(item.Balance) || 0
+                    : isUSDT
+                    ? Number(NGNPrice) * nairaRate
+                    : Number(NGNPrice) || 0
+                )}
+              </p>
+            )}
           </div>
         );
       },

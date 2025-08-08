@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/Button";
 import Label from "@/components/Inputs/Label";
 
 interface TInput extends InputHTMLAttributes<HTMLInputElement> {
-  css: string;
+  className: string;
   check: boolean;
   text: string;
   error: string | undefined | null;
@@ -21,7 +21,7 @@ interface TInput extends InputHTMLAttributes<HTMLInputElement> {
   handleChange: React.ChangeEventHandler<HTMLInputElement>;
 }
 const AuthPasswordInput: React.FC<TInput> = ({
-  css,
+  className,
   handleChange,
   text,
   check,
@@ -59,13 +59,13 @@ const AuthPasswordInput: React.FC<TInput> = ({
     <div className=" py-2 w-full">
       <div className="w-full  ">
         <div className="mb-2">
-          <Label text={text} css="" />
+          <Label text={text} className="" />
         </div>
         <div className="relative">
           <input
             style={{ outline: "none" }}
             type={passwordHidden ? "password" : "text"}
-            className={`rounded-[6px] border border-[#D6DAE1] outline-[none] focus:border-[#C49600] focus:shadow-[0_0_10px_#FEF8E5] text-[#606C82] p-1 ${css} ring-0 ${
+            className={`rounded-[6px] border border-[#D6DAE1] outline-[none] focus:border-[#C49600] focus:shadow-[0_0_10px_#FEF8E5] text-[#606C82] p-1 ${className} ring-0 ${
               error && touched
                 ? "border-[#EF4444] outline-0 focus:border-[#EF4444]"
                 : ""

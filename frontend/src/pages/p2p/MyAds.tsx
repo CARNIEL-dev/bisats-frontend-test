@@ -306,7 +306,11 @@ const MyAds = () => {
                 Active Ads
               </p>
 
-              <DataTable columns={column} data={adsData.activeAds} />
+              <DataTable
+                columns={column}
+                data={adsData.activeAds}
+                paginated={false}
+              />
             </div>
             <div className="space-y-3">
               <p className="text-lg font-semibold text-red-600 border border-red-500 rounded-lg px-3 py-2 bg-red-500/10">

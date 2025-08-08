@@ -54,7 +54,7 @@ export const MultiSelectDropDown = ({
     <div>
       {label && (
         <div className="mb-2">
-          <Label text={label} css="" />
+          <Label text={label} className="" />
         </div>
       )}
 

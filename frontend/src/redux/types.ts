@@ -13,14 +13,16 @@ export enum GeneralTypes {
 }
 
 export enum UserActionTypes {
+  LOG_IN_PENDING = "logInPending",
+  LOG_IN_UPDATE = "logInUpdate",
   LOG_IN_SUCCESS = "logInSuccess",
   SIGN_UP = "signUp",
   UPDATE_USER = "updateUser",
   RESET_USER = "resetUser",
   KYC_STATUS = "kycstatus",
   LOG_OUT = "logout",
-  // Add other action types here
 }
+
 export enum WalletActionTypes {
   GET_WALLET = "getwallet",
   WALLET_SETTINGS = "getwalletsettings",

@@ -96,7 +96,7 @@ const CreateAdPricing: React.FC<AdsProps> = ({
       <div className="flex mb-1">
         <div className="w-[90%] mr-1">
           <PrimaryInput
-            css="w-full p-2.5"
+            className="w-full p-2.5"
             label={pricingType === "Static" ? "Price" : "Current Market Price"}
             disabled={pricingType === "Static" ? false : true}
             placeholder="0.00 xNGN"
@@ -131,7 +131,7 @@ const CreateAdPricing: React.FC<AdsProps> = ({
         <>
           <div className="mt-3 mb-1">
             <PrimaryInput
-              css="w-full p-2.5"
+              className="w-full p-2.5"
               label="Margin relative to the market price (%)"
               placeholder="%"
               name="margin"
@@ -177,7 +177,7 @@ const CreateAdPricing: React.FC<AdsProps> = ({
       <div className="mb-4">
         <div className="flex justify-between mb-px">
           <PrimaryInput
-            css="w-[98%] p-2.5 mr-1"
+            className="w-[98%] p-2.5 mr-1"
             label="Lower Price Limit"
             placeholder="0.00 xNGN"
             name="priceLowerLimit"
@@ -196,7 +196,7 @@ const CreateAdPricing: React.FC<AdsProps> = ({
             }}
           />
           <PrimaryInput
-            css="w-full p-2.5"
+            className="w-full p-2.5"
             label="Upper price Limit"
             name="priceUpperLimit"
             placeholder="0.00 xNGN"
@@ -222,7 +222,7 @@ const CreateAdPricing: React.FC<AdsProps> = ({
         </p>
       </div>
       <PrimaryButton
-        css="w-full disabled"
+        className="w-full disabled"
         type="button"
         text="Continue"
         loading={loading}

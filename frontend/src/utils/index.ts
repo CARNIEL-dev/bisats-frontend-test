@@ -34,4 +34,47 @@ const formatTime = (seconds: number) => {
   return `${mins}:${secs}`;
 };
 
-export { formatter, formatTime };
+// HDR: Split text in the middle
+type BreakLongTextType = {
+  str: string;
+  visibleChars?: number;
+  ellipsis?: string;
+};
+
+const splitTextInMiddle = ({
+  str,
+  visibleChars = 10,
+  ellipsis = "...",
+}: BreakLongTextType): string => {
+  if (str.length <= visibleChars * 2) {
+    return str;
+  }
+  const firstPart = str.slice(0, visibleChars);
+  const secondPart = str.slice(-visibleChars);
+
+  return `${firstPart}${ellipsis}${secondPart}`;
+};
+
+// HDR: Format email
+type FormatEmailParams = {
+  email: string;
+  maxChar?: number;
+  ellipsis?: string;
+};
+
+function formatEmail({
+  email,
+  maxChar = 6,
+  ellipsis = "***",
+}: FormatEmailParams): string | null {
+  const [local, domain] = email.split("@");
+
+  if (!local || !domain) {
+    return null;
+  }
+
+  const visible = local.slice(0, maxChar);
+  return `${visible}${ellipsis}@${domain}`;
+}
+
+export { formatter, formatTime, splitTextInMiddle, formatEmail };

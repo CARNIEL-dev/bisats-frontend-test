@@ -162,13 +162,13 @@ const TransactionBreakdown = () => {
             <PrimaryButton
               text={"I have made payment"}
               loading={confirmLoading}
-              css="w-full"
+              className="w-full"
               onClick={() => ConfirmPayment("confirmed")}
             />
             <WhiteTransparentButton
               text={"Cancel"}
               loading={cancelLoading}
-              css="w-full mt-3"
+              className="w-full mt-3"
               onClick={() => ConfirmPayment("cancel")}
             />
           </>
@@ -189,14 +189,14 @@ const TransactionBreakdown = () => {
             <PrimaryButton
               text={"Proceed"}
               loading={loading}
-              css="w-full "
+              className="w-full "
               onClick={() => onIntiateTopUp()}
               disabled={!selectedBankID}
             />
             <WhiteTransparentButton
               text={"Cancel"}
               loading={false}
-              css="w-full mt-3"
+              className="w-full mt-3"
               onClick={() => navigate(-1)}
             />
           </>

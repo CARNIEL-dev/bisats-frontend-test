@@ -330,7 +330,7 @@ const WithdrawalPage = () => {
               >
                 {(validateAndExecute) => (
                   <PrimaryButton
-                    css="w-full"
+                    className="w-full"
                     text={"Withdraw"}
                     loading={false}
                     onClick={validateAndExecute}
@@ -400,7 +400,7 @@ const WithdrawalPage = () => {
               >
                 {(validateAndExecute) => (
                   <PrimaryButton
-                    css={"w-full"}
+                    className={"w-full"}
                     text={"Withdraw"}
                     loading={false}
                     onClick={validateAndExecute}

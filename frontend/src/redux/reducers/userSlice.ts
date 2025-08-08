@@ -30,7 +30,7 @@ export interface UserState {
 }
 interface UserActionProp {
   type: string;
-  payload: Record<string, any>;
+  payload: Record<string, any> | null;
 }
 
 const initialState: UserState = {
@@ -50,6 +50,20 @@ const userReducer = (state = initialState, action: UserActionProp) => {
         ...state,
         loading: true,
       };
+    case UserActionTypes.LOG_IN_PENDING:
+      return {
+        ...state,
+        isAuthenticated: false,
+        user: action?.payload,
+        token: action?.payload?.token,
+        kyc: action?.payload?.kyc,
+      };
+    case UserActionTypes.LOG_IN_UPDATE:
+      return {
+        ...state,
+        isAuthenticated: true,
+      };
+
     case UserActionTypes.LOG_IN_SUCCESS:
       return {
         ...state,
@@ -57,7 +71,6 @@ const userReducer = (state = initialState, action: UserActionProp) => {
         user: action?.payload,
         token: action?.payload?.token,
         kyc: action?.payload?.kyc,
-        loading: false,
       };
     case UserActionTypes.SIGN_UP:
       return {

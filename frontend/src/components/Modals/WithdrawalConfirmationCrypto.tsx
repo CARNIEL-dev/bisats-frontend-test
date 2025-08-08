@@ -84,7 +84,7 @@ const WithdrawalConfirmationCrypto: React.FC<Props> = ({
           </p>
         </div>
         <PrimaryButton
-          css={"w-full"}
+          className={"w-full"}
           text={"Proceed"}
           loading={isLoading}
           onClick={submit}

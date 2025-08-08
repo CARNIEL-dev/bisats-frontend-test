@@ -101,9 +101,8 @@ export type TPinRequest = {
   userId?: string;
   pin: string;
   confirmPin: string;
-  oldPin?:string
+  oldPin?: string;
 };
-
 
 export type TVerify2FARequest = {
   userId?: string;
@@ -113,5 +112,5 @@ export type TVerify2FARequest = {
 export type TUpdate2FAStatus = {
   userId?: string;
   enable?: boolean;
-  code: string;
+  code?: string;
 };
