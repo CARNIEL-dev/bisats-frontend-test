@@ -1,3 +1,4 @@
+import BisatLogo from "@/components/shared/Logo";
 import MaxWidth from "@/components/shared/MaxWith";
 import {
   DropdownMenu,
@@ -7,30 +8,45 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { APP_ROUTES } from "@/constants/app_route";
-import {
-  NotificationState,
-  TNotification,
-} from "@/redux/reducers/notificationSlice";
 import { cn } from "@/utils";
 import dayjs from "dayjs";
-import { Bell, Check, Loader } from "lucide-react";
+import { Bell, Check, Loader, Loader2, X } from "lucide-react";
 import { useSelector } from "react-redux";
-import { NavLink } from "react-router-dom";
-import BisatLogo from "@/components/shared/Logo";
+import { NavLink, useLocation } from "react-router-dom";
 
-import relativeTime from "dayjs/plugin/relativeTime";
-import { Button } from "@/components/ui/Button";
-import {
-  GetNotification,
-  Read_Notification,
-} from "@/redux/actions/generalActions";
-import { UserState } from "@/redux/reducers/userSlice";
 import ProfileDropdown from "@/components/shared/ProfileDropdown";
-import { useState } from "react";
+import { Button } from "@/components/ui/Button";
+import { UpdateAdStatusResponse } from "@/pages/p2p/MyAds";
+import {
+  Read_Notification,
+  useFetchUserNotifications,
+} from "@/redux/actions/generalActions";
+import { GetLivePrice, GetWallet } from "@/redux/actions/walletActions";
+import { UserState } from "@/redux/reducers/userSlice";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import relativeTime from "dayjs/plugin/relativeTime";
+import { useEffect, useState } from "react";
+import Toast from "./Toast";
 
 dayjs.extend(relativeTime);
 
 const DashboardNavbar = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    const refreshPath = [
+      APP_ROUTES.DASHBOARD,
+      ...Object.values(APP_ROUTES.WALLET),
+      APP_ROUTES.P2P.HOME,
+      APP_ROUTES.P2P.MY_ADS,
+    ];
+
+    if (refreshPath.includes(location.pathname)) {
+      GetWallet();
+      GetLivePrice();
+    }
+  }, [location.pathname]);
+
   return (
     <header className="bg-white shadow-sm fixed inset-x-0 top-0 z-50  w-full">
       <MaxWidth as="nav" className="flex items-center justify-between py-5">
@@ -57,31 +73,63 @@ export default DashboardNavbar;
 // HDR: NOTIFICATION
 const Notification = () => {
   const [isUpdatingId, setIsUpdatingId] = useState("");
+  const userState: UserState = useSelector((state: any) => state.user);
+  const userId: string = userState?.user?.userId || "";
 
-  const user = useSelector((state: { user: UserState }) => state.user);
-  const notificationState: NotificationState = useSelector(
-    (state: any) => state.notification
-  );
+  const queryClient = useQueryClient();
 
-  const markAsRead = async (id: string) => {
-    setIsUpdatingId(id);
-    await Read_Notification({
-      userId: user?.user?.userId,
-      notificationId: id,
-    });
-    await GetNotification();
-    setIsUpdatingId("");
-  };
+  const isKycVerified = [
+    userState?.kyc?.identificationVerified,
+    userState?.kyc?.personalInformationVerified,
+    userState.user?.phoneNumberVerified,
+  ].every(Boolean);
 
+  const {
+    data: notificationState = {
+      notifications: null,
+      loading: false,
+      totalNotification: 0,
+      unreadNotifications: 0,
+    },
+    isLoading,
+    error,
+  } = useFetchUserNotifications({
+    userId,
+    isKycVerified,
+  });
+
+  //HDR: Mutation function
+  const mutation = useMutation<
+    UpdateAdStatusResponse,
+    Error,
+    UpdateNotificationStatusVars
+  >({
+    mutationFn: ({ id }: UpdateNotificationStatusVars) =>
+      Read_Notification({ userId, notificationId: id }),
+    onSuccess() {
+      queryClient.invalidateQueries({
+        queryKey: ["userNotifications", userId],
+      });
+    },
+    onError(err) {
+      console.error(err);
+      Toast.error("Failed to mark as read", "Failed");
+    },
+  });
+
+  if (isLoading) {
+    return <NotificationBellState />;
+  } else if (error) {
+    return <NotificationBellState loading={false} />;
+  }
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="outline-none relative">
-        {notificationState !== null &&
-          notificationState.totalNotification > 0 && (
-            <small className="absolute -right-2 -top-3 bg-priYellow grid place-content-center w-5 h-5 text-xs font-medium rounded-full ">
-              {notificationState.unreadNotifications}
-            </small>
-          )}
+        {notificationState && notificationState?.totalNotification > 0 && (
+          <small className="absolute -right-2 -top-3 bg-priYellow grid place-content-center w-5 h-5 text-xs font-medium rounded-full ">
+            {notificationState.unreadNotifications}
+          </small>
+        )}
         <Bell />
       </DropdownMenuTrigger>
       <DropdownMenuContent
@@ -95,8 +143,7 @@ const Notification = () => {
         <DropdownMenuSeparator />
         <div className="h-full overflow-y-scroll max-h-[23rem] no-scrollbar">
           <>
-            {notificationState !== null &&
-            notificationState.totalNotification > 0 ? (
+            {notificationState && notificationState?.totalNotification > 0 ? (
               notificationState?.notifications
                 ?.slice()
                 .sort((a, b) => Number(a.read) - Number(b.read))
@@ -117,10 +164,18 @@ const Notification = () => {
                           <Button
                             variant="secondary"
                             className={cn("text-xs py-1 !h-fit text-slate-600")}
-                            onClick={() => markAsRead(notification.id)}
-                            disabled={isUpdatingId === notification.id}
+                            onClick={() =>
+                              mutation.mutate({
+                                id: notification.id,
+                              })
+                            }
+                            disabled={
+                              mutation.isPending &&
+                              mutation.variables?.id === notification.id
+                            }
                           >
-                            {isUpdatingId === notification.id ? (
+                            {mutation.isPending &&
+                            mutation.variables?.id === notification.id ? (
                               <Loader className="animate-spin" />
                             ) : (
                               <Check />
@@ -155,5 +210,25 @@ const Notification = () => {
         </div>
       </DropdownMenuContent>
     </DropdownMenu>
+  );
+};
+
+const NotificationBellState = ({ loading = true }: { loading?: boolean }) => {
+  return (
+    <div className="relative">
+      <div
+        className={cn(
+          "absolute -right-2 -top-3 bg-priYellow grid place-content-center w-5 h-5 text-xs font-medium rounded-full ",
+          !loading && "bg-red-500"
+        )}
+      >
+        {loading ? (
+          <Loader2 className="size-4 animate-spin" />
+        ) : (
+          <X className="size-4 text-white" />
+        )}
+      </div>
+      <Bell />
+    </div>
   );
 };

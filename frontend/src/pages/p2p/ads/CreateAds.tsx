@@ -111,10 +111,11 @@ const CreateAd = () => {
     initialValues: { ...initialAd, agree: false },
     validateOnMount: false,
     validateOnBlur: true,
+
     validate: async (values) => {
       try {
         await currentSchema.validate(values, {
-          abortEarly: false,
+          abortEarly: true,
           context: {
             liveRate: tokenLivePrices,
             userTransactionLimits,

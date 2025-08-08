@@ -86,7 +86,7 @@ const MarketPlaceTable = ({ type, ads, asset }: MarketPlaceContentProps) => {
         const item = row.original;
         const amount =
           item.orderType === "buy"
-            ? formatter({}).format(item.amountAvailable)
+            ? formatter({ decimal: 5 }).format(item.amountAvailable)
             : formatter({ decimal: 5 }).format(
                 item.amountAvailable / item.price
               );

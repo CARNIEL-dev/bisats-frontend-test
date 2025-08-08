@@ -18,6 +18,7 @@ import { APP_ROUTES } from "@/constants/app_route";
 import { PhoneSchema, VerificationSchema } from "@/formSchemas";
 import OtherSide from "@/layouts/auth/OtherSide";
 import {
+  GetUserDetails,
   PostPhoneNumber_KYC,
   Resend_OTP_PhoneNumber_KYC,
   Verify_OTP_PhoneNumber_KYC,
@@ -99,11 +100,12 @@ const PhoneVerifcation = () => {
       };
       const response = await Verify_OTP_PhoneNumber_KYC(payload);
 
-      if (response?.statusCode === 200) {
+      if (response?.status) {
         Toast.success(response.message, "Phone number verified");
+        GetUserDetails();
         navigate(APP_ROUTES.KYC.PERSONAL);
       } else {
-        Toast.success(response.message, "Verification failed");
+        Toast.error(response.message, "Verification failed");
       }
     },
   });

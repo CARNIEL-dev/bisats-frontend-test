@@ -21,6 +21,7 @@ interface IMultiSelectDropDownProps {
   handleChange: (prop: string) => void;
   value?: string | React.ReactNode;
   placeholder?: string;
+  className?: string;
 }
 
 export const MultiSelectDropDown = ({
@@ -34,6 +35,7 @@ export const MultiSelectDropDown = ({
   scrollHeight,
   value,
   placeholder,
+  className,
 }: IMultiSelectDropDownProps) => {
   const { ref, visible, setVisible } = useClickOutside(false);
 
@@ -66,7 +68,8 @@ export const MultiSelectDropDown = ({
               "border-[#EF4444] outline-0 focus:border-[#EF4444]":
                 error && touched,
             },
-            selected ? "text-black" : "text-muted-foreground"
+            selected ? "text-black" : "text-muted-foreground",
+            className
           )}
           type="button"
           onClick={() => setVisible((prev) => !prev)}
@@ -118,7 +121,7 @@ export const MultiSelectDropDown = ({
                   </li>
                 ))
               ) : (
-                <li className="text-center text-sm text-gray-500 py-4">
+                <li className="text-center text-xs text-wrap text-gray-500 py-4 px-2">
                   No options available
                 </li>
               )}

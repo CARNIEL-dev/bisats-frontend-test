@@ -82,12 +82,13 @@ const LogIn = () => {
             />
           </div>
         </form>
-        <p
-          className="text-[14px] text-[#C49600] leading-[24px] font-normal mt-1 cursor-pointer"
+        <button
+          type="button"
+          className="text-[14px] text-[#C49600] leading-[24px] font-normal mt-1 cursor-pointer w-fit hover:bg-primary/10 px-2"
           onClick={() => navigate(APP_ROUTES.AUTH.FORGOT_PASSWORD)}
         >
           Forgot password?
-        </p>
+        </button>
 
         <div className="w-full flex items-center my-6">
           <hr className="text-[#F3F4F6] w-1/2 h-[1.5px]" />

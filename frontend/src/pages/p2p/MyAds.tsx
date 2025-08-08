@@ -8,22 +8,18 @@ import { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
 import { useSelector } from "react-redux";
 
+import KycBanner from "@/components/KycBanner";
 import ErrorDisplay from "@/components/shared/ErrorDisplay";
 import { buttonVariants } from "@/components/ui/Button";
 import { APP_ROUTES } from "@/constants/app_route";
 import PreLoader from "@/layouts/PreLoader";
+import KycManager from "@/pages/kyc/KYCManager";
 import { updateAdStatus, useFetchUserAds } from "@/redux/actions/walletActions";
+import { UserState } from "@/redux/reducers/userSlice";
 import { ACTIONS } from "@/utils/transaction_limits";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import KycManager from "@/pages/kyc/KYCManager";
-import { UserState } from "@/redux/reducers/userSlice";
-import KycBanner from "@/components/KycBanner";
-import {
-  collapseTextChangeRangesAcrossMultipleVersions,
-  isConstructorDeclaration,
-} from "typescript";
 
 export interface Ad {
   id: string;
@@ -56,16 +52,15 @@ const MyAds = () => {
     userState?.kyc?.identificationVerified,
     userState?.kyc?.personalInformationVerified,
     userState.user?.phoneNumberVerified,
-  ].some(Boolean);
+  ].every(Boolean);
 
   const {
     data: userAds = [],
     isError,
     error,
-    isFetching,
+    isLoading,
   } = useFetchUserAds({ userId, isKycVerified });
 
-  console.log("Isfetching", isFetching);
   const adsData = useMemo(() => {
     const activeAds = userAds.filter((ad) => ad.status !== "closed");
     const closedAds = userAds.filter((ad) => ad.status === "closed");
@@ -86,6 +81,9 @@ const MyAds = () => {
     onSuccess(_, variables) {
       queryClient.invalidateQueries({
         queryKey: ["userAds", variables.userId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["userNotifications", variables.userId],
       });
     },
     onError(err) {
@@ -184,19 +182,20 @@ const MyAds = () => {
     },
 
     {
-      accessorKey: "amountFilled",
+      accessorKey: "amountAvailable",
       header: "Amount Filled",
       cell: ({ row }) => {
-        const amount = row.original.amountAvailable;
+        const item = row.original;
+        const amount =
+          item.type !== "buy"
+            ? formatter({ decimal: 5 }).format(item.amountAvailable)
+            : formatter({ decimal: 5 }).format(
+                item.amountAvailable / item.price
+              );
         return (
-          <span className="text-gray-500 space-x-1">
-            {amount
-              ? formatter({
-                  decimal: 2,
-                }).format(amount)
-              : "N/A"}{" "}
-            {row.original.asset}
-          </span>
+          <div className="text-gray-600 uppercase ">
+            {amount} {item.asset}{" "}
+          </div>
         );
       },
     },
@@ -292,7 +291,7 @@ const MyAds = () => {
       <div>
         {!isKycVerified ? (
           <KycBanner />
-        ) : isFetching ? (
+        ) : isLoading ? (
           <PreLoader />
         ) : isError ? (
           <ErrorDisplay

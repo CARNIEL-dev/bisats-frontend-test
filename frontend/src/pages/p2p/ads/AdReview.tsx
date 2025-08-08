@@ -38,14 +38,14 @@ const AdReview: React.FC<AdsProps> = ({ formik }) => {
           <span>Max: {formatNumber(formik.values.maximumLimit ?? 0)}</span>
         </p>
       </div>
-      <div className="mb-4 flex items-center justify-between w-full">
+      {/* <div className="mb-4 flex items-center justify-between w-full">
         <p className="mb-1">
           <span className="text-[#606C82] font-light mr-2">Pricing Type</span>
         </p>
         <p className="text-[#515B6E] font-semibold">
           {formik.values.priceType}
         </p>
-      </div>
+      </div> */}
       <div className="mb-4 flex items-center justify-between w-full">
         <p className="mb-1">
           <span className="text-[#606C82] font-light mr-2">Amount</span>

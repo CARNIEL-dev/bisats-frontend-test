@@ -1,4 +1,5 @@
-import { InputHTMLAttributes, useState } from "react";
+import { cn } from "@/utils";
+import { InputHTMLAttributes } from "react";
 
 interface TInput extends InputHTMLAttributes<HTMLInputElement> {
   css?: string;
@@ -18,17 +19,14 @@ const PrimaryInput: React.FC<TInput> = ({
   maxFnc,
   onBlur,
   onFocus,
-  format,
   ...props
 }) => {
-  const [isFocused, setIsFocused] = useState(false);
-
-  function formatNumberInput(value: string): string {
-    if (!value) return "";
-    const [integer, decimal] = value.split(".");
-    const formatted = Number(integer.replace(/,/g, "")).toLocaleString();
-    return decimal !== undefined ? `${formatted}.${decimal}` : formatted;
-  }
+  // function formatNumberInput(value: string): string {
+  //   if (!value) return "";
+  //   const [integer, decimal] = value.split(".");
+  //   const formatted = Number(integer.replace(/,/g, "")).toLocaleString();
+  //   return decimal !== undefined ? `${formatted}.${decimal}` : formatted;
+  // }
 
   return (
     <div className="w-full flex flex-col gap-1.5 ">
@@ -45,23 +43,14 @@ const PrimaryInput: React.FC<TInput> = ({
       <input
         type={props.type ?? "text"}
         style={{ outline: "none" }}
-        className={`rounded-sm placeholder:text-sm text-base font-normal border border-[#D6DAE1] outline-[none] focus:border-[#C49600] focus:shadow-[0_0_10px_#FEF8E5] text-[#606C82]  p-2.5  px-3 ${css} ${
-          error ? "border-[#EF4444] outline-0 focus:border-[#EF4444] " : ""
-        }`}
+        className={cn(
+          `rounded-sm placeholder:text-sm text-base font-normal border border-[#D6DAE1] outline-[none] focus:border-[#C49600] focus:shadow-[0_0_10px_#FEF8E5] text-[#606C82]  p-2.5 no-spinner  px-3 `,
+          error && "border-[#EF4444] outline-0 focus:border-[#EF4444] ",
+          css
+        )}
+        onFocus={onFocus}
+        onBlur={onBlur}
         {...props}
-        onFocus={(e) => {
-          setIsFocused(true);
-          onFocus?.(e);
-        }}
-        onBlur={(e) => {
-          setIsFocused(false);
-          onBlur?.(e);
-        }}
-        value={
-          format && typeof props.value === "string" && !isFocused
-            ? formatNumberInput(props.value)
-            : props.value
-        }
       />
 
       <div className="flex items-center justify-between gap-1">

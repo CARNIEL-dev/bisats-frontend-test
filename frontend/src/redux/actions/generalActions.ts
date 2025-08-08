@@ -1,10 +1,8 @@
 /** @format */
 
-import { getUserId } from "@/helpers";
 import { BACKEND_URLS } from "@/utils/backendUrls";
-import dispatchWrapper from "@/utils/dispatchWrapper";
+import { useQuery } from "@tanstack/react-query";
 import Bisatsfetch from "../fetchWrapper";
-import { NotificationsActionypes } from "../types";
 
 export const handleCopy = async (
   text: string
@@ -18,9 +16,7 @@ export const handleCopy = async (
   }
 };
 
-export const GetNotification = async () => {
-  const uid = getUserId();
-
+export const GetNotification = async (uid: string) => {
   try {
     const response = await Bisatsfetch(
       `/api/v1/user/${uid}/notification/get-notifications`,
@@ -28,19 +24,33 @@ export const GetNotification = async () => {
         method: "GET",
       }
     );
-    const data = response.data;
-    if (response.status) {
-      dispatchWrapper({
-        type: NotificationsActionypes.GET_NOTIFICATIONS,
-        payload: data,
-      });
-      return data;
+
+    if (!response.status) {
+      throw new Error(response.message);
     }
+    return response.data;
   } catch (error) {
     // console.log("error notification catch", error);
-    // throw handleApiError(error);
-    return error;
+    throw error;
+    // return error;
   }
+};
+
+const useFetchUserNotifications = ({
+  userId,
+  isKycVerified,
+}: {
+  userId: string;
+  isKycVerified?: boolean;
+}) => {
+  return useQuery<Omit<NotificationState, "loading">, Error>({
+    queryKey: ["userNotifications", userId],
+    queryFn: async () => GetNotification(userId),
+    retry: false,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    enabled: Boolean(userId && isKycVerified),
+    refetchInterval: 2 * 60 * 1000, // 2 minutes
+  });
 };
 
 export const Read_Notification = async (payload: {
@@ -63,3 +73,5 @@ export const Read_Notification = async (payload: {
     return error;
   }
 };
+
+export { useFetchUserNotifications };

@@ -1,3 +1,4 @@
+import KycBanner from "@/components/KycBanner";
 import ErrorDisplay from "@/components/shared/ErrorDisplay";
 import SEO from "@/components/shared/SEO";
 import TokenSelection from "@/components/shared/TokenSelection";
@@ -7,6 +8,7 @@ import PreLoader from "@/layouts/PreLoader";
 import Header from "@/pages/p2p/components/Header";
 import MarketPlaceTable from "@/pages/p2p/components/MarketPlaceTable";
 import { GetSearchAds } from "@/redux/actions/walletActions";
+import { UserState } from "@/redux/reducers/userSlice";
 import { cn } from "@/utils";
 import { useQuery } from "@tanstack/react-query";
 import { RotateCw, X } from "lucide-react";
@@ -65,7 +67,14 @@ const MarketPlacePage = () => {
   }, [searchParams]);
 
   //SUB: React Query
-  const userId = useSelector((state: any) => state.user.user?.userId) || "";
+  const userState: UserState = useSelector((state: any) => state.user);
+  const userId: string = userState?.user?.userId || "";
+
+  const isKycVerified = [
+    userState?.kyc?.identificationVerified,
+    userState?.kyc?.personalInformationVerified,
+    userState.user?.phoneNumberVerified,
+  ].every(Boolean);
 
   const {
     data: searchAds,
@@ -83,7 +92,7 @@ const MarketPlacePage = () => {
     queryFn: fetchAds,
     retry: false,
     refetchOnMount: false,
-    enabled: Boolean(userId),
+    enabled: Boolean(userId && isKycVerified),
   });
 
   //SUB: Tab change Handlers
@@ -127,87 +136,91 @@ const MarketPlacePage = () => {
           subtext="Fast, secure, and hassle-free. Complete your trades instantly—no waiting, no delays!"
         />
 
-        <Tabs
-          defaultValue={adsParam.type}
-          className="gap-4"
-          onValueChange={onTabChange}
-        >
-          <div className="border-b">
-            <TabsList className="p-0 bg-transparent px-2 md:gap-4 justify-around w-full md:w-fit">
-              {["buy", "sell"].map((v) => (
-                <TabsTrigger
-                  key={v}
-                  value={v}
-                  disabled={isFetching}
-                  className={cn(
-                    "!w-fit  data-[state=active]:border-b-4 rounded-none  !shadow-none !bg-transparent font-semibold md:px-4 px-10 flex-none text-gray-500 text-base border-0 capitalize",
-                    v === "buy"
-                      ? "data-[state=active]:text-[#17A34A] data-[state=active]:border-b-[#49DE80]"
-                      : "data-[state=active]:text-[#DC2625] data-[state=active]:border-b-[#EF4444]"
-                  )}
-                >
-                  {v}
-                </TabsTrigger>
-              ))}
-            </TabsList>
-          </div>
-
-          {!isError && (
-            <>
-              <div className="grid grid-cols-[1fr_6rem] gap-2 md:w-[25%] items-end">
-                <TokenSelection
-                  title={adsParam.asset}
-                  error={undefined}
-                  touched={undefined}
-                  handleChange={handleTokenChange}
-                  removexNGN
-                  showBalance={false}
-                  disabled={isFetching}
-                />
-
-                <div className="flex gap-1 items-center">
-                  <Button
-                    variant="ghost"
-                    onClick={() => refetch()}
+        {!isKycVerified ? (
+          <KycBanner />
+        ) : (
+          <Tabs
+            defaultValue={adsParam.type}
+            className="gap-4"
+            onValueChange={onTabChange}
+          >
+            <div className="border-b">
+              <TabsList className="p-0 bg-transparent px-2 md:gap-4 justify-around w-full md:w-fit">
+                {["buy", "sell"].map((v) => (
+                  <TabsTrigger
+                    key={v}
+                    value={v}
                     disabled={isFetching}
-                    className="bg-gray-100 hover:bg-gray-200"
+                    className={cn(
+                      "!w-fit  data-[state=active]:border-b-4 rounded-none  !shadow-none !bg-transparent font-semibold md:px-4 px-10 flex-none text-gray-500 text-base border-0 capitalize",
+                      v === "buy"
+                        ? "data-[state=active]:text-[#17A34A] data-[state=active]:border-b-[#49DE80]"
+                        : "data-[state=active]:text-[#DC2625] data-[state=active]:border-b-[#EF4444]"
+                    )}
                   >
-                    <RotateCw className={cn(isFetching && "animate-spin")} />
-                    <span className="sr-only">Refresh</span>
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    onClick={handleClear}
+                    {v}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </div>
+
+            {!isError && (
+              <>
+                <div className="grid grid-cols-[1fr_6rem] gap-2 md:w-[25%] ">
+                  <TokenSelection
+                    title={adsParam.asset}
+                    error={undefined}
+                    touched={undefined}
+                    handleChange={handleTokenChange}
+                    removexNGN
+                    showBalance={false}
                     disabled={isFetching}
-                    className="bg-gray-100 hover:bg-gray-200"
-                  >
-                    <X />
-                    <span className="sr-only">Clear</span>
-                  </Button>
+                  />
+
+                  <div className="flex gap-1 items-center h-full">
+                    <Button
+                      variant="ghost"
+                      onClick={() => refetch()}
+                      disabled={isFetching}
+                      className="bg-gray-100 hover:bg-gray-200 !h-full"
+                    >
+                      <RotateCw className={cn(isFetching && "animate-spin")} />
+                      <span className="sr-only">Refresh</span>
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      onClick={handleClear}
+                      disabled={isFetching}
+                      className="bg-gray-100 hover:bg-gray-200 !h-full"
+                    >
+                      <X />
+                      <span className="sr-only">Clear</span>
+                    </Button>
+                  </div>
                 </div>
-              </div>
-              <p className="mb-2 md:mb-3 text-sm font-semibold lg:text-lg">
-                Open Ads - {adsParam.asset}
-              </p>
-            </>
-          )}
+                <p className="mb-2 md:mb-3 text-sm font-semibold lg:text-lg">
+                  Open Ads - {adsParam.asset}
+                </p>
+              </>
+            )}
 
-          {isFetching ? (
-            <PreLoader />
-          ) : isError ? (
-            <ErrorDisplay message={error.message} />
-          ) : (
-            <TabsContent value={adsParam.type}>
-              <MarketPlaceTable
-                type={adsParam.type}
-                asset={adsParam.asset}
-                ads={searchAds || []}
-                pagination={pagination}
-                setPagination={setPagination}
-              />
-            </TabsContent>
-          )}
-        </Tabs>
+            {isFetching ? (
+              <PreLoader />
+            ) : isError ? (
+              <ErrorDisplay message={error.message} />
+            ) : (
+              <TabsContent value={adsParam.type}>
+                <MarketPlaceTable
+                  type={adsParam.type}
+                  asset={adsParam.asset}
+                  ads={searchAds || []}
+                  pagination={pagination}
+                  setPagination={setPagination}
+                />
+              </TabsContent>
+            )}
+          </Tabs>
+        )}
       </div>
       <SEO title="P2P Marketplace " />
     </>

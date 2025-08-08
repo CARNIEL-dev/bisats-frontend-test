@@ -23,6 +23,8 @@ type IAProps = {
   removexNGN?: boolean;
   showBalance?: boolean;
   disabled?: boolean;
+  placeholder?: string;
+  className?: string;
 };
 
 const TokenSelection = ({
@@ -33,6 +35,8 @@ const TokenSelection = ({
   handleChange,
   showBalance = true,
   disabled,
+  placeholder,
+  className,
 }: IAProps) => {
   const [selected, setSelected] = useState<string | null>(null);
   const walletState: WalletState = useSelector((state: any) => state.wallet);
@@ -82,8 +86,10 @@ const TokenSelection = ({
           value={title || ""}
           disabled={disabled}
         >
-          <SelectTrigger className={cn("w-full ", error && "border-red-500")}>
-            <SelectValue placeholder="Select option" />
+          <SelectTrigger
+            className={cn("w-full", error && "border-red-500", className)}
+          >
+            <SelectValue placeholder={placeholder || "Select option"} />
           </SelectTrigger>
           <SelectContent className="!w-full">
             {tokenOptions.map((token) => (

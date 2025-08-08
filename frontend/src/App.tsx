@@ -1,22 +1,16 @@
+import Toast from "@/components/Toast";
+import { messaging, onMessage } from "@/firebase";
+import { rehydrateUser } from "@/redux/actions/userActions";
+import { GetWallet } from "@/redux/actions/walletActions";
 import Routing from "@/routing/Routing";
+import ScrollToTop from "@/routing/scrollToTop";
+import { requestPermission } from "@/utils/firebaseNotification";
 import React, { useEffect } from "react";
 import { BrowserRouter as Router } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Toast from "@/components/Toast";
-import { messaging, onMessage } from "@/firebase";
-import { GetNotification } from "@/redux/actions/generalActions";
-import { rehydrateUser } from "@/redux/actions/userActions";
-import { GetWallet } from "@/redux/actions/walletActions";
-import { requestPermission } from "@/utils/firebaseNotification";
-import ScrollToTop from "@/routing/scrollToTop";
 
 const App: React.FC = () => {
-  useEffect(() => {
-    rehydrateUser();
-    GetNotification();
-  }, []);
-
   useEffect(() => {
     onMessage(messaging, (payload) => {
       if (payload) {
@@ -26,13 +20,13 @@ const App: React.FC = () => {
         );
         rehydrateUser();
         GetWallet();
-        GetNotification();
       }
     });
   }, []);
 
   useEffect(() => {
     requestPermission();
+    rehydrateUser();
   }, []);
 
   return (
@@ -47,6 +41,7 @@ const App: React.FC = () => {
           autoClose={5000}
           hideProgressBar={true}
           // newestOnTop={false}
+          stacked
           closeOnClick
           rtl={false}
           pauseOnFocusLoss

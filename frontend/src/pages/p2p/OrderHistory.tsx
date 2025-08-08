@@ -20,7 +20,7 @@ const OrderHistory = () => {
     userState?.kyc?.identificationVerified,
     userState?.kyc?.personalInformationVerified,
     userState.user?.phoneNumberVerified,
-  ].some(Boolean);
+  ].every(Boolean);
 
   const {
     data: orders = [],
@@ -95,9 +95,9 @@ const OrderHistory = () => {
     {
       header: "Amount",
       cell: ({ row }) => {
-        const amount = row.original.amount;
-        const assetPrice = row.original.price;
-        const price = formatter({ decimal: 0 }).format(amount * assetPrice);
+        const amount = row.original.price * row.original.quantity;
+        const price = amount ? formatter({ decimal: 2 }).format(amount) : "N/A";
+
         return (
           <p className="font-semibold text-gray-600 font-mono ">
             {price} <span className="text-xs font-normal">xNGN</span>
@@ -108,10 +108,12 @@ const OrderHistory = () => {
     {
       header: "Quantity",
       cell: ({ row }) => {
-        const amount = row.original.amount;
+        const amount = row.original.quantity;
         const asset = row.original.asset;
         const quantity = amount
-          ? formatter({ decimal: asset === "xNGN" ? 0 : 6 }).format(amount)
+          ? formatter({
+              decimal: asset === "xNGN" ? 0 : asset === "USDT" ? 2 : 6,
+            }).format(amount)
           : "N/A";
 
         return (
@@ -140,7 +142,7 @@ const OrderHistory = () => {
         const date = item.createdAt;
         return (
           <p className="text-sm">
-            {date ? dayjs(date).format("DD/MM/YY HH:mm A") : "N/A"}
+            {date ? dayjs(date).format("DD MMM YYYY - hh:mm A") : "N/A"}
           </p>
         );
       },

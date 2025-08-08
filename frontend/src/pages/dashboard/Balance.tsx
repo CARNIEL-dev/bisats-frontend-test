@@ -78,6 +78,9 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
     }, 0);
   }, [walletData, currencyRate, currency]);
 
+  console.log("currency", currency);
+  console.log("Show balance", showBalance);
+
   return (
     <div className="border  flex flex-col gap-2 p-6 rounded-2xl">
       <div className="flex items-center gap-1">
@@ -112,9 +115,9 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
         ) : (
           <div className="flex items-center gap-0.5">
             <span className="text-[28px] md:text-[34px] font-extrabold inline-block">
-              {currency === "usd" ? "$" : "₦"}
+              {currency !== undefined && currency === "ngn" ? "₦" : "$"}
             </span>
-            {showBalance ? (
+            {showBalance && userBalance ? (
               <p className="font-extrabold space-x-0.5">
                 <span className="text-2xl md:text-4xl">
                   {
@@ -142,7 +145,7 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
           <DropdownMenu>
             <DropdownMenuTrigger className="outline-none text-sm">
               <div className="flex items-center gap-0.5 uppercase">
-                {currency}
+                {currency || "USD"}
                 <ChevronDown className="w-4 h-4" />
               </div>
             </DropdownMenuTrigger>
@@ -150,7 +153,7 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
               <DropdownMenuLabel>Choose Currency</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuRadioGroup
-                value={currency}
+                value={currency || "usd"}
                 onValueChange={(val) => setWalletCurrency(val as "usd" | "ngn")}
               >
                 <DropdownMenuRadioItem value="usd">USD</DropdownMenuRadioItem>

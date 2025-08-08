@@ -19,14 +19,11 @@ const SignUp = () => {
     password: "",
     confirmPassword: "",
   });
-  const [isLoading, setIsLoading] = useState(false);
 
   const formik = useFormik({
     initialValues: { ...signupBody, agreeToTerms: false },
     validationSchema: SignupSchema,
     onSubmit: async (values) => {
-      setIsLoading(true);
-
       const { agreeToTerms, ...payload } = values;
       const response = await Signup(payload);
 
@@ -35,7 +32,6 @@ const SignUp = () => {
       } else {
         Toast.error(response.message, "Sign Up Failed");
       }
-      setIsLoading(false);
     },
   });
 
@@ -120,8 +116,8 @@ const SignUp = () => {
               }
               text={"Create account"}
               type="submit"
-              disabled={!formik.isValid || !formik.dirty}
-              loading={isLoading}
+              disabled={!formik.isValid || !formik.dirty || formik.isSubmitting}
+              loading={formik.isSubmitting}
             />
           </div>
         </form>

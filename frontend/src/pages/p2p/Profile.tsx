@@ -145,6 +145,10 @@ const Profile = () => {
     ];
   }, [activitySummary]);
 
+  // console.log("activitySummary", activitySummary);
+  // console.log("Error", error);
+  // console.log("User Id", user?.userId);
+
   const clickHandler = () => {
     if (!user?.accountLevel) {
       if (!user?.phoneNumberVerified) {

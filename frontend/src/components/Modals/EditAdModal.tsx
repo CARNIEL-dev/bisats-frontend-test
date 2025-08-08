@@ -18,8 +18,13 @@ import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 
 import { UpdateAdStatusResponse } from "@/pages/p2p/MyAds";
-import { cn } from "@/utils";
+import { cn, formatter } from "@/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Badge } from "../ui/badge";
+import { getLivePrice } from "@/helpers";
+import { convertAssetToNaira } from "@/utils/conversions";
+import { PriceData } from "@/pages/wallet/Assets";
+import Divider from "../shared/Divider";
 
 interface Props {
   close: () => void;
@@ -44,6 +49,8 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
   const account_level = user?.accountLevel as AccountLevel;
   const userTransactionLimits = bisats_limit[account_level];
 
+  const liveRate = getLivePrice();
+
   const walletData = walletState?.wallet;
   const queryClient = useQueryClient();
 
@@ -56,23 +63,44 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
     }
   }, [ad?.asset, ad?.type, walletData]);
 
+  const rate = convertAssetToNaira(
+    ad?.asset as keyof PriceData,
+    1,
+    0,
+    liveRate as PriceData
+  );
+
   //   HDR: SCHEMA
   const AdSchema = Yup.object().shape({
     price: Yup.number()
       .min(1, "Price must be greater than 0")
       .required("Price is required"),
     amount: Yup.number()
-      .min(1, "Amount must be greater than 0")
-      .max(
-        userTransactionLimits?.maximum_ad_creation_amount,
-        `Amount must not exceed ${formatNumber(
-          userTransactionLimits?.maximum_ad_creation_amount
-        )} xNGN`
-      )
-      .when("type", {
-        is: (val: string) => val?.toLowerCase() === "buy",
-        then: (schema) => schema.required("Amount is required"),
-        otherwise: (schema) => schema.notRequired(),
+      .moreThan(0, "Amount must be greater than 0")
+      .test("max-amount-validation", function (value) {
+        const { type } = this.parent; // Access the 'type' field from the form
+        const maxAmount = userTransactionLimits?.maximum_ad_creation_amount;
+
+        if (type === "buy") {
+          // For buy transactions, just check against the max amount directly
+          if (value || 0 > maxAmount) {
+            return this.createError({
+              message: `Amount must not exceed ${formatNumber(maxAmount)} xNGN`,
+            });
+          }
+        } else if (type === "sell") {
+          // For sell transactions, check the naira equivalent
+          // Use your rate function here
+          if (Number(rate) * (value || 0) > maxAmount) {
+            return this.createError({
+              message: `Amount must not exceed  ${formatNumber(
+                maxAmount
+              )} xNGN`,
+            });
+          }
+        }
+
+        return true;
       })
       .test(
         "max-wallet-balance",
@@ -80,8 +108,11 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
         function (value) {
           return Number(value) <= calculateDisplayWalletBallance;
         }
-      ),
+      )
+      .required("Amount is required"),
   });
+
+  console.log();
 
   //HDR: Mutation function
   const mutation = useMutation<
@@ -165,107 +196,49 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
               defaultValue={formik.values.price}
             />
           </div>
-          <div className="space-y-1">
+          {ad?.type.toLowerCase() === "sell" && (
+            <Divider
+              text={`Previous Amount: ${formatter({ decimal: 5 }).format(
+                ad?.amount || 0
+              )} ${ad?.asset}`}
+            />
+          )}
+          <div className="">
             {/* SUB: Top Amount */}
             <PrimaryInput
               css={"w-full py-2 "}
               label={"Top Up Amount"}
               error={formik.errors.amount}
-              touched={undefined}
+              touched={formik.touched.amount}
               onChange={(e) => {
                 const value = e.target.value;
-                // Allow only digits
-                const numericValue = value.replace(/\D/g, "");
+                const isValidDecimal = /^(\d+(\.\d*)?|\.\d+)?$/.test(value);
 
-                formik.setFieldValue("amount", numericValue);
+                if (isValidDecimal) {
+                  formik.setFieldValue(
+                    "amount",
+                    value === "" ? undefined : Number(value)
+                  );
+                }
               }}
             />
-            {ad?.type.toLowerCase() === "buy" ? (
-              <small className="text-[#606C82] text-[12px] font-normal">
-                Balance: {formatNumber(walletState?.wallet?.xNGN)} xNGN
-              </small>
-            ) : (
-              <small className="text-[#606C82] text-[12px] font-normal">
-                Balance: {walletState?.wallet?.[ad?.asset ?? "USDT"]}{" "}
-                {ad?.asset}
-              </small>
-            )}
-          </div>
-
-          {/* <div className="mb-4 ">
-         
-            <Divider text="Limits (in NGN)" />
-            <div className="flex flex-col md:flex-row gap-2  justify-between ">
-              <PrimaryInput
-                css="p-2.5"
-                label={`Min (xNGN${
-                  ad?.type === "buy"
-                    ? formatNumber(userTransactionLimits?.lower_limit_buy_ad)
-                    : formatNumber(userTransactionLimits?.lower_limit_sell_ad)
-                })`}
-                placeholder="0"
-                name="minimumLimit"
-                min={
-                  ad?.type === "buy"
-                    ? userTransactionLimits?.lower_limit_buy_ad
-                    : userTransactionLimits?.lower_limit_sell_ad
-                }
-                error={formik.errors.minimumLimit}
-                value={formik.values.minimumLimit}
-                touched={formik.touched.minimumLimit}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  if (/^\d*$/.test(value)) {
-                    formik.setFieldValue(
-                      "minimumLimit",
-                      value === "" ? 0 : Number(value)
-                    );
-                  }
-                }}
-              />
-              <PrimaryInput
-                css="w-full p-2.5"
-                label={`Max (xNGN  ${formatNumber(
-                  ad?.type === "buy"
-                    ? userTransactionLimits?.upper_limit_buy_ad
-                    : userTransactionLimits?.upper_limit_sell_ad
-                )})`}
-                placeholder="0"
-                name="maximumLimit"
-                max={
-                  ad?.type === "buy"
-                    ? userTransactionLimits?.upper_limit_buy_ad
-                    : userTransactionLimits?.upper_limit_sell_ad
-                }
-                error={formik.errors.maximumLimit}
-                value={formik.values.maximumLimit}
-                touched={formik.touched.maximumLimit}
-                maxFnc={() =>
-                  formik.setFieldValue(
-                    "maximumLimit",
-                    ad?.type === "buy"
-                      ? ad?.amountAvailable
-                      : Number(ad?.amountFilled) * Number(ad?.price)
-                  )
-                }
-                onChange={(e) => {
-                  const value = e.target.value;
-                  if (/^\d*$/.test(value)) {
-                    formik.setFieldValue(
-                      "maximumLimit",
-                      value === "" ? 0 : Number(value)
-                    );
-                  }
-                }}
-              />
+            <div className="flex flex-col gap-2 mt-4">
+              <Badge variant={"success"}>
+                Balance:{" "}
+                {formatter({ decimal: 5 }).format(
+                  ad?.type.toLowerCase() === "buy"
+                    ? walletState?.wallet?.xNGN
+                    : walletState?.wallet?.[ad?.asset ?? "USDT"]
+                )}{" "}
+                {ad?.type.toLowerCase() === "buy" ? "xNGN" : ad?.asset}
+              </Badge>
+              {ad?.type.toLowerCase() === "sell" && (
+                <Badge variant={"secondary"}>
+                  Market Price: {formatNumber(rate || 0)} NGN
+                </Badge>
+              )}
             </div>
-            <p>
-              <Info color="#17A34A" size={12} className="inline mr-1" />
-              <span className="text-[#515B6E] text-xs font-light">
-                Set limits to control the size of transactions for this ad.
-              </span>
-            </p>
-          </div> */}
+          </div>
         </div>
         <div className="flex items-center w-full mt-4 gap-2">
           <WhiteTransparentButton

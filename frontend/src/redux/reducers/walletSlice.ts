@@ -23,7 +23,7 @@ const initialState: WalletState = {
   userId: "",
   wallet: null,
   loading: false,
-  showBalance: true,
+  showBalance: false,
   defaultCurrency: "usd",
 };
 

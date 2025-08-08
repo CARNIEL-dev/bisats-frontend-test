@@ -10,10 +10,11 @@ import { useNavigate } from "react-router-dom";
 import { APP_ROUTES } from "@/constants/app_route";
 import { formatter } from "@/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import Decimal from "decimal.js";
 
 interface Props {
   close: () => void;
-  type: typeofSwam;
+  orderType: string;
   amount: string;
   receiveAmount: string;
   fee: string;
@@ -22,11 +23,12 @@ interface Props {
   userId: string;
   adsId: string;
   setShowConfirmation: React.Dispatch<React.SetStateAction<boolean>>;
+  adType: string;
 }
 
 const SwapConfirmation: React.FC<Props> = ({
   close,
-  type,
+  orderType,
   amount,
   receiveAmount,
   fee,
@@ -35,9 +37,9 @@ const SwapConfirmation: React.FC<Props> = ({
   userId,
   adsId,
   setShowConfirmation,
+  adType,
 }) => {
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
   const [fees, setFees] = useState({
     network: "",
     transaction: "",
@@ -45,12 +47,16 @@ const SwapConfirmation: React.FC<Props> = ({
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
+  const isBuy = orderType.toLowerCase() === "buy";
+
   // HDR: Fetch network fee
   const fetchNetworkFee = async () => {
     if (!amount) return null;
+    setError(null);
 
     try {
-      const amountValue = parseFloat(amount);
+      const amountVal = parseFloat(receiveAmount).toFixed(isBuy ? 8 : 2);
+      const amountValue = new Decimal(amountVal).toNumber();
 
       const response = await Bisatsfetch(
         `/api/v1/user/${userId}/ads/${adsId}/networkFee`,
@@ -83,9 +89,12 @@ const SwapConfirmation: React.FC<Props> = ({
   const placeOrder = async (feeData: any) => {
     if (!amount) return;
     try {
-      const amountValue = parseFloat(
-        type !== typeofSwam.Buy ? amount : receiveAmount
+      const amountVal = parseFloat(
+        adType.toLowerCase() !== "buy" ? amount : receiveAmount
       );
+
+      const amountValue = new Decimal(amountVal).toNumber();
+
       const response = await Bisatsfetch(
         `/api/v1/user/${userId}/ads/${adsId}/order`,
         {
@@ -141,7 +150,7 @@ const SwapConfirmation: React.FC<Props> = ({
           "searchAds",
           {
             asset: "USDT",
-            type: type === typeofSwam.Buy ? "buy" : "Sell",
+            type: isBuy ? "buy" : "Sell",
           },
           {
             page: 1,
@@ -152,9 +161,7 @@ const SwapConfirmation: React.FC<Props> = ({
         ],
       });
       navigate(
-        `${APP_ROUTES.P2P.HOME}?type=${
-          type === typeofSwam.Buy ? "buy" : "Sell"
-        }&asset=${type === typeofSwam.Sell ? currency : token}`
+        `${APP_ROUTES.P2P.HOME}?type=${isBuy ? "buy" : "Sell"}&asset=${token}`
       );
       setShowConfirmation(false);
       setFees({
@@ -168,39 +175,37 @@ const SwapConfirmation: React.FC<Props> = ({
     },
   });
 
-  console.log(mutation.error, mutation.isError, mutation.isPending);
-
   return (
     <ModalTemplate onClose={close}>
       <div className="flex flex-col justify-center w-full mx-auto">
         <div>
           <h1
             className={` ${
-              type === typeofSwam.Buy ? "text-[#17A34A]" : "text-[#DC2625]"
+              isBuy ? "text-[#17A34A]" : "text-[#DC2625]"
             } text-[22px]  font-semibold text-left mt-2`}
           >
-            {type === typeofSwam.Buy ? `Buy ${token}` : `Sell ${currency}`}
+            {isBuy ? "Buy" : "Sell"} {token}
           </h1>
           <div className="h-fit  border border-[#F9F9FB] bg-[#F9F9FB] rounded-[12px] py-3 px-5 my-5 text-[14px] leading-[24px]">
             <div className="flex justify-between items-center mb-1">
               <p className="text-[#424A59] font-normal">Amount:</p>
               <p className="text-[#606C82] font-semibold">
-                {formatter({ decimal: type === typeofSwam.Buy ? 0 : 4 }).format(
-                  Number(amount)
-                )}{" "}
-                {currency}
+                {formatter({
+                  decimal: isBuy ? 2 : token?.toLowerCase() === "usdt" ? 2 : 8,
+                }).format(Number(amount))}{" "}
+                {token}
               </p>
             </div>
             <div className="flex justify-between items-center mb-1">
               <p className="text-[#424A59] font-normal">You'll receive:</p>
               <p className="text-[#606C82] font-semibold">
-                {formatter({
-                  decimal: type === typeofSwam.Sell ? 0 : 4,
-                }).format(Number(receiveAmount))}{" "}
-                {token}
+                {formatter({ decimal: isBuy ? 8 : 2 }).format(
+                  Number(receiveAmount)
+                )}{" "}
+                {currency}
               </p>
             </div>
-            {type === typeofSwam.Buy && (
+            {isBuy && (
               <div className="flex justify-between items-center mb-1.5">
                 <p className="text-[#424A59] font-normal">Fee:</p>
                 <p className="text-[#606C82] font-semibold">{fee} xNGN</p>
@@ -232,7 +237,7 @@ const SwapConfirmation: React.FC<Props> = ({
 
           <div className="w-full">
             <PrimaryButton
-              text={`Confirm ${type === typeofSwam.Buy ? "Buy" : "Sell"}`}
+              text={`Confirm ${isBuy ? "Buy" : "Sell"}`}
               loading={!mutation.isError && mutation.isPending}
               style={{ width: "100%" }}
               onClick={() => {

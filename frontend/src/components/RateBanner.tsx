@@ -70,7 +70,7 @@ const RateBanner = () => {
               <img src={NGN} alt={`xNGN logo`} className="w-[16px] h-[16px]" />
               <p className=" font-semibold ">xNGN</p>
               <p className=" font-normal">1 NGN</p>
-              <div className={`font-mono text-green-600`}>100%</div>
+              <div className={`font-mono text-green-600`}>0.00%</div>
               <img
                 src={UpTrend}
                 alt={`market trend`}

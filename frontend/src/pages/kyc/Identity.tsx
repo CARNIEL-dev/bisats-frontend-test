@@ -55,7 +55,7 @@ const Identity = () => {
       if (response.statusCode === 200) {
         Toast.success("Success", response.message);
         rehydrateUser();
-        navigate(APP_ROUTES.DASHBOARD);
+        window.location.href = APP_ROUTES.DASHBOARD;
       } else {
         Toast.error("Error", response.message);
       }

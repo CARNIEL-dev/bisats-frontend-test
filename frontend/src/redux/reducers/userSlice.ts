@@ -62,7 +62,7 @@ const userReducer = (state = initialState, action: UserActionProp) => {
     case UserActionTypes.SIGN_UP:
       return {
         ...state,
-        isAuthenticated: true,
+        isAuthenticated: false,
         user: action?.payload,
         token: action?.payload?.token,
         kyc: action?.payload?.kyc,

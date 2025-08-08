@@ -27,9 +27,7 @@ export enum WalletActionTypes {
   TOGGLE_SHOW_BALANCE = "TOGGLE_SHOW_BALANCE",
   SET_DEFAULT_CURRENCY = "SET_DEFAULT_CURRENCY",
 }
-export enum NotificationsActionypes {
-  GET_NOTIFICATIONS = "getNotifications",
-}
+
 export enum AdvertsActionTypes {
   FETCH_ADVERTS = "adverts/fetchAdverts",
   ADD_ADVERT = "adverts/addAdvert",

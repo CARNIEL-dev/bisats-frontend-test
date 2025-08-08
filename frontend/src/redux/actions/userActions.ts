@@ -279,6 +279,7 @@ export const PostIdentity_KYC = async (payload: TIdentity) => {
   formData.append("identificationType", payload.docType);
   formData.append("identificationNumber", payload.identificationNo);
   const token = getToken();
+
   try {
     const response = await fetch(
       `${BACKEND_URLS.BASE_URL}/api/v1/user/${payload.userId}/verify-identity`,
@@ -326,6 +327,7 @@ export const GetUserDetails = async () => {
       method: "GET",
     });
     const data = response.data;
+
     if (response.status) {
       dispatchWrapper({
         type: UserActionTypes.UPDATE_USER,

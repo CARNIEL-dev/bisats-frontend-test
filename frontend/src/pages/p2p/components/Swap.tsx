@@ -39,7 +39,7 @@ const Swap = ({
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [focusedField, setFocusedField] = useState<
     "amount" | "otherAmount" | null
-  >(null);
+  >("amount");
 
   const walletState: WalletState = useSelector((state: any) => state.wallet);
   const user = useSelector((state: { user: UserState }) => state.user);
@@ -95,7 +95,7 @@ const Swap = ({
 
     if (focusedField === "amount" && !isNaN(amt)) {
       if (adDetail?.orderType === "buy") {
-        formik.setFieldValue("otherAmount", (amt / price).toFixed(4));
+        formik.setFieldValue("otherAmount", (amt / price).toFixed(10));
       } else if (adDetail?.orderType === "sell") {
         formik.setFieldValue("otherAmount", (amt * price).toFixed(2));
       }
@@ -103,7 +103,7 @@ const Swap = ({
       if (adDetail?.orderType === "buy") {
         formik.setFieldValue("amount", (otherAmt * price).toFixed(2));
       } else if (adDetail?.orderType === "sell") {
-        formik.setFieldValue("amount", (otherAmt / price).toFixed(4));
+        formik.setFieldValue("amount", (otherAmt / price).toFixed(10));
       }
     }
   }, [
@@ -194,18 +194,32 @@ const Swap = ({
       {showConfirmation && (
         <SwapConfirmation
           close={() => setShowConfirmation(false)}
-          type={
-            adDetail?.orderType === "buy" ? typeofSwam.Buy : typeofSwam.Sell
-          }
+          orderType={adDetail?.orderType as "string"}
           amount={formik.values.amount}
-          receiveAmount={formik.values.otherAmount}
+          receiveAmount={formik.values.otherAmount ?? "0"}
           fee={calculateFee()}
-          token={adDetail?.orderType === "buy" ? adDetail?.asset : "xNGN"}
-          currency={adDetail?.orderType === "sell" ? adDetail?.asset : "xNGN"}
+          token={adDetail?.orderType === "buy" ? "xNGN" : adDetail?.asset}
+          currency={adDetail?.orderType === "buy" ? adDetail?.asset : "xNGN"}
+          setShowConfirmation={setShowConfirmation}
           userId={user?.user?.userId || ""}
           adsId={adDetail?.id || ""}
-          setShowConfirmation={setShowConfirmation}
+          adType={adDetail?.type as string}
         />
+
+        // <SwapConfirmation
+        //   close={() => setShowConfirmation(false)}
+        //   type={
+        //     adDetail?.orderType === "buy" ? typeofSwam.Buy : typeofSwam.Sell
+        //   }
+        //   amount={formik.values.amount}
+        //   receiveAmount={formik.values.otherAmount}
+        //   fee={calculateFee()}
+        //   token={adDetail?.orderType === "buy" ? adDetail?.asset : "xNGN"}
+        //   currency={adDetail?.orderType === "sell" ? adDetail?.asset : "xNGN"}
+        //   userId={user?.user?.userId || ""}
+        //   adsId={adDetail?.id || ""}
+        //   setShowConfirmation={setShowConfirmation}
+        // />
       )}
     </div>
   );
@@ -331,10 +345,14 @@ const SellForm = ({
             }}
             maxFunc={() => {
               const maxVal = walletState?.wallet?.[adDetail?.asset ?? "USDT"];
+
               const availableAmount =
                 (adDetail?.amountAvailable || 0) / (adDetail?.price || 0);
+
               const maxValue = Math.min(maxVal, availableAmount);
+
               setFocusedField("amount");
+              // formik.setFieldValue("amount", `1.00`);
               formik.setFieldValue("amount", `${maxValue.toFixed(5)}`);
             }}
           />

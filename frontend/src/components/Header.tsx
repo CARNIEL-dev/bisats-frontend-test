@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { APP_ROUTES } from "../constants/app_route";
-import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Home,
   MakeDeposit,
@@ -12,17 +11,11 @@ import {
   Support,
   Wallet,
 } from "../assets/icons/header-dropdown-icons";
-import LogOutModal from "./Modals/LogOut";
+import { APP_ROUTES } from "../constants/app_route";
 import { GetLivePrice, GetWallet } from "../redux/actions/walletActions";
-import { useSelector } from "react-redux";
-import {
-  NotificationState,
-  TNotification,
-} from "../redux/reducers/notificationSlice";
-import {
-  GetNotification,
-  Read_Notification,
-} from "../redux/actions/generalActions";
+import LogOutModal from "./Modals/LogOut";
+
+import { Read_Notification } from "../redux/actions/generalActions";
 import { UserState } from "../redux/reducers/userSlice";
 import BisatLogo from "./shared/Logo";
 
@@ -49,7 +42,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage }) => {
   }, []);
 
   useEffect(() => {
-    GetNotification();
+    // GetNotification();
   }, [active]);
 
   const formatDate = (isoDate: string) => {

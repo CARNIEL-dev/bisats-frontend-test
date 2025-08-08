@@ -11,6 +11,7 @@ import { PriceData } from "@/pages/wallet/Assets";
 import { convertAssetToNaira } from "@/utils/conversions";
 import { toke_100_ngn } from "@/utils/data";
 import { formatter } from "@/utils";
+import { AdSchema as AdSchemaType } from "@/pages/p2p/components/ExpressSwap";
 
 //SUB: Auth
 const SignupSchema = Yup.object().shape({
@@ -219,10 +220,16 @@ const swapSchema = Yup.object().shape({
             "min-lower-limit",
             "Amount is less than the lower limit",
             function (value) {
-              const { adDetail } = this.options.context as any;
+              const adDetail = this.options?.context?.adDetail as AdSchemaType;
+
+              const val =
+                adDetail.orderType.toLowerCase() === "buy"
+                  ? (value * adDetail.price).toFixed(2)
+                  : value;
+
               const minLimit = Number(adDetail.minimumLimit);
 
-              return minLimit <= value;
+              return minLimit <= Number(val);
             }
           )
           //? Upper limit check
@@ -230,10 +237,16 @@ const swapSchema = Yup.object().shape({
             "max-lower-limit",
             "Amount is greater than the upper limit",
             function (value) {
-              const { adDetail } = this.options.context as any;
+              const adDetail = this.options?.context?.adDetail as AdSchemaType;
+
+              const val =
+                adDetail.orderType.toLowerCase() === "buy"
+                  ? (value * adDetail.price).toFixed(2)
+                  : value;
+
               const maxLimit = Number(adDetail.maximumLimit);
 
-              return maxLimit >= value;
+              return maxLimit >= Number(val);
             }
           ),
       otherwise: (schema) =>
@@ -335,12 +348,15 @@ const AdSchema = Yup.object().shape({
                 ) || 0;
               const MAX_NAIRA_LIMIT =
                 userTransactionLimits?.maximum_ad_creation_amount ?? 0;
+
               const maxTokenValue =
                 tokenRate > 0 ? MAX_NAIRA_LIMIT / tokenRate : 0;
 
               return schema2.max(
                 maxTokenValue,
-                `Amount must not exceed ₦100,000,000 worth of ${assetValue}`
+                `Amount must not exceed ₦${formatNumber(
+                  MAX_NAIRA_LIMIT
+                )} worth of ${assetValue}`
               );
             }
           )
@@ -429,21 +445,24 @@ const AdSchema = Yup.object().shape({
     .required("Lower price is required"),
   priceUpperLimit: Yup.number()
     .when("price", (price, schema) =>
-      schema.min(
-        Number(price) + 1,
-        "Upper price limit must be greater than price"
-      )
+      schema
+        .min(Number(price) + 1, "Upper price limit must be greater than price")
+        .max(
+          Number(price) * 1.3,
+          "Upper price limit must be less than 30% of the price"
+        )
     )
-    .required("Upper limit price is required"),
+    .required("Upper price limit is required"),
 });
 
 const PersonalInformationSchema = Yup.object().shape({
   firstName: Yup.string().required("First name is required"),
   lastName: Yup.string().required("Last name is required"),
-  middleName: Yup.string().required("Middle name is required"),
+  middleName: Yup.string().optional(),
   dateOfBirth: Yup.string().required("Date of birth is required"),
   nationality: Yup.string().required("Nationality is required"),
   address: Yup.string().required("Address is required"),
+  businessName: Yup.string().required("Business name is required"),
 });
 
 const IdentificationSchema = Yup.object().shape({

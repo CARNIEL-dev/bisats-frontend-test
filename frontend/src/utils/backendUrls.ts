@@ -1,12 +1,12 @@
 /** @format */
 
-import { GET_ACTIVITY_SUMMARY, GET_WITHDRAWAL_LIMIT } from "../redux/actions/userActions";
+import {
+  GET_ACTIVITY_SUMMARY,
+  GET_WITHDRAWAL_LIMIT,
+} from "../redux/actions/userActions";
 
 export const BACKEND_URLS = {
-  BASE_URL:
-    process.env.REACT_APP_NODE_ENV !== "production"
-      ? `${process.env.REACT_APP_DEV_DOMAIN}`
-      : ``,
+  BASE_URL: process.env.REACT_APP_DEV_DOMAIN,
   GOOGLEAPI: "https://www.googleapis.com/oauth2/v2/userinfo",
   AUTH: {
     LOGIN: "/api/v1/user/login",
@@ -81,7 +81,7 @@ export const BACKEND_URLS = {
     },
   },
   NOTIFICATIONS: "/v1/user/notifications",
-  READ_NOTIFICATION:"/update-notification-status",
+  READ_NOTIFICATION: "/update-notification-status",
   ADD_PUSH_NOTIFICATION: "/v1/notification/add-push-token",
   SUPPORT_CHANNEL: "/v1/support",
   SUPPORT_SOCKET_CHAT: "/withdraw",

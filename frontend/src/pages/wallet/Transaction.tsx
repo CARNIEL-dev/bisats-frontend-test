@@ -1,7 +1,9 @@
 import { tokenLogos } from "@/assets/tokens";
 import Empty from "@/components/Empty";
+import { MultiSelectDropDown } from "@/components/Inputs/MultiSelectInput";
 import TransactionDetails from "@/components/Modals/TransactionDetails";
 import ErrorDisplay from "@/components/shared/ErrorDisplay";
+import TokenSelection from "@/components/shared/TokenSelection";
 import { Button } from "@/components/ui/Button";
 import { DataTable } from "@/components/ui/data-table";
 import PreLoader from "@/layouts/PreLoader";
@@ -9,6 +11,7 @@ import { useUserWalletHistory } from "@/redux/actions/walletActions";
 import { UserState } from "@/redux/reducers/userSlice";
 import { cn, formatter } from "@/utils";
 import { ColumnDef } from "@tanstack/react-table";
+import { ArrowUp, ArrowUpDown } from "lucide-react";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 
@@ -57,7 +60,7 @@ const Transactions: React.FC = () => {
     user?.kyc?.identificationVerified,
     user?.kyc?.personalInformationVerified,
     user.user?.phoneNumberVerified,
-  ].some(Boolean);
+  ].every(Boolean);
 
   const {
     data: transactionsData = [],
@@ -65,7 +68,7 @@ const Transactions: React.FC = () => {
     isError,
     error,
   } = useUserWalletHistory({
-    userId: user?.user?.userId || "",
+    userId,
     reason: selectedType ?? "top-up",
     asset: selectedAsset,
     type: "",
@@ -77,8 +80,24 @@ const Transactions: React.FC = () => {
   //   HDR: Columns
   const columns: ColumnDef<ITransaction>[] = [
     {
-      header: "Asset",
       accessorKey: "Asset",
+      header: () => {
+        return (
+          <div className="flex  flex-col gap-1">
+            <p className="font-semibold text-gray-600 md:hidden">Asset</p>
+            <TokenSelection
+              title=""
+              handleChange={() => {}}
+              showBalance={false}
+              error={""}
+              label=""
+              touched={undefined}
+              placeholder="Asset"
+              className="!h-[2.3rem] !w-fit"
+            />
+          </div>
+        );
+      },
       cell: ({ row }) => {
         const item = row.original;
         return (
@@ -114,8 +133,35 @@ const Transactions: React.FC = () => {
       },
     },
     {
-      header: "Type",
       accessorKey: "Type",
+      header: () => {
+        return (
+          <div className="flex  flex-col gap-1">
+            <p className="font-semibold text-gray-600 md:hidden">Type</p>
+            {/* <TokenSelection
+              title=""
+              handleChange={() => {}}
+              showBalance={false}
+              error={""}
+              label=""
+              touched={undefined}
+              placeholder="Type"
+              className="!h-[2.3rem] !w-fit"
+            /> */}
+            <MultiSelectDropDown
+              choices={[
+                { label: "Deposit", value: "top_up" },
+                { label: "Withdrawal", value: "withdrawal" },
+              ]}
+              error={""}
+              handleChange={() => {}}
+              touched={undefined}
+              placeholder="Type"
+              className="!h-[2.3rem] !w-fit"
+            />
+          </div>
+        );
+      },
       cell: ({ row }) => {
         const type = row.original.Type;
         return (

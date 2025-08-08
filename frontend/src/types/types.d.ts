@@ -91,6 +91,9 @@ type UpdateAdStatusVars = {
   adId: string;
   status: string;
 };
+type UpdateNotificationStatusVars = {
+  id: string;
+};
 
 type AdsTypes = {
   id: string;
@@ -215,4 +218,23 @@ interface ChartData {
   asset: string;
   buy: number;
   sell: number;
+}
+
+interface TNotification {
+  createdAt: string;
+  deviceToken: string;
+  id: string;
+  message: string;
+  metadata: {};
+  read: boolean;
+  title: string;
+  updatedAt: string;
+  user: string;
+  userId: string;
+}
+interface NotificationState {
+  notifications: TNotification[] | null;
+  loading: boolean;
+  totalNotification: number;
+  unreadNotifications: number;
 }
