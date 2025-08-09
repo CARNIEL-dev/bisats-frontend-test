@@ -46,13 +46,13 @@ const LogIn = () => {
           return navigate(APP_ROUTES.AUTH.VERIFY);
         }
 
-        if (data.twoFactorAuthEnabled) {
-          dispatchWrapper({
-            type: UserActionTypes.LOG_IN_PENDING,
-            payload: data,
-          });
-          return navigate(APP_ROUTES.AUTH.VERIFY_2FA);
-        }
+        // if (data.twoFactorAuthEnabled) {
+        //   dispatchWrapper({
+        //     type: UserActionTypes.LOG_IN_PENDING,
+        //     payload: data,
+        //   });
+        //   return navigate(APP_ROUTES.AUTH.VERIFY_2FA);
+        // }
 
         Toast.success("", response.message);
         dispatchWrapper({
