@@ -195,7 +195,8 @@ const Assets: React.FC = () => {
                 {formatter({
                   decimal: 0,
                   style: "currency",
-                  currency: walletState.defaultCurrency,
+                  currency:
+                    walletState.defaultCurrency === "usd" ? "USD" : "NGN",
                 }).format(
                   walletState.defaultCurrency === "usd"
                     ? Number(USDPrice) || 0

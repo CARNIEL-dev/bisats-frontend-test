@@ -13,7 +13,9 @@ import dispatchWrapper from "@/utils/dispatchWrapper";
 import { useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
 
-const isProduction = process.env.REACT_APP_NODE_ENV === "production";
+const isDevelopment =
+  process.env.NODE_ENV === "development" ||
+  process.env.VERCEL_ENV === "development";
 
 const LogIn = () => {
   const navigate = useNavigate();
@@ -44,7 +46,7 @@ const LogIn = () => {
           return navigate(APP_ROUTES.AUTH.VERIFY);
         }
 
-        if (data.twoFactorAuthEnabled && isProduction) {
+        if (data.twoFactorAuthEnabled && !isDevelopment) {
           dispatchWrapper({
             type: UserActionTypes.LOG_IN_PENDING,
             payload: data,

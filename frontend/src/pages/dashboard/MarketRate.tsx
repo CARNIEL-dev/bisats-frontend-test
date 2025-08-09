@@ -4,7 +4,7 @@ import Switch from "@/components/Switch";
 import { getCoinRates } from "@/redux/actions/walletActions";
 import { cn, formatter } from "@/utils";
 import { useQuery } from "@tanstack/react-query";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { BeatLoader, PuffLoader } from "react-spinners";
 
 const MarketRate: React.FC = () => {
@@ -22,19 +22,9 @@ const MarketRate: React.FC = () => {
     queryFn: () =>
       getCoinRates({ isMarket: currency === "NGN" ? true : undefined }),
     refetchOnMount: false,
+    retry: true,
+    refetchInterval: 2 * 60 * 1000, // 2 minutes
   });
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      if (!isFetching) {
-        refetch();
-      }
-    }, 2 * 60 * 1000); // 2 minutes;
-
-    return () => {
-      clearInterval(timer);
-    };
-  }, []);
 
   return (
     <div className="border space-y-4 h-full w-full p-6 rounded-2xl">

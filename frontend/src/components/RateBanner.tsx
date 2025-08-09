@@ -17,6 +17,7 @@ const RateBanner = () => {
     queryFn: () => getCoinRates({}),
     refetchOnMount: false,
     staleTime: 3 * 60 * 1000,
+    retry: true,
   });
 
   return (
