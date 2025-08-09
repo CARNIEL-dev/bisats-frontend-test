@@ -1,22 +1,21 @@
-import PrimaryInput from "../../components/Inputs/PrimaryInput";
-import { PrimaryButton } from "../../components/buttons/Buttons";
-import { BackArrow } from "../../assets/icons";
-import OtherSide from "../../layouts/auth/OtherSide";
 import { useFormik } from "formik";
-import { useState } from "react";
-import { EmailSchema } from "../../formSchemas";
-import { ForgotPassword as FP } from "../../redux/actions/userActions";
 import { useNavigate } from "react-router-dom";
-import { APP_ROUTES } from "../../constants/app_route";
+import { BackArrow } from "@/assets/icons";
+import PrimaryInput from "@/components/Inputs/PrimaryInput";
+import { PrimaryButton } from "@/components/buttons/Buttons";
+import { APP_ROUTES } from "@/constants/app_route";
+import { EmailSchema } from "@/formSchemas";
+import OtherSide from "@/layouts/auth/OtherSide";
+import { ForgotPassword as FP } from "@/redux/actions/userActions";
 const ForgotPassword = () => {
-  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const formik = useFormik({
     initialValues: { email: "" },
     validationSchema: EmailSchema,
+    validateOnMount: false,
+    validateOnBlur: false,
     onSubmit: async (values) => {
-      setIsLoading(true);
       // if (formik.touched.agreeToTerms && formik.errors.agreeToTerms) {
       //     Toast.warning(formik.errors.agreeToTerms, "Terms & Conditions")
       // }
@@ -26,7 +25,6 @@ const ForgotPassword = () => {
       if (response?.statusCode === 200) {
         navigate(APP_ROUTES.AUTH.OTP);
       }
-      setIsLoading(false);
     },
   });
 
@@ -38,7 +36,7 @@ const ForgotPassword = () => {
         upperSubHeader={
           <>
             {" "}
-            <p
+            <button
               className="text-[14px] text-[#707D96] leading-[24px] font-semibold text-left flex items-center cursor-pointer mb-2"
               onClick={() => navigate(APP_ROUTES.AUTH.LOGIN)}
             >
@@ -47,7 +45,7 @@ const ForgotPassword = () => {
                 <BackArrow />
               </span>{" "}
               Back to Log in
-            </p>
+            </button>
           </>
         }
       />
@@ -57,7 +55,7 @@ const ForgotPassword = () => {
             <PrimaryInput
               type="email"
               name="email"
-              label="email"
+              label="Email"
               className="w-full h-[48px] px-3 outline-hidden "
               error={formik.errors.email}
               touched={formik.touched.email}
@@ -70,16 +68,17 @@ const ForgotPassword = () => {
             <PrimaryButton
               className={""}
               text={"Send OTP"}
-              loading={isLoading}
+              loading={formik.isSubmitting}
               type="submit"
+              disabled={formik.isSubmitting || !formik.isValid}
             />
           </div>
-          <p className="text-[14px] text-[#515B6E] leading-[24px] font-semibold text-left">
+          <div className="text-[14px] text-[#515B6E] leading-[24px] font-semibold text-left">
             Need help?
-            <span className="text-[#C49600] pl-2 cursor-pointer">
+            <button className="text-[#C49600] pl-2 cursor-pointer">
               Contact Support
-            </span>
-          </p>
+            </button>
+          </div>
         </div>
       </form>
     </div>

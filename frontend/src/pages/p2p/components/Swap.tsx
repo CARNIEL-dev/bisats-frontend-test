@@ -95,7 +95,7 @@ const Swap = ({
 
     if (focusedField === "amount" && !isNaN(amt)) {
       if (adDetail?.orderType === "buy") {
-        formik.setFieldValue("otherAmount", (amt / price).toFixed(10));
+        formik.setFieldValue("otherAmount", (amt / price).toFixed(6));
       } else if (adDetail?.orderType === "sell") {
         formik.setFieldValue("otherAmount", (amt * price).toFixed(2));
       }
@@ -103,7 +103,7 @@ const Swap = ({
       if (adDetail?.orderType === "buy") {
         formik.setFieldValue("amount", (otherAmt * price).toFixed(2));
       } else if (adDetail?.orderType === "sell") {
-        formik.setFieldValue("amount", (otherAmt / price).toFixed(10));
+        formik.setFieldValue("amount", (otherAmt / price).toFixed(6));
       }
     }
   }, [
@@ -318,6 +318,8 @@ const SellForm = ({
   formik,
   setFocusedField,
 }: SwapFormType) => {
+  const balance = walletState?.wallet?.[adDetail?.asset ?? "USDT"];
+  const isUSDT = adDetail?.asset === "USDT";
   return (
     <>
       <div className="space-y-4">
@@ -347,18 +349,18 @@ const SellForm = ({
               const maxVal = walletState?.wallet?.[adDetail?.asset ?? "USDT"];
 
               const availableAmount =
-                (adDetail?.amountAvailable || 0) / (adDetail?.price || 0);
+                (adDetail?.maximumLimit || 0) / (adDetail?.price || 0);
 
               const maxValue = Math.min(maxVal, availableAmount);
 
               setFocusedField("amount");
               // formik.setFieldValue("amount", `1.00`);
-              formik.setFieldValue("amount", `${maxValue.toFixed(5)}`);
+              formik.setFieldValue("amount", `${maxValue}`);
             }}
           />
 
           <Badge variant={"success"}>
-            Balance: {walletState?.wallet?.[adDetail?.asset ?? "USDT"]}{" "}
+            Balance: {formatter({ decimal: isUSDT ? 2 : 6 }).format(balance)}{" "}
             {adDetail?.asset}
           </Badge>
         </div>

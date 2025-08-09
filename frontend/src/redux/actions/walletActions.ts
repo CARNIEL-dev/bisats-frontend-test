@@ -687,6 +687,16 @@ const setWalletCurrency = (currency: "usd" | "ngn") => {
   });
 };
 
+const useCryptoRates = ({ isEnabled }: { isEnabled: boolean }) => {
+  return useQuery<CryptoRates, Error>({
+    queryKey: ["cryptoRates"],
+    queryFn: getCryptoRates,
+    refetchOnMount: false,
+    staleTime: 2 * 60 * 1000, // 2 minutes
+    enabled: isEnabled,
+  });
+};
+
 export {
   getUserAds,
   updateAdStatus,
@@ -697,4 +707,5 @@ export {
   useFetchUserAds,
   toggleShowBalance,
   setWalletCurrency,
+  useCryptoRates,
 };

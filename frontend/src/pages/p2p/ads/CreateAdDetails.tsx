@@ -19,7 +19,7 @@ import { convertAssetToNaira } from "@/utils/conversions";
 import { formatNumber } from "@/utils/numberFormat";
 import { AccountLevel, bisats_limit } from "@/utils/transaction_limits";
 import { Check, Info, TriangleAlert } from "lucide-react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { startTransition, useCallback, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 
 const requiredFields = [
@@ -56,32 +56,8 @@ const CreateAdDetails: React.FC<AdsProps> = ({
   liveRate,
 }) => {
   const [adType, setAdType] = useState(formik.values.type || "Buy");
-  const [token, setToken] = useState(formik.values.asset || "");
+  const [token, setToken] = useState(formik.values.asset || "USDT");
   const [activePercentage, setActivePercentage] = useState(0);
-
-  useEffect(() => {
-    formik.resetForm({
-      values: {
-        type: formik.values.type, // Keep type field intact
-        amount: undefined, // Reset other fields as needed
-        minimumLimit: undefined,
-        maximumLimit: undefined,
-        amountToken: undefined,
-        asset: "USDT",
-        agree: false,
-        price: undefined,
-        priceLowerLimit: undefined,
-        priceUpperLimit: undefined,
-        priceMargin: 0,
-        currency: "NGN",
-        priceType: "Static",
-      },
-      touched: {},
-    });
-    setToken("USDT");
-    setAdType(formik.values.type);
-    setActivePercentage(0);
-  }, [formik.values.type]);
 
   const walletData = wallet?.wallet;
 
@@ -89,6 +65,38 @@ const CreateAdDetails: React.FC<AdsProps> = ({
   const user = userState.user;
   const account_level = user?.accountLevel as AccountLevel;
   const userTransactionLimits = bisats_limit[account_level];
+
+  // useEffect(() => {
+  //   if (!isPending)
+  //     return () => {
+  //       console.log("Should clear", isPending);
+  //       if (!isPending) {
+  //         console.log("I cleared");
+  //         if (formik.values.type === "Buy") {
+  //           formik.setFieldValue("amount", undefined);
+  //           console.log("I cleared amount");
+  //         } else if (formik.values.type === "Sell") {
+  //           formik.setFieldValue("amountToken", undefined);
+  //           console.log("I cleared amountToken");
+  //         }
+  //       }
+  //     };
+  // }, [adType, isPending]);
+
+  // useEffect(() => {
+  //   if (shouldClear) {
+  //     if (shouldClear) {
+  //       console.log("I cleared");
+  //       if (formik.values.type === "Buy") {
+  //         formik.setFieldValue("amountToken", undefined);
+  //         console.log("I cleared amountToken");
+  //       } else if (formik.values.type === "Sell") {
+  //         formik.setFieldValue("amount", undefined);
+  //         console.log("I cleared amount");
+  //       }
+  //     }
+  //   }
+  // }, [adType, shouldClear]);
 
   //SUB: Handle Next Stage
   const handleNextStage = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -124,6 +132,35 @@ const CreateAdDetails: React.FC<AdsProps> = ({
     }
   };
 
+  const handleValidation = async () => {
+    try {
+      const errors = await formik.validateForm();
+      const isBuy = formik.values.type.toLowerCase() === "buy";
+      const requiredFieldsList = isBuy
+        ? requiredFields
+        : requiredFieldsForToken;
+
+      startTransition(() => {
+        const hasErrors = Object.keys(errors).some((field) =>
+          requiredFieldsList.includes(field)
+        );
+
+        if (!hasErrors) {
+          setStage("review"); // Non-urgent state update
+        } else {
+          // Mark fields as touched
+        }
+      });
+
+      // Show toast immediately (outside transition)
+      if (Object.keys(errors).length > 0) {
+        Toast.error(`Please fill all required fields`, "ERROR");
+      }
+    } catch (err) {
+      console.error("Validation failed", err);
+    }
+  };
+
   // SUB: Calculate wallet balance
   const calculateDisplayWalletBallance = useMemo(() => {
     if (adType.toLowerCase() === "buy") {
@@ -146,7 +183,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
     (percent: number) => {
       if (!formik.values.price) {
         Toast.warning("Please enter a price", "Price required");
-        return; // Skip if price is empty/zero
+        return;
       }
 
       setActivePercentage(percent);
@@ -207,7 +244,8 @@ const CreateAdDetails: React.FC<AdsProps> = ({
       {/* SUB: ASSET */}
       <TokenSelection
         key={"asset"}
-        title={formik.values.asset || ""}
+        value={formik.values.asset || ""}
+        // defaultValue={formik.values.asset || "USDT"}
         label="Asset"
         error={formik.errors.asset}
         touched={formik.touched.asset}
@@ -225,11 +263,11 @@ const CreateAdDetails: React.FC<AdsProps> = ({
           className=""
           label="Amount to be deposited in Ad Escrow"
           type="number"
-          // key={
-          //   formik.values.type.toLowerCase() === "buy"
-          //     ? "amount"
-          //     : "amountToken"
-          // }
+          key={
+            formik.values.type.toLowerCase() === "buy"
+              ? "amount"
+              : "amountToken"
+          }
           step="any"
           min={0}
           inputMode="decimal"
@@ -244,7 +282,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
               ? formik.errors.amount
               : formik.errors.amountToken
           }
-          defaultValue={
+          value={
             formik.values.type.toLowerCase() === "buy"
               ? formik.values.amount
               : formik.values.amountToken
@@ -263,7 +301,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
 
             const limit = isBuy
               ? userTransactionLimits.maximum_ad_creation_amount // Use normal limit for buy
-              : Number(maxTokenValue.toFixed(10));
+              : Number(maxTokenValue.toFixed(5));
 
             // Get wallet balance in the relevant currency
             const walletBal =
@@ -309,7 +347,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
             inputMode="decimal"
             name="price"
             error={formik.errors.price}
-            value={formik.values.price}
+            defaultValue={formik.values.price}
             touched={formik.touched.price}
             onBlur={formik.handleBlur}
             onChange={(e) => {
@@ -358,7 +396,13 @@ const CreateAdDetails: React.FC<AdsProps> = ({
 
         <Badge
           role="button"
-          onClick={() => formik.setFieldValue("price", Number(rate))}
+          onClick={() => {
+            if (!formik.values.asset) {
+              Toast.warning("Please select an asset", "Asset required");
+              return;
+            }
+            formik.setFieldValue("price", Number(rate));
+          }}
           variant={"success"}
           tabIndex={0}
         >
@@ -429,6 +473,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
               onClick={() => {
                 handlePercentageClick(percent);
               }}
+              key={percent}
               variant={"success"}
               tabIndex={0}
               className={cn(
@@ -511,14 +556,29 @@ const CreateAdDetails: React.FC<AdsProps> = ({
             touched={formik.touched.maximumLimit}
             onBlur={formik.handleBlur}
             maxFnc={() => {
-              if (!formik.values.amount || !formik.values.amountToken) {
-                Toast.warning("Please enter an amount", "Amount required");
-                return;
+              if (formik.values.type || adType) {
+                if (formik.values.type === "Buy" && !formik.values.amount) {
+                  Toast.warning("Please enter an amount", "Amount required");
+                  return;
+                }
+                if (
+                  formik.values.type === "Sell" &&
+                  !formik.values.amountToken
+                ) {
+                  Toast.warning(
+                    "Please enter an amount token",
+                    "Amount required"
+                  );
+                  return;
+                }
               }
               if (adType.toLowerCase() === "sell") {
+                const tokenValue = (
+                  Number(rate) * Number(walletBalance)
+                ).toFixed(2);
                 const tokenPrice = Math.min(
                   userTransactionLimits?.upper_limit_sell_ad || Infinity,
-                  Number(rate) * Number(walletBalance)
+                  parseFloat(tokenValue)
                 );
 
                 return formik.setFieldValue("maximumLimit", tokenPrice);
@@ -557,7 +617,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
         text={"Continue"}
         type="button"
         loading={false}
-        onClick={(e) => handleNextStage(e)}
+        onClick={handleValidation}
       />
     </section>
   );

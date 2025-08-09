@@ -33,7 +33,7 @@ const P2PLayOut = () => {
       <div className="bg-primary-light h-[48px] md:overflow-hidden overflow-scroll w-screen fixed inset-x-0 md:top-[5rem] top-[4rem] z-10 flex items-center ">
         <RateBanner />
       </div>
-      <div className="bg-white hidden lg:flex fixed inset-x-0 z-10 top-[8rem] py-3">
+      <div className="bg-white hidden md:flex fixed inset-x-0 z-10 top-[8rem] py-3">
         <MaxWidth className="max-w-[22rem] flex justify-center gap-10  items-center flex-nowrap text-[#515B6E] border border-primary  py-3 rounded-full dashboard-navbar">
           {PageData.map((page) => (
             <Link

@@ -363,7 +363,7 @@ const ExpressSwap = () => {
             />
             <div className="absolute right-3 top-10 w-2/5">
               <TokenSelection
-                title=""
+                value=""
                 label={""}
                 removexNGN={true}
                 error={undefined}

@@ -26,9 +26,11 @@ const MarketRate: React.FC = () => {
     refetchInterval: 2 * 60 * 1000, // 2 minutes
   });
 
+  console.log("Market rate", currencyRate);
+
   return (
     <div className="border space-y-4 h-full w-full p-6 rounded-2xl">
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex items-center md:items-start lg:items-center md:flex-col lg:flex-row justify-between gap-2">
         <p className="md:text-sm text-xs font-semibold text-gray-700">
           Market Rates (per unit)
         </p>

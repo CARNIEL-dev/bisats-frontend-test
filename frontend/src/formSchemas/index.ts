@@ -12,6 +12,7 @@ import { convertAssetToNaira } from "@/utils/conversions";
 import { toke_100_ngn } from "@/utils/data";
 import { formatter } from "@/utils";
 import { AdSchema as AdSchemaType } from "@/pages/p2p/components/ExpressSwap";
+import Decimal from "decimal.js";
 
 //SUB: Auth
 const SignupSchema = Yup.object().shape({
@@ -62,7 +63,7 @@ const VerificationSchema = Yup.object().shape({
   code: Yup.string().length(6).required("Code is required"),
 });
 const EmailSchema = Yup.object().shape({
-  email: Yup.string().email().required(),
+  email: Yup.string().email().required("Email is required"),
 });
 
 const PhoneSchema = Yup.object().shape({
@@ -154,6 +155,7 @@ const swapSchema = Yup.object().shape({
             "Amount is greater than the upper limit",
             function (value) {
               const { adDetail, type } = this.options.context as any;
+
               const maxLimit =
                 type === "sell"
                   ? Number(adDetail.maximumLimit) / Number(adDetail.price)
@@ -259,8 +261,8 @@ const swapSchema = Yup.object().shape({
 const AdSchema = Yup.object().shape({
   type: Yup.string().required("Transaction type is required"),
   asset: Yup.string()
-    .oneOf(["BTC", "USDT", "SOL", "ETH"])
-    .required("Asset selection is required"),
+    // .oneOf(["BTC", "USDT", "SOL", "ETH"])
+    .required("Select an asset"),
   priceType: Yup.string().required("Pricing type is required"),
   currency: Yup.string().required("Currency selection is required"),
   price: Yup.number()
@@ -349,14 +351,19 @@ const AdSchema = Yup.object().shape({
               const MAX_NAIRA_LIMIT =
                 userTransactionLimits?.maximum_ad_creation_amount ?? 0;
 
-              const maxTokenValue =
-                tokenRate > 0 ? MAX_NAIRA_LIMIT / tokenRate : 0;
+              const tokenValue = parseFloat(
+                (MAX_NAIRA_LIMIT / tokenRate).toFixed(5)
+              );
+
+              const inDecimalValue = new Decimal(tokenValue).toNumber();
+
+              const maxTokenValue = tokenRate > 0 ? inDecimalValue : 0;
 
               return schema2.max(
                 maxTokenValue,
-                `Amount must not exceed ₦${formatNumber(
+                `Amount must not exceed ${inDecimalValue}  ${assetValue}. Your limit is ₦${formatNumber(
                   MAX_NAIRA_LIMIT
-                )} worth of ${assetValue}`
+                )}`
               );
             }
           )
@@ -419,10 +426,14 @@ const AdSchema = Yup.object().shape({
         const tokenRate =
           convertAssetToNaira(assetValue as keyof Prices, 1, 0, liveRate) || 0;
 
+        const tokenValue = (Number(tokenRate) * Number(walletBalance)).toFixed(
+          2
+        );
+
         const computedMax = Math.min(
           limit || Infinity,
           type.toLowerCase() === "sell"
-            ? Number(tokenRate) * Number(walletBalance)
+            ? parseFloat(tokenValue)
             : Number(amount)
         );
 
@@ -432,6 +443,14 @@ const AdSchema = Yup.object().shape({
         );
       }
     )
+    // .test(
+    //   "max-greater-than-upper",
+    //   "Maximum must be greater than upper price limit",
+    //   function (value) {
+    //     const { priceUpperLimit } = this.parent;
+    //     return Number(value) > Number(priceUpperLimit);
+    //   }
+    // )
 
     .required("Maximum is required"),
 

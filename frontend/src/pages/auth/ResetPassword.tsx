@@ -1,18 +1,15 @@
-import { useState } from "react";
-import PrimaryInput from "../../components/Inputs/PrimaryInput";
-import AuthPasswordInput from "../../components/Inputs/AuthPasswordInput";
-import { PrimaryButton } from "../../components/buttons/Buttons";
-import { InputCheck } from "../../components/Inputs/CheckBox";
-import OtherSide from "../../layouts/auth/OtherSide";
-import { ResetPassword as RP } from "../../redux/actions/userActions";
-import GoogleButton from "../../components/buttons/GoogleButton";
-import { ResetPasswordSchema, SignupSchema } from "../../formSchemas";
+import { PrimaryButton } from "@/components/buttons/Buttons";
+import AuthPasswordInput from "@/components/Inputs/AuthPasswordInput";
+import Toast from "@/components/Toast";
+import { APP_ROUTES } from "@/constants/app_route";
+import { ResetPasswordSchema } from "@/formSchemas";
+import OtherSide from "@/layouts/auth/OtherSide";
+import { ResetPassword as RP } from "@/redux/actions/userActions";
 import { useFormik } from "formik";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { APP_ROUTES } from "../../constants/app_route";
 
 const ResetPassword = () => {
-  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const email = localStorage.getItem("f_email");
   const [passwordBody] = useState({
@@ -24,15 +21,15 @@ const ResetPassword = () => {
   const formik = useFormik({
     initialValues: { ...passwordBody },
     validationSchema: ResetPasswordSchema,
+    validateOnMount: false,
+    validateOnBlur: false,
     onSubmit: async (values) => {
-      setIsLoading(true);
-
       const { ...payload } = values;
       const response = await RP(payload);
       if (response?.statusCode === 200) {
+        Toast.success(response.message, "Success");
         navigate(APP_ROUTES.AUTH.LOGIN);
       }
-      setIsLoading(false);
     },
   });
   return (
@@ -75,19 +72,20 @@ const ResetPassword = () => {
           <PrimaryButton
             className={""}
             text={"Save password"}
-            loading={isLoading}
+            loading={formik.isSubmitting}
+            disabled={formik.isSubmitting || !formik.isValid}
             type="submit"
           />
         </div>
-        <p className="text-[14px] text-[#515B6E] leading-[24px] font-semibold text-center">
+        <div className="text-[14px] text-[#515B6E] font-semibold text-center flex items-center gap-2">
           Don’t have an account?
-          <span
-            className="text-[#C49600] pl-3 cursor-pointer"
+          <button
+            className="text-[#C49600]  cursor-pointer"
             onClick={() => navigate(APP_ROUTES.AUTH.SIGNUP)}
           >
             Sign Up
-          </span>
-        </p>
+          </button>
+        </div>
       </form>
     </div>
   );

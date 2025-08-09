@@ -5,6 +5,15 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+// SUB: SLEEP/DELAY
+const delay = async (time: number): Promise<string> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(`Promise resolved after ${time} milliseconds`);
+    }, time * 1000);
+  });
+};
+
 // SUB: FORMAT CURRENCY AND VALUE
 const formatter = ({
   decimal = 2,
@@ -77,4 +86,28 @@ function formatEmail({
   return `${visible}${ellipsis}@${domain}`;
 }
 
-export { formatter, formatTime, splitTextInMiddle, formatEmail };
+// HDR: Wallet currency Balance
+const getCurrencyBalance = ({
+  item,
+  isXNGN,
+  defaultCurrency,
+}: {
+  item: Omit<AssetType, "logo" | "Asset">;
+  isXNGN: boolean;
+  defaultCurrency: string;
+}): number => {
+  if (defaultCurrency === "usd") {
+    return isXNGN ? item.Balance / item.NairaRate : item.Balance * item.USDRate;
+  } else {
+    return isXNGN ? item.Balance : item.Balance * item.NairaRate;
+  }
+};
+
+export {
+  formatter,
+  formatTime,
+  splitTextInMiddle,
+  formatEmail,
+  getCurrencyBalance,
+  delay,
+};

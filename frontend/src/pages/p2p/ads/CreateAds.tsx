@@ -30,7 +30,7 @@ export type TNetwork = {
 
 const initialAd: IAdRequest = {
   type: "Buy",
-  asset: "",
+  asset: "USDT",
   amount: undefined,
   amountToken: undefined,
   priceType: "Static",
@@ -111,11 +111,11 @@ const CreateAd = () => {
     initialValues: { ...initialAd, agree: false },
     validateOnMount: false,
     validateOnBlur: true,
-
+    validateOnChange: true,
     validate: async (values) => {
       try {
         await currentSchema.validate(values, {
-          abortEarly: true,
+          abortEarly: false,
           context: {
             liveRate: tokenLivePrices,
             userTransactionLimits,

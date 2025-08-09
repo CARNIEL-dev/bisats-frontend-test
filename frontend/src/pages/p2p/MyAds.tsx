@@ -154,7 +154,7 @@ const MyAds = () => {
     },
     {
       accessorKey: "minimumLimit",
-      header: "Minimum Price (xNGN)",
+      header: "Minimum Limit (xNGN)",
       cell: ({ row }) => {
         const price = row.original.minimumLimit;
         return (
@@ -168,7 +168,7 @@ const MyAds = () => {
     },
     {
       accessorKey: "maximumLimit",
-      header: "Maximum Price (xNGN)",
+      header: "Maximum Limit (xNGN)",
       cell: ({ row }) => {
         const price = row.original.maximumLimit;
         return (

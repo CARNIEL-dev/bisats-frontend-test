@@ -15,7 +15,7 @@ import Label from "@/components/Inputs/Label";
 import { Badge } from "../ui/badge";
 
 type IAProps = {
-  title: string;
+  value: string;
   label?: string;
   error: string | undefined | null;
   touched: boolean | undefined;
@@ -25,18 +25,20 @@ type IAProps = {
   disabled?: boolean;
   placeholder?: string;
   className?: string;
+  defaultValue?: string;
 };
 
 const TokenSelection = ({
   label,
   removexNGN,
-  title,
+  value,
   error,
   handleChange,
   showBalance = true,
   disabled,
   placeholder,
   className,
+  defaultValue,
 }: IAProps) => {
   const [selected, setSelected] = useState<string | null>(null);
   const walletState: WalletState = useSelector((state: any) => state.wallet);
@@ -57,16 +59,16 @@ const TokenSelection = ({
 
   useEffect(() => {
     if (showBalance) {
-      if (title) {
+      if (value) {
         const defaultSelected = tokenOptions.find(
-          (option) => option.tokenName === title
+          (option) => option.tokenName === value
         );
         if (defaultSelected) {
           setSelected(defaultSelected.id);
         }
       }
     }
-  }, [title, showBalance]);
+  }, [value, showBalance]);
 
   return (
     <div>
@@ -82,8 +84,8 @@ const TokenSelection = ({
             handleChange(val);
             setSelected(val);
           }}
-          defaultValue={title || ""}
-          value={title || ""}
+          // defaultValue={defaultValue}
+          value={value}
           disabled={disabled}
         >
           <SelectTrigger

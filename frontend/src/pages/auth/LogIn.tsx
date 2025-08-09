@@ -126,15 +126,15 @@ const LogIn = () => {
           <hr className="text-[#F3F4F6] w-1/2 h-[1.5px]" />
         </div>
         <GoogleButton text="Sign in with Google" />
-        <p className="text-[14px] text-[#515B6E] leading-[24px] font-semibold text-center">
-          Don’t have an account?
-          <span
-            className="text-[#C49600] pl-3 cursor-pointer"
+        <div className="text-sm text-[#515B6E] flex gap-2 items-center  font-semibold text-center">
+          <p>Don’t have an account?</p>
+          <button
+            className="text-[#C49600]  cursor-pointer"
             onClick={() => navigate(APP_ROUTES.AUTH.SIGNUP)}
           >
             Sign Up
-          </span>
-        </p>
+          </button>
+        </div>
       </div>
     </div>
   );

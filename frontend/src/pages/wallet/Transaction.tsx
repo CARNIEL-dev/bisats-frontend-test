@@ -86,7 +86,7 @@ const Transactions: React.FC = () => {
           <div className="flex  flex-col gap-1">
             <p className="font-semibold text-gray-600 md:hidden">Asset</p>
             <TokenSelection
-              title=""
+              value=""
               handleChange={() => {}}
               showBalance={false}
               error={""}

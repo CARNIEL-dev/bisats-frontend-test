@@ -1,41 +1,46 @@
-import { PrimaryButton } from "../../components/buttons/Buttons";
-import PrimaryInput from "../../components/Inputs/PrimaryInput";
-import { BackArrow } from "../../assets/icons";
-import OtherSide from "../../layouts/auth/OtherSide";
-import { VerificationSchema } from "../../formSchemas";
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { BackArrow } from "@/assets/icons";
+import { PrimaryButton } from "@/components/buttons/Buttons";
+import PrimaryInput from "@/components/Inputs/PrimaryInput";
+import { APP_ROUTES } from "@/constants/app_route";
+import { VerificationSchema } from "@/formSchemas";
+import OtherSide from "@/layouts/auth/OtherSide";
+import { VerifyForgotPassword } from "@/redux/actions/userActions";
 import { useFormik } from "formik";
-import { VerifyForgotPassword } from "../../redux/actions/userActions";
-import { APP_ROUTES } from "../../constants/app_route";
-import { useSearchParams } from "react-router-dom";
+import { useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const OTP = () => {
-  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const email = localStorage.getItem("f_email");
   const [searchParams] = useSearchParams();
 
   const codeLink = searchParams.get("code");
-  const emaill = searchParams.get("email");
+  const emailLink = searchParams.get("email");
+
+  const emailValue = email ?? emailLink ?? "";
 
   const formik = useFormik({
-    initialValues: { code: "" },
+    initialValues: { code: codeLink ? codeLink : "" },
     validationSchema: VerificationSchema,
+    validateOnMount: false,
+    validateOnBlur: false,
     onSubmit: async (values) => {
-      setIsLoading(true);
       const payload = {
-        email: email ?? "",
-        code: values.code ?? "",
+        email: emailValue,
+        code: codeLink ?? values.code,
       };
       const response = await VerifyForgotPassword(payload);
-      setIsLoading(false);
+
       if (response?.statusCode === 200) {
         navigate(APP_ROUTES.AUTH.RESET_PASSWORD);
       }
     },
   });
-  useEffect(() => {}, []);
+  useEffect(() => {
+    if (codeLink && emailLink) {
+      formik.submitForm();
+    }
+  }, [codeLink, emailLink]);
   return (
     <div className="lg:w-[442px] mx-auto">
       <OtherSide
@@ -59,7 +64,7 @@ const OTP = () => {
           <PrimaryInput
             type="code"
             name="code"
-            label="code"
+            label="Code"
             className="w-full h-[48px] px-3 outline-hidden "
             error={formik.errors.code}
             touched={formik.touched.code}
@@ -72,7 +77,8 @@ const OTP = () => {
             <PrimaryButton
               className={"w-full"}
               text={"Enter code"}
-              loading={isLoading}
+              loading={formik.isSubmitting}
+              disabled={formik.isSubmitting || !formik.isValid}
               type="submit"
             />
           </div>

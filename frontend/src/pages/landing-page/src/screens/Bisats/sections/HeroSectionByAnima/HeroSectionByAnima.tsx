@@ -23,7 +23,7 @@ export const HeroSectionByAnima = (): JSX.Element => {
   const isMobile = useIsMobile();
 
   return (
-    <div className="w-full relative h-[85vh]">
+    <div className="w-full relative min-h-[85vh] md:min-h-fit">
       <MaxWidth as="section" className=" max-w-[78rem] 2xl:max-w-[90rem] mb-16">
         <div className="flex flex-col md:flex-row justify-between items-start">
           {/* SUB: Left content */}

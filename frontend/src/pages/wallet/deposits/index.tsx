@@ -95,7 +95,7 @@ const DepositPage = () => {
 
       <form className="mt-10" onSubmit={formik.handleSubmit}>
         <TokenSelection
-          title={selectedToken}
+          value={selectedToken}
           label={"Select Asset"}
           error={undefined}
           touched={undefined}

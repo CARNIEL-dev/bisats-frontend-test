@@ -82,7 +82,7 @@ export function DataTable<TData, TValue>({
   const topHeaders = table.getHeaderGroups()[0].headers;
 
   return (
-    <div className="flex flex-col gap-y-8 border-t md:border-t-0 pt-4 md:pt-0">
+    <div className="flex flex-col gap-y-8 border-t lg:border-t-0 pt-4 lg:pt-0">
       {/* ─────────────────────────────────────── 
          SUB: Filtering 
       ─────────────────────────────────────── */}
@@ -106,7 +106,7 @@ export function DataTable<TData, TValue>({
       {/* ─────────────────────────────────────── 
          SUB: Desktop: full grid table 
       ─────────────────────────────────────── */}
-      <div className="hidden sm:block rounded-md overflow-hidden">
+      <div className="hidden lg:block rounded-md overflow-hidden">
         <Table>
           <TableHeader className="bg-gray-100 ">
             {table.getHeaderGroups().map((hg) => (
@@ -161,7 +161,7 @@ export function DataTable<TData, TValue>({
       {/* ─────────────────────────────────────── 
          SUB: Mobile: card list layout 
       ─────────────────────────────────────── */}
-      <div className="sm:hidden space-y-3">
+      <div className="lg:hidden space-y-3">
         {table.getRowModel().rows.map((row) => (
           <div
             key={row.id}

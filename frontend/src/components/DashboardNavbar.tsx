@@ -39,6 +39,9 @@ const DashboardNavbar = () => {
       ...Object.values(APP_ROUTES.WALLET),
       APP_ROUTES.P2P.HOME,
       APP_ROUTES.P2P.MY_ADS,
+      APP_ROUTES.P2P.CREATE_AD,
+      APP_ROUTES.P2P.BUY,
+      APP_ROUTES.P2P.SELL,
     ];
 
     if (refreshPath.includes(location.pathname)) {
@@ -53,7 +56,7 @@ const DashboardNavbar = () => {
         <div className="scale-75">
           <BisatLogo />
         </div>
-        <div className="hidden lg:flex justify-center items-center gap-x-12 flex-1  font-semibold text-slate-500 dashboard-navbar">
+        <div className="hidden md:flex justify-center items-center gap-x-12 flex-1  font-semibold text-slate-500 dashboard-navbar">
           <NavLink to={APP_ROUTES.DASHBOARD}>Dashboard</NavLink>
           <NavLink to={APP_ROUTES.P2P.HOME}>P2P Market</NavLink>
           <NavLink to={APP_ROUTES.WALLET.HOME}>Wallet</NavLink>

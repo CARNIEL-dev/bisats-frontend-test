@@ -203,7 +203,7 @@ const WithdrawalPage = () => {
 
       <div className="mt-10">
         <TokenSelection
-          title={selectedToken}
+          value={selectedToken}
           label={"Select Asset"}
           error={undefined}
           touched={undefined}

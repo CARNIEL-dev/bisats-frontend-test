@@ -168,7 +168,7 @@ const MarketPlacePage = () => {
               <>
                 <div className="grid grid-cols-[1fr_6rem] gap-2 md:w-[25%] ">
                   <TokenSelection
-                    title={adsParam.asset}
+                    value={adsParam.asset}
                     error={undefined}
                     touched={undefined}
                     handleChange={handleTokenChange}

@@ -3,7 +3,6 @@ import MaxWidth from "@/components/shared/MaxWith";
 import OrdersChart from "@/components/shared/OrdersChart";
 import Balance from "@/pages/dashboard/Balance";
 import MarketRate from "@/pages/dashboard/MarketRate";
-import { GetWallet } from "@/redux/actions/walletActions";
 import { UserState } from "@/redux/reducers/userSlice";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
@@ -12,12 +11,6 @@ const Dashboard = () => {
   const [openKycModal, setKycModalOpen] = useState(false);
   const userState: UserState = useSelector((state: any) => state.user);
   const user = userState.user;
-
-  console.log("User state", userState);
-
-  useEffect(() => {
-    GetWallet();
-  }, []);
 
   useEffect(() => {
     const unverifiedFields = [

@@ -1,6 +1,7 @@
 import { InputCheck } from "@/components/Inputs/CheckBox";
 import { formatNumber } from "@/utils/numberFormat";
 import { AdsProps } from "@/pages/p2p/ads/CreateAds";
+import { formatter } from "@/utils";
 
 const AdReview: React.FC<AdsProps> = ({ formik }) => {
   return (
@@ -51,7 +52,9 @@ const AdReview: React.FC<AdsProps> = ({ formik }) => {
           <span className="text-[#606C82] font-light mr-2">Amount</span>
         </p>
         <p className="text-[#515B6E] font-semibold">
-          {formatNumber(
+          {formatter({
+            decimal: formik.values.type.toLowerCase() === "sell" ? 6 : 2,
+          }).format(
             formik.values.type.toLowerCase() === "sell"
               ? formik.values?.amountToken || 0
               : formik.values?.amount || 0
@@ -99,15 +102,19 @@ const AdReview: React.FC<AdsProps> = ({ formik }) => {
           You are about to create an ad to{" "}
           <span className="font-semibold">
             {formik.values.type.toLowerCase() === "buy"
-              ? `Buy ${formatNumber(formik.values.amount || 0)} NGN worth of ${
-                  formik.values.asset
-                }`
-              : `Sell ${formatNumber(formik.values.amountToken || 0)} ${
+              ? `Buy ${formatter({ decimal: 2 }).format(
+                  formik.values.amount || 0
+                )} NGN worth of ${formik.values.asset}`
+              : `Sell ${formatter({
+                  decimal: 6,
+                }).format(formik.values?.amountToken || 0)} ${
                   formik.values.asset
                 }`}{" "}
             at{" "}
             {formik.values.priceType?.toLowerCase() === "static"
-              ? `${formik.values.price} NGN/USDT.`
+              ? `${formatter({ decimal: 0 }).format(
+                  formik.values.price || 0
+                )} NGN/USDT.`
               : ` a margin of ${formik.values.priceMargin}% ${
                   formik.values.type?.toLowerCase() === "buy"
                     ? "price increase"

@@ -238,3 +238,11 @@ interface NotificationState {
   totalNotification: number;
   unreadNotifications: number;
 }
+type AssetType = {
+  Asset: string;
+  Balance: number;
+  name: string;
+  logo: string;
+  USDRate: number;
+  NairaRate: number;
+};

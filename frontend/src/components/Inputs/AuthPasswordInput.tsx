@@ -66,9 +66,7 @@ const AuthPasswordInput: React.FC<TInput> = ({
             style={{ outline: "none" }}
             type={passwordHidden ? "password" : "text"}
             className={`rounded-[6px] border border-[#D6DAE1] outline-[none] focus:border-[#C49600] focus:shadow-[0_0_10px_#FEF8E5] text-[#606C82] p-1 ${className} ring-0 ${
-              error && touched
-                ? "border-[#EF4444] outline-0 focus:border-[#EF4444]"
-                : ""
+              error ? "border-[#EF4444] outline-0 focus:border-[#EF4444]" : ""
             }`}
             {...props}
             onChange={(e) => {

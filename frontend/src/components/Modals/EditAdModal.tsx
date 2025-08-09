@@ -17,14 +17,14 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 
-import { UpdateAdStatusResponse } from "@/pages/p2p/MyAds";
-import { cn, formatter } from "@/utils";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Badge } from "../ui/badge";
 import { getLivePrice } from "@/helpers";
-import { convertAssetToNaira } from "@/utils/conversions";
+import { UpdateAdStatusResponse } from "@/pages/p2p/MyAds";
 import { PriceData } from "@/pages/wallet/Assets";
+import { cn, formatter } from "@/utils";
+import { convertAssetToNaira } from "@/utils/conversions";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Divider from "../shared/Divider";
+import { Badge } from "../ui/badge";
 
 interface Props {
   close: () => void;
@@ -73,7 +73,46 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
   //   HDR: SCHEMA
   const AdSchema = Yup.object().shape({
     price: Yup.number()
-      .min(1, "Price must be greater than 0")
+      .moreThan(1, "Price must be greater than 0")
+      .transform((value, originalValue) => {
+        if (originalValue === "" || isNaN(originalValue)) return undefined;
+        return Number(originalValue);
+      })
+      .when([], ([], schema) => {
+        const nRate = Number(rate ?? 0).toFixed(2);
+        const minPrice = 0.9 * parseFloat(nRate);
+        const maxPrice = 1.1 * parseFloat(nRate);
+
+        return schema
+          .min(minPrice, `Price must be greater than 90% of market rate`)
+          .max(maxPrice, `Price must be lower than 110% of market rate`)
+          .required("Price is required");
+      })
+      // .test("price-validation", function (val) {
+      //   if (val === undefined || val === null) return true;
+      //   if (typeof rate !== "number" || isNaN(rate)) {
+      //     return this.createError({
+      //       message: "Invalid market rate",
+      //     });
+      //   }
+      //   const rateString = rate.toString();
+      //   const minPrice = 0.9 * parseFloat(rateString);
+      //   const maxPrice = 1.1 * parseFloat(rateString);
+
+      //   if (val) {
+      //     if (parseFloat(val.toString()) <= minPrice) {
+      //       return this.createError({
+      //         message: `Price must be greater than 90% of market rate`,
+      //       });
+      //     }
+      //     if (parseFloat(val.toString()) >= maxPrice) {
+      //       return this.createError({
+      //         message: `Price must be lower than 110% of market rate`,
+      //       });
+      //     }
+      //   }
+      //   return true;
+      // })
       .required("Price is required"),
     amount: Yup.number()
       .moreThan(0, "Amount must be greater than 0")
@@ -91,11 +130,13 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
         } else if (type === "sell") {
           // For sell transactions, check the naira equivalent
           // Use your rate function here
-          if (Number(rate) * (value || 0) > maxAmount) {
+
+          const prevAmout = (ad?.amount || 0) + (value || 0);
+          if (Number(rate) * prevAmout > maxAmount) {
             return this.createError({
               message: `Amount must not exceed  ${formatNumber(
                 maxAmount
-              )} xNGN`,
+              )} xNGN Limit`,
             });
           }
         }
@@ -106,13 +147,12 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
         "max-wallet-balance",
         "Amount cannot exceed your current wallet balance",
         function (value) {
+          if (!value) return true;
           return Number(value) <= calculateDisplayWalletBallance;
         }
-      )
-      .required("Amount is required"),
+      ),
+    // .required("Amount is required"),
   });
-
-  console.log();
 
   //HDR: Mutation function
   const mutation = useMutation<
@@ -142,7 +182,7 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
       const payload = {
         userId: user?.userId ?? "",
         adId: ad?.id ?? "",
-        amount: Number(values.amount),
+        amount: values.amount ? Number(values.amount) : 0,
         minimumLimit: Number(ad?.minimumLimit),
         maximumLimit: Number(ad?.maximumLimit),
         price: Number(values.price),
@@ -163,8 +203,8 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
             className={cn(
               "h-fit border  border-[#F3F4F6] bg-[#F9F9FB] rounded-md py-2 px-3 my-2 text-xs flex flex-col gap-1.5 w-full ",
               ad?.type.toLowerCase() === "buy"
-                ? "bg-green-600/50"
-                : "bg-red-600/50"
+                ? "bg-green-600/10 text-green-700"
+                : "bg-red-600/10 text-red-700"
             )}
           >
             <div className="flex justify-between items-start  text-wrap w-full">
@@ -187,6 +227,9 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
               label={" Price"}
               error={formik.errors.price}
               touched={undefined}
+              type="number"
+              step="0.01"
+              inputMode="decimal"
               onChange={(e) => {
                 const value = e.target.value;
                 // Allow only digits
@@ -201,13 +244,14 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
               text={`Previous Amount: ${formatter({ decimal: 5 }).format(
                 ad?.amount || 0
               )} ${ad?.asset}`}
+              textClassName="whitespace-nowrap"
             />
           )}
           <div className="">
             {/* SUB: Top Amount */}
             <PrimaryInput
               className={"w-full py-2 "}
-              label={"Top Up Amount"}
+              label={"Top Up Amount to add to Ad Escrow"}
               error={formik.errors.amount}
               touched={formik.touched.amount}
               onChange={(e) => {

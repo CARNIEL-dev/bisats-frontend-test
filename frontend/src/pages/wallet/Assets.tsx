@@ -6,10 +6,14 @@ import { DataTable } from "@/components/ui/data-table";
 import { APP_ROUTES } from "@/constants/app_route";
 import { assets } from "@/data";
 import PreLoader from "@/layouts/PreLoader";
-import { GetLivePrice, toggleShowBalance } from "@/redux/actions/walletActions";
+import {
+  GetLivePrice,
+  toggleShowBalance,
+  useCryptoRates,
+} from "@/redux/actions/walletActions";
 import { WalletState } from "@/redux/reducers/walletSlice";
 import { TWallet } from "@/types/wallet";
-import { cn, formatter } from "@/utils";
+import { cn, formatter, getCurrencyBalance } from "@/utils";
 import { convertAssetToNaira, convertAssetToUSD } from "@/utils/conversions";
 import { useQuery } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
@@ -57,24 +61,14 @@ export type PriceData = {
 
 const Assets: React.FC = () => {
   const walletState: WalletState = useSelector((state: any) => state.wallet);
-
   const wallet = walletState.wallet;
 
-  console.log("Wallet", walletState);
-
   const {
-    data: livePrices,
+    data: currencyRate,
     isError,
     error,
     isFetching,
-  } = useQuery<PriceData, Error>({
-    queryKey: ["tokenLivePrices"],
-    queryFn: GetLivePrice,
-    retry: false,
-    refetchOnMount: false,
-    staleTime: Infinity,
-    enabled: Boolean(wallet),
-  });
+  } = useCryptoRates({ isEnabled: Boolean(wallet) });
 
   const defaultAssetsData = useMemo(
     () => [
@@ -82,48 +76,48 @@ const Assets: React.FC = () => {
         Asset: assets.BTC,
         name: "Bitcoin",
         Balance: wallet?.BTC ?? 0,
-        Rate: livePrices?.BTC ?? 0,
+        USDRate: currencyRate?.bitcoin?.usd ?? 0,
+        NairaRate: currencyRate?.bitcoin?.ngn ?? 0,
         logo: BTC,
       },
       {
         Asset: assets.ETH,
         name: "Ethereum",
         Balance: wallet?.ETH ?? 0,
-        Rate: livePrices?.ETH ?? 0,
+        USDRate: currencyRate?.ethereum?.usd ?? 0,
+        NairaRate: currencyRate?.ethereum?.ngn ?? 0,
         logo: ETH,
       },
       {
         Asset: assets.SOL,
         name: "Solana",
         Balance: wallet?.SOL ?? 0,
-        Rate: livePrices?.SOL ?? 0,
+        USDRate: currencyRate?.solana?.usd ?? 0,
+        NairaRate: currencyRate?.solana?.ngn ?? 0,
         logo: SOL,
       },
       {
         Asset: assets.USDT,
         name: "Tether USD",
         Balance: wallet?.USDT ?? 0,
-        Rate: livePrices?.USDT ?? 0,
+        USDRate: currencyRate?.usd?.usd ?? 0,
+        NairaRate: currencyRate?.usd?.ngn ?? 0,
         logo: USDT,
       },
       {
         Asset: assets.xNGN,
         name: "Naira on Bisats",
         Balance: wallet?.xNGN ?? 0,
-        Rate: livePrices?.xNGN ?? 0,
+        USDRate: currencyRate?.usd?.usd ?? 0,
+        NairaRate: currencyRate?.usd?.ngn ?? 0,
         logo: NGN,
       },
     ],
-    [livePrices, wallet]
+    [currencyRate, wallet]
   );
 
-  const nairaRate = useMemo(() => {
-    const rate = defaultAssetsData.find((item) => item.Asset === assets.xNGN);
-    return rate?.Rate || 0;
-  }, [defaultAssetsData]);
-
   //   HDR: columns
-  const column: ColumnDef<Asset & { logo: string }>[] = [
+  const column: ColumnDef<AssetType>[] = [
     {
       accessorKey: "Asset",
       header: "Asset",
@@ -131,7 +125,11 @@ const Assets: React.FC = () => {
         const item = row.original;
         return (
           <div className="flex items-center gap-2 text-sm text-gray-600">
-            <img src={item.logo} alt={item.name} className="h-6 w-6 " />
+            <img
+              src={item.logo}
+              alt={item.name}
+              className="md:size-6  size-5"
+            />
             <div className="flex md:flex-col items-center md:items-start gap-x-1">
               <p className="font-semibold">{item.Asset}</p>
               <p className="text-xs">{item.name}</p>
@@ -150,7 +148,9 @@ const Assets: React.FC = () => {
             <Button
               variant="default"
               disabled={isFetching}
-              className={cn("p-0! h-[1.5rem] w-fit bg-primary/20 ")}
+              className={cn(
+                "p-0! h-[1.5rem] w-fit bg-primary/20  hidden md:flex"
+              )}
               onClick={toggleShowBalance}
             >
               {walletState.showBalance ? (
@@ -167,15 +167,6 @@ const Assets: React.FC = () => {
         const item = row.original;
         const isXNGN = item.Asset === assets.xNGN;
         const isUSDT = item.Asset === assets.USDT;
-
-        const USDPrice =
-          convertAssetToUSD(item.Asset, item.Balance, livePrices!) || 0;
-        const NGNPrice = convertAssetToNaira(
-          item.Asset as keyof Prices,
-          item.Balance,
-          item.Rate,
-          livePrices!
-        );
 
         return (
           <div className="flex md:items-center items-end md:flex-row flex-col gap-x-2 gap-y-1 text-sm text-gray-600">
@@ -198,13 +189,11 @@ const Assets: React.FC = () => {
                   currency:
                     walletState.defaultCurrency === "usd" ? "USD" : "NGN",
                 }).format(
-                  walletState.defaultCurrency === "usd"
-                    ? Number(USDPrice) || 0
-                    : isXNGN
-                    ? Number(item.Balance) || 0
-                    : isUSDT
-                    ? Number(NGNPrice) * nairaRate
-                    : Number(NGNPrice) || 0
+                  getCurrencyBalance({
+                    defaultCurrency: walletState.defaultCurrency,
+                    item,
+                    isXNGN,
+                  })
                 )}
               </p>
             )}
@@ -254,7 +243,7 @@ const Assets: React.FC = () => {
             message={error?.message || "Failed to load assets balance"}
           />
         </div>
-      ) : defaultAssetsData.length === 0 || !livePrices ? (
+      ) : defaultAssetsData.length === 0 || !currencyRate ? (
         <Empty />
       ) : (
         <>
@@ -263,9 +252,6 @@ const Assets: React.FC = () => {
             data={defaultAssetsData}
             paginated={false}
           />
-
-          {/* Mobile table for xs screens */}
-          {/* <MobileTable data={openAssets} livePrices={tokenLivePrices} /> */}
         </>
       )}
     </div>
@@ -273,49 +259,3 @@ const Assets: React.FC = () => {
 };
 
 export default Assets;
-
-// Mobile version of the table for smaller screens
-const MobileTable: React.FC<TableProps> = ({ data, livePrices }) => {
-  return (
-    <div className="sm:hidden w-full">
-      {data?.map((row, rowIndex) => (
-        <div
-          key={rowIndex}
-          className="flex flex-col p-4 mb-2 rounded"
-          style={rowIndex % 2 === 0 ? {} : { backgroundColor: "#F9F9FB" }}
-        >
-          <div className="flex justify-between items-center w-full mb-2">
-            <div className="flex items-center">
-              <img
-                src="/Icon/NGN.png"
-                alt="logo"
-                className="h-[24px] w-[24px] mr-[8px]"
-              />
-              <div>
-                <p
-                  style={{ color: "#515B6E", fontSize: "14px" }}
-                  className="font-semibold"
-                >
-                  {row.Asset}
-                </p>
-                <p style={{ color: "#606C82", fontSize: "12px" }}>{row.name}</p>
-              </div>
-            </div>
-            <div className="text-right">
-              <p
-                style={{ color: "#515B6E", fontSize: "14px" }}
-                className="font-semibold"
-              >
-                {row.Balance}
-              </p>
-              <p style={{ color: "#606C82", fontSize: "12px" }}>
-                {" "}
-                ~ {convertAssetToUSD(row?.Asset, row?.Balance, livePrices)} USD
-              </p>
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-};

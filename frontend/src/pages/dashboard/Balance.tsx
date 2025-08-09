@@ -14,71 +14,79 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { APP_ROUTES } from "@/constants/app_route";
 import {
-  getCryptoRates,
   setWalletCurrency,
   toggleShowBalance,
+  useCryptoRates,
 } from "@/redux/actions/walletActions";
 import { WalletState } from "@/redux/reducers/walletSlice";
-import { cn, formatter } from "@/utils";
-import { useQuery } from "@tanstack/react-query";
+import { cn, formatter, getCurrencyBalance } from "@/utils";
 import { ChevronDown, Eye, EyeClosed } from "lucide-react";
 import { ThreeDot } from "react-loading-indicators";
 
 const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
-  const { showBalance, defaultCurrency: currency } = useSelector(
-    (state: { wallet: WalletState }) => state.wallet
-  );
+  const {
+    showBalance,
+    defaultCurrency: currency,
+    wallet,
+  } = useSelector((state: { wallet: WalletState }) => state.wallet);
   const [isLoading, setIsLoading] = useState(true);
 
-  const walletData = useSelector((state: RootState) => state.wallet.wallet);
-
   //SUB: Query function
+
   const {
     data: currencyRate,
     isFetching,
     isError,
-  } = useQuery<CryptoRates, Error>({
-    queryKey: ["balance"],
-    queryFn: getCryptoRates,
-    refetchOnMount: false,
-    staleTime: 3 * 60 * 1000, // 3 minutes
-    enabled: Boolean(walletData),
-  });
+  } = useCryptoRates({ isEnabled: Boolean(wallet) });
+
+  const defaultAssetsData = useMemo(
+    () => [
+      {
+        name: "Bitcoin",
+        Balance: wallet?.BTC ?? 0,
+        USDRate: currencyRate?.bitcoin?.usd ?? 0,
+        NairaRate: currencyRate?.bitcoin?.ngn ?? 0,
+      },
+      {
+        name: "Ethereum",
+        Balance: wallet?.ETH ?? 0,
+        USDRate: currencyRate?.ethereum?.usd ?? 0,
+        NairaRate: currencyRate?.ethereum?.ngn ?? 0,
+      },
+      {
+        name: "Solana",
+        Balance: wallet?.SOL ?? 0,
+        USDRate: currencyRate?.solana?.usd ?? 0,
+        NairaRate: currencyRate?.solana?.ngn ?? 0,
+      },
+      {
+        name: "Tether USD",
+        Balance: wallet?.USDT ?? 0,
+        USDRate: currencyRate?.usd?.usd ?? 0,
+        NairaRate: currencyRate?.usd?.ngn ?? 0,
+      },
+      {
+        name: "xNGN",
+        Balance: wallet?.xNGN ?? 0,
+        USDRate: currencyRate?.usd?.usd ?? 0,
+        NairaRate: currencyRate?.usd?.ngn ?? 0,
+      },
+    ],
+    [currencyRate, wallet]
+  );
 
   const userBalance = useMemo<number | undefined>(() => {
-    if (!walletData || !currencyRate) return;
-
-    //? Sum up USDT variants into one total
-    const usdtTotal =
-      (walletData.USDT_ETH ?? 0) +
-      (walletData.USDT_TRX ?? 0) +
-      (walletData.USDT_SOL ?? 0);
-
-    //? Build an array of [assetKey, amount] pairs
-    const entries: [string, number][] = [
-      ["bitcoin", walletData.BTC ?? 0],
-      ["ethereum", walletData.ETH ?? 0],
-      ["solana", walletData.SOL ?? 0],
-      ["tron", walletData.TRX ?? 0],
-      ["usd", usdtTotal],
-      ["xNGN", walletData.xNGN ?? 0],
-    ];
-
+    if (!wallet || !currencyRate) return;
     setIsLoading(false);
-    return entries.reduce((total, [asset, amount]) => {
-      if (amount <= 0) return total;
-
-      let rate = currencyRate[asset as keyof CryptoRates]?.[currency] ?? 0;
-
-      //? Special xNGN handling: if we're not viewing NGN, convert via the NGN rate
-      if (asset === "xNGN" && currency !== "ngn") {
-        const ngnRate = currencyRate.usd?.ngn ?? 1;
-        rate = 1 / ngnRate;
-      }
-
-      return total + amount * rate;
+    return defaultAssetsData.reduce((total, asset) => {
+      const currencyBal = getCurrencyBalance({
+        item: asset,
+        isXNGN: asset.name === "xNGN",
+        defaultCurrency: currency,
+      });
+      return currencyBal + total;
     }, 0);
-  }, [walletData, currencyRate, currency]);
+  }, [currencyRate, wallet, currency]);
 
   return (
     <div className="border  flex flex-col gap-2 p-6 rounded-2xl">
