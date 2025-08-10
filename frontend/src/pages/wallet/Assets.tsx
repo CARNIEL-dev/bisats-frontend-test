@@ -1,4 +1,4 @@
-import { BTC, ETH, NGN, SOL, USDT } from "@/assets/tokens";
+import { tokenLogos } from "@/assets/tokens";
 import Empty from "@/components/Empty";
 import ErrorDisplay from "@/components/shared/ErrorDisplay";
 import { Button, buttonVariants } from "@/components/ui/Button";
@@ -7,15 +7,11 @@ import { APP_ROUTES } from "@/constants/app_route";
 import { assets } from "@/data";
 import PreLoader from "@/layouts/PreLoader";
 import {
-  GetLivePrice,
   toggleShowBalance,
   useCryptoRates,
 } from "@/redux/actions/walletActions";
 import { WalletState } from "@/redux/reducers/walletSlice";
-import { TWallet } from "@/types/wallet";
 import { cn, formatter, getCurrencyBalance } from "@/utils";
-import { convertAssetToNaira, convertAssetToUSD } from "@/utils/conversions";
-import { useQuery } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
 import { Eye, EyeClosed } from "lucide-react";
 import React, { useMemo } from "react";
@@ -78,7 +74,7 @@ const Assets: React.FC = () => {
         Balance: wallet?.BTC ?? 0,
         USDRate: currencyRate?.bitcoin?.usd ?? 0,
         NairaRate: currencyRate?.bitcoin?.ngn ?? 0,
-        logo: BTC,
+        logo: tokenLogos.BTC,
       },
       {
         Asset: assets.ETH,
@@ -86,7 +82,7 @@ const Assets: React.FC = () => {
         Balance: wallet?.ETH ?? 0,
         USDRate: currencyRate?.ethereum?.usd ?? 0,
         NairaRate: currencyRate?.ethereum?.ngn ?? 0,
-        logo: ETH,
+        logo: tokenLogos.ETH,
       },
       {
         Asset: assets.SOL,
@@ -94,23 +90,23 @@ const Assets: React.FC = () => {
         Balance: wallet?.SOL ?? 0,
         USDRate: currencyRate?.solana?.usd ?? 0,
         NairaRate: currencyRate?.solana?.ngn ?? 0,
-        logo: SOL,
+        logo: tokenLogos.SOL,
       },
       {
         Asset: assets.USDT,
         name: "Tether USD",
         Balance: wallet?.USDT ?? 0,
-        USDRate: currencyRate?.usd?.usd ?? 0,
-        NairaRate: currencyRate?.usd?.ngn ?? 0,
-        logo: USDT,
+        USDRate: currencyRate?.tether?.usd ?? 0,
+        NairaRate: currencyRate?.tether?.ngn ?? 0,
+        logo: tokenLogos.USDT,
       },
       {
         Asset: assets.xNGN,
         name: "Naira on Bisats",
         Balance: wallet?.xNGN ?? 0,
-        USDRate: currencyRate?.usd?.usd ?? 0,
-        NairaRate: currencyRate?.usd?.ngn ?? 0,
-        logo: NGN,
+        USDRate: currencyRate?.tether?.usd ?? 0,
+        NairaRate: currencyRate?.tether?.ngn ?? 0,
+        logo: tokenLogos.xNGN,
       },
     ],
     [currencyRate, wallet]

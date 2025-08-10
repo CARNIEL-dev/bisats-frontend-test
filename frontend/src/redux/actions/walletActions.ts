@@ -644,11 +644,13 @@ const useFetchUserAds = ({
   });
 };
 
+const COIN_IDS = ["bitcoin", "ethereum", "solana", "tether"].join(",");
+
 const getCryptoRates = async () => {
   const response = await fetch(
     `https://api.coingecko.com/api/v3/simple/price` +
-      `?ids=bitcoin,ethereum,solana,tron,usd` +
-      `&vs_currencies=usd,ngn`
+      `?ids=${COIN_IDS}` +
+      `&vs_currencies=usd,ngn&include_24hr_change=true`
   );
 
   if (!response.ok) throw new Error("Failed to fetch crypto rates");
@@ -656,12 +658,10 @@ const getCryptoRates = async () => {
   return data;
 };
 
-const COIN_IDS = ["bitcoin", "ethereum", "solana", "tether"].join(",");
-
-const getCoinRates = async ({ isMarket = false }: { isMarket?: boolean }) => {
+const getCoinRates = async ({ isNgnRate = false }: { isNgnRate?: boolean }) => {
   const response = await fetch(
     ` https://api.coingecko.com/api/v3/coins/markets` +
-      `?${isMarket ? "vs_currency=ngn" : "vs_currency=usd"}` +
+      `?${isNgnRate ? "vs_currency=ngn" : "vs_currency=usd"}` +
       `&ids=${COIN_IDS}` +
       `&order=market_cap_desc` +
       `&per_page=4&page=1` +
@@ -697,6 +697,22 @@ const useCryptoRates = ({ isEnabled }: { isEnabled: boolean }) => {
   });
 };
 
+const useAssetRate = ({
+  isNgnRate,
+  isEnabled,
+}: {
+  isNgnRate?: boolean;
+  isEnabled?: boolean;
+}) => {
+  return useQuery<Coin[], Error>({
+    queryKey: ["assetRates", isNgnRate],
+    queryFn: () => getCoinRates({ isNgnRate }),
+    refetchOnMount: false,
+    staleTime: 2 * 60 * 1000, // 2 minutes
+    enabled: isEnabled,
+  });
+};
+
 export {
   getUserAds,
   updateAdStatus,
@@ -708,4 +724,5 @@ export {
   toggleShowBalance,
   setWalletCurrency,
   useCryptoRates,
+  useAssetRate,
 };

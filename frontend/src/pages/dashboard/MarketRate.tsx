@@ -1,10 +1,10 @@
+import { tokenLogos } from "@/assets/tokens";
 import RefreshButton from "@/components/RefreshButton";
 import ErrorDisplay from "@/components/shared/ErrorDisplay";
 import Switch from "@/components/Switch";
-import { getCoinRates } from "@/redux/actions/walletActions";
+import { useCryptoRates } from "@/redux/actions/walletActions";
 import { cn, formatter } from "@/utils";
-import { useQuery } from "@tanstack/react-query";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { BeatLoader, PuffLoader } from "react-spinners";
 
 const MarketRate: React.FC = () => {
@@ -12,21 +12,64 @@ const MarketRate: React.FC = () => {
 
   //SUB: Query function
   const {
-    data: currencyRate,
+    data: currencyRates,
     isFetching,
-    isLoading,
     isError,
+    isLoading,
     refetch,
-  } = useQuery<Coin[], Error, Coin[], [string, "NGN" | "USD"]>({
-    queryKey: ["market_rate", currency],
-    queryFn: () =>
-      getCoinRates({ isMarket: currency === "NGN" ? true : undefined }),
-    refetchOnMount: false,
-    retry: true,
-    refetchInterval: 2 * 60 * 1000, // 2 minutes
-  });
+  } = useCryptoRates({ isEnabled: true });
 
-  console.log("Market rate", currencyRate);
+  const defaultAssetsData = useMemo(
+    () => [
+      {
+        name: "Naira on Bisats",
+        logo: tokenLogos.xNGN,
+        symbol: "xNGN",
+        USDRate:
+          (currencyRates?.tether?.usd || 0) / (currencyRates?.tether?.ngn || 0),
+        NairaRate: currencyRates?.tether?.usd ?? 0,
+        ngnTrend: currencyRates?.tether?.usd_24h_change ?? 0,
+        usdTrend: currencyRates?.tether?.usd_24h_change ?? 0,
+      },
+      {
+        name: "Bitcoin",
+        logo: tokenLogos.BTC,
+        symbol: "BTC",
+        USDRate: currencyRates?.bitcoin?.usd ?? 0,
+        NairaRate: currencyRates?.bitcoin?.ngn ?? 0,
+        ngnTrend: currencyRates?.bitcoin?.ngn_24h_change ?? 0,
+        usdTrend: currencyRates?.bitcoin?.usd_24h_change ?? 0,
+      },
+      {
+        name: "Ethereum",
+        logo: tokenLogos.ETH,
+        symbol: "ETH",
+        USDRate: currencyRates?.ethereum?.usd ?? 0,
+        NairaRate: currencyRates?.ethereum?.ngn ?? 0,
+        ngnTrend: currencyRates?.ethereum?.ngn_24h_change ?? 0,
+        usdTrend: currencyRates?.ethereum?.usd_24h_change ?? 0,
+      },
+      {
+        name: "Tether USD",
+        logo: tokenLogos.USDT,
+        symbol: "USDT",
+        USDRate: currencyRates?.tether?.usd ?? 0,
+        NairaRate: currencyRates?.tether?.ngn ?? 0,
+        ngnTrend: currencyRates?.tether?.ngn_24h_change ?? 0,
+        usdTrend: currencyRates?.tether?.usd_24h_change ?? 0,
+      },
+      {
+        name: "Solana",
+        logo: tokenLogos.SOL,
+        symbol: "SOL",
+        USDRate: currencyRates?.solana?.usd ?? 0,
+        NairaRate: currencyRates?.solana?.ngn ?? 0,
+        ngnTrend: currencyRates?.solana?.ngn_24h_change ?? 0,
+        usdTrend: currencyRates?.solana?.usd_24h_change ?? 0,
+      },
+    ],
+    [currencyRates]
+  );
 
   return (
     <div className="border space-y-4 h-full w-full p-6 rounded-2xl">
@@ -67,30 +110,23 @@ const MarketRate: React.FC = () => {
           </div>
         ) : (
           <div className="flex flex-col gap-1.5">
-            <CoinListItem
-              logo={"/Icon/NGN.png"}
-              symbol="xNGN"
-              tokenName="Naira on Bisats"
-              currency="NGN"
-              rate={1}
-              upTrend={true}
-              percent={"0.00"}
-              isLoading={false}
-              isXNGN
-            />
-            {currencyRate?.map((coin, idx) => {
-              const upTrend = coin.price_change_percentage_24h > 0;
+            {defaultAssetsData?.map((coin, idx) => {
+              const upTrend =
+                (currency === "NGN" ? coin.ngnTrend : coin.usdTrend) > 0;
+
               const percent = Math.abs(
-                coin.price_change_percentage_24h
+                currency === "NGN" ? coin.ngnTrend : coin.usdTrend
               ).toFixed(2);
+              const rate = currency === "NGN" ? coin.NairaRate : coin.USDRate;
+
               return (
                 <CoinListItem
                   key={idx}
-                  logo={coin.image}
+                  logo={coin.logo}
                   symbol={coin.symbol}
                   tokenName={coin.name}
                   currency={currency}
-                  rate={coin.current_price}
+                  rate={rate}
                   upTrend={upTrend}
                   percent={percent}
                   isLoading={isFetching}
@@ -163,7 +199,9 @@ const CoinListItem = ({
         <div className="flex items-center text-sm gap-2">
           <p className="font-semibold  text-gray-800 space-x-1">
             <span className="md:text-base text-sm">
-              {formatter({}).format(rate)}
+              {formatter({
+                decimal: currency === "USD" && symbol === "xNGN" ? 6 : 2,
+              }).format(rate)}
             </span>
             <span className="text-xs font-normal text-gray-600">
               {currency}

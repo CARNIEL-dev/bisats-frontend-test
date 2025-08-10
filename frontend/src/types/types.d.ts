@@ -11,12 +11,20 @@ interface WalletData {
   TRX: number;
 }
 
+type PriceChange = {
+  ngn: number;
+  usd: number;
+  ngn_24h_change: number;
+  usd_24h_change: number;
+};
+
 interface CryptoRates {
-  bitcoin?: { usd: number; ngn: number };
-  ethereum?: { usd: number; ngn: number };
-  solana?: { usd: number; ngn: number };
-  tron?: { usd: number; ngn: number };
-  usd?: { usd: number; ngn: number };
+  bitcoin?: PriceChange;
+  ethereum?: PriceChange;
+  solana?: PriceChange;
+  tron?: PriceChange;
+  usd?: PriceChange;
+  tether?: PriceChange;
 }
 
 interface RootState {

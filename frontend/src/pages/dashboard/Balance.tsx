@@ -62,14 +62,14 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
       {
         name: "Tether USD",
         Balance: wallet?.USDT ?? 0,
-        USDRate: currencyRate?.usd?.usd ?? 0,
-        NairaRate: currencyRate?.usd?.ngn ?? 0,
+        USDRate: currencyRate?.tether?.usd ?? 0,
+        NairaRate: currencyRate?.tether?.ngn ?? 0,
       },
       {
         name: "xNGN",
         Balance: wallet?.xNGN ?? 0,
-        USDRate: currencyRate?.usd?.usd ?? 0,
-        NairaRate: currencyRate?.usd?.ngn ?? 0,
+        USDRate: currencyRate?.tether?.usd ?? 0,
+        NairaRate: currencyRate?.tether?.ngn ?? 0,
       },
     ],
     [currencyRate, wallet]
