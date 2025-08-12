@@ -15,7 +15,6 @@ import {
 import { AdsProps } from "@/pages/p2p/ads/CreateAds";
 import { UserState } from "@/redux/reducers/userSlice";
 import { cn } from "@/utils";
-import { convertAssetToNaira } from "@/utils/conversions";
 import { formatNumber } from "@/utils/numberFormat";
 import { AccountLevel, bisats_limit } from "@/utils/transaction_limits";
 import { Check, Info, TriangleAlert } from "lucide-react";
@@ -66,72 +65,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
   const account_level = user?.accountLevel as AccountLevel;
   const userTransactionLimits = bisats_limit[account_level];
 
-  // useEffect(() => {
-  //   if (!isPending)
-  //     return () => {
-  //       console.log("Should clear", isPending);
-  //       if (!isPending) {
-  //         console.log("I cleared");
-  //         if (formik.values.type === "Buy") {
-  //           formik.setFieldValue("amount", undefined);
-  //           console.log("I cleared amount");
-  //         } else if (formik.values.type === "Sell") {
-  //           formik.setFieldValue("amountToken", undefined);
-  //           console.log("I cleared amountToken");
-  //         }
-  //       }
-  //     };
-  // }, [adType, isPending]);
-
-  // useEffect(() => {
-  //   if (shouldClear) {
-  //     if (shouldClear) {
-  //       console.log("I cleared");
-  //       if (formik.values.type === "Buy") {
-  //         formik.setFieldValue("amountToken", undefined);
-  //         console.log("I cleared amountToken");
-  //       } else if (formik.values.type === "Sell") {
-  //         formik.setFieldValue("amount", undefined);
-  //         console.log("I cleared amount");
-  //       }
-  //     }
-  //   }
-  // }, [adType, shouldClear]);
-
   //SUB: Handle Next Stage
-  const handleNextStage = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    try {
-      let errors = await formik.validateForm();
-
-      let updatedErrors = Object.keys(errors).filter((field) => {
-        return formik.values.type.toLowerCase() === "buy"
-          ? requiredFields.includes(field)
-          : requiredFieldsForToken.includes(field);
-      });
-      if (updatedErrors.length === 0) {
-        setStage("review");
-      } else {
-        Toast.error(`Please fill all required fields`, "ERROR");
-        formik.values.type.toLowerCase() === "buy"
-          ? formik.setTouched(
-              requiredFields.reduce(
-                (acc, field) => ({ ...acc, [field]: true }),
-                {}
-              )
-            )
-          : formik.setTouched(
-              requiredFieldsForToken.reduce(
-                (acc, field) => ({ ...acc, [field]: true }),
-                {}
-              )
-            );
-      }
-    } catch (err) {
-      console.error("Validation failed", err);
-    }
-  };
-
   const handleValidation = async () => {
     try {
       const errors = await formik.validateForm();
@@ -201,12 +135,10 @@ const CreateAdDetails: React.FC<AdsProps> = ({
   );
 
   // SUB: Rate
-  const rate = convertAssetToNaira(
-    formik.values.asset as keyof typeof liveRate,
-    1,
-    0,
-    liveRate
-  );
+
+  const rate = useMemo(() => {
+    return liveRate![formik.values.asset as keyof typeof liveRate];
+  }, [formik.values.asset, liveRate]);
 
   return (
     <section className="flex flex-col gap-5">
@@ -321,16 +253,16 @@ const CreateAdDetails: React.FC<AdsProps> = ({
                   ? "amount"
                   : "amountToken";
 
-              if (Number(value) >= walletBalance) {
-                formik.setFieldError(fieldName, "Insufficient wallet balance");
-              } else {
-                formik.setFieldValue(fieldName, value);
-                formik.validateField(fieldName);
-              }
+              // if (Number(value) >= walletBalance) {
+              //   formik.setFieldError(fieldName, "Insufficient wallet balance");
+              // } else {
+              formik.setFieldValue(fieldName, value);
+              formik.validateField(fieldName);
             }
           }}
         />
 
+        {/* SUB: Wallet Balance */}
         <Badge variant={"success"}>
           Wallet Balance: {calculateDisplayWalletBallance}
         </Badge>
@@ -402,6 +334,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
               return;
             }
             formik.setFieldValue("price", Number(rate));
+            formik.validateField("price");
           }}
           variant={"success"}
           tabIndex={0}

@@ -1,69 +1,80 @@
 import { ReactNode } from "react";
 
+import { cn } from "@/utils";
 import {
   Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { cn } from "@/utils";
+  DialogPanel,
+  Transition,
+  TransitionChild,
+} from "@headlessui/react";
+import { Fragment } from "react";
+import { X } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 
 interface ModalProps {
   children: ReactNode;
   onClose: () => void;
   className?: string;
+  isOpen?: boolean;
 }
 const ModalTemplate: React.FC<ModalProps> = ({
   children,
   onClose,
   className,
+  isOpen = true,
 }) => {
   return (
-    <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent className={cn(className)}>
-        <DialogHeader className="hidden">
-          <DialogTitle>Bisat modal</DialogTitle>
-          <DialogDescription>
-            This is a template for modals in Bisat.
-          </DialogDescription>
-        </DialogHeader>
-        {children}
-      </DialogContent>
-    </Dialog>
+    <>
+      <Transition show={isOpen} as={Fragment}>
+        <Dialog onClose={onClose} className="relative z-50">
+          {/* Overlay fade */}
+          <TransitionChild
+            as={Fragment}
+            enter="ease-out duration-200 animate-in fade-in-0"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-150"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className={cn("fixed inset-0 bg-black/85 backdrop-blur-sm")} />
+          </TransitionChild>
+
+          {/* Panel scale + fade */}
+          <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
+            <TransitionChild
+              as={Fragment}
+              enter="ease-out duration-200 zoom-in-95 fade-in-0"
+              enterFrom="opacity-0 scale-95"
+              enterTo="opacity-100 scale-100"
+              leave="ease-in duration-150 "
+              leaveFrom="opacity-100 scale-100"
+              leaveTo="opacity-0 scale-95"
+            >
+              <DialogPanel
+                className={cn(
+                  "bg-background fixed top-[50%] left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 rounded-lg border p-6 shadow-lg duration-200 sm:max-w-lg",
+
+                  className
+                )}
+              >
+                <Button
+                  type="button"
+                  onClick={onClose}
+                  variant={"outline"}
+                  className="absolute top-4 right-4 rounded-full size-10"
+                >
+                  <X className="!size-5" />
+                  <span className="sr-only">Close</span>
+                </Button>
+                <div>{children}</div>
+              </DialogPanel>
+            </TransitionChild>
+          </div>
+        </Dialog>
+      </Transition>
+    </>
   );
 };
 
 export default ModalTemplate;
-
-/* 
-
-  <div
-      className="bg-[#0101019a] backdrop-blur-[2px] fixed top-0 bottom-0 left-0 h-dvh w-full flex justify-center items-center z-60"
-      // onClick={onClose}
-    >
-      <div className="w-[85%] lg:w-[37%] rounded-[12px]  bg-white relative p-5">
-        <div
-          className="absolute top-5 right-7 cursor-pointer"
-          onClick={onClose}
-        >
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 20 20"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <rect width="20" height="20" rx="10" fill="#F3F4F6" />
-            <path
-              d="M10.0025 8.82208L13.538 5.28653C13.8635 4.96109 14.3911 4.96109 14.7165 5.28653C15.042 5.61196 15.042 6.13959 14.7165 6.46502L11.181 10.0006L14.7165 13.5361C15.042 13.8615 15.042 14.3891 14.7165 14.7146C14.3911 15.04 13.8635 15.04 13.538 14.7146L10.0025 11.1791L6.46698 14.7146C6.14154 15.04 5.61391 15.04 5.28848 14.7146C4.96304 14.3892 4.96304 13.8615 5.28848 13.5361L8.82404 10.0006L5.28847 6.46503C4.96304 6.13959 4.96304 5.61196 5.28847 5.28652C5.61391 4.96108 6.14154 4.96108 6.46698 5.28652L10.0025 8.82208Z"
-              fill="#707D96"
-            />
-          </svg>
-        </div>
-        <div className="">{children}</div>
-      </div>
-    </div>
-
-*/

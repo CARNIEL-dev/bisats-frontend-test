@@ -1,50 +1,24 @@
-import { useState } from "react";
 import { WhiteTransparentButton } from "@/components/buttons/Buttons";
+import TwoFactorAuthModal from "@/components/Modals/2FAModal";
 import ResetPasswordModal from "@/components/Modals/ResetPassword";
 import SetPinModal from "@/components/Modals/SetPinModal";
-import { UserState } from "@/redux/reducers/userSlice";
-import { useSelector } from "react-redux";
-import TwoFactorAuthModal from "@/components/Modals/2FAModal";
-import {
-  rehydrateUser,
-  UpdateTwoFactorAuth,
-} from "@/redux/actions/userActions";
 import Toast from "@/components/Toast";
+import { rehydrateUser, ResetTwoFactorAuth } from "@/redux/actions/userActions";
+import { UserState } from "@/redux/reducers/userSlice";
+import { useState } from "react";
+import { useSelector } from "react-redux";
 
 const Security = () => {
   const userState: UserState = useSelector((state: any) => state.user);
   const user = userState.user;
   const [openResetPasswordModal, setOpenResetPasswordModal] = useState(false);
   const [pinModal, setPinModal] = useState(false);
-  const [twoFAModal, setTwoFaModal] = useState(false);
+  const [resetLoading, setResetLoading] = useState(false);
+
   const [show2FAModal, setShow2FAModal] = useState({
     enable: false,
     disable: false,
   });
-
-  const [disableLoading, setDisableLoading] = useState({
-    "2fa": false,
-  });
-
-  const handleDisable2FA = async () => {
-    setDisableLoading({ ...disableLoading, "2fa": true });
-    await UpdateTwoFactorAuth({
-      userId: user?.userId,
-      code: "",
-      enable: false,
-    })
-      .then((res) => {
-        if (!res?.status) {
-          Toast.error(res.message, "2FA Verification failed");
-        } else {
-          Toast.success(res.message, "2FA Disabled");
-        }
-      })
-      .finally(() => {
-        setDisableLoading({ ...disableLoading, "2fa": false });
-        rehydrateUser();
-      });
-  };
 
   return (
     <div>
@@ -98,13 +72,38 @@ const Security = () => {
               onClick={() => setShow2FAModal({ disable: false, enable: true })}
             />
           ) : (
-            <WhiteTransparentButton
-              text={"Disable"}
-              loading={false}
-              size="sm"
-              className="w-[137px] hidden"
-              onClick={() => setShow2FAModal({ disable: true, enable: false })}
-            />
+            <div className="hidden">
+              <WhiteTransparentButton
+                text={"Disable"}
+                loading={false}
+                size="sm"
+                className="w-[137px]"
+                onClick={() =>
+                  setShow2FAModal({ disable: true, enable: false })
+                }
+              />
+              <WhiteTransparentButton
+                text={"Reset"}
+                loading={resetLoading}
+                size="sm"
+                className="w-[137px]"
+                onClick={async () => {
+                  setResetLoading(true);
+                  await ResetTwoFactorAuth(user?.userId)
+                    .then(() => {
+                      rehydrateUser();
+                      Toast.success("2FA Reset Successfully", "2FA Reset");
+                    })
+                    .catch((error) => {
+                      console.error("Error during 2FA reset:", error);
+                      Toast.error("An unexpected error occurred", "2FA Reset");
+                    })
+                    .finally(() => {
+                      setResetLoading(false);
+                    });
+                }}
+              />
+            </div>
           )}
         </div>
         <div className="flex justify-between md:flex-row flex-col  md:items-center gap-4">

@@ -1,4 +1,5 @@
 import { cn } from "@/utils";
+import { Loader } from "lucide-react";
 import { InputHTMLAttributes } from "react";
 
 interface TInput extends InputHTMLAttributes<HTMLInputElement> {
@@ -8,6 +9,7 @@ interface TInput extends InputHTMLAttributes<HTMLInputElement> {
   info?: string;
   format?: boolean;
   maxFnc?: () => void;
+  loading?: boolean;
 }
 const PrimaryInput: React.FC<TInput> = ({
   className,
@@ -15,6 +17,7 @@ const PrimaryInput: React.FC<TInput> = ({
   error,
   touched,
   info,
+  loading,
   maxFnc,
   onBlur,
   onFocus,
@@ -39,18 +42,25 @@ const PrimaryInput: React.FC<TInput> = ({
           </label>
         )}
       </div>
-      <input
-        type={props.type ?? "text"}
-        style={{ outline: "none" }}
-        className={cn(
-          `rounded-sm placeholder:text-sm text-base font-normal border border-[#D6DAE1] outline-[none] focus:border-[#C49600] focus:shadow-[0_0_10px_#FEF8E5] text-[#606C82]  p-2.5 no-spinner  px-3 `,
-          error && "border-[#EF4444] outline-0 focus:border-[#EF4444] ",
-          className
+      <div className="relative w-full">
+        <input
+          type={props.type ?? "text"}
+          style={{ outline: "none" }}
+          className={cn(
+            `rounded-sm placeholder:text-sm text-base font-normal border border-[#D6DAE1] outline-[none] focus:border-[#C49600] focus:shadow-[0_0_10px_#FEF8E5] w-full text-[#606C82]  p-2.5 no-spinner  px-3 `,
+            error && "border-[#EF4444] outline-0 focus:border-[#EF4444] ",
+            className
+          )}
+          onFocus={onFocus}
+          onBlur={onBlur}
+          {...props}
+        />
+        {loading && (
+          <p className="text-sm  absolute right-5 top-1/2 -translate-y-1/2">
+            <Loader className="animate-spin text-gray-400" />
+          </p>
         )}
-        onFocus={onFocus}
-        onBlur={onBlur}
-        {...props}
-      />
+      </div>
 
       <div className="flex items-center justify-between gap-1">
         <span className="text-red-500 text-xs">{error}</span>

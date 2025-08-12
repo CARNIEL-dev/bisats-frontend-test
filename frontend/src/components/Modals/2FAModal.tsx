@@ -55,7 +55,7 @@ const TwoFactorAuthModal: React.FC<Props> = ({ close, enable = true }) => {
       const verificationResponse = await UpdateTwoFactorAuth({
         userId: user?.userId,
         code,
-        enable: enable || false,
+        enable: enable,
       });
       if (!verificationResponse?.status) {
         Toast.error(verificationResponse.message, "2FA Verification failed");
@@ -189,7 +189,7 @@ const TwoFactorAuthModal: React.FC<Props> = ({ close, enable = true }) => {
   };
 
   return (
-    <ModalTemplate onClose={() => close()}>
+    <ModalTemplate onClose={() => close()} isOpen>
       {currentDisplay === "QRCode" && QRCodeScan()}
       {currentDisplay === "Manual" && ManualSetup()}
       {currentDisplay === "Code" && (

@@ -1,32 +1,31 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { WhiteTransparentButton } from "@/components/buttons/Buttons";
-import AddWithdrawalBankAccount from "@/components/Modals/AddWithdrawalBankAccount";
+import AddWithdrawalBankAccount from "@/components/Modals/WithdrawalBankAccount";
 import DeleteWithdrawalAccount from "@/components/Modals/DeleteWithdrawalAccount";
 import EditWithdrawalBankAccount from "@/components/Modals/EditWithDrawalBank";
 import { GetWallet } from "@/redux/actions/walletActions";
 import { WalletState } from "@/redux/reducers/walletSlice";
 import { Plus } from "lucide-react";
+import WithdrawalBankAccount from "@/components/Modals/WithdrawalBankAccount";
 
-type TBank = {
-  id: string;
-  accountNumber: string;
-  accountName: string;
-  bankName: string;
-  bankCode: string;
-};
 const Payment = () => {
   const walletState: WalletState = useSelector((state: any) => state.wallet);
 
   const wallet = walletState?.wallet;
-  const [openDeleteBankAccount, setOpenDeleteBankAccount] = useState(false);
-  const [openAddBankAccount, setOpenAddBankAccount] = useState(false);
-  const [openEditBankAccount, setOpenEditBankAccount] = useState(false);
+  // const [openDeleteBankAccount, setOpenDeleteBankAccount] = useState(false);
+  // const [openAddBankAccount, setOpenAddBankAccount] = useState(false);
+  // const [openEditBankAccount, setOpenEditBankAccount] = useState(false);
   const [selectedBank, setSelectedBank] = useState<TBank>();
+  const [openModal, setOpenModal] = useState({
+    add: false,
+    edit: false,
+    delete: false,
+  });
 
   useEffect(() => {
     GetWallet();
-  }, [openAddBankAccount, openDeleteBankAccount, openEditBankAccount]);
+  }, [openModal.add, openModal.edit, openModal.delete]);
 
   const BankDetails = wallet?.bankAccount.map(
     (bank: {
@@ -58,7 +57,7 @@ const Payment = () => {
           size="sm"
           className="w-[6rem]"
           loading={false}
-          onClick={() => setOpenAddBankAccount(true)}
+          onClick={() => setOpenModal((prev) => ({ ...prev, add: true }))}
         />
       </div>
 
@@ -74,7 +73,7 @@ const Payment = () => {
                 className="text-[#515B6E]"
                 onClick={() => {
                   setSelectedBank(details);
-                  setOpenEditBankAccount(true);
+                  setOpenModal((prev) => ({ ...prev, edit: true }));
                 }}
               >
                 Edit
@@ -84,7 +83,7 @@ const Payment = () => {
                 className="text-[#B91C1B] "
                 onClick={() => {
                   setSelectedBank(details);
-                  setOpenDeleteBankAccount(true);
+                  setOpenModal((prev) => ({ ...prev, delete: true }));
                 }}
               >
                 Delete
@@ -114,21 +113,27 @@ const Payment = () => {
         </div>
       ))}
 
-      {openDeleteBankAccount && (
+      {openModal.delete && (
         <DeleteWithdrawalAccount
-          close={() => setOpenDeleteBankAccount(false)}
+          close={() => setOpenModal((prev) => ({ ...prev, delete: false }))}
           bank={selectedBank}
         />
       )}
-      {openAddBankAccount && (
-        <AddWithdrawalBankAccount close={() => setOpenAddBankAccount(false)} />
-      )}
-      {openEditBankAccount && (
+
+      <WithdrawalBankAccount
+        close={() => {
+          setOpenModal((prev) => ({ ...prev, edit: false, add: false }));
+        }}
+        open={openModal.add || openModal.edit}
+        mode={openModal.add ? "add" : "edit"}
+        defaultBank={selectedBank}
+      />
+      {/* {openEditBankAccount && (
         <EditWithdrawalBankAccount
           close={() => setOpenEditBankAccount(false)}
           bank={selectedBank}
         />
-      )}
+      )} */}
     </div>
   );
 };

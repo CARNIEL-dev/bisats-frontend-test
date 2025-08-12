@@ -10,8 +10,9 @@ import { useSelector } from "react-redux";
 interface Props {
   close: () => void;
   func: () => void;
+  open?: boolean;
 }
-const SecurityVerification: React.FC<Props> = ({ close, func }) => {
+const SecurityVerification: React.FC<Props> = ({ close, func, open }) => {
   const userState: UserState = useSelector((state: any) => state.user);
   const user = userState.user;
   const [code, setCode] = useState("");
@@ -49,7 +50,7 @@ const SecurityVerification: React.FC<Props> = ({ close, func }) => {
   };
 
   return (
-    <ModalTemplate onClose={close}>
+    <ModalTemplate onClose={close} isOpen={open}>
       <div className="flex flex-col justify-center w-full  mx-auto">
         <p className="text-[#0A0E12] text-[22px] leading-[32px] font-semibold text-left mt-5">
           Security Verification

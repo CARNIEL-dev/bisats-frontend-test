@@ -4,7 +4,10 @@ import AuthPasswordInput from "@/components/Inputs/AuthPasswordInput";
 import { PrimaryButton } from "@/components/buttons/Buttons";
 import { InputCheck } from "@/components/Inputs/CheckBox";
 import OtherSide from "@/layouts/auth/OtherSide";
-import { SignUp as Signup } from "@/redux/actions/userActions";
+import {
+  ReSendverificationCode,
+  SignUp as Signup,
+} from "@/redux/actions/userActions";
 import GoogleButton from "@/components/buttons/GoogleButton";
 import { SignupSchema } from "@/formSchemas";
 import { useFormik } from "formik";
@@ -28,7 +31,8 @@ const SignUp = () => {
       const response = await Signup(payload);
 
       if (response?.statusCode === 200) {
-        navigate(APP_ROUTES.AUTH.VERIFY);
+        ReSendverificationCode({ userId: response.data.userId });
+        return navigate(APP_ROUTES.AUTH.VERIFY);
       } else {
         Toast.error(response.message, "Sign Up Failed");
       }

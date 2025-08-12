@@ -1,8 +1,10 @@
 /** @format */
 
 import {
+  getRefreshToken,
   getToken,
   getUser,
+  getUserId,
   setRefreshToken,
   setToken,
   setUser,
@@ -25,6 +27,7 @@ import { BACKEND_URLS } from "@/utils/backendUrls";
 import dispatchWrapper from "@/utils/dispatchWrapper";
 import Bisatsfetch from "@/redux/fetchWrapper";
 import { GeneralTypes, UserActionTypes } from "@/redux/types";
+import { th } from "date-fns/locale";
 
 export const Login = async (payload: TLogin) => {
   try {
@@ -33,6 +36,10 @@ export const Login = async (payload: TLogin) => {
       body: JSON.stringify(payload),
     });
 
+    const data = response.data;
+    setUserId(data?.userId);
+    setToken(data.token);
+    setRefreshToken(data.refreshToken);
     return response;
   } catch (error) {
     // throw handleApiError(error);
@@ -47,8 +54,7 @@ export const SignUp = async (payload: TSignUp) => {
       body: JSON.stringify(payload),
     });
     const data = response.data;
-    dispatchWrapper({ type: UserActionTypes.SIGN_UP, payload: data });
-    setUser(data);
+    dispatchWrapper({ type: UserActionTypes.LOG_IN_PENDING, payload: data });
     setToken(data.token);
     setRefreshToken(data.refreshToken);
     return response;
@@ -172,7 +178,7 @@ export const refreshAccessToken = async (payload: { refreshToken: string }) => {
       body: JSON.stringify(payload),
     });
     const data = response.data;
-    setUser(data);
+    setUserId(data?.userId);
     setToken(data.token);
     setRefreshToken(data.refreshToken);
     return data as TUser;
@@ -182,7 +188,7 @@ export const refreshAccessToken = async (payload: { refreshToken: string }) => {
   }
 };
 export const rehydrateUser = () => {
-  const user = getUser();
+  const user = getUserId();
   const token = getToken();
   if (!user || !token) {
     logoutUser();
@@ -193,9 +199,9 @@ export const rehydrateUser = () => {
 };
 
 export const logoutUser = () => {
-  localStorage.removeItem("_user");
+  localStorage.removeItem("_uid");
   localStorage.removeItem("token");
-
+  localStorage.removeItem("refreshToken");
   dispatchWrapper({ type: UserActionTypes?.LOG_OUT, payload: null });
 };
 
@@ -207,7 +213,7 @@ export const GoogleAuth = async (payload: { email: string; id: string }) => {
     });
     const data = response.data;
     dispatchWrapper({ type: UserActionTypes.LOG_IN_SUCCESS, payload: data });
-    setUser(data);
+    setUserId(data.userId);
     setToken(data.token);
     setRefreshToken(data.refreshToken);
     return response;
@@ -316,10 +322,11 @@ export const GetKYCStatus = async (payload: { userId: string }) => {
 };
 
 export const GetUserDetails = async () => {
-  const user = getUser();
+  const user = getUserId();
   const token = getToken();
+  const refreshToken = getRefreshToken();
   try {
-    const response = await Bisatsfetch(`/api/v1/user/${user.userId}/profile`, {
+    const response = await Bisatsfetch(`/api/v1/user/${user}/profile`, {
       method: "GET",
     });
     const data = response.data;
@@ -331,13 +338,13 @@ export const GetUserDetails = async () => {
         type: UserActionTypes.UPDATE_USER,
         payload: {
           ...data,
-          token: token,
-          refreshToken: user?.refreshToken,
-          userId: user?.userId,
+          token,
+          refreshToken,
+          userId: user,
         },
       });
 
-      setUserId(user?.userId);
+      setUserId(user!);
 
       return data;
     } else {
@@ -603,6 +610,7 @@ export const VerifyTwoFactorAuth = async (payload: TVerify2FARequest) => {
 
 export const UpdateTwoFactorAuth = async (payload: TUpdate2FAStatus) => {
   try {
+    console.log("UpdateTwoFactorAuth", payload);
     const response = await Bisatsfetch(
       `/api/v1/user/${payload.userId}${
         payload.enable
@@ -612,6 +620,24 @@ export const UpdateTwoFactorAuth = async (payload: TUpdate2FAStatus) => {
       {
         method: "PUT",
         body: JSON.stringify({ code: payload.code }),
+      }
+    );
+    const data = response;
+    console.log("Data returned", data);
+    return data;
+  } catch (error) {
+    // throw handleApiError(error);
+    return error;
+  }
+};
+export const ResetTwoFactorAuth = async (
+  userId: TUpdate2FAStatus["userId"]
+) => {
+  try {
+    const response = await Bisatsfetch(
+      `/api/v1/user/${userId}${BACKEND_URLS.AUTH.RESET_2FA}`,
+      {
+        method: "PUT",
       }
     );
     const data = response;
@@ -661,19 +687,19 @@ export const GET_ACTIVITY_SUMMARY = async (payload: string) => {
   }
 };
 
-export const GET_WITHDRAWAL_LIMIT = async (payload: string) => {
+export const GET_WITHDRAWAL_LIMIT = async (userID: string) => {
   try {
     const response = await Bisatsfetch(
-      `/api/v1/user/${payload}${BACKEND_URLS.AUTH.GET_WITHDRAWAL_LIMIT}`,
+      `/api/v1/user/${userID}${BACKEND_URLS.AUTH.GET_WITHDRAWAL_LIMIT}`,
       {
         method: "GET",
       }
     );
-    const data = response;
-    if (response.status) {
-      return data;
+    if (response.statusCode !== 200) {
+      throw new Error(response.message);
     }
+    return response.data;
   } catch (error) {
-    return error;
+    throw error;
   }
 };

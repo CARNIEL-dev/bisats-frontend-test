@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/popover";
 import usePreventScroll from "@/hooks/use-preventScroll";
 import { cn } from "@/utils";
+import Label from "../Inputs/Label";
 
 export interface SearchableDropdownItem {
   value: string;
@@ -30,7 +31,7 @@ export interface SearchableDropdownProps {
   placeholder?: string;
   label?: string;
   widthClass?: string; // e.g. "w-[200px]" or "w-full"
-  error?: boolean;
+  error?: boolean | string;
   align?: "center" | "end" | "start";
   inputPlaceholder?: string;
   disabled?: boolean;
@@ -54,7 +55,7 @@ const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
 
   return (
     <div className="flex flex-col gap-1 w-full">
-      {label && <span className="text-sm font-medium">{label}</span>}
+      {label && <Label className="text-sm font-medium" text={label} />}
 
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger
@@ -77,8 +78,9 @@ const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
             <CommandInput
               placeholder={`${inputPlaceholder}`}
               className="h-9 outline-0"
+              style={{ outline: "none" }}
             />
-            <CommandList>
+            <CommandList className="">
               <CommandEmpty>No results found.</CommandEmpty>
               <CommandGroup>
                 {items.map((item) => (
@@ -89,6 +91,7 @@ const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
                       onChange(currentValue === value ? "" : currentValue);
                       setOpen(false);
                     }}
+                    className="text-sm"
                   >
                     {item.label}
                     <Check
@@ -104,6 +107,7 @@ const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
           </Command>
         </PopoverContent>
       </Popover>
+      {error && <p className="text-xs text-red-500">{error}</p>}
     </div>
   );
 };

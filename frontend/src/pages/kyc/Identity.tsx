@@ -31,7 +31,6 @@ const DocTypes = [
 const Identity = () => {
   const navigate = useNavigate();
   const [file1Name, setFile1Name] = useState("");
-  //   const [error1, setError1] = useState(false);
 
   const user = useSelector((state: { user: UserState }) => state.user);
 

@@ -2,7 +2,7 @@ import Empty from "@/components/Empty";
 import { buttonVariants } from "@/components/ui/Button";
 import { DataTable } from "@/components/ui/data-table";
 import { APP_ROUTES } from "@/constants/app_route";
-import { AdSchema } from "@/pages/p2p/components/ExpressSwap";
+
 import { cn, formatter } from "@/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import React from "react";
@@ -28,14 +28,14 @@ interface PaginationProps {
 interface MarketPlaceContentProps {
   type: string;
   asset: string;
-  ads: AdSchema[];
+  ads: AdsType[];
   pagination: PaginationProps;
   setPagination: React.Dispatch<React.SetStateAction<PaginationProps>>;
 }
 
 const MarketPlaceTable = ({ type, ads, asset }: MarketPlaceContentProps) => {
   //   HDR: Columns
-  const column: ColumnDef<AdSchema>[] = [
+  const column: ColumnDef<AdsType>[] = [
     {
       accessorKey: "user.userName",
       header: () => {
@@ -122,10 +122,9 @@ const MarketPlaceTable = ({ type, ads, asset }: MarketPlaceContentProps) => {
 
         return (
           <Link
-            to={
+            to={`${
               ad?.orderType === "buy" ? APP_ROUTES.P2P.BUY : APP_ROUTES.P2P.SELL
-            }
-            state={{ adDetail: ad }}
+            }?id=${ad?.id}`}
             className={cn(
               buttonVariants(),
               "capitalize text-sm px-6 font-normal"
@@ -146,8 +145,6 @@ const MarketPlaceTable = ({ type, ads, asset }: MarketPlaceContentProps) => {
         </div>
       ) : (
         <div className="w-full">
-          {/* <div className="hidden md:block">
-          </div> */}
           <DataTable
             data={ads}
             columns={column}

@@ -24,7 +24,7 @@ const WithdrawalConfirmationNGN: React.FC<Props> = ({
           Withdrawal Confirmation
         </h1>
 
-        <div className="h-fit rounded border border  border-[#F3F4F6] bg-[#F9F9FB] rounded-[12px] py-3 px-5 my-5 text-[14px] leading-[24px] ">
+        <div className="h-fit border  border-[#F3F4F6] bg-[#F9F9FB] rounded-[12px] py-3 px-5 my-5 text-[14px] leading-[24px] ">
           <div className="flex justify-between items-center mb-2">
             <p className="text-[#424A59] font-normal">Transaction fee:</p>
             <p className="text-[#606C82]  font-semibold">

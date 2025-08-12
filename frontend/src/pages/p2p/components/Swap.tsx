@@ -1,11 +1,13 @@
 import PrimaryInput from "@/components/Inputs/PrimaryInput";
 import SwapConfirmation from "@/components/Modals/SwapConfirmation";
 import { PrimaryButton } from "@/components/buttons/Buttons";
+import AutoRefreshTimer from "@/components/shared/AutoRefresh";
 import { Badge } from "@/components/ui/badge";
 import { TokenData } from "@/data";
 import { swapSchema } from "@/formSchemas";
 import KycManager from "@/pages/kyc/KYCManager";
-import { AdSchema } from "@/pages/p2p/components/ExpressSwap";
+
+import { useCryptoRates } from "@/redux/actions/walletActions";
 import { UserState } from "@/redux/reducers/userSlice";
 import { WalletState } from "@/redux/reducers/walletSlice";
 import { formatter } from "@/utils";
@@ -34,7 +36,7 @@ const Swap = ({
   adDetail,
 }: {
   type: "buy" | "sell";
-  adDetail?: AdSchema | undefined;
+  adDetail?: AdsType | undefined;
 }) => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [focusedField, setFocusedField] = useState<
@@ -49,6 +51,8 @@ const Swap = ({
   useEffect(() => {
     if (!adDetail) navigate(-1);
   }, []);
+
+  //SUB: Query function
 
   // SUB: Formik
   const formik = useFormik({
@@ -129,10 +133,15 @@ const Swap = ({
         {adDetail?.user?.userName}
       </h3>
 
-      <p className="text-[#515B6E] text-[14px] font-normal ">
-        <span>1 {type === "buy" ? "USDT" : adDetail?.asset}</span>  ≈ 
-        <span>{formatNumber(Number(adDetail?.price))} xNGN</span>
-      </p>
+      <div className="text-[#515B6E] text-sm flex items-center gap-1 font-normal ">
+        <p>1 {adDetail?.asset}</p>  ≈ 
+        <div className="flex items-center gap-1">
+          <p>{formatNumber(Number(adDetail?.price))} xNGN</p>
+          <AutoRefreshTimer
+            queryKey={["searchDetails", user.user?.userId, adDetail?.id]}
+          />
+        </div>
+      </div>
       <div className="flex items-center w-2/3 justify-between">
         <div className="text-[12px] text-[#515B6E]">
           <h4 className="font-semibold">
@@ -205,21 +214,6 @@ const Swap = ({
           adsId={adDetail?.id || ""}
           adType={adDetail?.type as string}
         />
-
-        // <SwapConfirmation
-        //   close={() => setShowConfirmation(false)}
-        //   type={
-        //     adDetail?.orderType === "buy" ? typeofSwam.Buy : typeofSwam.Sell
-        //   }
-        //   amount={formik.values.amount}
-        //   receiveAmount={formik.values.otherAmount}
-        //   fee={calculateFee()}
-        //   token={adDetail?.orderType === "buy" ? adDetail?.asset : "xNGN"}
-        //   currency={adDetail?.orderType === "sell" ? adDetail?.asset : "xNGN"}
-        //   userId={user?.user?.userId || ""}
-        //   adsId={adDetail?.id || ""}
-        //   setShowConfirmation={setShowConfirmation}
-        // />
       )}
     </div>
   );
@@ -228,7 +222,7 @@ const Swap = ({
 export default Swap;
 
 type SwapFormType = {
-  adDetail: AdSchema | undefined;
+  adDetail: AdsType | undefined;
   walletState: WalletState;
   formik: FormikProps<{
     amount: string;

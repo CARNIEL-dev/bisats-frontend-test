@@ -10,9 +10,9 @@ const OtherSide = ({ header, subHeader, upperSubHeader }: TOtherSideProp) => {
   return (
     <div className="w-full lg:w-[452px] space-y-2">
       {upperSubHeader}
-      <h1 className="font-semibold lg:text-[42px] lg:leading-[40px]">
+      <h3 className="font-semibold  text-xl lg:text-[42px] lg:leading-[40px]">
         {header}
-      </h1>
+      </h3>
       <p className="text-gray-600 font-normal text-sm">{subHeader}</p>
     </div>
   );

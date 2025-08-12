@@ -5,20 +5,23 @@ const ErrorDisplay = ({
   message,
   showIcon = true,
   isError = true,
+  capitalize = true,
 }: {
   message: string;
   showIcon?: boolean;
   isError?: boolean;
+  capitalize?: boolean;
 }) => {
   return (
     <div
       className={cn(
         "flex items-center justify-center text-gray-600 gap-2",
-        isError && "text-red-500"
+        isError && "text-red-500",
+        capitalize && "capitalize"
       )}
     >
       {showIcon && <AlertCircle />}
-      <p className="capitalize">{message}</p>
+      <p className="text-sm">{message}</p>
     </div>
   );
 };

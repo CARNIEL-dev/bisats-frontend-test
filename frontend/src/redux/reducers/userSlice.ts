@@ -13,7 +13,6 @@ export interface KycStatus {
 
 export interface UserState {
   isAuthenticated: boolean;
-  loading: boolean;
   user:
     | TUser
     | {
@@ -35,7 +34,6 @@ interface UserActionProp {
 
 const initialState: UserState = {
   isAuthenticated: false,
-  loading: false,
   user: null,
   token: null,
   kyc: null,
@@ -83,7 +81,6 @@ const userReducer = (state = initialState, action: UserActionProp) => {
     case UserActionTypes.UPDATE_USER:
       return {
         ...state,
-        isAuthenticated: true,
         user: action?.payload,
         token: action?.payload?.token,
         kyc: action?.payload?.kyc,

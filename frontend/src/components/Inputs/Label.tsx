@@ -3,7 +3,7 @@ const Label = ({
   className,
 }: {
   text: string | React.ReactNode;
-  className: string;
+  className?: string;
 }) => {
   return (
     <label

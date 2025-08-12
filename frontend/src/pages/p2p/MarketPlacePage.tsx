@@ -19,7 +19,7 @@ import { useSearchParams } from "react-router-dom";
 type PaginationState = { page: number; limit: number; skip: number };
 type AdsParams = { asset: string; type: string };
 
-// HDR: Fetch query
+// SUB: Fetch query
 const fetchAds = async ({
   queryKey,
 }: {
@@ -85,7 +85,7 @@ const MarketPlacePage = () => {
   } = useQuery<
     any[],
     Error,
-    any[],
+    AdsType[],
     [string, AdsParams, PaginationState, string]
   >({
     queryKey: ["searchAds", adsParam, pagination, userId],

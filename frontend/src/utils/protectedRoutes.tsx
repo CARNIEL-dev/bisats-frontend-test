@@ -1,8 +1,7 @@
-import { Navigate, Outlet } from "react-router-dom";
 import { UserState } from "@/redux/reducers/userSlice";
 import { useSelector } from "react-redux";
+import { Outlet } from "react-router-dom";
 
-// const userFromLocalStorage = getUser()
 const ProtectedRoute = () => {
   const userState: UserState = useSelector((state: any) => state.user);
 

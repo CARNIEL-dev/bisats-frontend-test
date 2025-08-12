@@ -16,11 +16,13 @@ import {
 
 const VerifyEmail = () => {
   const user = useSelector((state: any) => state.user.user);
+
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
   const codeLink = searchParams.get("code");
   const userId = searchParams.get("email");
+
   const formik = useFormik({
     initialValues: { code: codeLink ? codeLink : "" },
     validationSchema: VerificationSchema,

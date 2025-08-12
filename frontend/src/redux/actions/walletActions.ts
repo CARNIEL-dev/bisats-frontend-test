@@ -1,4 +1,10 @@
-import { getToken, getUser, setLivePrices, setUserTokenData } from "@/helpers";
+import {
+  getToken,
+  getUser,
+  getUserId,
+  setLivePrices,
+  setUserTokenData,
+} from "@/helpers";
 import { formatDate } from "@/layouts/utils/Dates";
 import { ITransaction, RawTx } from "@/pages/wallet/Transaction";
 import Bisatsfetch from "@/redux/fetchWrapper";
@@ -19,10 +25,10 @@ import dispatchWrapper from "@/utils/dispatchWrapper";
 import { useQuery } from "@tanstack/react-query";
 
 export const GetWallet = async () => {
-  const user = getUser();
+  const user = getUserId();
   try {
     const response = await Bisatsfetch(
-      `/api/v1/user/${user.userId}${BACKEND_URLS.WALLET.GET_WALLET}`,
+      `/api/v1/user/${user}${BACKEND_URLS.WALLET.GET_WALLET}`,
       {
         method: "GET",
       }
@@ -188,12 +194,13 @@ export const GetUserBank = async (userId: string) => {
         method: "GET",
       }
     );
-    const data = response.data;
-    return data;
+
+    if (response.statusCode !== 200) {
+      throw new Error(response.message);
+    }
+    return response.data;
   } catch (error) {
-    // logoutUser();
-    // throw handleApiError(error);
-    return error;
+    throw error;
   }
 };
 
@@ -209,15 +216,26 @@ export const GetBankList = async (userId: string) => {
     if (response.status) {
       return data;
     } else {
-      // logoutUser();
+      throw new Error(data.message);
     }
   } catch (error) {
-    // logoutUser();
-    // throw handleApiError(error);
-    return error;
+    throw error;
   }
 };
 
+export const ResolveBankAccoutName = async (payload: {
+  userId: string;
+  accountNumber: string;
+  bankCode: string;
+}) => {
+  return await Bisatsfetch(
+    `/api/v1/user/${payload.userId}${BACKEND_URLS.WALLET.RESOLVE_ACCOUNT_NAME}`,
+    {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }
+  );
+};
 export const AddBankAccountForWithdrawal = async (
   payload: TWithdrawalBankAccount
 ) => {
@@ -388,6 +406,22 @@ export const GetSearchAds = async (
     return response;
   } catch (error) {
     return error;
+  }
+};
+const GetAdDetails = async (payload: { userId: string; adId: string }) => {
+  try {
+    const response = await Bisatsfetch(
+      `/api/v1/user/${payload.userId}/ads/${payload.adId}/get-user-ads-by-id`,
+      {
+        method: "GET",
+      }
+    );
+    if (!response.status) {
+      throw new Error(response.message);
+    }
+    return response.data;
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -694,6 +728,7 @@ const useCryptoRates = ({ isEnabled }: { isEnabled: boolean }) => {
     refetchOnMount: false,
     staleTime: 2 * 60 * 1000, // 2 minutes
     enabled: isEnabled,
+    retry: true,
   });
 };
 
@@ -712,6 +747,64 @@ const useAssetRate = ({
     enabled: isEnabled,
   });
 };
+const useGetAdsDetails = ({
+  userId,
+  adId,
+  enabled,
+}: {
+  userId: string;
+  adId: string;
+  enabled?: boolean;
+}) => {
+  return useQuery<AdsType & { orders: OrderHistory[] }, Error>({
+    queryKey: ["adDetails", userId, adId],
+    queryFn: () => GetAdDetails({ userId, adId }),
+    refetchOnMount: false,
+    staleTime: 2 * 60 * 1000, // 2 minutes
+    enabled,
+  });
+};
+const useGetAdsDetail = ({
+  userId,
+  adId,
+  enabled,
+}: {
+  userId: string;
+  adId: string;
+  enabled?: boolean;
+}) => {
+  return useQuery<AdsType[], Error>({
+    queryKey: ["searchDetails", userId, adId],
+    queryFn: async () => {
+      const response = await Bisatsfetch(
+        `/api/v1/user/${userId}${BACKEND_URLS?.P2P.ADS.SEARCH_ADS}?id=${adId}`,
+        {
+          method: "GET",
+        }
+      );
+      if (!response.status) throw new Error(response.message);
+      return response.data;
+    },
+    refetchOnMount: false,
+    staleTime: 2 * 60 * 1000, // 2 minutes
+    enabled,
+  });
+};
+const useGetBankList = ({
+  userId,
+  enabled,
+}: {
+  userId: string;
+  enabled?: boolean;
+}) => {
+  return useQuery<Banks[], Error>({
+    queryKey: ["BankList", userId],
+    queryFn: () => GetBankList(userId),
+    refetchOnMount: false,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    enabled,
+  });
+};
 
 export {
   getUserAds,
@@ -725,4 +818,7 @@ export {
   setWalletCurrency,
   useCryptoRates,
   useAssetRate,
+  useGetAdsDetails,
+  useGetAdsDetail,
+  useGetBankList,
 };

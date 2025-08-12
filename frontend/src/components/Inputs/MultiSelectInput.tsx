@@ -102,6 +102,7 @@ export const MultiSelectDropDown = ({
               {choices && choices.length > 0 ? (
                 choices.map((data, index) => (
                   <li
+                    role="button"
                     key={data.value || index}
                     className={cn(
                       "flex items-center text-sm px-2 py-2 cursor-pointer text-gray-700  hover:bg-neutral-100 rounded-md transition-colors duration-150 capitalize",

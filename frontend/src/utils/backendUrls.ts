@@ -1,10 +1,5 @@
 /** @format */
 
-import {
-  GET_ACTIVITY_SUMMARY,
-  GET_WITHDRAWAL_LIMIT,
-} from "../redux/actions/userActions";
-
 export const BACKEND_URLS = {
   BASE_URL: process.env.REACT_APP_DEV_DOMAIN,
   GOOGLEAPI: "https://www.googleapis.com/oauth2/v2/userinfo",
@@ -61,6 +56,7 @@ export const BACKEND_URLS = {
     CONFIRM_TOPUP: "/confirm-wallet-top-up",
     LIST_BANKS: "/list-banks",
     MY_BANKS: "/bank/get-bank-details?bankAccountType=withdrawal",
+    RESOLVE_ACCOUNT_NAME: "/resolve-bank-account",
     ADD_BANK_ACCOUNT: "/bank/set-bank-details",
     EDIT_BANK_ACCOUNT: "/update-bank-details",
     DELE_BANK_ACCOUNT: "/delete-bank-details",

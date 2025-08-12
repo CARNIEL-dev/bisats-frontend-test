@@ -1,8 +1,8 @@
 /** @format */
 
-import { getToken, getRefreshToken } from "../helpers";
-import { BACKEND_URLS } from "../utils/backendUrls";
-import { TUser } from "../types/user";
+import { getToken, getRefreshToken } from "@/helpers";
+import { BACKEND_URLS } from "@/utils/backendUrls";
+import { TUser } from "@/types/user";
 import { refreshAccessToken } from "./actions/userActions";
 
 const Bisatsfetch = async (

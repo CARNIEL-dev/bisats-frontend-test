@@ -254,3 +254,48 @@ type AssetType = {
   USDRate: number;
   NairaRate: number;
 };
+
+type TOrder = {
+  type: string;
+  reference: string;
+  asset: string;
+  amount: number;
+  price: number;
+  quantity: number;
+  buyer: { userName: string };
+  createdAt: string;
+};
+
+type Banks = {
+  bank_code: string;
+  bank_logo: string;
+  bank_name: string;
+  bank_type: string;
+  country_code: string;
+  currency_code: string;
+  ussd_code: string | null;
+  ussd_transfer_code: string | null;
+};
+
+type TBank = {
+  id: string;
+  accountNumber: string;
+  accountName: string;
+  bankName: string;
+  bankCode: string;
+};
+
+type UserDetails = {
+  firstName?: string | null;
+  middleName?: string | null;
+  lastName?: string | null;
+};
+
+type UserTransactionLimits = {
+  dailyCryptoWithdrawalLimit: string;
+  dailyFiatWithdrawalLimit: string;
+  totalUsedAmountCrypto: number;
+  totalUsedAmountCryptoCurrency: string;
+  totalUsedAmountFiat: number;
+  totalUsedAmountFiatCurrency: string;
+};

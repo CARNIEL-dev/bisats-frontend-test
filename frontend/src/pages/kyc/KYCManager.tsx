@@ -60,9 +60,12 @@ const KycManager: React.FC<TKycManager> = ({ action, func, children }) => {
 
       {modal === "level_1" && <KycVerification close={closeModal} />}
       {modal === "level_2" && <KycUpgrade close={closeModal} />}
-      {modal === "2fa" && (
-        <SecurityVerification func={func} close={closeModal} />
-      )}
+
+      <SecurityVerification
+        func={func}
+        close={closeModal}
+        open={modal === "2fa"}
+      />
     </>
   );
 };

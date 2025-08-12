@@ -19,7 +19,7 @@ import { cn } from "@/utils";
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import LogOutModal from "../Modals/LogOut";
+import LogOutModal from "@/components/Modals/LogOut";
 
 const mainMenuItems = [
   {
@@ -63,10 +63,6 @@ const mobileMenuItems = [
       {
         text: "My Ads",
         link: APP_ROUTES.P2P.MY_ADS,
-      },
-      {
-        text: "Express",
-        link: APP_ROUTES.P2P.EXPRESS,
       },
       {
         text: "Order History",

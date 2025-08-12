@@ -1,10 +1,11 @@
 import { FormikConfig, FormikProps, useFormik } from "formik";
-import { useEffect, useMemo, useState, useTransition } from "react";
+import { useMemo, useState, useTransition } from "react";
 import { useSelector } from "react-redux";
 import * as Yup from "yup";
 
 import { PrimaryButton } from "@/components/buttons/Buttons";
 import BackButton from "@/components/shared/BackButton";
+import ErrorDisplay from "@/components/shared/ErrorDisplay";
 import MaxWidth from "@/components/shared/MaxWith";
 import Toast from "@/components/Toast";
 import { APP_ROUTES } from "@/constants/app_route";
@@ -15,7 +16,7 @@ import CreateAdDetails from "@/pages/p2p/ads/CreateAdDetails";
 import HeaderTabs from "@/pages/p2p/ads/HeaderTabs";
 import { PriceData } from "@/pages/wallet/Assets";
 import Head from "@/pages/wallet/Head";
-import { CreateAds, GetLivePrice } from "@/redux/actions/walletActions";
+import { CreateAds, useCryptoRates } from "@/redux/actions/walletActions";
 import { UserState } from "@/redux/reducers/userSlice";
 import { WalletState } from "@/redux/reducers/walletSlice";
 import { AccountLevel, bisats_limit } from "@/utils/transaction_limits";
@@ -47,14 +48,14 @@ const initialAd: IAdRequest = {
 export interface AdsProps {
   formik: FormikProps<IAdRequest>;
   setStage: React.Dispatch<React.SetStateAction<"details" | "review">>;
-  liveRate?: PriceData;
+  liveRate?: Partial<PriceData>;
   wallet?: WalletState;
 }
 
 const CreateAd = () => {
   const [isPending, startTransition] = useTransition();
   const [stage, setStage] = useState<"details" | "review">("details");
-  const [fetching, setIsFetching] = useState(true);
+  // const [fetching, setIsFetching] = useState(true);
   const user: UserState = useSelector((state: any) => state.user);
   const userr = user.user;
   const account_level = userr?.accountLevel as AccountLevel;
@@ -63,27 +64,29 @@ const CreateAd = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const [tokenLivePrices, setTokenLivePrices] = useState<PriceData>();
   const walletState: WalletState = useSelector((state: any) => state.wallet);
   const walletData = walletState?.wallet;
 
   const [currentSchema, setCurrentSchema] =
     useState<Yup.ObjectSchema<any>>(AdSchema);
 
-  useEffect(() => {
-    if (!user.loading) {
-      setIsFetching(false);
-    }
-  }, []);
+  //SUB: Query function
+  const {
+    data: currencyRates,
+    isFetching: fetching,
+    isError,
+  } = useCryptoRates({ isEnabled: Boolean(user) });
 
-  useEffect(() => {
-    const fetchPrices = async () => {
-      const prices = await GetLivePrice();
-      setTokenLivePrices(prices);
+  const liveRate = useMemo(() => {
+    return {
+      xNGN:
+        (currencyRates?.tether?.usd || 0) * (currencyRates?.tether?.ngn || 0),
+      BTC: currencyRates?.bitcoin?.ngn ?? 0,
+      ETH: currencyRates?.ethereum?.ngn ?? 0,
+      SOL: currencyRates?.solana?.ngn ?? 0,
+      USDT: currencyRates?.tether?.ngn ?? 0,
     };
-
-    fetchPrices();
-  }, []);
+  }, [currencyRates]);
 
   const mutation = useMutation<UpdateAdStatusResponse, Error, AdsPayload>({
     mutationFn: (payload: AdsPayload) => CreateAds(payload),
@@ -117,7 +120,7 @@ const CreateAd = () => {
         await currentSchema.validate(values, {
           abortEarly: false,
           context: {
-            liveRate: tokenLivePrices,
+            liveRate,
             userTransactionLimits,
             walletData,
           },
@@ -158,8 +161,14 @@ const CreateAd = () => {
       };
       mutation.mutate(payload);
     },
-    context: { liveRate: tokenLivePrices, userTransactionLimits, walletData },
-  } as FormikConfig<IAdRequest> & { context: { liveRate: PriceData; userTransactionLimits: typeof userTransactionLimits; walletData: { [key: string]: any } | null } });
+    context: { liveRate, userTransactionLimits, walletData },
+  } as FormikConfig<IAdRequest> & {
+    context: {
+      liveRate: Partial<PriceData>;
+      userTransactionLimits: typeof userTransactionLimits;
+      walletData: { [key: string]: any } | null;
+    };
+  });
 
   return (
     <MaxWidth className="max-w-[45rem] min-h-[90dvh] flex flex-col gap-6 mb-20">
@@ -172,6 +181,14 @@ const CreateAd = () => {
 
       {fetching ? (
         <PreLoader />
+      ) : isError ? (
+        <div className="h-[12rem] text-gray-400 text-sm flex items-center justify-center">
+          <ErrorDisplay
+            message="Failed to fetch live rate. Please try again"
+            isError={false}
+            showIcon={false}
+          />
+        </div>
       ) : (
         <form className="" method="POST">
           {stage === "details" ? (
@@ -179,7 +196,7 @@ const CreateAd = () => {
               formik={formik}
               setStage={setStage}
               wallet={walletState}
-              liveRate={tokenLivePrices}
+              liveRate={liveRate}
             />
           ) : (
             <>

@@ -118,7 +118,6 @@ const OrderHistory = () => {
     },
     {
       header: "Counter Party",
-
       cell: ({ row }) => {
         const item = row.original;
         const counterParty =

@@ -27,7 +27,7 @@ export function convertAssetToNaira(
   asset: keyof Prices,
   assetAmount: number,
   adPrice: number,
-  prices: Prices | undefined
+  prices: Partial<Prices> | undefined
 ): number | null {
   const usdPriceOfAsset = prices?.[asset];
   const ngnToUsdRate = adPrice !== 0 ? adPrice : prices?.xNGN;

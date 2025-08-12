@@ -22,6 +22,7 @@ import { WalletState } from "@/redux/reducers/walletSlice";
 import { cn, formatter, getCurrencyBalance } from "@/utils";
 import { ChevronDown, Eye, EyeClosed } from "lucide-react";
 import { ThreeDot } from "react-loading-indicators";
+import { getAppState } from "@/helpers";
 
 const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
   const {

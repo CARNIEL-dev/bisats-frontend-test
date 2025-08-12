@@ -36,7 +36,10 @@ const LogOutModal: React.FC<Props> = ({ close }) => {
             text={"Log Out"}
             loading={false}
             className="w-1/2 ml-3"
-            onClick={() => logoutUser()}
+            onClick={() => {
+              logoutUser();
+              close();
+            }}
           />
         </div>
       </div>

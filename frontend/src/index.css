@@ -331,3 +331,7 @@ a.active {
 .no-spinner[type="number"] {
   -moz-appearance: textfield;
 }
+
+input:read-only {
+  @apply pointer-events-none border outline-none bg-neutral-100;
+}

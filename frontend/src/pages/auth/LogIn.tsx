@@ -5,7 +5,6 @@ import PrimaryInput from "@/components/Inputs/PrimaryInput";
 import Toast from "@/components/Toast";
 import { APP_ROUTES } from "@/constants/app_route";
 import { LogInSchema } from "@/formSchemas";
-import { setRefreshToken, setToken, setUser, setUserId } from "@/helpers";
 import OtherSide from "@/layouts/auth/OtherSide";
 import { Login, ReSendverificationCode } from "@/redux/actions/userActions";
 import { UserActionTypes } from "@/redux/types";
@@ -13,9 +12,9 @@ import dispatchWrapper from "@/utils/dispatchWrapper";
 import { useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
 
-// const isDevelopment =
-//   process.env.NODE_ENV === "development" ||
-//   process.env.VERCEL_ENV === "development";
+const isDevelopment =
+  process.env.NODE_ENV === "development" ||
+  process.env.VERCEL_ENV === "development";
 
 const LogIn = () => {
   const navigate = useNavigate();
@@ -35,24 +34,24 @@ const LogIn = () => {
       if (response.statusCode === 200) {
         const data = response.data;
 
-        //? set user login infos
-        setUser(data);
-        setUserId(data?.userId);
-        setToken(data.token);
-        setRefreshToken(data.refreshToken);
-
         if (!data.emailVerified) {
-          ReSendverificationCode({ userId: response.data.userId });
-          return navigate(APP_ROUTES.AUTH.VERIFY);
+          dispatchWrapper({
+            type: UserActionTypes.LOG_IN_PENDING,
+            payload: data,
+          });
+          await ReSendverificationCode({ userId: response.data.userId });
+          navigate(APP_ROUTES.AUTH.VERIFY);
+          return;
         }
 
-        // if (data.twoFactorAuthEnabled) {
-        //   dispatchWrapper({
-        //     type: UserActionTypes.LOG_IN_PENDING,
-        //     payload: data,
-        //   });
-        //   return navigate(APP_ROUTES.AUTH.VERIFY_2FA);
-        // }
+        if (data.twoFactorAuthEnabled && !isDevelopment) {
+          dispatchWrapper({
+            type: UserActionTypes.LOG_IN_PENDING,
+            payload: data,
+          });
+          navigate(APP_ROUTES.AUTH.VERIFY_2FA);
+          return;
+        }
 
         Toast.success("", response.message);
         dispatchWrapper({

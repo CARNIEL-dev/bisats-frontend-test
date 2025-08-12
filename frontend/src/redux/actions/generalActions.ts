@@ -25,7 +25,7 @@ export const GetNotification = async (uid: string) => {
       }
     );
 
-    if (!response.status) {
+    if (response.statusCode !== 200) {
       throw new Error(response.message);
     }
     return response.data;
@@ -46,7 +46,7 @@ const useFetchUserNotifications = ({
   return useQuery<Omit<NotificationState, "loading">, Error>({
     queryKey: ["userNotifications", userId],
     queryFn: async () => GetNotification(userId),
-    retry: true,
+    retry: false,
     staleTime: 5 * 60 * 1000, // 5 minutes
     enabled: Boolean(userId && isKycVerified),
     refetchInterval: 2 * 60 * 1000, // 2 minutes

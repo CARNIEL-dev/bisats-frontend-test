@@ -1,17 +1,15 @@
-import * as Yup from "yup";
+import { PriceData } from "@/pages/wallet/Assets";
+import { formatter } from "@/utils";
+import { formatNumber } from "@/utils/numberFormat";
 import {
+  characterLength,
   lowerCaseRegex,
-  upperCaseRegex,
   numberRegex,
   specialCharcterRegex,
-  characterLength,
+  upperCaseRegex,
 } from "@/utils/passwordChecks";
-import { formatNumber } from "@/utils/numberFormat";
-import { PriceData } from "@/pages/wallet/Assets";
-import { convertAssetToNaira } from "@/utils/conversions";
-import { toke_100_ngn } from "@/utils/data";
-import { formatter } from "@/utils";
-import { AdSchema as AdSchemaType } from "@/pages/p2p/components/ExpressSwap";
+import * as Yup from "yup";
+
 import Decimal from "decimal.js";
 
 //SUB: Auth
@@ -222,7 +220,7 @@ const swapSchema = Yup.object().shape({
             "min-lower-limit",
             "Amount is less than the lower limit",
             function (value) {
-              const adDetail = this.options?.context?.adDetail as AdSchemaType;
+              const adDetail = this.options?.context?.adDetail as AdsType;
 
               const val =
                 adDetail.orderType.toLowerCase() === "buy"
@@ -239,7 +237,7 @@ const swapSchema = Yup.object().shape({
             "max-lower-limit",
             "Amount is greater than the upper limit",
             function (value) {
-              const adDetail = this.options?.context?.adDetail as AdSchemaType;
+              const adDetail = this.options?.context?.adDetail as AdsType;
 
               const val =
                 adDetail.orderType.toLowerCase() === "buy"
@@ -271,12 +269,7 @@ const AdSchema = Yup.object().shape({
       return Number(originalValue);
     })
     .when(["asset", "$liveRate"], ([assetValue, liveRate], schema) => {
-      const rate = convertAssetToNaira(
-        assetValue as keyof PriceData,
-        1,
-        0,
-        liveRate as PriceData
-      );
+      const rate = liveRate[assetValue as keyof PriceData];
       const minPrice = 0.9 * Number(rate ?? 0);
       const maxPrice = 1.1 * Number(rate ?? 0);
 
@@ -285,50 +278,54 @@ const AdSchema = Yup.object().shape({
         .max(maxPrice ?? 1700, `Price must be lower than 110% of market rate`)
         .required("Price is required");
     }),
-
   amount: Yup.number()
     .transform((v, o) => (o === "" || isNaN(o as any) ? undefined : Number(o)))
-    // if type === “Sell”, clear this field completely
     .when("type", {
       is: (val: string) => val.toLowerCase() === "sell",
-      then: (schema) =>
-        schema
-          .transform(() => undefined) // wipe it out
-          .notRequired(),
+      then: (schema) => schema.transform(() => undefined).notRequired(),
       otherwise: (schema) =>
         schema
-          .when(
-            ["$userTransactionLimits"],
-            ([userTransactionLimits], schema3) => {
-              const limit =
-                userTransactionLimits?.maximum_ad_creation_amount ?? 0;
+          .required("Amount is required")
+          .moreThan(0, "Amount must be greater than 0")
+          .test("transaction-limit-and-balance", function (value) {
+            // Get all needed values from context/parent
+            const { type, asset } = this.parent;
+            const { userTransactionLimits, walletData } = this.options
+              .context as any;
 
-              return schema3.max(
-                limit,
-                `Amount must not exceed ${formatNumber(
-                  userTransactionLimits?.maximum_ad_creation_amount
-                )} xNGN`
+            const numericValue = Number(value || 0);
+
+            //? 1. Check maximum transaction limit (for buy orders)
+            if (type.toLowerCase() === "buy") {
+              const maxLimit = Number(
+                userTransactionLimits?.maximum_ad_creation_amount || 0
               );
-            }
-          )
-          .when(
-            ["type", "asset", "$walletData"],
-            ([type, asset, walletData], schema2) => {
-              const walletBalance =
-                type.toLowerCase() === "buy"
-                  ? walletData?.xNGN
-                  : walletData
-                  ? walletData?.[asset]
-                  : 0;
 
-              return schema2.max(
-                walletBalance,
-                "Amount cannot exceed your current wallet balance"
-              );
+              if (numericValue > maxLimit) {
+                return this.createError({
+                  message: `Amount must not exceed ${formatNumber(
+                    maxLimit
+                  )} xNGN`,
+                });
+              }
             }
-          )
 
-          .required("Amount is required"),
+            //? 2. Check wallet balance
+            const walletBalance =
+              type.toLowerCase() === "buy"
+                ? Number(walletData?.xNGN || 0)
+                : Number(walletData?.[asset] || 0);
+
+            if (numericValue > walletBalance) {
+              return this.createError({
+                message: `Amount cannot exceed your wallet balance of ${formatNumber(
+                  walletBalance
+                )} xNGN`,
+              });
+            }
+
+            return true;
+          }),
     }),
   amountToken: Yup.number()
     .transform((v, o) => (o === "" || isNaN(o as any) ? undefined : Number(o)))
@@ -337,47 +334,60 @@ const AdSchema = Yup.object().shape({
       then: (schema) => schema.transform(() => undefined).notRequired(),
       otherwise: (schema) =>
         schema
-          .min(0, "Token amount must be greater than 0")
-          .when(
-            ["asset", "$liveRate", "$userTransactionLimits"],
-            ([assetValue, liveRate, userTransactionLimits], schema2) => {
-              const tokenRate =
-                convertAssetToNaira(
-                  assetValue as keyof Prices,
-                  1,
-                  0,
-                  liveRate
-                ) || 0;
-              const MAX_NAIRA_LIMIT =
-                userTransactionLimits?.maximum_ad_creation_amount ?? 0;
+          .required("Token amount is required")
+          .moreThan(0, "Token amount must be greater than 0")
+          .test("token-validation", function (value) {
+            const { type, asset } = this.parent;
+            const { liveRate, userTransactionLimits, walletData } = this.options
+              .context as any;
 
+            const numericValue = Number(value || 0);
+
+            // 1. Minimum amount check
+            // if (numericValue <= 0) {
+            //   return this.createError({
+            //     message: "Token amount must be greater than 0",
+            //   });
+            // }
+
+            // 2. Maximum token limit (NGN converted to tokens)
+            if (type.toLowerCase() === "sell") {
+              const tokenRate = liveRate[asset as keyof PriceData] || 1;
+              const MAX_NAIRA_LIMIT = Number(
+                userTransactionLimits?.maximum_ad_creation_amount || 0
+              );
               const tokenValue = parseFloat(
                 (MAX_NAIRA_LIMIT / tokenRate).toFixed(5)
               );
-
               const inDecimalValue = new Decimal(tokenValue).toNumber();
-
               const maxTokenValue = tokenRate > 0 ? inDecimalValue : 0;
 
-              return schema2.max(
-                maxTokenValue,
-                `Amount must not exceed ${inDecimalValue}  ${assetValue}. Your limit is ₦${formatNumber(
-                  MAX_NAIRA_LIMIT
-                )}`
-              );
+              if (numericValue > maxTokenValue) {
+                return this.createError({
+                  message: `Amount must not exceed ${inDecimalValue.toFixed(
+                    5
+                  )} ${asset} (xNGN${formatNumber(MAX_NAIRA_LIMIT)} limit)`,
+                });
+              }
             }
-          )
-          .required("Token amount is required"),
+
+            // 3. Wallet balance check
+            const walletBalance = Number(walletData?.[asset] || 0);
+            if (numericValue > walletBalance) {
+              return this.createError({
+                message: `Insufficient balance (Available: ${walletBalance} ${asset})`,
+              });
+            }
+
+            return true;
+          }),
     }),
   minimumLimit: Yup.number()
 
     .max(23000000, "Price must not exceed 23,000,000 xNGN")
     .when(
-      ["type", "asset", "$walletData", "$liveRate", "$userTransactionLimits"],
-      (
-        [type, assetValue, walletData, liveRate, userTransactionLimits],
-        schema
-      ) => {
+      ["type", "$userTransactionLimits"],
+      ([type, userTransactionLimits], schema) => {
         const limit =
           type.toLowerCase() === "buy"
             ? userTransactionLimits?.lower_limit_buy_ad
@@ -423,8 +433,7 @@ const AdSchema = Yup.object().shape({
             ? walletData?.xNGN
             : walletData?.[assetValue];
 
-        const tokenRate =
-          convertAssetToNaira(assetValue as keyof Prices, 1, 0, liveRate) || 0;
+        const tokenRate = liveRate[assetValue as keyof Prices];
 
         const tokenValue = (Number(tokenRate) * Number(walletBalance)).toFixed(
           2
@@ -490,18 +499,76 @@ const IdentificationSchema = Yup.object().shape({
   selfie: Yup.string().required("Document is required"),
 });
 
+const levelThreeValidationSchema = Yup.object({
+  utilityBill: Yup.mixed().required("Utility bill is required"),
+  sourceOfWealth: Yup.mixed().required("Source of wealth is required"),
+  proofOfProfile: Yup.mixed().required("Proof of profile is required"),
+});
+
+// HDR: BANK SCHEMA
+
+const getBankSchema = (user?: UserDetails) => {
+  const norm = (s = "") =>
+    s
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z\s]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+
+  const userTokens = [user?.firstName, user?.middleName, user?.lastName]
+    .filter(Boolean)
+    .map((x) => norm(String(x)))
+    .filter(Boolean);
+
+  return Yup.object().shape({
+    userId: Yup.string().required(),
+    accountNumber: Yup.string()
+      .required("Account number is required")
+      .matches(/^\d+$/, "Account number must be digits only")
+      .min(10, "Enter a valid account number"),
+    bankCode: Yup.string().required("Bank code is required"),
+    bankName: Yup.string().required("Bank name is required"),
+
+    accountName: Yup.string()
+      .required("Account name is required")
+      .test(
+        "name-includes-user",
+        // Friendly message with expected parts
+        () =>
+          `Account name must include at least two of: ${userTokens
+            .map((t) => t[0].toUpperCase() + t.slice(1))
+            .join(", ")}`,
+        function (value) {
+          if (!value) return false;
+          // If we can’t verify (no user names), don’t block submit
+          if (userTokens.length === 0) return true;
+
+          const tokens = norm(value).split(" ").filter(Boolean);
+          const matches = userTokens.filter((t) => tokens.includes(t));
+
+          const needed = Math.min(2, userTokens.length);
+          return matches.length >= needed;
+        }
+      ),
+  });
+};
+
 export {
-  swapSchema,
+  AdSchema,
   BVNSchema,
-  LogInSchema,
-  TopUpSchema,
-  PhoneSchema,
-  EmailSchema,
-  VerificationSchema,
   ChangePasswordSchema,
+  EmailSchema,
+  IdentificationSchema,
+  LogInSchema,
+  PersonalInformationSchema,
+  PhoneSchema,
   ResetPasswordSchema,
   SignupSchema,
-  AdSchema,
-  PersonalInformationSchema,
-  IdentificationSchema,
+  swapSchema,
+  TopUpSchema,
+  VerificationSchema,
+  levelThreeValidationSchema,
+  getBankSchema,
 };

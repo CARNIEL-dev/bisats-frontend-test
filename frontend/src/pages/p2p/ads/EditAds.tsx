@@ -1,21 +1,22 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { PriceData } from "@/pages/wallet/Assets";
-import { GetLivePrice } from "@/redux/actions/walletActions";
-import { useNavigate } from "react-router-dom";
-import { useEffect, useMemo, useState } from "react";
-import { WalletState } from "@/redux/reducers/walletSlice";
-import { useSelector } from "react-redux";
-import { FormikConfig, useFormik } from "formik";
-import Toast from "@/components/Toast";
-import { AdSchema } from "@/formSchemas";
-import CreateAdDetails from "@/pages/p2p/ads/CreateAdDetails";
-import MaxWidth from "@/components/shared/MaxWith";
-import { UpdateAdStatusResponse } from "@/pages/p2p/MyAds";
-import { UpdateAd } from "@/redux/actions/adActions";
-import { APP_ROUTES } from "@/constants/app_route";
-import ModalTemplate from "@/components/Modals/ModalTemplate";
 import { PrimaryButton } from "@/components/buttons/Buttons";
 import { InputCheck } from "@/components/Inputs/CheckBox";
+import ModalTemplate from "@/components/Modals/ModalTemplate";
+import ErrorDisplay from "@/components/shared/ErrorDisplay";
+import MaxWidth from "@/components/shared/MaxWith";
+import Toast from "@/components/Toast";
+import { AdSchema } from "@/formSchemas";
+import PreLoader from "@/layouts/PreLoader";
+import CreateAdDetails from "@/pages/p2p/ads/CreateAdDetails";
+import { UpdateAdStatusResponse } from "@/pages/p2p/MyAds";
+import { PriceData } from "@/pages/wallet/Assets";
+import { UpdateAd } from "@/redux/actions/adActions";
+import { useCryptoRates } from "@/redux/actions/walletActions";
+import { WalletState } from "@/redux/reducers/walletSlice";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { FormikConfig, useFormik } from "formik";
+import { useMemo, useState } from "react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
   userId: string;
@@ -34,18 +35,27 @@ const EditAds = ({
   const walletState: WalletState = useSelector((state: any) => state.wallet);
   const walletData = walletState?.wallet;
 
-  const [tokenLivePrices, setTokenLivePrices] = useState<PriceData>();
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   //SUB:  ===== For edit mode =====
-  useEffect(() => {
-    const fetchPrices = async () => {
-      const prices = await GetLivePrice();
-      setTokenLivePrices(prices);
-    };
 
-    fetchPrices();
-  }, []);
+  //SUB: Query function
+  const {
+    data: currencyRates,
+    isFetching,
+    isError,
+  } = useCryptoRates({ isEnabled: Boolean(adDetail.id) });
+
+  const liveRate = useMemo(() => {
+    return {
+      xNGN:
+        (currencyRates?.tether?.usd || 0) * (currencyRates?.tether?.ngn || 0),
+      BTC: currencyRates?.bitcoin?.ngn ?? 0,
+      ETH: currencyRates?.ethereum?.ngn ?? 0,
+      SOL: currencyRates?.solana?.ngn ?? 0,
+      USDT: currencyRates?.tether?.ngn ?? 0,
+    };
+  }, [currencyRates]);
 
   const defaultValues = useMemo(() => {
     return {
@@ -92,7 +102,7 @@ const EditAds = ({
         await AdSchema.validate(values, {
           abortEarly: false,
           context: {
-            liveRate: tokenLivePrices,
+            liveRate,
             userTransactionLimits,
             walletData,
           },
@@ -134,18 +144,40 @@ const EditAds = ({
       };
       mutation.mutate(payload);
     },
-    context: { liveRate: tokenLivePrices, userTransactionLimits, walletData },
-  } as FormikConfig<IAdRequest> & { context: { liveRate: PriceData; userTransactionLimits: typeof userTransactionLimits; walletData: { [key: string]: any } | null } });
+    context: { liveRate, userTransactionLimits, walletData },
+  } as FormikConfig<IAdRequest> & {
+    context: {
+      liveRate: Partial<PriceData>;
+      userTransactionLimits: typeof userTransactionLimits;
+      walletData: { [key: string]: any } | null;
+    };
+  });
 
   return (
     <>
       <MaxWidth className="max-w-[38rem] mb-10 border py-4 px-6 rounded-2xl">
-        <CreateAdDetails
-          formik={formik}
-          setStage={() => setShowConfirmModal(true)}
-          wallet={walletState}
-          liveRate={tokenLivePrices}
-        />
+        <>
+          {isFetching ? (
+            <div className="flex items-center justify-center">
+              <PreLoader primary={false} />
+            </div>
+          ) : isError ? (
+            <div>
+              <ErrorDisplay
+                message="Couldn't fetch currency rates"
+                showIcon={false}
+                isError={false}
+              />
+            </div>
+          ) : (
+            <CreateAdDetails
+              formik={formik}
+              setStage={() => setShowConfirmModal(true)}
+              wallet={walletState}
+              liveRate={liveRate}
+            />
+          )}
+        </>
       </MaxWidth>
       {showConfirmModal && (
         <ModalTemplate onClose={() => setShowConfirmModal(false)}>
@@ -166,10 +198,6 @@ const EditAds = ({
             </div>
 
             <div className="flex justify-end gap-2 mt-4">
-              {/* <SecondaryButton
-                text="Cancel"
-                onClick={() => setShowConfirmModal(false)}
-              /> */}
               <PrimaryButton
                 text="Confirm"
                 onClick={() => {

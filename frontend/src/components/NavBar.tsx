@@ -2,17 +2,17 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, NavLink } from "react-router-dom";
 
+import LogOutModal from "@/components/Modals/LogOut";
 import MaxWidth from "@/components/shared/MaxWith";
 import { Button, buttonVariants } from "@/components/ui/Button";
+import { APP_ROUTES } from "@/constants/app_route";
 import NAV_LINKS from "@/data/navlinks";
 import { useIsMobile } from "@/hooks/use-mobile";
+import usePreventScroll from "@/hooks/use-preventScroll";
+import { UserState } from "@/redux/reducers/userSlice";
 import { cn } from "@/utils";
 import { Menu, X } from "lucide-react";
-import { APP_ROUTES } from "@/constants/app_route";
-import { UserState } from "@/redux/reducers/userSlice";
-import BisatLogo from "./shared/Logo";
-import usePreventScroll from "@/hooks/use-preventScroll";
-import { logoutUser } from "@/redux/actions/userActions";
+import BisatLogo from "@/components/shared/Logo";
 
 const NavBar = () => {
   const user: UserState = useSelector((state: any) => state.user);
@@ -20,6 +20,7 @@ const NavBar = () => {
   const isMobile = useIsMobile();
 
   const [toggleMenu, setToggleMenu] = useState(false);
+  const [showLogOutModal, setShowLogOutModal] = useState(false);
 
   usePreventScroll(toggleMenu);
 
@@ -69,11 +70,12 @@ const NavBar = () => {
                     className={cn(
                       "px-8 md:w-fit w-full self-stretch h-fit py-2.5 text-sm"
                     )}
+                    type="button"
                     onClick={() => {
                       if (isMobile) {
                         closeMenu();
                       }
-                      logoutUser();
+                      setShowLogOutModal(true);
                     }}
                   >
                     Log Out
@@ -119,6 +121,10 @@ const NavBar = () => {
           </Button>
         </MaxWidth>
       </div>
+
+      {showLogOutModal && (
+        <LogOutModal close={() => setShowLogOutModal(false)} />
+      )}
       {/* SUB: OVERLAY */}
       <div
         onClick={closeMenu}

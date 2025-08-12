@@ -19,32 +19,6 @@ import { PriceData } from "@/pages/wallet/Assets";
 import Header from "./Header";
 import { typeofSwam } from "./Swap";
 
-export interface AdSchema {
-  id: string;
-  userId: string;
-  type: string;
-  orderType: "buy" | "sell" | string;
-  asset: keyof typeof assets;
-  amount: number;
-  amountAvailable: number;
-  amountFilled: number;
-  minimumLimit: number;
-  maximumLimit: number;
-  expiryDate: string;
-  currency: string;
-  priceType: string;
-  price: number;
-  priceMargin: number;
-  priceUpperLimit: number;
-  priceLowerLimit: number;
-  status: string;
-  createdAt: string;
-  updatedAt: string;
-  user: {
-    userName: string;
-  };
-}
-
 interface NetworkFeeResponse {
   status: boolean;
   statusCode: number;
@@ -69,7 +43,7 @@ interface ApiResponse {
   status: boolean;
   statusCode: number;
   message: string;
-  data: AdSchema[];
+  data: AdsType[];
 }
 
 const ExpressSwap = () => {
@@ -77,7 +51,7 @@ const ExpressSwap = () => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [amount, setAmount] = useState("");
   const [loading, setLoading] = useState(false);
-  const [expressAds, setExpressAds] = useState<AdSchema[]>([]);
+  const [expressAds, setExpressAds] = useState<AdsType[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [networkFee, setNetworkFee] = useState<string | null>(null);
