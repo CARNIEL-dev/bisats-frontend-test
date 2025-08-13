@@ -3,13 +3,14 @@ import {
   WhiteTransparentButton,
 } from "@/components/buttons/Buttons";
 import PrimaryInput from "@/components/Inputs/PrimaryInput";
-import ModalTemplate from "@/components/Modals/ModalTemplate";
 import ErrorDisplay from "@/components/shared/ErrorDisplay";
 import SearchableDropdown from "@/components/shared/SearchableDropdown";
 import Toast from "@/components/Toast";
 import { getBankSchema } from "@/formSchemas";
 import PreLoader from "@/layouts/PreLoader";
 import {
+  AddBankAccountForWithdrawal,
+  EditBankAccountForWithdrawal,
   ResolveBankAccoutName,
   useGetBankList,
 } from "@/redux/actions/walletActions";
@@ -32,8 +33,8 @@ const WithdrawalBankAccount: React.FC<Props> = ({
   const userState: UserState = useSelector((state: any) => state.user);
   const user = userState.user;
 
-  const [bankAccountName, setBankAccountName] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isAcctNumberFocused, setIsAcctNumberFocused] = useState(false);
 
   // prevent duplicate calls for the same pair
   const lastKeyRef = useRef<string | null>(null);
@@ -58,48 +59,6 @@ const WithdrawalBankAccount: React.FC<Props> = ({
     }));
   }, [banks]);
 
-  const CheckNameMatch = () => {
-    const bankNameArray = bankAccountName
-      .trim()
-      .split(/\s+/)
-      .map((word) => word.toLowerCase());
-    const bisatsAccountName = [
-      user?.firstName?.toLowerCase(),
-      user?.middleName?.toLowerCase(),
-      user?.lastName?.toLowerCase(),
-    ];
-    const matchCount = bisatsAccountName.filter((name) =>
-      bankNameArray.includes(name)
-    ).length;
-    const atLeastTwoMatch = matchCount >= 2;
-    return atLeastTwoMatch;
-  };
-
-  const AddBankAccount = async () => {
-    if (!CheckNameMatch()) {
-      Toast.error(
-        "Please provide a Bank account name that matches your Bisats account",
-        "Account Name Mismatch"
-      );
-      return;
-    }
-
-    // const response = await AddBankAccountForWithdrawal({
-    //   userId: user?.userId,
-    //   bankName: selectedBank?.bankName ?? "",
-    //   bankCode: selectedBank?.bankCode ?? "",
-    //   accountNumber: bankAccountNumber,
-    //   accountName: bankAccountName,
-    // });
-
-    // if (response?.status) {
-    //   Toast.success(response.message, "Account Added");
-    //   close();
-    // } else {
-    //   Toast.error(response.message, "Failed");
-    // }
-  };
-
   const formik = useFormik({
     initialValues: {
       userId: user?.userId as string,
@@ -117,6 +76,30 @@ const WithdrawalBankAccount: React.FC<Props> = ({
     }),
     onSubmit: async (values) => {
       const { ...payload } = values;
+      if (mode === "add") {
+        await AddBankAccountForWithdrawal({
+          ...payload,
+        }).then((res) => {
+          if (res?.status) {
+            Toast.success(res.message, "Account Added");
+            close();
+          } else {
+            Toast.error(res.message, "Failed");
+          }
+        });
+      } else {
+        await EditBankAccountForWithdrawal({
+          ...payload,
+          bankId: defaultBank?.id,
+        }).then((res) => {
+          if (res?.status) {
+            Toast.success(res.message, "Account Updated");
+            close();
+          } else {
+            Toast.error(res.message, "Failed");
+          }
+        });
+      }
     },
   });
 
@@ -157,18 +140,15 @@ const WithdrawalBankAccount: React.FC<Props> = ({
     };
     formik.setFieldValue("bankCode", value.bankCode);
     formik.setFieldValue("bankName", value.bankName);
+    setIsAcctNumberFocused(false);
   };
 
-  // pull what you need once per render
+  //SUB: Run the account name resolve
   const accountNumber = (formik.values.accountNumber || "").replace(/\s/g, "");
   const bankCode = formik.values.bankCode || "";
-  const isAcctTouched = !!formik.touched.accountNumber;
 
   useEffect(() => {
-    // run only after the field has been touched (blurred)
-    if (!isAcctTouched) return;
-
-    // basic guards
+    if (!isAcctNumberFocused) return;
     if (loading) return;
     if (!bankCode) return;
     if (accountNumber.length < 10) return;
@@ -179,23 +159,7 @@ const WithdrawalBankAccount: React.FC<Props> = ({
     lastKeyRef.current = key;
 
     validateAccountName({ accountNumber, bankCode });
-  }, [isAcctTouched, accountNumber, bankCode, loading, validateAccountName]);
-
-  // useEffect(() => {
-  //   if (
-  //     formik.values?.accountNumber &&
-  //     formik.values?.bankCode &&
-  //     formik.values?.accountNumber.length >= 10 &&
-  //     !loading
-  //   ) {
-  //     validateAccountName({
-  //       accountNumber: formik.values?.accountNumber,
-  //       bankCode: formik.values?.bankCode,
-  //     });
-  //   }
-  // }, [formik.values?.accountNumber, formik.values?.bankCode]);
-
-  // console.log("Initial value", initialValues);
+  }, [accountNumber, bankCode, isAcctNumberFocused]);
 
   return (
     <>
@@ -217,7 +181,7 @@ const WithdrawalBankAccount: React.FC<Props> = ({
               />
             </div>
           ) : (
-            <>
+            <form onSubmit={formik.handleSubmit}>
               <div className="my-5 space-y-2">
                 <SearchableDropdown
                   items={banksList}
@@ -242,7 +206,7 @@ const WithdrawalBankAccount: React.FC<Props> = ({
                     formik.setFieldValue("accountNumber", numericValue);
                   }}
                   value={formik.values.accountNumber}
-                  onBlur={formik.handleBlur("accountNumber")}
+                  onFocus={() => setIsAcctNumberFocused(true)}
                 />
 
                 <PrimaryInput
@@ -256,7 +220,7 @@ const WithdrawalBankAccount: React.FC<Props> = ({
                     formik.touched.accountName && formik.errors.accountName
                   }
                   touched={formik.touched.accountName}
-                  onChange={(e) => setBankAccountName(e.target.value)}
+                  onChange={() => {}}
                   info="Ensure your Bank Account Name matches exactly with your Account Name on Bisats"
                 />
               </div>
@@ -264,15 +228,16 @@ const WithdrawalBankAccount: React.FC<Props> = ({
                 <WhiteTransparentButton
                   text={"Cancel"}
                   loading={false}
+                  type="button"
                   onClick={() => close()}
                   className="w-[]"
                   style={{ width: "50%" }}
                 />
                 <PrimaryButton
-                  text={"Save Account"}
+                  text={mode === "edit" ? "Update Account" : "Save Account"}
                   loading={formik.isSubmitting}
                   className="w-1/2 "
-                  onClick={AddBankAccount}
+                  type="submit"
                   disabled={
                     formik.isSubmitting ||
                     !formik.isValid ||
@@ -281,7 +246,7 @@ const WithdrawalBankAccount: React.FC<Props> = ({
                   }
                 />
               </div>
-            </>
+            </form>
           )}
         </div>
       </div>

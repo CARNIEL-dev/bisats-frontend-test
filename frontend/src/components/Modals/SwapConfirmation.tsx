@@ -1,16 +1,15 @@
-import React, { useState } from "react";
 import ModalTemplate from "@/components/Modals/ModalTemplate";
-import { PrimaryButton } from "@/components/buttons/Buttons";
-import { typeofSwam } from "@/pages/p2p/components/Swap";
-import { formatNumber } from "@/utils/numberFormat";
-import { TriangleAlert } from "lucide-react";
-import Bisatsfetch from "@/redux/fetchWrapper";
 import Toast from "@/components/Toast";
-import { useNavigate } from "react-router-dom";
+import { PrimaryButton } from "@/components/buttons/Buttons";
 import { APP_ROUTES } from "@/constants/app_route";
+import Bisatsfetch from "@/redux/fetchWrapper";
 import { formatter } from "@/utils";
+import { formatNumber } from "@/utils/numberFormat";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Decimal from "decimal.js";
+import { TriangleAlert } from "lucide-react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   close: () => void;
@@ -108,6 +107,7 @@ const SwapConfirmation: React.FC<Props> = ({
         }
       );
 
+      console.log("Place order response", response);
       if (response.status) {
         return {
           success: true,
@@ -115,11 +115,11 @@ const SwapConfirmation: React.FC<Props> = ({
           message: "Order placed successfully",
         };
       } else {
-        return { success: false, message: response.message };
+        return { success: false, message: response.message, data: null };
       }
     } catch (err) {
       console.error("Error placing order:", err);
-      return { success: false, message: "Failed to place order." };
+      return { success: false, message: "Failed to place order.", data: null };
     }
   };
 
@@ -164,9 +164,17 @@ const SwapConfirmation: React.FC<Props> = ({
       queryClient.invalidateQueries({
         queryKey: ["userNotifications", userId],
       });
-      navigate(
-        `${APP_ROUTES.P2P.HOME}?type=${isBuy ? "buy" : "Sell"}&asset=${token}`
-      );
+      queryClient.invalidateQueries({
+        queryKey: ["searchAds"],
+        exact: false,
+      });
+
+      navigate(APP_ROUTES.P2P.RECEIPT, {
+        state: {
+          ...response.data,
+        },
+      });
+
       setShowConfirmation(false);
       setFees({
         network: "",
@@ -188,7 +196,7 @@ const SwapConfirmation: React.FC<Props> = ({
               isBuy ? "text-[#17A34A]" : "text-[#DC2625]"
             } text-[22px]  font-semibold text-left mt-2`}
           >
-            {isBuy ? "Buy" : "Sell"} {token}
+            {isBuy ? "Buy" : "Sell"} {isBuy ? currency : token}
           </h1>
           <div className="h-fit  border border-[#F9F9FB] bg-[#F9F9FB] rounded-[12px] py-3 px-5 my-5 text-[14px] leading-[24px]">
             <div className="flex justify-between items-center mb-1">

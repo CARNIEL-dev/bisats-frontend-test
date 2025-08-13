@@ -20,9 +20,8 @@ import {
 } from "@/redux/actions/walletActions";
 import { WalletState } from "@/redux/reducers/walletSlice";
 import { cn, formatter, getCurrencyBalance } from "@/utils";
-import { ChevronDown, Eye, EyeClosed } from "lucide-react";
+import { ChevronDown, Eye, EyeOff } from "lucide-react";
 import { ThreeDot } from "react-loading-indicators";
-import { getAppState } from "@/helpers";
 
 const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
   const {
@@ -96,13 +95,13 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
         <Button
           variant="default"
           disabled={isFetching}
-          className={cn("p-0! h-fit w-fit bg-primary/20 ")}
+          className={cn("p-0! size-10 rounded-full bg-primary/20 ")}
           onClick={toggleShowBalance}
         >
           {showBalance ? (
-            <EyeClosed className="!size-5" />
-          ) : (
             <Eye className="!size-5" />
+          ) : (
+            <EyeOff className="!size-5" />
           )}
         </Button>
       </div>

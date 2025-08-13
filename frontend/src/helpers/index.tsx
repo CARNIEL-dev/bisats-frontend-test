@@ -120,7 +120,8 @@ export const getLivePrice = () => {
 };
 
 export const setDepositTranscBreakDown = (breakDown: TDepositBreakDowns) => {
-  localStorage.setItem("_depositBreakDown", JSON.stringify(breakDown));
+  const data = encryptData(breakDown);
+  localStorage.setItem("_depositBreakDown", data);
 };
 
 export const getDepositBreakDown = () => {
@@ -130,7 +131,7 @@ export const getDepositBreakDown = () => {
 
   const depositBreakDown = localStorage.getItem("_depositBreakDown");
   if (depositBreakDown) {
-    return JSON.parse(localStorage.getItem("_depositBreakDown") ?? "");
+    return decryptData(depositBreakDown);
   }
 };
 

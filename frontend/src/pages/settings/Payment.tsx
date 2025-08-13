@@ -1,14 +1,13 @@
+import { WhiteTransparentButton } from "@/components/buttons/Buttons";
+import DeleteWithdrawalAccount from "@/components/Modals/DeleteWithdrawalAccount";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { WhiteTransparentButton } from "@/components/buttons/Buttons";
-import AddWithdrawalBankAccount from "@/components/Modals/WithdrawalBankAccount";
-import DeleteWithdrawalAccount from "@/components/Modals/DeleteWithdrawalAccount";
-import EditWithdrawalBankAccount from "@/components/Modals/EditWithDrawalBank";
+
+import ModalTemplate from "@/components/Modals/ModalTemplate";
+import WithdrawalBankAccount from "@/components/Modals/WithdrawalBankAccount";
 import { GetWallet } from "@/redux/actions/walletActions";
 import { WalletState } from "@/redux/reducers/walletSlice";
 import { Plus } from "lucide-react";
-import WithdrawalBankAccount from "@/components/Modals/WithdrawalBankAccount";
-import ModalTemplate from "@/components/Modals/ModalTemplate";
 
 const Payment = () => {
   const walletState: WalletState = useSelector((state: any) => state.wallet);
@@ -136,13 +135,6 @@ const Payment = () => {
           }
         />
       </ModalTemplate>
-
-      {/* {openEditBankAccount && (
-        <EditWithdrawalBankAccount
-          close={() => setOpenEditBankAccount(false)}
-          bank={selectedBank}
-        />
-      )} */}
     </div>
   );
 };

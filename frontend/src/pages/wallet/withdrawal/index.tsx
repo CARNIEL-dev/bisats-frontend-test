@@ -10,6 +10,7 @@ import Toast from "@/components/Toast";
 import Head from "@/pages/wallet/Head";
 import {
   GetUserBank,
+  GetWallet,
   Withdraw_Crypto,
   Withdraw_xNGN,
 } from "@/redux/actions/walletActions";
@@ -34,7 +35,7 @@ import { GET_WITHDRAWAL_LIMIT } from "@/redux/actions/userActions";
 import { WalletState } from "@/redux/reducers/walletSlice";
 import { formatter } from "@/utils";
 import { formatNumber } from "@/utils/numberFormat";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Decimal from "decimal.js";
 import { useFormik } from "formik";
 import SummaryCard from "@/components/shared/SummaryCard";
@@ -150,6 +151,8 @@ const NGNWithdrawal = ({ user, transaction_limits, userBalance }: PropsNGN) => {
   const account_level = user?.accountLevel as AccountLevel;
   const userTransactionLimits = bisats_limit[account_level];
 
+  const queryClient = useQueryClient();
+
   const {
     data: userbank,
     isError,
@@ -230,9 +233,16 @@ const NGNWithdrawal = ({ user, transaction_limits, userBalance }: PropsNGN) => {
         bankAccountId: values.bank,
       };
       await Withdraw_xNGN(payLoad)
-        .then((res) => {
+        .then(async (res) => {
           if (res?.status || res?.statusCode === 200) {
             Toast.success(res.message, "Withdrawal Initiated");
+            await Promise.all([
+              queryClient.invalidateQueries({
+                queryKey: ["userWalletHistory"],
+                exact: false,
+              }),
+              GetWallet(),
+            ]);
           } else {
             Toast.error(res.message, "");
           }
@@ -413,6 +423,8 @@ const CryptoWithdrawal = ({
   const account_level = user?.accountLevel as AccountLevel;
   const userTransactionLimits = bisats_limit[account_level];
 
+  const queryClient = useQueryClient();
+
   // SUB: Used up limit
   const usedUpLimit = useMemo(() => {
     return {
@@ -463,10 +475,6 @@ const CryptoWithdrawal = ({
           userBalance,
           `Amount cannot exceed your balance (${userBalance.toLocaleString()} ${asset})`
         )
-        // .max(
-        //   maxWithdrawalLimit,
-        //   `Amount exceeds your limit per withdrawal (xNGN ${maxWithdrawalLimit.toLocaleString()})`
-        // )
         .required("Amount is required"),
     }),
     onSubmit: async (values) => {
@@ -480,9 +488,16 @@ const CryptoWithdrawal = ({
         asset: getCryptoAssetId(formik.values.network) ?? "",
       };
       await Withdraw_Crypto(payload)
-        .then((res) => {
+        .then(async (res) => {
           if (res?.status || res?.statusCode === 200) {
             Toast.success(res.message, "Withdrawal Initiated");
+            await Promise.all([
+              queryClient.invalidateQueries({
+                queryKey: ["userWalletHistory"],
+                exact: false,
+              }),
+              GetWallet(),
+            ]);
           } else {
             Toast.error(res.message, "");
           }

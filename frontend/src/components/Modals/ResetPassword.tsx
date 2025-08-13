@@ -26,7 +26,7 @@ const ResetPasswordModal: React.FC<Props> = ({ close, open }) => {
     initialValues: { oldPassword: "", newPassword: "", confirmPassword: "" },
     validationSchema: ChangePasswordSchema,
     validateOnMount: false,
-    validateOnChange: false,
+    // validateOnChange: false,
     onSubmit: async (values) => {
       const payload = { ...values, userId: user?.userId };
       const response = await UpdatePassword(payload);
@@ -58,7 +58,7 @@ const ResetPasswordModal: React.FC<Props> = ({ close, open }) => {
               check={false}
               text="Old Password"
               value={formik.values.oldPassword}
-              onBlur={formik.handleBlur}
+              // onBlur={formik.handleBlur}
             />
           </div>
 
@@ -72,7 +72,7 @@ const ResetPasswordModal: React.FC<Props> = ({ close, open }) => {
               check={true}
               text="New Password"
               value={formik.values.newPassword}
-              onBlur={formik.handleBlur}
+              // onBlur={formik.handleBlur}
             />
           </div>
 
@@ -86,7 +86,7 @@ const ResetPasswordModal: React.FC<Props> = ({ close, open }) => {
               touched={formik.touched.confirmPassword}
               value={formik.values.confirmPassword}
               handleChange={formik.handleChange}
-              onBlur={formik.handleBlur}
+              // onBlur={formik.handleBlur}
             />
           </div>
           <div className="flex items-center w-full mt-5">
@@ -99,7 +99,7 @@ const ResetPasswordModal: React.FC<Props> = ({ close, open }) => {
             />
             <PrimaryButton
               text={"Proceed"}
-              disabled={formik.isSubmitting || !formik.isValid}
+              disabled={formik.isSubmitting || !formik.isValid || !formik.dirty}
               loading={formik.isSubmitting}
               className="w-1/2 ml-3"
             />

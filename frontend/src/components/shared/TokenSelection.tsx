@@ -12,7 +12,7 @@ import { formatNumber } from "@/utils/numberFormat";
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import Label from "@/components/Inputs/Label";
-import { Badge } from "../ui/badge";
+import { Badge } from "@/components/ui/badge";
 
 type IAProps = {
   value: string;

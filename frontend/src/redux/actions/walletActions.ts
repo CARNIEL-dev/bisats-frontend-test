@@ -248,9 +248,8 @@ export const AddBankAccountForWithdrawal = async (
         body: JSON.stringify(payload),
       }
     );
-    const data = response;
-    console.log(data);
-    return data;
+
+    return response;
   } catch (error) {
     // throw handleApiError(error);
     return error;
@@ -268,9 +267,8 @@ export const EditBankAccountForWithdrawal = async (
         body: JSON.stringify(payload),
       }
     );
-    const data = response;
-    console.log(data);
-    return data;
+
+    return response;
   } catch (error) {
     // throw handleApiError(error);
     return error;

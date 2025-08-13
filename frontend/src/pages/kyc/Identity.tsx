@@ -1,7 +1,7 @@
 import { MultiSelectDropDown } from "@/components/Inputs/MultiSelectInput";
 import PrimaryInput from "@/components/Inputs/PrimaryInput";
 import { PrimaryButton } from "@/components/buttons/Buttons";
-import StepFlow from "./StepFlow";
+import StepFlow from "@/pages/kyc/StepFlow";
 import { useEffect, useRef, useState } from "react";
 import Toast from "@/components/Toast";
 import { useFormik } from "formik";

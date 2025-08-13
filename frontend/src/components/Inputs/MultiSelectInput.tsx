@@ -4,6 +4,13 @@ import usePreventScroll from "@/hooks/use-preventScroll";
 import { cn } from "@/utils";
 import { Check, ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface IMultiSelectDropDownProps {
   parentId?: string;
@@ -139,6 +146,64 @@ export const MultiSelectDropDown = ({
           <p className="text-[#EF4444] text-xs">{error}</p>
         </div>
       )}
+    </div>
+  );
+};
+
+type SelectDropDownProps = {
+  options: { value: string; label: string | React.ReactNode }[];
+  // value: string;
+  onChange: (value: string) => void;
+  label?: string;
+  disabled?: boolean;
+  error?: string;
+  placeholder?: string;
+  className?: string;
+  defaultValue?: string;
+};
+export const SelectDropDown = ({
+  onChange,
+  options,
+  label,
+  disabled,
+  error,
+  placeholder,
+  className,
+  defaultValue,
+}: SelectDropDownProps) => {
+  return (
+    <div>
+      {label && (
+        <div className="mb-2">
+          <Label text={label} className="" />
+        </div>
+      )}
+
+      <div>
+        <Select
+          onValueChange={onChange}
+          defaultValue={defaultValue}
+          // value={value}
+          disabled={disabled}
+        >
+          <SelectTrigger
+            className={cn("w-full", error && "border-red-500", className)}
+          >
+            <SelectValue placeholder={placeholder || "Select option"} />
+          </SelectTrigger>
+          <SelectContent className="!w-full">
+            {options.map((item) => (
+              <SelectItem key={item.value} value={item.value}>
+                <div className="flex items-center gap-2 w-full">
+                  {item.label}
+                </div>
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      {error && <p className="text-red-500 text-xs mt-2.5">{error}</p>}
     </div>
   );
 };

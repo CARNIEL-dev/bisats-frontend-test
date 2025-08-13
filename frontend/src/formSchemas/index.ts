@@ -80,12 +80,6 @@ const LogInSchema = Yup.object().shape({
     .required(),
 });
 
-const TopUpSchema = Yup.object().shape({
-  amount: Yup.string()
-    .matches(/^\d*$/, "Amount must be a number")
-    .required("Amount is required"),
-});
-
 //HDR: Swap Schema
 const swapSchema = Yup.object().shape({
   // SUB: Amount
@@ -567,7 +561,6 @@ export {
   ResetPasswordSchema,
   SignupSchema,
   swapSchema,
-  TopUpSchema,
   VerificationSchema,
   levelThreeValidationSchema,
   getBankSchema,

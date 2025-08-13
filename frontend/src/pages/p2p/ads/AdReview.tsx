@@ -92,6 +92,16 @@ const AdReview: React.FC<AdsProps> = ({ formik }) => {
         </p>
         <p className="text-[#515B6E] font-semibold">{formik.values.currency}</p>
       </div>
+      <div className="mb-4 flex items-center justify-between w-full">
+        <p className="mb-1">
+          <span className="text-[#606C82] font-light mr-2">
+            Transaction fee
+          </span>
+        </p>
+        <p className="text-[#515B6E] font-semibold">
+          {formik.values.type === "Buy" ? "0.02%" : "0%"}
+        </p>
+      </div>
 
       <div className="w-full p-3 rounded-[8px] border border-[#F3F4F6] bg-[#F9F9FB] my-4">
         <h1 className="text-[#2B313B] text-[14px] leading-[24px] font-semibold">
@@ -125,7 +135,9 @@ const AdReview: React.FC<AdsProps> = ({ formik }) => {
           Your ad will be paused if market price goes higher than{" "}
           {formatNumber(formik.values.priceUpperLimit || 0)} NGN or Lower than{" "}
           {formatNumber(formik.values.priceLowerLimit || 0)} NGN.
-          {/* Your ad expires on {formik.values.expiryDate} by {formik.values.expiryTime} */}
+          {/* {formik.values.type.toLowerCase() === "buy"
+            ? " Your transaction fee will be 0.02% of the amount."
+            : "Your transaction fee is 0%."} */}
         </p>
       </div>
       <div className="flex items-center">

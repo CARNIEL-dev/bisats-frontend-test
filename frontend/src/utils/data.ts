@@ -38,16 +38,3 @@ export const toke_100_ngn = {
   SOL: 370,
   ETH: 20,
 };
-
-export const account_level_features = {
-  level_2: [
-    "Create sell ads (max 50M xNGN in crypto assets)",
-    "Create buy ads (max 50M NGN in crypto assets)",
-    "Max daily limit for withdrawal is 500m NGN and 1m USD in crypto assets",
-  ],
-  level_3: [
-    "Create sell ads (max 100M NGN in crypto assets)",
-    "Create buy ads (max 100M NGN in crypto assets)",
-    "Max daily limit for withdrawal is unlimited NGN and 3m USD in crypto",
-  ],
-};

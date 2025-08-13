@@ -17,10 +17,10 @@ const PageData = [
     tab: "Payment",
     link: APP_ROUTES.SETTINGS.PAYMENT,
   },
-  {
-    tab: "Support",
-    link: APP_ROUTES.SETTINGS.SUPPORT,
-  },
+  // {
+  //   tab: "Support",
+  //   link: APP_ROUTES.SETTINGS.SUPPORT,
+  // },
 ];
 
 const SettingsLayOut = () => {

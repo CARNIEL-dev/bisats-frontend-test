@@ -103,6 +103,25 @@ const getCurrencyBalance = ({
   }
 };
 
+/**
+ * Converts large numbers to compact/shortened format (e.g., 2000 → "2K")
+ * @param value - The number to format
+ * @returns Formatted string (e.g., "2K", "10M", "100B")
+ */
+const formatCompactNumber = (value: number): string => {
+  if (value < 1000) return value.toString(); // No conversion for < 1K
+
+  const units = ["K", "M", "B", "T"]; // Thousand, Million, Billion, Trillion
+  const unitIndex = Math.floor(Math.log10(value) / 3) - 1; // Determine unit index
+  const unit = units[unitIndex] || ""; // Fallback to empty string if beyond trillions
+  const scaledValue = value / Math.pow(1000, unitIndex + 1); // Scale the number
+
+  // Format to 1 decimal place if needed (e.g., 1.5K)
+  return scaledValue % 1 === 0
+    ? `${scaledValue}${unit}`
+    : `${scaledValue.toFixed(1)}${unit}`;
+};
+
 export {
   formatter,
   formatTime,
@@ -110,4 +129,5 @@ export {
   formatEmail,
   getCurrencyBalance,
   delay,
+  formatCompactNumber,
 };

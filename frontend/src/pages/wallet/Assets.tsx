@@ -13,7 +13,7 @@ import {
 import { WalletState } from "@/redux/reducers/walletSlice";
 import { cn, formatter, getCurrencyBalance } from "@/utils";
 import { ColumnDef } from "@tanstack/react-table";
-import { Eye, EyeClosed } from "lucide-react";
+import { Eye, EyeClosed, EyeOff } from "lucide-react";
 import React, { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -145,14 +145,14 @@ const Assets: React.FC = () => {
               variant="default"
               disabled={isFetching}
               className={cn(
-                "p-0! h-[1.5rem] w-fit bg-primary/20  hidden md:flex"
+                "p-0! h-[1.5rem] w-fit bg-primary/20  hidden lg:flex"
               )}
               onClick={toggleShowBalance}
             >
               {walletState.showBalance ? (
-                <EyeClosed className="!size-5" />
-              ) : (
                 <Eye className="!size-5" />
+              ) : (
+                <EyeOff className="!size-5" />
               )}
             </Button>
           </div>

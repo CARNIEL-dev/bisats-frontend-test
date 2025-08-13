@@ -2,7 +2,10 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { DeleteBankAccountForWithdrawal } from "@/redux/actions/walletActions";
 import { UserState } from "@/redux/reducers/userSlice";
-import { PrimaryButton, WhiteTransparentButton } from "../buttons/Buttons";
+import {
+  PrimaryButton,
+  WhiteTransparentButton,
+} from "@/components/buttons/Buttons";
 import Toast from "@/components/Toast";
 import ModalTemplate from "@/components/Modals/ModalTemplate";
 interface Props {

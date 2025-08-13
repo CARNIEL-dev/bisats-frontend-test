@@ -1,8 +1,11 @@
-import { useSelector } from "react-redux";
 import StudentCard from "@/assets/student-card.svg";
 import { APP_ROUTES } from "@/constants/app_route";
 import { UserState } from "@/redux/reducers/userSlice";
-import { account_level_features } from "@/utils/data";
+import { useSelector } from "react-redux";
+
+import { formatCompactNumber } from "@/utils";
+import { bisats_limit } from "@/utils/transaction_limits";
+import { useMemo } from "react";
 import { PrimaryButton, RedTransparentButton } from "../buttons/Buttons";
 import ModalTemplate from "./ModalTemplate";
 
@@ -12,6 +15,9 @@ interface Props {
 const KycUpgrade: React.FC<Props> = ({ close }) => {
   const userState: UserState = useSelector((state: any) => state.user);
   const user = userState;
+
+  const limit =
+    bisats_limit[user?.user?.accountLevel as keyof typeof bisats_limit];
 
   const clickHandler = () => {
     if (!user?.user?.phoneNumberVerified) {
@@ -26,6 +32,25 @@ const KycUpgrade: React.FC<Props> = ({ close }) => {
       window.location.href = APP_ROUTES.KYC.LEVEL3VERIFICATION;
     }
   };
+
+  const account_level_features = useMemo(() => {
+    return [
+      `Create sell ads (max ${formatCompactNumber(
+        limit.maximum_ad_creation_amount
+      )} xNGN in crypto assets)`,
+      `Create buy ads (max ${formatCompactNumber(
+        limit.maximum_ad_creation_amount
+      )} xNGN in crypto assets)`,
+      `Max daily limit for withdrawal is ${
+        user?.user?.accountLevel === "level_3"
+          ? "Unlimited"
+          : formatCompactNumber(limit.daily_withdrawal_limit_fiat)
+      } xNGN and ${formatCompactNumber(
+        limit.daily_withdrawal_limit_crypto
+      )} USD in crypto assets`,
+    ];
+  }, [limit]);
+
   return (
     <ModalTemplate onClose={close}>
       <div className="flex flex-col justify-center w-full text-center mx-auto">
@@ -46,10 +71,8 @@ const KycUpgrade: React.FC<Props> = ({ close }) => {
           features :
         </p>
         <div className="bg-[#F9F9FB] p-2 my-5 w-fit text-left border border-[#F9F9FB] rounded-[8px] text-[12px] text-[#515B6E]  h-fit flex flex-col space-y-2 ">
-          {account_level_features[
-            user?.user?.accountLevel === "level_3" ? "level_3" : "level_2"
-          ].map((feat, idx) => (
-            <p className="flex items-center">
+          {account_level_features.map((feat, idx) => (
+            <p className="flex items-center" key={idx}>
               <p className="w-[4px] bg-[#C2C7D2] rounded-[50%]  mr-1.5 h-[4px]"></p>
               <span>{feat}</span>
             </p>

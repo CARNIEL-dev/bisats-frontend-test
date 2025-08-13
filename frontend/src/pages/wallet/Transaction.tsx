@@ -1,17 +1,21 @@
 import { tokenLogos } from "@/assets/tokens";
 import Empty from "@/components/Empty";
-import { MultiSelectDropDown } from "@/components/Inputs/MultiSelectInput";
+import {
+  MultiSelectDropDown,
+  SelectDropDown,
+} from "@/components/Inputs/MultiSelectInput";
 import TransactionDetails from "@/components/Modals/TransactionDetails";
 import ErrorDisplay from "@/components/shared/ErrorDisplay";
 import TokenSelection from "@/components/shared/TokenSelection";
 import { Button } from "@/components/ui/Button";
 import { DataTable } from "@/components/ui/data-table";
+import { TokenData } from "@/data";
 import PreLoader from "@/layouts/PreLoader";
 import { useUserWalletHistory } from "@/redux/actions/walletActions";
 import { UserState } from "@/redux/reducers/userSlice";
 import { cn, formatter } from "@/utils";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUp, ArrowUpDown } from "lucide-react";
+import { ArrowUp, ArrowUpDown, Divide } from "lucide-react";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 
@@ -64,13 +68,13 @@ const Transactions: React.FC = () => {
 
   const {
     data: transactionsData = [],
-    isFetching,
     isError,
+    isLoading,
     error,
   } = useUserWalletHistory({
     userId,
-    reason: selectedType ?? "top-up",
-    asset: selectedAsset,
+    reason: selectedType === "-" ? "" : selectedType ?? "top-up",
+    asset: selectedAsset === "-" ? "" : selectedAsset,
     type: "",
     date: selectedDate,
     searchWord: searchTerm,
@@ -84,8 +88,38 @@ const Transactions: React.FC = () => {
       header: () => {
         return (
           <div className="flex  flex-col gap-1">
-            <p className="font-semibold text-gray-600 md:hidden">Asset</p>
-            <TokenSelection
+            <p className="font-semibold text-gray-600 lg:hidden">Asset</p>
+            <SelectDropDown
+              options={[
+                { label: "Asset", value: "-" },
+                ...TokenData.map((item) => ({
+                  label: (
+                    <div className="flex items-center gap-2">
+                      <img
+                        src={
+                          tokenLogos[item.tokenName as keyof typeof tokenLogos]
+                        }
+                        alt={item.tokenName}
+                        className="size-4"
+                      />
+                      <div>
+                        <p className="text-gray-500 font-medium">
+                          {item.tokenName}
+                        </p>
+                      </div>
+                    </div>
+                  ),
+                  value: item.tokenName,
+                })),
+              ]}
+              error={""}
+              onChange={(e) => {
+                setSelectedAsset(e);
+              }}
+              className="!h-[2.3rem] !w-fit hidden lg:flex"
+              defaultValue={selectedAsset ? selectedAsset : "-"}
+            />
+            {/* <TokenSelection
               value=""
               handleChange={() => {}}
               showBalance={false}
@@ -93,8 +127,8 @@ const Transactions: React.FC = () => {
               label=""
               touched={undefined}
               placeholder="Asset"
-              className="!h-[2.3rem] !w-fit"
-            />
+              className="!h-[2.3rem] !w-fit hidden lg:flex"
+            /> */}
           </div>
         );
       },
@@ -137,27 +171,20 @@ const Transactions: React.FC = () => {
       header: () => {
         return (
           <div className="flex  flex-col gap-1">
-            <p className="font-semibold text-gray-600 md:hidden">Type</p>
-            {/* <TokenSelection
-              title=""
-              handleChange={() => {}}
-              showBalance={false}
-              error={""}
-              label=""
-              touched={undefined}
-              placeholder="Type"
-              className="!h-[2.3rem] !w-fit"
-            /> */}
-            <MultiSelectDropDown
-              choices={[
+            <p className="font-semibold text-gray-600 lg:hidden">Type</p>
+
+            <SelectDropDown
+              options={[
+                { label: "Type", value: "-" },
                 { label: "Deposit", value: "top_up" },
                 { label: "Withdrawal", value: "withdrawal" },
               ]}
               error={""}
-              handleChange={() => {}}
-              touched={undefined}
-              placeholder="Type"
-              className="!h-[2.3rem] !w-fit"
+              onChange={(e) => {
+                setSelectedType(e);
+              }}
+              className="!h-[2.3rem] !w-fit hidden lg:flex"
+              defaultValue={selectedType ? selectedType : "-"}
             />
           </div>
         );
@@ -228,98 +255,13 @@ const Transactions: React.FC = () => {
     },
   ];
 
-  const getUniqueAssets = () => {
-    const uniqueAssets = ["USDT", "BTC", "ETH", "SOL", "xNGN"];
-    return [
-      {
-        value: "",
-        label: "All",
-        labelDisplay: "All",
-      },
-      ...uniqueAssets.map((asset) => ({
-        value: asset,
-        label: asset,
-        labelDisplay: asset,
-      })),
-    ];
-  };
-
-  // Fixed type options format
-  const getTypeOptions = () => [
-    {
-      value: "",
-      label: "All",
-      labelDisplay: "All",
-    },
-    {
-      value: "withdrawal",
-      label: "Withdrawal",
-      labelDisplay: "Withdrawal",
-    },
-    {
-      value: "top-up",
-      label: "Deposit",
-      labelDisplay: "Deposit",
-    },
-  ];
-
-  // Fixed sort options format
-  const getSortOptions = () => [
-    {
-      value: "",
-      label: "None",
-      labelDisplay: "None",
-    },
-    {
-      value: "price",
-      label: "Price",
-      labelDisplay: "Price",
-    },
-    {
-      value: "date",
-      label: "Date",
-      labelDisplay: "Date",
-    },
-  ];
-  const handleAssetChange = (asset: string) => {
-    setSelectedAsset(asset);
-  };
-
-  const handleTypeChange = (type: string) => {
-    setSelectedType(type);
-  };
-
   return (
     <div>
-      {/* <div className="hidden md:block mb-6">
-        <div className="flex flex-wrap items-end gap-4 py-5">
-          <div className="xl:w-40 lg:w-28 md:w-24">
-            <MultiSelectDropDown
-              title="All"
-              choices={getUniqueAssets()}
-              handleChange={handleAssetChange}
-              label="Assets"
-              error={null}
-              touched={false}
-            />
-          </div>
-          <div className="xl:w-40 lg:w-28 md:w-24">
-            <MultiSelectDropDown
-              title="All"
-              choices={getTypeOptions()}
-              handleChange={handleTypeChange}
-              label="Type"
-              error={null}
-              touched={false}
-            />
-          </div>
-        </div>
-      </div> */}
-      {isFetching ? (
+      {isLoading ? (
         <div className="h-[40dvh] grid place-content-center">
-          <PreLoader />
+          <PreLoader primary={false} />
         </div>
-      ) : isError ? (
+      ) : isError && transactionsData?.length < 0 ? (
         <div className="h-[40dvh] grid place-content-center">
           <ErrorDisplay
             message={error?.message || "Failed to load wallet transactions"}
@@ -327,7 +269,7 @@ const Transactions: React.FC = () => {
             showIcon={false}
           />
         </div>
-      ) : transactionsData?.length === 0 ? (
+      ) : transactionsData?.length === 0 && !selectedAsset && !selectedType ? (
         <Empty text="No transactions found" />
       ) : (
         <>

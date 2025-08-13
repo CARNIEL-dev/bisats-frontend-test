@@ -11,8 +11,6 @@ const UserInfo = () => {
   const user = userState.user;
   const [loading, setLoading] = useState(false);
   const [userDetails, setUserDetails] = useState({
-    firstName: user?.firstName,
-    lastName: user?.lastName,
     userName: "",
   });
 

@@ -41,12 +41,12 @@ const KycManager: React.FC<TKycManager> = ({ action, func, children }) => {
     const rules = KYC_RULES[level];
 
     if (level === 0) {
-      setModal("level_1");
+      setModal("kycVerification");
       return;
     }
 
     if (!rules?.allowedActions.includes(action)) {
-      setModal(level === 1 ? "level_2" : "level_3");
+      setModal("upgrade");
       return;
     }
 
@@ -80,8 +80,8 @@ const KycManager: React.FC<TKycManager> = ({ action, func, children }) => {
   return (
     <>
       {children(validateAndExecute)}
-      {modal === "level_1" && <KycVerification close={closeModal} />}
-      {modal === "level_2" && <KycUpgrade close={closeModal} />}
+      {modal === "kycVerification" && <KycVerification close={closeModal} />}
+      {modal === "upgrade" && <KycUpgrade close={closeModal} />}
 
       {Boolean(modal === "2fa" || modal === "2faPIN") && (
         <SecurityVerification

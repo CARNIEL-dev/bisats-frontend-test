@@ -364,10 +364,11 @@ export const UpdateUserName = async (payload: {
   userName?: string;
   deviceToken?: string;
 }) => {
-  const user = getUser();
+  const userId = getUserId();
+
   try {
     const response = await Bisatsfetch(
-      `/api/v1/user/${user.userId}/update-profile`,
+      `/api/v1/user/${userId}/update-profile`,
       {
         method: "PUT",
 

@@ -3,7 +3,6 @@ import { MultiSelectDropDown } from "@/components/Inputs/MultiSelectInput";
 import PrimaryInput from "@/components/Inputs/PrimaryInput";
 import Toast from "@/components/Toast";
 import { APP_ROUTES } from "@/constants/app_route";
-import { TopUpSchema } from "@/formSchemas";
 import { getUserTokenData, setDepositTranscBreakDown } from "@/helpers";
 import Head from "@/pages/wallet/Head";
 import { DepositTranscBreakDown } from "@/redux/actions/walletActions";
@@ -16,7 +15,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 import CopyDisplay from "@/components/shared/CopyDisplay";
 import TokenSelection from "@/components/shared/TokenSelection";
 import KycManager from "@/pages/kyc/KYCManager";
-import { ACTIONS } from "@/utils/transaction_limits";
+import { formatter } from "@/utils";
+import { ACTIONS, bisats_limit } from "@/utils/transaction_limits";
+import * as Yup from "yup";
 
 export type TNetwork = {
   label: string;
@@ -40,6 +41,11 @@ const DepositPage = () => {
   const navigate = useNavigate();
   const user: UserState = useSelector((state: any) => state.user);
 
+  const maxDeposit = useMemo(() => {
+    return bisats_limit[user?.user?.accountLevel as keyof typeof bisats_limit]
+      .max_deposit_per_transaction_fiat;
+  }, [user?.user?.accountLevel]);
+
   useEffect(() => {
     const tokenList = getUserTokenData();
     for (let token of tokenList) {
@@ -51,10 +57,30 @@ const DepositPage = () => {
     }
   }, [selectedToken]);
 
+  const depositSchema = Yup.object().shape({
+    amount: Yup.number()
+      .transform((value, originalValue) => {
+        if (originalValue === "" || isNaN(originalValue)) return undefined;
+        return Number(originalValue);
+      })
+      .moreThan(0, "Amount must be greater than 0")
+
+      .required("Amount is required")
+      .test(
+        "max-deposit",
+        `Amount cannot exceed xNGN ${formatter({}).format(maxDeposit)}`,
+        (value) => {
+          if (!value) return true;
+          const numericValue = Number(value);
+          return numericValue <= maxDeposit;
+        }
+      ),
+  });
+
   //   HDR: FORMIK
   const formik = useFormik({
     initialValues: { amount: "" },
-    validationSchema: TopUpSchema,
+    validationSchema: depositSchema,
     onSubmit: async (values) => {
       setIsLoading(true);
       const { ...payload } = values;
@@ -93,33 +119,30 @@ const DepositPage = () => {
         }
       />
 
-      <form className="mt-10" onSubmit={formik.handleSubmit}>
+      <div className="mt-10">
         <TokenSelection
-          value={selectedToken}
-          label={"Select Asset"}
+          label="Select Asset"
           error={undefined}
           touched={undefined}
           handleChange={(e) => {
             setSelectedToken(e);
-            setSelectedNetworks("");
           }}
+          value={selectedToken}
+          placeholder="Select an asset"
         />
-
-        {selectedToken === "xNGN" ? (
+        {selectedToken === "xNGN" && (
           <div className="space-y-4 mt-2">
             <PrimaryInput
               className={"w-full"}
               label={"Amount"}
               placeholder="Enter amount"
               name="amount"
+              type="number"
               error={formik.errors.amount}
               value={formik.values.amount}
               touched={formik.touched.amount}
               onChange={(e) => {
-                const value = e.target.value;
-                if (/^\d*$/.test(value)) {
-                  formik.setFieldValue("amount", value);
-                }
+                formik.setFieldValue("amount", e.target.value);
               }}
             />
             <KycManager action={ACTIONS.DEPOSIT_NGN} func={formik.handleSubmit}>
@@ -133,22 +156,22 @@ const DepositPage = () => {
               )}
             </KycManager>
           </div>
-        ) : (
-          <div className="my-3">
-            <MultiSelectDropDown
-              parentId={""}
-              value={selectedNetwork}
-              placeholder="Select option"
-              choices={networks}
-              error={undefined}
-              touched={undefined}
-              label={"Select Network"}
-              handleChange={(e) => setSelectedNetworks(e)}
-            />
-          </div>
         )}
+
         {selectedToken && selectedToken !== "xNGN" && (
           <div>
+            <div className="my-3">
+              <MultiSelectDropDown
+                parentId={""}
+                value={selectedNetwork}
+                placeholder="Select option"
+                choices={networks}
+                error={undefined}
+                touched={undefined}
+                label={"Select Network"}
+                handleChange={(e) => setSelectedNetworks(e)}
+              />
+            </div>
             <CopyDisplay
               title="Wallet Address"
               text={getAddress}
@@ -166,20 +189,20 @@ const DepositPage = () => {
                 <path
                   d="M7.9987 14.6663C11.6654 14.6663 14.6654 11.6663 14.6654 7.99967C14.6654 4.33301 11.6654 1.33301 7.9987 1.33301C4.33203 1.33301 1.33203 4.33301 1.33203 7.99967C1.33203 11.6663 4.33203 14.6663 7.9987 14.6663Z"
                   stroke="#858FA5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
                 <path
                   d="M8 5.33301V8.66634"
                   stroke="#858FA5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
                 <path
                   d="M7.99609 10.667H8.00208"
                   stroke="#858FA5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
               </svg>
 
@@ -200,7 +223,7 @@ const DepositPage = () => {
             </div>
           </div>
         )}
-      </form>
+      </div>
     </div>
   );
 };

@@ -6,13 +6,18 @@ import { MultiSelectDropDown } from "@/components/Inputs/MultiSelectInput";
 import Toast from "@/components/Toast";
 import { APP_ROUTES } from "@/constants/app_route";
 import { getDepositBreakDown } from "@/helpers";
-import { ConfirmDeposit, TopUpNGNBalance } from "@/redux/actions/walletActions";
+import {
+  ConfirmDeposit,
+  GetWallet,
+  TopUpNGNBalance,
+} from "@/redux/actions/walletActions";
 import { UserState } from "@/redux/reducers/userSlice";
 import { formatNumber } from "@/utils/numberFormat";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Head from "@/pages/wallet/Head";
+import { useQueryClient } from "@tanstack/react-query";
 
 type TBank = {
   id: string;
@@ -22,17 +27,21 @@ type TBank = {
 };
 const TransactionBreakdown = () => {
   const user: UserState = useSelector((state: any) => state.user);
-  const [isBreakDown, setIsBreakDown] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [confirmLoading, setConfirmLoading] = useState(false);
-  const [cancelLoading, setCancelLoading] = useState(false);
-
+  const [loading, setLoading] = useState({
+    confirmed: false,
+    cancel: false,
+    topUp: false,
+  });
+  const [searchParams, setSearchParams] = useSearchParams();
   const [selectedBank, setSelectedBank] = useState<TBank>();
-
   const [selectedBankID, setSelectedBankID] = useState("");
-  const [paymentID, setPaymentID] = useState("");
+
+  const queryClient = useQueryClient();
+
+  const paymentID = searchParams.get("paymentId") || "";
 
   const TransBreakDown = getDepositBreakDown();
+
   const banks = TransBreakDown.bankAccounts.map((tb: any) => ({
     value: tb?.id,
     label: (
@@ -60,35 +69,43 @@ const TransactionBreakdown = () => {
   }, [selectedBankID]);
 
   const onIntiateTopUp = async () => {
-    setLoading(true);
+    setLoading((prev) => ({ ...prev, topUp: true }));
     const response = await TopUpNGNBalance({
       userId: `${user?.user?.userId}`,
       amount: Number(TransBreakDown?.amount),
       bankAccountId: selectedBankID,
     });
-    setLoading(false);
+    setLoading((prev) => ({ ...prev, topUp: false }));
     if (response?.status) {
-      setPaymentID(response?.data?.id);
-      setIsBreakDown(true);
+      setSearchParams({ paymentId: response?.data?.id });
       Toast.success("", response?.message);
     } else {
       Toast.error(response.message, "");
     }
   };
 
-  const ConfirmPayment = async (prop: string) => {
-    {
-      prop === "confirmed" ? setConfirmLoading(true) : setCancelLoading(true);
+  const ConfirmPayment = async (prop: "confirmed" | "cancel") => {
+    setLoading((prev) => ({ ...prev, [prop]: true }));
+    if (!paymentID) {
+      Toast.error("Payment not found", "Failed");
+      return;
     }
     const response = await ConfirmDeposit({
       userId: `${user?.user?.userId}`,
       status: `${prop}`,
       paymentId: paymentID,
     });
-    {
-      prop === "confirmed" ? setConfirmLoading(false) : setCancelLoading(false);
-    }
+    setLoading((prev) => ({ ...prev, [prop]: false }));
     if (response?.status) {
+      prop === "confirmed" &&
+        (await Promise.all([
+          queryClient.invalidateQueries({
+            queryKey: ["userWalletHistory"],
+            exact: false,
+          }),
+          GetWallet(),
+        ]));
+
       navigate(APP_ROUTES.WALLET.HOME);
       Toast.success("", response?.message);
     } else {
@@ -100,14 +117,14 @@ const TransactionBreakdown = () => {
     <div>
       <div>
         <Head
-          header={isBreakDown ? "Confirm Deposit" : "Select Bank"}
+          header={paymentID ? "Confirm Deposit" : "Select Bank"}
           subHeader={
-            isBreakDown
+            paymentID
               ? "Make sure to send the exact amount to avoid loss of funds."
               : "Select a bank you will be making payments into"
           }
         />
-        {isBreakDown ? (
+        {paymentID ? (
           <>
             <div className="py-5">
               <div className="flex justify-between items-center mb-3">
@@ -161,13 +178,13 @@ const TransactionBreakdown = () => {
             </div>
             <PrimaryButton
               text={"I have made payment"}
-              loading={confirmLoading}
+              loading={loading?.confirmed}
               className="w-full"
               onClick={() => ConfirmPayment("confirmed")}
             />
             <WhiteTransparentButton
               text={"Cancel"}
-              loading={cancelLoading}
+              loading={loading?.cancel}
               className="w-full mt-3"
               onClick={() => ConfirmPayment("cancel")}
             />
@@ -183,12 +200,14 @@ const TransactionBreakdown = () => {
                   touched={undefined}
                   label={"Select Bank"}
                   handleChange={(prop) => setSelectedBankID(prop)}
+                  value={selectedBankID}
+                  defaultLabelDisplay
                 />
               </div>
             </div>
             <PrimaryButton
               text={"Proceed"}
-              loading={loading}
+              loading={loading.topUp}
               className="w-full "
               onClick={() => onIntiateTopUp()}
               disabled={!selectedBankID}
