@@ -21,10 +21,10 @@ import { UpdateAdStatusResponse } from "@/pages/p2p/MyAds";
 import { useCryptoRates } from "@/redux/actions/walletActions";
 import { cn, formatter } from "@/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import Divider from "../shared/Divider";
-import { Badge } from "../ui/badge";
+import Divider from "@/components/shared/Divider";
+import { Badge } from "@/components/ui/badge";
 import PreLoader from "@/layouts/PreLoader";
-import ErrorDisplay from "../shared/ErrorDisplay";
+import ErrorDisplay from "@/components/shared/ErrorDisplay";
 
 interface Props {
   close: () => void;
@@ -79,6 +79,8 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
     return liveRate![ad?.asset as keyof typeof liveRate];
   }, [ad?.asset, liveRate]);
 
+  const maxAmount = userTransactionLimits?.maximum_ad_creation_amount;
+
   //   HDR: SCHEMA
   const AdSchema = Yup.object().shape({
     price: Yup.number()
@@ -106,16 +108,18 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
 
         if (type === "buy") {
           // For buy transactions, just check against the max amount directly
-          if (value || 0 > maxAmount) {
+          if (value && value > maxAmount) {
             return this.createError({
-              message: `Amount must not exceed ${formatNumber(maxAmount)} xNGN`,
+              message: `Amount must not exceed ${formatNumber(
+                maxAmount
+              )} xNGN ${typeof maxAmount}`,
             });
           }
         } else if (type === "sell") {
           // For sell transactions, check the naira equivalent
           // Use your rate function here
 
-          const prevAmout = (ad?.amount || 0) + (value || 0);
+          const prevAmout = (ad?.amount || 0) + (value ? Number(value) : 0);
           if (Number(rate) * prevAmout > maxAmount) {
             return this.createError({
               message: `Amount must not exceed  ${formatNumber(

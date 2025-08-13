@@ -80,20 +80,23 @@ const KycManager: React.FC<TKycManager> = ({ action, func, children }) => {
   return (
     <>
       {children(validateAndExecute)}
+      {modal === "level_1" && <KycVerification close={closeModal} />}
+      {modal === "level_2" && <KycUpgrade close={closeModal} />}
 
-      <KycVerification close={closeModal} open={modal === "level_1"} />
+      {Boolean(modal === "2fa" || modal === "2faPIN") && (
+        <SecurityVerification
+          key={secMode}
+          func={func}
+          close={closeModal}
+          mode={modal === "2fa" ? "TWO_FA_ONLY" : "TWO_FA_AND_PIN"}
+        />
+      )}
 
-      <KycUpgrade close={closeModal} open={modal === "level_2"} />
-
-      <SecurityVerification
-        key={secMode}
-        func={func}
-        close={closeModal}
-        open={Boolean(modal === "2fa" || modal === "2faPIN")}
-        mode={modal === "2fa" ? "TWO_FA_ONLY" : "TWO_FA_AND_PIN"}
-      />
-
-      <ModalTemplate isOpen={modal === "required2fa"} onClose={closeModal}>
+      <ModalTemplate
+        isOpen={modal === "required2fa"}
+        primary={false}
+        onClose={closeModal}
+      >
         <div className="flex flex-col gap-2 my-3">
           <div className="rounded-full size-12 grid bg-gray-100 place-items-center border">
             <Lock className="text-red-600" />

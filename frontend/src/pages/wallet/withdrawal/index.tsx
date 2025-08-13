@@ -38,6 +38,7 @@ import { useQuery } from "@tanstack/react-query";
 import Decimal from "decimal.js";
 import { useFormik } from "formik";
 import SummaryCard from "@/components/shared/SummaryCard";
+import ModalTemplate from "@/components/Modals/ModalTemplate";
 
 export type TNetwork = {
   label: string;
@@ -274,6 +275,7 @@ const NGNWithdrawal = ({ user, transaction_limits, userBalance }: PropsNGN) => {
                   formik.setFieldValue("bank", e);
                 }}
                 value={formik.values.bank}
+                defaultLabelDisplay
               />
               <div className="mt-4">
                 <PrimaryInput
@@ -363,24 +365,29 @@ const NGNWithdrawal = ({ user, transaction_limits, userBalance }: PropsNGN) => {
         )}
       </div>
 
-      <WithdrawalBankAccount
-        open={addBankModal}
-        close={() => setAddBankModal(false)}
-        mode="add"
-      />
-
-      <WithdrawalConfirmationNGN
-        open={withdrawalModal}
-        close={() => setWithDrawalModal(false)}
-        transactionFee={`${userTransactionLimits?.charge_on_single_withdrawal_fiat}`}
-        withdrawalAmount={`${formik.values.amount}`}
-        total={`${
-          Number(formik.values.amount ?? 0) +
-          userTransactionLimits?.charge_on_single_withdrawal_fiat
-        }`}
-        submit={formik.submitForm}
-        isLoading={formik.isSubmitting}
-      />
+      <ModalTemplate
+        isOpen={addBankModal}
+        onClose={() => setAddBankModal(false)}
+        primary={false}
+      >
+        <WithdrawalBankAccount
+          mode="add"
+          close={() => setAddBankModal(false)}
+        />
+      </ModalTemplate>
+      {withdrawalModal && (
+        <WithdrawalConfirmationNGN
+          close={() => setWithDrawalModal(false)}
+          transactionFee={`${userTransactionLimits?.charge_on_single_withdrawal_fiat}`}
+          withdrawalAmount={`${formik.values.amount}`}
+          total={`${
+            Number(formik.values.amount ?? 0) +
+            userTransactionLimits?.charge_on_single_withdrawal_fiat
+          }`}
+          submit={formik.submitForm}
+          isLoading={formik.isSubmitting}
+        />
+      )}
     </>
   );
 };

@@ -8,9 +8,8 @@ import ModalTemplate from "./ModalTemplate";
 
 interface Props {
   close: () => void;
-  open: boolean;
 }
-const KycUpgrade: React.FC<Props> = ({ close, open }) => {
+const KycUpgrade: React.FC<Props> = ({ close }) => {
   const userState: UserState = useSelector((state: any) => state.user);
   const user = userState;
 
@@ -28,7 +27,7 @@ const KycUpgrade: React.FC<Props> = ({ close, open }) => {
     }
   };
   return (
-    <ModalTemplate onClose={close} isOpen={open}>
+    <ModalTemplate onClose={close}>
       <div className="flex flex-col justify-center w-full text-center mx-auto">
         <img
           src={StudentCard}

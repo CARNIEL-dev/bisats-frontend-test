@@ -22,6 +22,7 @@ interface IMultiSelectDropDownProps {
   value?: string | React.ReactNode;
   placeholder?: string;
   className?: string;
+  defaultLabelDisplay?: boolean;
 }
 
 export const MultiSelectDropDown = ({
@@ -36,6 +37,7 @@ export const MultiSelectDropDown = ({
   value,
   placeholder,
   className,
+  defaultLabelDisplay,
 }: IMultiSelectDropDownProps) => {
   const { ref, visible, setVisible } = useClickOutside(false);
 
@@ -45,7 +47,9 @@ export const MultiSelectDropDown = ({
   usePreventScroll(visible);
 
   useEffect(() => {
-    setSelected(String(value ?? ""));
+    if (!defaultLabelDisplay) {
+      setSelected(String(value ?? ""));
+    }
   }, [value]);
 
   return (

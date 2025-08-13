@@ -18,10 +18,15 @@ import { useSelector } from "react-redux";
 interface Props {
   close: () => void;
   enable?: boolean;
+  open?: boolean;
 }
 type TCurrentDisplay = "QRCode" | "Manual" | "Code";
 
-const TwoFactorAuthModal: React.FC<Props> = ({ close, enable = true }) => {
+const TwoFactorAuthModal: React.FC<Props> = ({
+  close,
+  enable = true,
+  open = true,
+}) => {
   const userState: UserState = useSelector((state: any) => state.user);
   const user = userState.user;
   const [code, setCode] = useState("");
@@ -189,7 +194,7 @@ const TwoFactorAuthModal: React.FC<Props> = ({ close, enable = true }) => {
   };
 
   return (
-    <ModalTemplate onClose={() => close()} isOpen>
+    <ModalTemplate onClose={() => close()} isOpen={open}>
       {currentDisplay === "QRCode" && QRCodeScan()}
       {currentDisplay === "Manual" && ManualSetup()}
       {currentDisplay === "Code" && (

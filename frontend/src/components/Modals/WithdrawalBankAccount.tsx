@@ -15,27 +15,28 @@ import {
 } from "@/redux/actions/walletActions";
 import { UserState } from "@/redux/reducers/userSlice";
 import { useFormik } from "formik";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 
 interface Props {
-  close: () => void;
-  open: boolean;
   mode: "add" | "edit";
   defaultBank?: TBank;
+  close: () => void;
 }
 
 const WithdrawalBankAccount: React.FC<Props> = ({
-  close,
-  open,
   mode,
   defaultBank,
+  close,
 }) => {
   const userState: UserState = useSelector((state: any) => state.user);
   const user = userState.user;
 
   const [bankAccountName, setBankAccountName] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // prevent duplicate calls for the same pair
+  const lastKeyRef = useRef<string | null>(null);
 
   // SUB: Query
   const {
@@ -102,10 +103,10 @@ const WithdrawalBankAccount: React.FC<Props> = ({
   const formik = useFormik({
     initialValues: {
       userId: user?.userId as string,
-      accountNumber: "",
-      accountName: "",
-      bankCode: defaultBank?.bankCode ?? "",
-      bankName: defaultBank?.bankName ?? "",
+      accountNumber: defaultBank?.accountNumber || "",
+      accountName: defaultBank?.accountName || "",
+      bankCode: defaultBank?.bankCode || "",
+      bankName: defaultBank?.bankName || "",
     },
     validateOnMount: false,
     validateOnChange: true,
@@ -133,10 +134,15 @@ const WithdrawalBankAccount: React.FC<Props> = ({
       bankCode,
     })
       .then((res) => {
-        formik.setFieldValue("accountName", res?.data?.account_name);
+        if (res?.status) {
+          formik.setFieldValue("accountName", res?.data?.account_name);
+          formik.setFieldTouched("accountName", true, false);
+        } else {
+          formik.setFieldError("accountNumber", res?.message);
+        }
       })
       .catch((err) => {
-        console.log(err);
+        formik.setFieldError("accountNumber", err?.message);
       })
       .finally(() => {
         setLoading(false);
@@ -153,28 +159,46 @@ const WithdrawalBankAccount: React.FC<Props> = ({
     formik.setFieldValue("bankName", value.bankName);
   };
 
+  // pull what you need once per render
+  const accountNumber = (formik.values.accountNumber || "").replace(/\s/g, "");
+  const bankCode = formik.values.bankCode || "";
+  const isAcctTouched = !!formik.touched.accountNumber;
+
   useEffect(() => {
-    if (
-      formik.values?.accountNumber &&
-      formik.values?.bankCode &&
-      formik.values?.accountNumber.length >= 10 &&
-      !loading
-    ) {
-      validateAccountName({
-        accountNumber: formik.values?.accountNumber,
-        bankCode: formik.values?.bankCode,
-      });
-    }
-  }, [formik.values?.accountNumber, formik.values?.bankCode]);
+    // run only after the field has been touched (blurred)
+    if (!isAcctTouched) return;
+
+    // basic guards
+    if (loading) return;
+    if (!bankCode) return;
+    if (accountNumber.length < 10) return;
+
+    // avoid re-validating same (bankCode, accountNumber)
+    const key = `${bankCode}:${accountNumber}`;
+    if (lastKeyRef.current === key) return;
+    lastKeyRef.current = key;
+
+    validateAccountName({ accountNumber, bankCode });
+  }, [isAcctTouched, accountNumber, bankCode, loading, validateAccountName]);
+
+  // useEffect(() => {
+  //   if (
+  //     formik.values?.accountNumber &&
+  //     formik.values?.bankCode &&
+  //     formik.values?.accountNumber.length >= 10 &&
+  //     !loading
+  //   ) {
+  //     validateAccountName({
+  //       accountNumber: formik.values?.accountNumber,
+  //       bankCode: formik.values?.bankCode,
+  //     });
+  //   }
+  // }, [formik.values?.accountNumber, formik.values?.bankCode]);
+
+  // console.log("Initial value", initialValues);
 
   return (
-    <ModalTemplate
-      onClose={() => {
-        close();
-        formik.resetForm();
-      }}
-      isOpen={open}
-    >
+    <>
       <div className="mt-2">
         <h4 className="text-[#2B313B] text-[18px] lg:text-[22px] leading-[32px] font-semibold">
           <span className="capitalize">{mode}</span> Withdrawal Bank Account
@@ -211,24 +235,27 @@ const WithdrawalBankAccount: React.FC<Props> = ({
                   className={"w-full "}
                   label={"Account Number"}
                   error={formik.errors.accountNumber ?? ""}
-                  touched={undefined}
+                  touched={formik.touched.accountNumber}
                   onChange={(e) => {
                     const value = e.target.value;
                     const numericValue = value.replace(/\D/g, "");
                     formik.setFieldValue("accountNumber", numericValue);
                   }}
                   value={formik.values.accountNumber}
+                  onBlur={formik.handleBlur("accountNumber")}
                 />
 
                 <PrimaryInput
                   className={"w-full "}
                   label={"Account Name"}
                   loading={loading}
-                  defaultValue={formik.values.accountName ?? ""}
+                  value={formik.values.accountName || ""}
                   readOnly
                   // disabled
-                  error={formik.errors.accountName ?? ""}
-                  touched={undefined}
+                  error={
+                    formik.touched.accountName && formik.errors.accountName
+                  }
+                  touched={formik.touched.accountName}
                   onChange={(e) => setBankAccountName(e.target.value)}
                   info="Ensure your Bank Account Name matches exactly with your Account Name on Bisats"
                 />
@@ -237,7 +264,7 @@ const WithdrawalBankAccount: React.FC<Props> = ({
                 <WhiteTransparentButton
                   text={"Cancel"}
                   loading={false}
-                  onClick={close}
+                  onClick={() => close()}
                   className="w-[]"
                   style={{ width: "50%" }}
                 />
@@ -258,7 +285,7 @@ const WithdrawalBankAccount: React.FC<Props> = ({
           )}
         </div>
       </div>
-    </ModalTemplate>
+    </>
   );
 };
 

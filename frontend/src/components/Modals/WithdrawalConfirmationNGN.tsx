@@ -8,7 +8,6 @@ interface Props {
   total: string;
   submit?: () => void;
   isLoading?: boolean;
-  open?: boolean;
 }
 const WithdrawalConfirmationNGN: React.FC<Props> = ({
   close,
@@ -17,10 +16,9 @@ const WithdrawalConfirmationNGN: React.FC<Props> = ({
   total,
   submit,
   isLoading,
-  open,
 }) => {
   return (
-    <ModalTemplate onClose={close} isOpen={open}>
+    <ModalTemplate onClose={close}>
       <div className="flex flex-col justify-center w-full text-center mx-auto">
         <h1 className="text-[#0A0E12] text-[22px] leading-[32px] font-semibold text-left mt-5">
           Withdrawal Confirmation

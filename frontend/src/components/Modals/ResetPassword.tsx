@@ -1,3 +1,7 @@
+import {
+  PrimaryButton,
+  WhiteTransparentButton,
+} from "@/components/buttons/Buttons";
 import AuthPasswordInput from "@/components/Inputs/AuthPasswordInput";
 import ModalTemplate from "@/components/Modals/ModalTemplate";
 import Toast from "@/components/Toast";
@@ -7,15 +11,12 @@ import { UserState } from "@/redux/reducers/userSlice";
 import { useFormik } from "formik";
 import React from "react";
 import { useSelector } from "react-redux";
-import {
-  PrimaryButton,
-  WhiteTransparentButton,
-} from "@/components/buttons/Buttons";
 
 interface Props {
   close: () => void;
+  open?: boolean;
 }
-const ResetPasswordModal: React.FC<Props> = ({ close }) => {
+const ResetPasswordModal: React.FC<Props> = ({ close, open }) => {
   const userState: UserState = useSelector((state: any) => state.user);
   const user = userState.user;
 
@@ -41,7 +42,7 @@ const ResetPasswordModal: React.FC<Props> = ({ close }) => {
     },
   });
   return (
-    <ModalTemplate onClose={close}>
+    <ModalTemplate onClose={close} isOpen={open}>
       <div className="mt-2">
         <h1 className="text-[#2B313B] text-[18px] lg:text-[22px] leading-[32px] font-semibold">
           Reset Password

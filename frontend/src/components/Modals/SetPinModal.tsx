@@ -14,9 +14,10 @@ import ModalTemplate from "@/components/Modals/ModalTemplate";
 interface Props {
   close: () => void;
   type: "create" | "change";
+  open?: boolean;
 }
 
-const SetPinModal: React.FC<Props> = ({ close, type }) => {
+const SetPinModal: React.FC<Props> = ({ close, type, open }) => {
   const userState: UserState = useSelector((state: any) => state.user);
   const user = userState.user;
   const [oldPin, setOldPin] = useState("");
@@ -68,7 +69,7 @@ const SetPinModal: React.FC<Props> = ({ close, type }) => {
   };
 
   return (
-    <ModalTemplate onClose={close}>
+    <ModalTemplate onClose={close} isOpen={open}>
       <div
         className="flex flex-col justify-center w-full mx-auto"
         onClick={handleModalContentClick}

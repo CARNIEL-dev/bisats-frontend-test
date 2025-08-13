@@ -8,14 +8,13 @@ import { GetWallet } from "@/redux/actions/walletActions";
 import { WalletState } from "@/redux/reducers/walletSlice";
 import { Plus } from "lucide-react";
 import WithdrawalBankAccount from "@/components/Modals/WithdrawalBankAccount";
+import ModalTemplate from "@/components/Modals/ModalTemplate";
 
 const Payment = () => {
   const walletState: WalletState = useSelector((state: any) => state.wallet);
 
   const wallet = walletState?.wallet;
-  // const [openDeleteBankAccount, setOpenDeleteBankAccount] = useState(false);
-  // const [openAddBankAccount, setOpenAddBankAccount] = useState(false);
-  // const [openEditBankAccount, setOpenEditBankAccount] = useState(false);
+
   const [selectedBank, setSelectedBank] = useState<TBank>();
   const [openModal, setOpenModal] = useState({
     add: false,
@@ -33,11 +32,13 @@ const Payment = () => {
       accountNumber: string;
       accountName: string;
       bankName: string;
+      bankCode: string;
     }) => ({
       id: bank?.id,
       accountNumber: bank?.accountNumber,
       accountName: bank?.accountName,
       bankName: bank?.bankName,
+      bankCode: bank?.bankCode,
     })
   );
 
@@ -120,14 +121,22 @@ const Payment = () => {
         />
       )}
 
-      <WithdrawalBankAccount
-        close={() => {
-          setOpenModal((prev) => ({ ...prev, edit: false, add: false }));
-        }}
-        open={openModal.add || openModal.edit}
-        mode={openModal.add ? "add" : "edit"}
-        defaultBank={selectedBank}
-      />
+      <ModalTemplate
+        isOpen={openModal.add || openModal.edit}
+        onClose={() =>
+          setOpenModal((prev) => ({ ...prev, edit: false, add: false }))
+        }
+        primary={false}
+      >
+        <WithdrawalBankAccount
+          mode={openModal.add ? "add" : "edit"}
+          defaultBank={openModal.edit ? selectedBank : undefined}
+          close={() =>
+            setOpenModal((prev) => ({ ...prev, add: false, edit: false }))
+          }
+        />
+      </ModalTemplate>
+
       {/* {openEditBankAccount && (
         <EditWithdrawalBankAccount
           close={() => setOpenEditBankAccount(false)}

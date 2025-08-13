@@ -51,7 +51,6 @@ const EditWithdrawalBankAccount: React.FC<Props> = ({ close, bank }) => {
 
   const FetchBankList = async () => {
     let res = await GetBankList(user?.userId);
-    console.log(res);
     setBankList(res);
     setChoices(
       res?.map((choice: { bank_name: string; bank_code: string }) => ({

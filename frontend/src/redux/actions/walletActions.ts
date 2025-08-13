@@ -34,6 +34,7 @@ export const GetWallet = async () => {
       }
     );
     const data = response.data;
+
     if (response.status) {
       dispatchWrapper({
         type: WalletActionTypes.GET_WALLET,
