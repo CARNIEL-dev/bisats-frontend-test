@@ -321,8 +321,7 @@ export const Withdraw_Crypto = async (payload: TCryptoWithdrawalRequest) => {
         body: JSON.stringify(payload),
       }
     );
-    const data = response;
-    return data;
+    return response;
   } catch (error) {
     // throw handleApiError(error);
     return error;

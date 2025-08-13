@@ -1,12 +1,18 @@
-// KycManager.tsx
-
-import { KYC_RULES, ACTIONS_REQUIRING_2FA } from "@/utils/transaction_limits";
-import KycVerification from "@/components/Modals/KycVerification";
 import KycUpgrade from "@/components/Modals/KycUpgrade";
-import { useState } from "react";
-import { UserState } from "@/redux/reducers/userSlice";
-import { useSelector } from "react-redux";
+import KycVerification from "@/components/Modals/KycVerification";
+import ModalTemplate from "@/components/Modals/ModalTemplate";
 import SecurityVerification from "@/components/Modals/SecurityVerification";
+import { buttonVariants } from "@/components/ui/Button";
+import { APP_ROUTES } from "@/constants/app_route";
+import Head from "@/pages/wallet/Head";
+import { UserState } from "@/redux/reducers/userSlice";
+import { cn } from "@/utils";
+import { ACTIONS_REQUIRING_2FA, KYC_RULES } from "@/utils/transaction_limits";
+
+import { Lock } from "lucide-react";
+import { useState } from "react";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 interface TKycManager {
   action: string;
@@ -45,27 +51,68 @@ const KycManager: React.FC<TKycManager> = ({ action, func, children }) => {
     }
 
     if (ACTIONS_REQUIRING_2FA.includes(action)) {
-      setModal("2fa");
-      return;
+      if (user?.user?.twoFactorAuthEnabled && user?.user?.wallet?.pinSet) {
+        setModal("2faPIN");
+        return;
+      }
+      if (user?.user?.twoFactorAuthEnabled && !user?.user?.wallet?.pinSet) {
+        setModal("2fa");
+        return;
+      }
+      if (user?.user?.wallet?.pinSet && !user?.user?.twoFactorAuthEnabled) {
+        setModal("required2fa");
+        return;
+      }
     }
 
     func();
   };
-
+  const is2fa = modal === "2fa";
+  const is2faPIN = modal === "2faPIN";
   const closeModal = () => setModal(null);
+
+  const secMode = is2fa
+    ? "TWO_FA_ONLY"
+    : is2faPIN
+    ? "TWO_FA_AND_PIN"
+    : undefined;
 
   return (
     <>
       {children(validateAndExecute)}
 
-      {modal === "level_1" && <KycVerification close={closeModal} />}
-      {modal === "level_2" && <KycUpgrade close={closeModal} />}
+      <KycVerification close={closeModal} open={modal === "level_1"} />
+
+      <KycUpgrade close={closeModal} open={modal === "level_2"} />
 
       <SecurityVerification
+        key={secMode}
         func={func}
         close={closeModal}
-        open={modal === "2fa"}
+        open={Boolean(modal === "2fa" || modal === "2faPIN")}
+        mode={modal === "2fa" ? "TWO_FA_ONLY" : "TWO_FA_AND_PIN"}
       />
+
+      <ModalTemplate isOpen={modal === "required2fa"} onClose={closeModal}>
+        <div className="flex flex-col gap-2 my-3">
+          <div className="rounded-full size-12 grid bg-gray-100 place-items-center border">
+            <Lock className="text-red-600" />
+          </div>
+          <Head
+            header="Enable 2FA"
+            subHeader="Enable two factor authentication to continue"
+          />
+          <Link
+            to={APP_ROUTES.SETTINGS.SECURITY}
+            className={cn(
+              buttonVariants({ variant: "default" }),
+              "w-fit py-2 px-6 h-fit text-sm mt-6"
+            )}
+          >
+            Go to settings
+          </Link>
+        </div>
+      </ModalTemplate>
     </>
   );
 };

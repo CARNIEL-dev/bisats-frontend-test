@@ -7,6 +7,7 @@ import PrimaryInput from "@/components/Inputs/PrimaryInput";
 import WithdrawalConfirmationCrypto from "@/components/Modals/WithdrawalConfirmationCrypto";
 import WithdrawalConfirmationNGN from "@/components/Modals/WithdrawalConfirmationNGN";
 import Toast from "@/components/Toast";
+import Head from "@/pages/wallet/Head";
 import {
   GetUserBank,
   Withdraw_Crypto,
@@ -21,21 +22,22 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
-import Head from "@/pages/wallet/Head";
 import * as Yup from "yup";
 
 import WithdrawalBankAccount from "@/components/Modals/WithdrawalBankAccount";
+import ErrorDisplay from "@/components/shared/ErrorDisplay";
 import TokenSelection from "@/components/shared/TokenSelection";
 import { getUserTokenData } from "@/helpers";
+import PreLoader from "@/layouts/PreLoader";
 import KycManager from "@/pages/kyc/KYCManager";
 import { GET_WITHDRAWAL_LIMIT } from "@/redux/actions/userActions";
 import { WalletState } from "@/redux/reducers/walletSlice";
+import { formatter } from "@/utils";
 import { formatNumber } from "@/utils/numberFormat";
 import { useQuery } from "@tanstack/react-query";
-import PreLoader from "@/layouts/PreLoader";
-import ErrorDisplay from "@/components/shared/ErrorDisplay";
-import { toast } from "react-toastify";
+import Decimal from "decimal.js";
 import { useFormik } from "formik";
+import SummaryCard from "@/components/shared/SummaryCard";
 
 export type TNetwork = {
   label: string;
@@ -63,7 +65,7 @@ type UserBankListType = {
 const WithdrawalPage = () => {
   const userState: UserState = useSelector((state: any) => state.user);
   const walletState: WalletState = useSelector((state: any) => state.wallet);
-  const wallet = walletState?.wallet;
+  const wallet: WalletState["wallet"] = walletState?.wallet;
   const user = userState.user;
 
   const location = useLocation();
@@ -85,7 +87,7 @@ const WithdrawalPage = () => {
     enabled: Boolean(user?.userId),
   });
 
-  const userBalance: number = wallet?.["xNGN"] || 0;
+  const userBalance: number = wallet?.[selectedToken] || 0;
 
   return (
     <div className="mb-20">
@@ -116,7 +118,13 @@ const WithdrawalPage = () => {
               />
             )}
             {selectedToken && selectedToken !== "xNGN" && (
-              <CryptoWithdrawal userId={user?.userId} />
+              <CryptoWithdrawal
+                user={user}
+                transaction_limits={transaction_limits}
+                userBalance={userBalance}
+                asset={selectedToken}
+                cryptoAssets={wallet?.cryptoAssests}
+              />
             )}
           </>
         )}
@@ -210,12 +218,30 @@ const NGNWithdrawal = ({ user, transaction_limits, userBalance }: PropsNGN) => {
         )
         .max(
           maxWithdrawalLimit,
-          `Amount exceeds your withdrawal limit (xNGN ${maxWithdrawalLimit.toLocaleString()})`
+          `Amount exceeds your limit per withdrawal (xNGN ${maxWithdrawalLimit.toLocaleString()})`
         )
         .required("Amount is required"),
     }),
-    onSubmit: (values) => {
-      console.log(values);
+    onSubmit: async (values) => {
+      const payLoad = {
+        userId: `${user?.userId}`,
+        amount: Number(values.amount),
+        bankAccountId: values.bank,
+      };
+      await Withdraw_xNGN(payLoad)
+        .then((res) => {
+          if (res?.status || res?.statusCode === 200) {
+            Toast.success(res.message, "Withdrawal Initiated");
+          } else {
+            Toast.error(res.message, "");
+          }
+        })
+        .catch((err) => {
+          Toast.error(err.message, "");
+        })
+        .finally(() => {
+          setWithDrawalModal(false);
+        });
     },
   });
 
@@ -264,12 +290,12 @@ const NGNWithdrawal = ({ user, transaction_limits, userBalance }: PropsNGN) => {
                   }
                   value={formik.values.amount}
                   onChange={(e) => {
-                    let value = e.target.value.replace(/\D/g, "");
+                    // let value = e.target.value.replace(/\D/g, "");
                     // const max = maxWithdrawalLimit;
                     // if (max && Number(value) > max) {
                     //   value = max.toString();
                     // }
-                    formik.setFieldValue("amount", value);
+                    formik.setFieldValue("amount", e.target.value);
                   }}
                   maxFnc={() => {
                     const val = Math.min(maxWithdrawalLimit, userBalance);
@@ -294,7 +320,7 @@ const NGNWithdrawal = ({ user, transaction_limits, userBalance }: PropsNGN) => {
                       ? "-"
                       : userTransactionLimits?.charge_on_single_withdrawal_fiat
                   }
-                  amount={formik.values.amount ?? "-"}
+                  amount={formatNumber(formik.values.amount ?? "-")}
                   total={`${formatNumber(
                     !formik.values.amount
                       ? "-"
@@ -342,19 +368,19 @@ const NGNWithdrawal = ({ user, transaction_limits, userBalance }: PropsNGN) => {
         close={() => setAddBankModal(false)}
         mode="add"
       />
-      {withdrawalModal && (
-        <WithdrawalConfirmationNGN
-          close={() => setWithDrawalModal(false)}
-          transactionFee={`${userTransactionLimits?.charge_on_single_withdrawal_fiat}`}
-          withdrawalAmount={`${formik.values.amount}`}
-          total={`${
-            Number(formik.values.amount ?? 0) +
-            userTransactionLimits?.charge_on_single_withdrawal_fiat
-          }`}
-          // submit={handleWithdrawal}
-          isLoading={isLoading}
-        />
-      )}
+
+      <WithdrawalConfirmationNGN
+        open={withdrawalModal}
+        close={() => setWithDrawalModal(false)}
+        transactionFee={`${userTransactionLimits?.charge_on_single_withdrawal_fiat}`}
+        withdrawalAmount={`${formik.values.amount}`}
+        total={`${
+          Number(formik.values.amount ?? 0) +
+          userTransactionLimits?.charge_on_single_withdrawal_fiat
+        }`}
+        submit={formik.submitForm}
+        isLoading={formik.isSubmitting}
+      />
     </>
   );
 };
@@ -362,57 +388,209 @@ const NGNWithdrawal = ({ user, transaction_limits, userBalance }: PropsNGN) => {
 // HDR: CRYPTO WITHDRAWAL
 
 type PropsCrypto = {
-  userId: string;
+  user: UserState["user"];
+  transaction_limits: undefined | UserTransactionLimits;
+  userBalance: number;
+  asset: string;
+  cryptoAssets: WalletState["wallet"][];
 };
-const CryptoWithdrawal = ({ userId }: PropsCrypto) => {
-  return <div>crypto</div>;
-};
+const CryptoWithdrawal = ({
+  user,
+  transaction_limits,
+  userBalance,
+  asset,
+  cryptoAssets,
+}: PropsCrypto) => {
+  const [withdrawalModal, setWithDrawalModal] = useState(false);
 
-type SummaryTypeProps = {
-  type: "fiat" | "crypto";
-  dailyLimit: number | string;
-  currency: string;
-  fee: number | string;
-  amount: number | string;
-  total: number | string;
-};
+  const account_level = user?.accountLevel as AccountLevel;
+  const userTransactionLimits = bisats_limit[account_level];
 
-const SummaryCard = ({
-  type,
-  dailyLimit,
-  currency,
-  fee,
-  amount,
-  total,
-}: SummaryTypeProps) => {
+  // SUB: Used up limit
+  const usedUpLimit = useMemo(() => {
+    return {
+      totalUsedAmountCrypto: transaction_limits?.totalUsedAmountCrypto,
+      dailyCryptoWithdrawalLimit:
+        transaction_limits?.dailyCryptoWithdrawalLimit,
+    };
+  }, [transaction_limits]);
+
+  // const maxWithdrawalLimit =
+  //   userTransactionLimits?.maximum_crypto_withdrawal || Infinity;
+
+  const tokenData: TNetwork[] = useMemo(() => {
+    const token = getUserTokenData();
+    const networks = token?.find(
+      (item: any) => item.tokenName === asset
+    )?.networks;
+
+    return networks || [];
+  }, [asset]);
+
+  const getCryptoAssetId = (network: string) => {
+    const isDev =
+      process.env.REACT_APP_NODE_ENV === "development" ||
+      process.env.VERCEL_ENV === "development";
+
+    const cryptoAsset = cryptoAssets?.find((item) => item?.network === network);
+
+    return isDev ? cryptoAsset?.assetId : cryptoAsset?.asset;
+  };
+
+  const formik = useFormik({
+    initialValues: {
+      amount: "",
+      walletAddress: "",
+      network: "",
+    },
+    validationSchema: Yup.object().shape({
+      walletAddress: Yup.string().required("Wallet address is required"),
+      amount: Yup.number()
+        .transform((_, originalValue) =>
+          originalValue === "" || isNaN(originalValue)
+            ? undefined
+            : Number(originalValue)
+        )
+        .moreThan(0, "Amount must be greater than 0")
+        .max(
+          userBalance,
+          `Amount cannot exceed your balance (${userBalance.toLocaleString()} ${asset})`
+        )
+        // .max(
+        //   maxWithdrawalLimit,
+        //   `Amount exceeds your limit per withdrawal (xNGN ${maxWithdrawalLimit.toLocaleString()})`
+        // )
+        .required("Amount is required"),
+    }),
+    onSubmit: async (values) => {
+      const amountVal = parseFloat(values.amount).toFixed(6);
+      const inDecimal = new Decimal(amountVal).toNumber();
+
+      const payload = {
+        userId: `${user?.userId}`,
+        amount: inDecimal,
+        address: values.walletAddress ?? "",
+        asset: getCryptoAssetId(formik.values.network) ?? "",
+      };
+      await Withdraw_Crypto(payload)
+        .then((res) => {
+          if (res?.status || res?.statusCode === 200) {
+            Toast.success(res.message, "Withdrawal Initiated");
+          } else {
+            Toast.error(res.message, "");
+          }
+        })
+        .catch((err) => {
+          Toast.error(err.message, "");
+        })
+        .finally(() => {
+          setWithDrawalModal(false);
+        });
+    },
+  });
+
+  useEffect(() => {
+    formik.resetForm({
+      values: {
+        amount: "",
+        walletAddress: "",
+        network: "",
+      },
+    });
+  }, [asset]);
+
   return (
-    <div className="border  border-[#F3F4F6] bg-[#F9F9FB] rounded-md py-4 px-5  my-5 text-sm space-y-2 ">
-      <div className="flex justify-between items-center">
-        <p className="text-[#424A59] font-normal">Daily remaining limit:</p>
-        <p className="text-[#606C82]  font-semibold">
-          {currency} {dailyLimit}
-        </p>
+    <>
+      <div className="flex flex-col gap-3 mt-4">
+        <MultiSelectDropDown
+          key={asset}
+          parentId={""}
+          placeholder={"Select option"}
+          choices={tokenData}
+          error={formik.errors.network}
+          touched={undefined}
+          label={"Select Network"}
+          handleChange={(e) => {
+            formik.setFieldValue("network", e);
+          }}
+          value={formik.values.network}
+        />
+        <PrimaryInput
+          label={"Wallet Address"}
+          placeholder="Enter address"
+          error={formik.errors.walletAddress}
+          value={formik.values.walletAddress}
+          onChange={(e) => {
+            formik.setFieldValue("walletAddress", e.target.value);
+          }}
+          touched={undefined}
+        />
+        <PrimaryInput
+          label={`Amount`}
+          type="number"
+          placeholder="Enter amount"
+          value={formik.values.amount}
+          onChange={(e) => {
+            formik.setFieldValue("amount", e.target.value);
+          }}
+          // error={
+          //   Number(cryptoWithdrwalAmount || 0) > currentBalance
+          //     ? "Amount exceeds balance"
+          //     : undefined
+          // }
+          error={formik.errors.amount}
+          touched={undefined}
+        />
+        <SummaryCard
+          type="crypto"
+          currency={asset}
+          dailyLimit={`${formatNumber(
+            userTransactionLimits?.daily_withdrawal_limit_crypto -
+              (usedUpLimit?.totalUsedAmountCrypto ?? 0)
+          )} USD`}
+          fee={formatter({ decimal: asset === "USDT" ? 2 : 5 }).format(
+            !formik.values.amount
+              ? 0
+              : userTransactionLimits?.charge_on_single_withdrawal_crypto
+          )}
+          amount={formatter({ decimal: asset === "USDT" ? 2 : 5 }).format(
+            isNaN(parseFloat(formik.values.amount))
+              ? 0
+              : parseFloat(formik.values.amount)
+          )}
+          total={`${formatter({ decimal: asset === "USDT" ? 2 : 5 }).format(
+            !formik.values.amount
+              ? 0
+              : parseFloat(formik.values.amount ?? 0) +
+                  userTransactionLimits?.charge_on_single_withdrawal_crypto
+          )}`}
+        />
+        <KycManager
+          action={ACTIONS.WITHDRAW_NGN}
+          func={() => setWithDrawalModal(true)}
+        >
+          {(validateAndExecute) => (
+            <PrimaryButton
+              className="w-full"
+              text={"Withdraw"}
+              loading={false}
+              onClick={validateAndExecute}
+              disabled={!formik.isValid || !formik.dirty}
+            />
+          )}
+        </KycManager>
       </div>
-      <div className="flex justify-between items-center">
-        <p className="text-[#424A59] font-normal">
-          {type === "fiat" ? "Transaction" : "Network"} fee:
-        </p>
-        <p className="text-[#606C82]  font-semibold">
-          {formatNumber(fee)} {currency}
-        </p>
-      </div>
-      <div className="flex justify-between items-center">
-        <p className="text-[#424A59] font-normal">Withdrawal amount:</p>
-        <p className="text-[#606C82]  font-semibold">
-          {formatNumber(amount)} {currency}
-        </p>
-      </div>
-      <div className="flex justify-between items-center">
-        <p className="text-[#424A59] font-normal">Total:</p>
-        <p className="text-[#606C82]  font-semibold">
-          {total || "-"} {currency}
-        </p>
-      </div>
-    </div>
+
+      <WithdrawalConfirmationCrypto
+        open={withdrawalModal}
+        close={() => setWithDrawalModal(false)}
+        isLoading={formik.isSubmitting}
+        amount={formik.values.amount}
+        address={formik.values.walletAddress}
+        submit={formik.submitForm}
+        asset={asset}
+        network={formik.values.network}
+      />
+    </>
   );
 };

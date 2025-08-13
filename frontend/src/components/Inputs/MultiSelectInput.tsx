@@ -1,9 +1,9 @@
+import Label from "@/components/Inputs/Label";
 import useClickOutside from "@/hooks/use-clickOutside";
 import usePreventScroll from "@/hooks/use-preventScroll";
 import { cn } from "@/utils";
 import { Check, ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
-import Label from "./Label";
 
 interface IMultiSelectDropDownProps {
   parentId?: string;
@@ -44,11 +44,9 @@ export const MultiSelectDropDown = ({
   );
   usePreventScroll(visible);
 
-  // useEffect(() => {
-  //   return () => {
-  //     setSelected(value || "");
-  //   };
-  // }, [choices]);
+  useEffect(() => {
+    setSelected(String(value ?? ""));
+  }, [value]);
 
   return (
     <div>

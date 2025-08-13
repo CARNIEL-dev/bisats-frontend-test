@@ -1,5 +1,5 @@
-import { PrimaryButton } from "../buttons/Buttons";
-import ModalTemplate from "./ModalTemplate";
+import { PrimaryButton } from "@/components/buttons/Buttons";
+import ModalTemplate from "@/components/Modals/ModalTemplate";
 
 interface Props {
   close: () => void;
@@ -8,6 +8,7 @@ interface Props {
   total: string;
   submit?: () => void;
   isLoading?: boolean;
+  open?: boolean;
 }
 const WithdrawalConfirmationNGN: React.FC<Props> = ({
   close,
@@ -16,9 +17,10 @@ const WithdrawalConfirmationNGN: React.FC<Props> = ({
   total,
   submit,
   isLoading,
+  open,
 }) => {
   return (
-    <ModalTemplate onClose={close}>
+    <ModalTemplate onClose={close} isOpen={open}>
       <div className="flex flex-col justify-center w-full text-center mx-auto">
         <h1 className="text-[#0A0E12] text-[22px] leading-[32px] font-semibold text-left mt-5">
           Withdrawal Confirmation
