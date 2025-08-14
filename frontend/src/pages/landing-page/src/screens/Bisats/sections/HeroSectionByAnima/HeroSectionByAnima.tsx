@@ -15,7 +15,15 @@ import phoneMobile from "@/assets/phone-mobile.png";
 import { Verified } from "lucide-react";
 
 import bisatLogo from "@/assets/logo/logo-icon-btc.svg";
+import bisatLogo2 from "@/assets/logo/logo-icon.svg";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { motion } from "motion/react";
+import {
+  container,
+  slideInLeft,
+  slideInRight,
+  slideUpVariant,
+} from "@/components/animation";
 export const HeroSectionByAnima = (): JSX.Element => {
   const user: UserState = useSelector((state: any) => state.user);
   const isAuthenticated = user.isAuthenticated;
@@ -79,29 +87,42 @@ export const HeroSectionByAnima = (): JSX.Element => {
 
           {/* SUB: Right content */}
           <div className="w-full mt-6 lg:mt-0 flex-1  rounded-xl flex items-center justify-center ">
-            <div className="relative  lg:h-[700px] lg:w-[80%] md:w-[75%] ">
-              <img
+            <motion.div
+              variants={container}
+              initial="hidden"
+              animate="show"
+              exit={"exit"}
+              className="relative  lg:h-[700px] lg:w-[80%] md:w-[75%] "
+            >
+              <motion.img
                 alt="hero-phone-image"
                 src={isMobile ? phoneMobile : phoneDesktop}
                 className="w-auto h-full mx-auto "
                 loading="eager"
+                variants={slideUpVariant}
               />
 
               <HeroNotificationBadge
-                className="absolute top-[27%] lg:-right-6 -right-28  "
-                subText="You have a purchased 500 USDT"
+                key={"Buy Order successful"}
                 text={
-                  <h3 className="flex items-center gap-0.5">
-                    Buy Order successful
-                    <Verified
-                      fill="#17A34A"
-                      stroke="white"
-                      className="size-5"
-                    />
-                  </h3>
+                  <div className="text-sm font-medium text-gray-800">
+                    <h3 className="flex items-center gap-0.5">
+                      Buy Order successful
+                      <Verified
+                        fill="#17A34A"
+                        stroke="white"
+                        className="size-5"
+                      />
+                    </h3>
+                  </div>
                 }
+                className="absolute top-[27%] lg:right-[-1.5rem] right-[-6rem] "
+                subText=" You have a purchased 500 USDT"
+                logo={bisatLogo2}
+                variant={slideInLeft}
               />
               <HeroNotificationBadge
+                key={"Deposit successful"}
                 text={
                   <h3 className="flex items-center gap-0.5">
                     Deposit successful
@@ -115,8 +136,9 @@ export const HeroSectionByAnima = (): JSX.Element => {
                 className="absolute md:bottom-[33%] bottom-[31%] lg:left-2 -left-20"
                 subText="You have deposited 100,000 xNGN"
                 logo={bisatLogo}
+                variant={slideInRight}
               />
-            </div>
+            </motion.div>
           </div>
         </div>
       </MaxWidth>

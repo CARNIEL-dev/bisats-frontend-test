@@ -1,0 +1,91 @@
+import { Variants } from "motion";
+
+// Animation variants
+const containerVariants: Variants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2, // Adjust this value for speed (0.1s between each child)
+      delayChildren: 0.2, // Optional: delay before animation starts
+      ease: "easeInOut",
+    },
+  },
+};
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, x: 100 },
+  show: {
+    opacity: 1,
+    x: 0,
+    transition: { ease: "easeInOut", duration: 0.4 },
+  },
+  exit: {
+    opacity: 0,
+    x: -120,
+    transition: { duration: 0.8, ease: "easeOut" },
+  },
+};
+
+const container: Variants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      delayChildren: 0.5,
+      staggerChildren: 0.6, // Delay between each child animation
+    },
+  },
+};
+
+const slideUpVariant: Variants = {
+  hidden: { y: 100, opacity: 0 },
+  show: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      duration: 0.85,
+      ease: "anticipate",
+    },
+  },
+};
+
+const slideInLeft: Variants = {
+  hidden: {
+    x: 120,
+    opacity: 0,
+  },
+  show: {
+    x: 0,
+    opacity: 1,
+
+    transition: {
+      duration: 0.8,
+      ease: "backOut",
+    },
+  },
+};
+
+const slideInRight: Variants = {
+  hidden: {
+    x: -120,
+    opacity: 0,
+  },
+  show: {
+    x: 0,
+    opacity: 1,
+    transition: {
+      duration: 0.6,
+      ease: "backOut",
+    },
+  },
+};
+
+export {
+  containerVariants,
+  itemVariants,
+  container,
+  slideUpVariant,
+  slideInLeft,
+  slideInRight,
+};

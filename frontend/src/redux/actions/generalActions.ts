@@ -53,25 +53,79 @@ const useFetchUserNotifications = ({
   });
 };
 
-export const Read_Notification = async (payload: {
+const Read_Notification = async (payload: {
+  userId: string;
+  notificationId: string;
+}) => {
+  const res = await Bisatsfetch(
+    `/api/v1/user/${payload.userId}/notification/${payload.notificationId}${BACKEND_URLS.READ_NOTIFICATION}`,
+    { method: "PUT" }
+  );
+  if (!res?.status) {
+    throw new Error(res?.message || "Failed to mark notification as read");
+  }
+  return res;
+};
+
+const Delete_Notification = async (payload: {
   userId: string;
   notificationId: string;
 }) => {
   try {
     const response = await Bisatsfetch(
-      `/api/v1/user/${payload.userId}/notification/${payload.notificationId}${BACKEND_URLS.READ_NOTIFICATION}`,
+      `/api/v1/user/${payload.userId}/notification/${payload.notificationId}${BACKEND_URLS.DELETE_NOTIFICATION}`,
+      {
+        method: "DELETE",
+      }
+    );
+    if (!response.status) {
+      throw new Error(response.message);
+    }
+
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+const Read_All_Notifications = async (payload: { userId: string }) => {
+  try {
+    const response = await Bisatsfetch(
+      `/api/v1/user/${payload.userId}/notification${BACKEND_URLS.READ_ALL_NOTIFICATION}`,
       {
         method: "PUT",
       }
     );
-    // const data = response.data;
-    // dispatchWrapper({ type: GeneralTypes.SUCCESS, payload: data });
+    if (!response.status) {
+      throw new Error(response.message);
+    }
 
     return response;
   } catch (error) {
-    // throw handleApiError(error);
-    return error;
+    throw error;
+  }
+};
+const Delete_All_Notifications = async (payload: { userId: string }) => {
+  try {
+    const response = await Bisatsfetch(
+      `/api/v1/user/${payload.userId}/notification${BACKEND_URLS.DELETE_ALL_NOTIFICATION}`,
+      {
+        method: "DELETE",
+      }
+    );
+    if (!response.status) {
+      throw new Error(response.message);
+    }
+
+    return response;
+  } catch (error) {
+    throw error;
   }
 };
 
-export { useFetchUserNotifications };
+export {
+  useFetchUserNotifications,
+  Read_Notification,
+  Delete_Notification,
+  Read_All_Notifications,
+  Delete_All_Notifications,
+};
