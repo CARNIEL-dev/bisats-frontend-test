@@ -1,3 +1,4 @@
+import { slideInLeft } from "@/components/animation";
 import { PrimaryButton } from "@/components/buttons/Buttons";
 import GoogleButton from "@/components/buttons/GoogleButton";
 import AuthPasswordInput from "@/components/Inputs/AuthPasswordInput";
@@ -11,6 +12,7 @@ import { UserActionTypes } from "@/redux/types";
 import dispatchWrapper from "@/utils/dispatchWrapper";
 import { useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
+import { motion } from "motion/react";
 
 const isDevelopment =
   process.env.NODE_ENV === "development" ||
@@ -59,7 +61,8 @@ const LogIn = () => {
           payload: data,
         });
 
-        window.location.href = APP_ROUTES.DASHBOARD;
+        navigate(APP_ROUTES.DASHBOARD);
+        // window.location.href = APP_ROUTES.DASHBOARD;
       } else {
         Toast.error(response.message, "Login Failed");
       }
@@ -67,7 +70,12 @@ const LogIn = () => {
   });
 
   return (
-    <div className="lg:w-[442px] mx-auto">
+    <motion.div
+      variants={slideInLeft}
+      initial="hidden"
+      animate="show"
+      className="lg:w-[442px] mx-auto"
+    >
       <OtherSide
         header="Welcome to Bisats"
         subHeader="Exchange fiat and crypto fast, easy and securely."
@@ -135,7 +143,7 @@ const LogIn = () => {
           </button>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

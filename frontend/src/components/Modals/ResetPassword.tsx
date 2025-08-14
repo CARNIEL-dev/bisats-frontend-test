@@ -32,7 +32,10 @@ const ResetPasswordModal: React.FC<Props> = ({ close, open }) => {
       const response = await UpdatePassword(payload);
       if (response?.statusCode === 200) {
         close();
-        rehydrateUser();
+        rehydrateUser({
+          userId: user?.userId,
+          token: user?.token,
+        });
         // logoutUser();
         // navigate(APP_ROUTES.AUTH.LOGIN);
         Toast.success(response.message, "Success");

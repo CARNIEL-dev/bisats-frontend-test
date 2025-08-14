@@ -7,26 +7,31 @@ interface IInputCheckProps extends InputHTMLAttributes<HTMLInputElement> {
 export const InputCheck = forwardRef<HTMLInputElement, IInputCheckProps>(
   ({ id, label, error, className, ...props }, ref) => {
     return (
-      <div className={`flex flex-col space-y-2 ${className}`}>
-        <div className={`flex items-center space-x-2 font-grotesk`}>
-          <div className="checkbox-container">
+      <div className={`relative  ${className}`}>
+        <div className={`flex items-center gap-2 `}>
+          <div className="checkbox-container-bisat">
             <input
-              ref={ref}
-              id="custom-checkbox"
+              id="custom-checkbox-bisat"
+              className="checkbox-input-bisat"
               type={props.type ? props.type : "checkbox"}
-              className={``}
+              onChange={props.onChange}
               {...props}
             />
-            <label htmlFor="custom-checkbox" className="checkbox-label"></label>
+            <label
+              htmlFor="custom-checkbox-bisat"
+              className="checkbox-label-bisat"
+            ></label>
           </div>
-
-          {error && (
-            <small className="text-xs text-error transition-all duration-300">
-              {error}
-            </small>
-          )}
         </div>
+
+        {error && (
+          <small className="text-xs absolute w-full text-red-500 text-nowrap">
+            {error}
+          </small>
+        )}
       </div>
     );
   }
 );
+
+InputCheck.displayName = "InputCheck";

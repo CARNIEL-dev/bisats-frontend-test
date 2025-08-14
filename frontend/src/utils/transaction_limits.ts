@@ -95,6 +95,7 @@ export const ACTIONS = {
   CREATE_AD: "create_ad",
   HIGH_VALUE_TRANSACTION: "high_value_transaction",
   SET_2FA: "set_2fa",
+  ADD_BANK: "add_bank",
   // Add more actions
 };
 

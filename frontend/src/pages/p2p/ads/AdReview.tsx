@@ -135,12 +135,9 @@ const AdReview: React.FC<AdsProps> = ({ formik }) => {
           Your ad will be paused if market price goes higher than{" "}
           {formatNumber(formik.values.priceUpperLimit || 0)} NGN or Lower than{" "}
           {formatNumber(formik.values.priceLowerLimit || 0)} NGN.
-          {/* {formik.values.type.toLowerCase() === "buy"
-            ? " Your transaction fee will be 0.02% of the amount."
-            : "Your transaction fee is 0%."} */}
         </p>
       </div>
-      <div className="flex items-center">
+      <div className="flex items-start">
         <InputCheck
           type="checkbox"
           name="agree"
@@ -148,6 +145,7 @@ const AdReview: React.FC<AdsProps> = ({ formik }) => {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
         />
+
         <span className="text-[12px] pl-2 text-[#515B6E]">
           I agree to the platform's Terms and Conditions.
         </span>

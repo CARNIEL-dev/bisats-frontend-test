@@ -16,8 +16,12 @@ const KycUpgrade: React.FC<Props> = ({ close }) => {
   const userState: UserState = useSelector((state: any) => state.user);
   const user = userState;
 
-  const limit =
-    bisats_limit[user?.user?.accountLevel as keyof typeof bisats_limit];
+  const userLevel =
+    user?.user?.accountLevel === "level_1" || !user?.user?.accountLevel
+      ? "level_2"
+      : "level_3";
+
+  const limit = bisats_limit[userLevel as keyof typeof bisats_limit];
 
   const clickHandler = () => {
     if (!user?.user?.phoneNumberVerified) {

@@ -49,14 +49,15 @@ export function DataTable<TData, TValue>({
   const customGlobalFilter: FilterFn<TData> = (row, columnId, filterValue) => {
     const text = String(filterValue).toLowerCase();
 
-    // If filterColumns is set, and this column isn't one of them, skip it:
     if (filterColumns.length > 0 && !filterColumns.includes(columnId)) {
       return false;
     }
 
     // Otherwise do a case-insensitive contains check:
     const cellValue = row.getValue(columnId);
-    return String(cellValue).toLowerCase().includes(text);
+    const result = String(cellValue).toLowerCase().includes(text);
+
+    return result;
   };
 
   const table = useReactTable({
@@ -70,6 +71,7 @@ export function DataTable<TData, TValue>({
       onColumnFiltersChange: setColumnFilters,
       onGlobalFilterChange: setGlobalFilter,
       globalFilterFn: customGlobalFilter,
+      enableGlobalFilter: true,
     }),
     onSortingChange: setSorting,
     state: {

@@ -1,7 +1,7 @@
 import MaxWidth from "@/components/shared/MaxWith";
 import SucessDisplay from "@/components/shared/SucessDisplay";
 import { useFormik } from "formik";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import PrimaryInput from "@/components/Inputs/PrimaryInput";
@@ -18,8 +18,17 @@ import {
 } from "@/redux/actions/userActions";
 import { UserState } from "@/redux/reducers/userSlice";
 import ResendCodeButton from "@/components/shared/ResendCodeButton";
+import { formatCompactNumber } from "@/utils";
+import { bisats_limit } from "@/utils/transaction_limits";
 const BVNVerification = () => {
   const user: UserState = useSelector((state: any) => state.user);
+
+  const userLevel =
+    user?.user?.accountLevel === "level_1" || !user?.user?.accountLevel
+      ? "level_2"
+      : "level_3";
+
+  const limit = bisats_limit[userLevel as keyof typeof bisats_limit];
 
   const [verficationScreen, setVerificationScreen] = useState(
     user.kyc?.bvnVerified
@@ -72,7 +81,10 @@ const BVNVerification = () => {
       if (response?.status) {
         setIsSuccess(true);
         navigate(APP_ROUTES?.DASHBOARD);
-        GetUserDetails();
+        GetUserDetails({
+          userId: user?.user?.userId!,
+          token: user?.user?.token!,
+        });
       } else {
         Toast.error(response.message, "Failed");
       }
@@ -91,6 +103,24 @@ const BVNVerification = () => {
       return false;
     }
   };
+
+  const account_level_features = useMemo(() => {
+    return [
+      `Create sell ads (max ${formatCompactNumber(
+        limit.maximum_ad_creation_amount
+      )} xNGN in crypto assets)`,
+      `Create buy ads (max ${formatCompactNumber(
+        limit.maximum_ad_creation_amount
+      )} xNGN in crypto assets)`,
+      `Max daily limit for withdrawal is ${
+        user?.user?.accountLevel === "level_3"
+          ? "Unlimited"
+          : formatCompactNumber(limit.daily_withdrawal_limit_fiat)
+      } xNGN and ${formatCompactNumber(
+        limit.daily_withdrawal_limit_crypto
+      )} USD in crypto assets`,
+    ];
+  }, [limit]);
 
   return (
     <MaxWidth className="space-y-8 mt-10 min-h-[75dvh] 2xl:max-w-4xl max-w-[23rem] lg:max-w-2xl  lg:pb-5 mb-10">
@@ -160,21 +190,12 @@ const BVNVerification = () => {
           <div>
             <form onSubmit={formik1.handleSubmit}>
               <div className="bg-[#F9F9FB] p-2 mt-5 border border-[#F9F9FB] rounded-[8px] text-[12px] text-[#515B6E] w-full h-fit flex flex-col space-y-2 ">
-                <p>
-                  <span className="w-[4px] bg-[#C2C7D2] rounded-full  mr-1 h-[4px]"></span>
-                  <span>Create sell ads (max 23M NGN in crypto assets)</span>
-                </p>
-                <p>
-                  <span className="w-[4px] bg-[#C2C7D2] rounded-full  mr-1 h-[4px]"></span>
-                  <span>Create buy ads (max 23M NGN in crypto assets)</span>
-                </p>
-                <p>
-                  <span className="w-[4px] bg-[#C2C7D2] rounded-full  mr-1 h-[4px]"></span>
-                  <span>
-                    Max daily limit for withdrawal is 500m NGN and 1m USD in
-                    crypto assets
-                  </span>
-                </p>
+                {account_level_features.map((feat, idx) => (
+                  <p className="flex items-center" key={idx}>
+                    <p className="w-[4px] bg-[#C2C7D2] rounded-[50%]  mr-1.5 h-[4px]"></p>
+                    <span>{feat}</span>
+                  </p>
+                ))}
               </div>
               <div className="w-full mt-10">
                 <PrimaryInput

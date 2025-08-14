@@ -49,7 +49,10 @@ const PersonalInfo = () => {
 
       if (response.statusCode === 200) {
         Toast.success(response.message, "Success");
-        GetUserDetails();
+        GetUserDetails({
+          userId: user?.user?.userId!,
+          token: user?.user?.token!,
+        });
         navigate(APP_ROUTES.KYC.IDENTITY);
         return;
       } else {

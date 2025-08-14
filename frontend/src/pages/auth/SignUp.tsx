@@ -14,6 +14,8 @@ import { useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
 import { APP_ROUTES } from "@/constants/app_route";
 import Toast from "@/components/Toast";
+import { motion } from "motion/react";
+import { slideInLeft } from "@/components/animation";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -40,7 +42,12 @@ const SignUp = () => {
   });
 
   return (
-    <div className="lg:w-[442px] mx-auto">
+    <motion.div
+      variants={slideInLeft}
+      initial="hidden"
+      animate="show"
+      className="lg:w-[442px] mx-auto"
+    >
       <OtherSide
         header="Create your account"
         subHeader="Exchange fiat and crypto fast, easy and securely."
@@ -143,7 +150,7 @@ const SignUp = () => {
           </span>
         </p>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

@@ -71,7 +71,10 @@ const TwoFactorAuthModal: React.FC<Props> = ({
         );
       }
       setLoading(false);
-      rehydrateUser();
+      rehydrateUser({
+        userId: user?.userId,
+        token: user?.token,
+      });
       close();
     } catch (error) {
       setLoading(false);

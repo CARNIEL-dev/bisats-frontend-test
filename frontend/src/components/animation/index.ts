@@ -32,7 +32,7 @@ const container: Variants = {
   show: {
     opacity: 1,
     transition: {
-      delayChildren: 0.5,
+      delayChildren: 0.3, // Optional: delay before animation starts
       staggerChildren: 0.6, // Delay between each child animation
     },
   },
@@ -81,6 +81,30 @@ const slideInRight: Variants = {
   },
 };
 
+const revealUpVariant: Variants = {
+  hidden: {
+    opacity: 0,
+    y: 15,
+    scaleY: 0.2,
+  },
+  show: {
+    opacity: 1,
+    y: 0,
+    scaleY: 1,
+    transformOrigin: "bottom",
+    transition: {
+      duration: 0.6,
+      ease: "backOut",
+    },
+  },
+  exit: {
+    opacity: 0,
+    y: 15,
+    scaleY: 0.2,
+    transformOrigin: "top",
+  },
+};
+
 export {
   containerVariants,
   itemVariants,
@@ -88,4 +112,5 @@ export {
   slideUpVariant,
   slideInLeft,
   slideInRight,
+  revealUpVariant,
 };

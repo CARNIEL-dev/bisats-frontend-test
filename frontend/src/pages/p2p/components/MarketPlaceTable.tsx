@@ -71,46 +71,75 @@ const MarketPlaceTable = ({ type, ads, asset }: MarketPlaceContentProps) => {
         const price = formatter({
           style: "currency",
           currency: "NGN",
-          decimal: 0,
+          decimal: 2,
         }).format(row.original.price);
         return (
-          <span className="text-gray-600 md:font-medium text-2xl font-bold md:text-sm ">
+          <span className="text-gray-600 md:font-medium text-2xl font-bold md:text-sm">
             {price}
           </span>
         );
       },
+      filterFn: (row, id, filterValue) => {
+        // Get raw numeric value
+        const priceValue = formatter({
+          decimal: 2,
+        }).format(row.original.price);
+        const numericFilter = filterValue.replace(/\D/g, "");
+
+        return String(priceValue).includes(numericFilter);
+      },
     },
     {
-      accessorKey: "amountAvailable",
-      header: "Available",
+      id: "amountAvailable",
+      header: type === "sell" ? "Maximum" : "Available",
+      accessorFn: (row: AdsType) => {
+        if (row.orderType === "buy") {
+          return row.amountAvailable;
+        }
+        return row.amountAvailable / row.price;
+      },
       cell: ({ row }) => {
-        const item = row.original;
-        const amount =
-          item.orderType === "buy"
-            ? formatter({ decimal: 5 }).format(item.amountAvailable)
-            : formatter({ decimal: 5 }).format(
-                item.amountAvailable / item.price
-              );
+        const value = Number(row.getValue("amountAvailable"));
+        const formatted = formatter({ decimal: 5 }).format(value);
         return (
-          <div className="text-gray-600 uppercase ">
-            {amount} {item.asset}{" "}
+          <div className="text-gray-600 uppercase">
+            {formatted} {row.original.asset}
           </div>
+        );
+      },
+      filterFn: (row, id, filterValue) => {
+        const value = Number(row.getValue(id));
+        const filterNum = parseFloat(filterValue.replace(/[^\d.]/g, "")) || 0;
+
+        // Match either exact or partial number
+        return (
+          Math.abs(value - filterNum) < 0.00001 || // Exact match
+          String(value).includes(String(filterNum)) // Partial match
         );
       },
     },
     {
       id: "limits",
       header: "Limits",
+      accessorFn: (row) => ({
+        min: row.minimumLimit,
+        max: row.maximumLimit,
+      }),
       cell: ({ row }) => {
-        const item = row.original;
-        const minLimit = formatter({}).format(item.minimumLimit);
-        const maxLimit = formatter({}).format(item.maximumLimit);
+        const limits = row.getValue("limits") as { min: number; max: number };
+        const minLimit = formatter({}).format(limits.min);
+        const maxLimit = formatter({}).format(limits.max);
 
         return (
-          <div className="text-gray-600 ">
+          <div className="text-gray-600">
             {minLimit} - {maxLimit} xNGN
           </div>
         );
+      },
+      filterFn: (row, id, filterValue) => {
+        const limits = row.getValue(id) as { min: number; max: number };
+        const cleanNumber = Number(filterValue.replace(/\D/g, ""));
+        return limits.min === cleanNumber || limits.max === cleanNumber;
       },
     },
 
@@ -150,23 +179,11 @@ const MarketPlaceTable = ({ type, ads, asset }: MarketPlaceContentProps) => {
             columns={column}
             paginated={false}
             sortColumns={[{ id: "price", desc: true }]}
-            filterColumns={["price"]}
+            // filterColumns={["price"]}
             enableFiltering
           />
         </div>
       )}
-      {/* 
-      <Pagination
-        currentPage={0}
-        totalPages={0}
-        onPageChange={() => {
-          setPagination({
-            limit: 10,
-            skip: (pagination.page - 1) * 10,
-            page: pagination?.page + 1,
-          });
-        }}
-      /> */}
     </div>
   );
 };

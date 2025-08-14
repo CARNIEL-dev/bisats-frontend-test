@@ -25,6 +25,10 @@ import {
 } from "@/redux/actions/userActions";
 import { UserState } from "@/redux/reducers/userSlice";
 import { countryDataForPhone } from "@/utils/data";
+import {
+  MultiSelectDropDown,
+  SelectDropDown,
+} from "@/components/Inputs/MultiSelectInput";
 
 const PhoneVerifcation = () => {
   const user: UserState = useSelector((state: any) => state.user);
@@ -81,9 +85,7 @@ const PhoneVerifcation = () => {
                 }}
               />
             )}
-            <span className="text-gray-600 text-sm">
-              + ( {country.dialCode} )
-            </span>
+            <span className="text-gray-600 text-sm">+ {country.dialCode}</span>
           </div>
         </>
       ),
@@ -102,7 +104,10 @@ const PhoneVerifcation = () => {
 
       if (response?.status) {
         Toast.success(response.message, "Phone number verified");
-        GetUserDetails();
+        GetUserDetails({
+          userId: user?.user?.userId!,
+          token: user?.user?.token!,
+        });
         navigate(APP_ROUTES.KYC.PERSONAL);
       } else {
         Toast.error(response.message, "Verification failed");
@@ -140,8 +145,8 @@ const PhoneVerifcation = () => {
   };
 
   return (
-    <div className="">
-      <div className="lg:w-[442px] mx-auto py-24 px-5">
+    <div className="sm:w-[80%] mx-auto">
+      <div className=" py-24 px-5">
         <OtherSide
           header="Verify your Phone number"
           subHeader="We need your phone number to authenticate your details and secure your account"
@@ -188,21 +193,12 @@ const PhoneVerifcation = () => {
           <form onSubmit={formik.handleSubmit}>
             <div className="w-full mt-10">
               <div className="w-full mb-4 relative">
-                <Select
-                  value={selectedCountry}
-                  onValueChange={setSelectedCountry}
-                >
-                  <SelectTrigger className="w-fit  bg-transparent cursor-pointer px-1  py-0 border rounded-md absolute top-1/2 -translate-y-1/2 left-1 !h-[30px] outline-hidden curor-pointer border-transparent">
-                    <SelectValue placeholder="Select" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {listOptions.map((country) => (
-                      <SelectItem key={country.value} value={country.value}>
-                        {country.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <SelectDropDown
+                  onChange={setSelectedCountry}
+                  options={listOptions}
+                  defaultValue={selectedCountry}
+                  className="w-fit z-10  bg-transparent cursor-pointer px-1  py-0 border rounded-md absolute top-1/2 -translate-y-1/2 left-1 !h-[30px] outline-hidden curor-pointer border-transparent"
+                />
 
                 <PrimaryInput
                   className="w-full p-2.5 mb-7 pl-28"

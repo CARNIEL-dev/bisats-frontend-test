@@ -29,6 +29,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import { useMemo, useState } from "react";
 
 import { AnimatePresence, motion } from "motion/react";
+import { slideInLeft } from "../animation";
 
 dayjs.extend(relativeTime);
 
@@ -45,7 +46,6 @@ type MutationData = {
   message?: string;
   data: Omit<NotificationState, "loading"> | null;
 } | void;
-type MutationCtx = { prev: TNotification[] };
 
 const Notification = () => {
   const userState: UserState = useSelector((state: any) => state.user);
@@ -62,7 +62,6 @@ const Notification = () => {
 
   const isItemLoading = (id: string, kind: "read" | "delete") => {
     const key = `${kind}:${id}`;
-    console.log("Checking loading for:", key, pendingIds.has(key));
     return pendingIds.has(key);
   };
 
@@ -177,51 +176,53 @@ const Notification = () => {
           <DropdownMenuLabel className="flex items-center gap-2 text-lg">
             Notifications <Bell className="w-4 h-4 text-emerald-600" />
           </DropdownMenuLabel>
-          <DropdownMenuLabel className="flex items-center font-normal gap-2">
-            <span className="text-sm text-gray-500">All </span>
-            {notificationState.unreadNotifications >= 1 && (
-              <Button
-                variant="ghost"
-                size={"sm"}
-                className={cn(
-                  "text-xs rounded-full border border-green-200  size-8 hover:bg-green-500/10"
-                )}
-                onClick={() => {
-                  mutation.mutate({ type: "readAll" });
-                }}
-                disabled={isReadAllLoading}
-              >
-                {isReadAllLoading ? (
-                  <Loader2 className="text-green-600 animate-spin" />
-                ) : (
-                  <Check className="text-green-600" />
-                )}
-              </Button>
-            )}
-            {notificationState.totalNotification >= 1 && (
-              <Button
-                variant="ghost"
-                size={"sm"}
-                className={cn(
-                  "text-xs rounded-full border border-red-200  size-8 hover:bg-red-500/10"
-                )}
-                onClick={() => {
-                  mutation.mutate({ type: "deleteAll" });
-                }}
-                disabled={isDeleteAllLoading}
-              >
-                {isDeleteAllLoading ? (
-                  <Loader2 className="text-red-600 animate-spin" />
-                ) : (
-                  <Trash className="text-red-600" />
-                )}
-              </Button>
-            )}
-            <div className="text-xs flex items-center gap-1 text-gray-500 ml-auto">
-              <p>Total :</p>
-              <p>{notificationState.totalNotification}</p>
-            </div>
-          </DropdownMenuLabel>
+          {notificationState.totalNotification >= 1 && (
+            <DropdownMenuLabel className="flex items-center font-normal gap-2">
+              <span className="text-sm text-gray-500">All </span>
+              {notificationState.unreadNotifications >= 1 && (
+                <Button
+                  variant="ghost"
+                  size={"sm"}
+                  className={cn(
+                    "text-xs rounded-full border border-green-200  size-8 hover:bg-green-500/10"
+                  )}
+                  onClick={() => {
+                    mutation.mutate({ type: "readAll" });
+                  }}
+                  disabled={isReadAllLoading}
+                >
+                  {isReadAllLoading ? (
+                    <Loader2 className="text-green-600 animate-spin" />
+                  ) : (
+                    <Check className="text-green-600" />
+                  )}
+                </Button>
+              )}
+              {notificationState.totalNotification >= 1 && (
+                <Button
+                  variant="ghost"
+                  size={"sm"}
+                  className={cn(
+                    "text-xs rounded-full border border-red-200  size-8 hover:bg-red-500/10"
+                  )}
+                  onClick={() => {
+                    mutation.mutate({ type: "deleteAll" });
+                  }}
+                  disabled={isDeleteAllLoading}
+                >
+                  {isDeleteAllLoading ? (
+                    <Loader2 className="text-red-600 animate-spin" />
+                  ) : (
+                    <Trash className="text-red-600" />
+                  )}
+                </Button>
+              )}
+              <div className="text-xs flex items-center gap-1 text-gray-500 ml-auto">
+                <p>Total :</p>
+                <p>{notificationState.totalNotification}</p>
+              </div>
+            </DropdownMenuLabel>
+          )}
         </div>
         <DropdownMenuSeparator />
         <div className="h-full overflow-y-scroll max-h-[23rem] no-scrollbar">
@@ -263,9 +264,14 @@ const Notification = () => {
                   }
                 )
               ) : (
-                <div className="text-center py-4">
+                <motion.div
+                  variants={slideInLeft}
+                  initial="hidden"
+                  animate="show"
+                  className="text-center py-4"
+                >
                   <p className="text-slate-500 text-sm">No notifications</p>
-                </div>
+                </motion.div>
               )}
             </AnimatePresence>
           </>

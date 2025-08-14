@@ -33,7 +33,10 @@ const App: React.FC = () => {
 
   useEffect(() => {
     if (userState.isAuthenticated) {
-      rehydrateUser();
+      rehydrateUser({
+        userId: userState.user?.userId,
+        token: userState.user?.token,
+      });
       GetWallet();
     }
   }, [userState.isAuthenticated]);

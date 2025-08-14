@@ -3,13 +3,13 @@
 import {
   getRefreshToken,
   getToken,
-  getUser,
   getUserId,
   setRefreshToken,
   setToken,
-  setUser,
   setUserId,
 } from "@/helpers";
+import Bisatsfetch from "@/redux/fetchWrapper";
+import { GeneralTypes, UserActionTypes } from "@/redux/types";
 import {
   TIdentity,
   TLogin,
@@ -25,9 +25,6 @@ import {
 } from "@/types/user";
 import { BACKEND_URLS } from "@/utils/backendUrls";
 import dispatchWrapper from "@/utils/dispatchWrapper";
-import Bisatsfetch from "@/redux/fetchWrapper";
-import { GeneralTypes, UserActionTypes } from "@/redux/types";
-import { th } from "date-fns/locale";
 
 export const Login = async (payload: TLogin) => {
   try {
@@ -37,6 +34,7 @@ export const Login = async (payload: TLogin) => {
     });
 
     const data = response.data;
+
     setUserId(data?.userId);
     setToken(data.token);
     setRefreshToken(data.refreshToken);
@@ -187,15 +185,22 @@ export const refreshAccessToken = async (payload: { refreshToken: string }) => {
     return error;
   }
 };
-export const rehydrateUser = () => {
-  const user = getUserId();
-  const token = getToken();
-  if (!user || !token) {
+export const rehydrateUser = ({
+  userId,
+  token,
+}: {
+  userId: string;
+  token: string;
+}) => {
+  if (!userId || !token) {
     logoutUser();
     return;
   }
 
-  GetUserDetails();
+  GetUserDetails({
+    userId,
+    token,
+  });
 };
 
 export const logoutUser = () => {
@@ -321,17 +326,19 @@ export const GetKYCStatus = async (payload: { userId: string }) => {
   }
 };
 
-export const GetUserDetails = async () => {
-  const user = getUserId();
-  const token = getToken();
+export const GetUserDetails = async ({
+  userId,
+  token,
+}: {
+  userId: string;
+  token: string;
+}) => {
   const refreshToken = getRefreshToken();
   try {
-    const response = await Bisatsfetch(`/api/v1/user/${user}/profile`, {
+    const response = await Bisatsfetch(`/api/v1/user/${userId}/profile`, {
       method: "GET",
     });
     const data = response.data;
-
-    // console.log("Data from getting profile", data);
 
     if (response.status) {
       dispatchWrapper({
@@ -340,11 +347,11 @@ export const GetUserDetails = async () => {
           ...data,
           token,
           refreshToken,
-          userId: user,
+          userId: userId,
         },
       });
 
-      setUserId(user!);
+      setUserId(userId!);
 
       return data;
     } else {
@@ -378,7 +385,7 @@ export const UpdateUserName = async (payload: {
     const data = response;
 
     // console.log("After username update", data);
-    GetUserDetails();
+    GetUserDetails({ userId: userId!, token: getToken()! });
     // dispatchWrapper({ type: GeneralTypes.SUCCESS, payload: data });
     return data;
   } catch (error) {

@@ -57,7 +57,10 @@ const SetPinModal: React.FC<Props> = ({ close, type, open }) => {
         response.message,
         type === "create" ? "PIN Created" : "PIN Updated"
       );
-      rehydrateUser();
+      rehydrateUser({
+        userId: user?.userId,
+        token: user?.token,
+      });
       close();
     } else {
       Toast.error(response.message, "Failed");

@@ -91,7 +91,10 @@ const Security = () => {
                   setResetLoading(true);
                   await ResetTwoFactorAuth(user?.userId)
                     .then(() => {
-                      rehydrateUser();
+                      rehydrateUser({
+                        userId: user?.userId,
+                        token: user?.token,
+                      });
                       Toast.success("2FA Reset Successfully", "2FA Reset");
                     })
                     .catch((error) => {

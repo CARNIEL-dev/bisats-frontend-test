@@ -56,7 +56,8 @@ const Transactions: React.FC = () => {
 
   const [selectedAsset, setSelectedAsset] = useState<string>("");
   const [selectedType, setSelectedType] = useState<string>("");
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchWord, setSearchWord] = useState("");
+
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [selectedData, setSelectedData] = useState<ITransaction | undefined>();
 
@@ -73,11 +74,11 @@ const Transactions: React.FC = () => {
     error,
   } = useUserWalletHistory({
     userId,
-    reason: selectedType === "-" ? "" : selectedType ?? "top-up",
+    reason: selectedType === "-" ? "" : selectedType,
     asset: selectedAsset === "-" ? "" : selectedAsset,
     type: "",
     date: selectedDate,
-    searchWord: searchTerm,
+    searchWord: searchWord,
     isKycVerified,
   });
 
@@ -119,16 +120,6 @@ const Transactions: React.FC = () => {
               className="!h-[2.3rem] !w-fit hidden lg:flex"
               defaultValue={selectedAsset ? selectedAsset : "-"}
             />
-            {/* <TokenSelection
-              value=""
-              handleChange={() => {}}
-              showBalance={false}
-              error={""}
-              label=""
-              touched={undefined}
-              placeholder="Asset"
-              className="!h-[2.3rem] !w-fit hidden lg:flex"
-            /> */}
           </div>
         );
       },
@@ -167,12 +158,11 @@ const Transactions: React.FC = () => {
       },
     },
     {
-      accessorKey: "Type",
+      id: "Type",
       header: () => {
         return (
-          <div className="flex  flex-col gap-1">
+          <div className="flex flex-col gap-1">
             <p className="font-semibold text-gray-600 lg:hidden">Type</p>
-
             <SelectDropDown
               options={[
                 { label: "Type", value: "-" },
@@ -189,17 +179,23 @@ const Transactions: React.FC = () => {
           </div>
         );
       },
+      accessorFn: (row) => {
+        // Return the display value for filtering
+        return row.Type.toLowerCase() === "top_up" ? "Deposit" : row.Type;
+      },
       cell: ({ row }) => {
-        const type = row.original.Type;
+        const displayValue: string = row.getValue("Type"); // Gets transformed value from accessorFn
+        return <p className={cn("capitalize")}>{displayValue}</p>;
+      },
+      filterFn: (row, id, filterValue) => {
+        const displayValue = row.getValue(id) as string;
+        const searchTerm = filterValue.toLowerCase();
+
+        // Match against display values
         return (
-          <p
-            className={cn(
-              "capitalize"
-              //   type === "withdrawal" ? "text-red-400" : "text-green-500"
-            )}
-          >
-            {type === "top_up" ? "Deposit" : type}
-          </p>
+          displayValue.toLowerCase().includes(searchTerm) ||
+          (searchTerm === "deposit" && displayValue === "Deposit") ||
+          (searchTerm === "withdrawal" && displayValue === "Withdrawal")
         );
       },
     },
@@ -276,9 +272,7 @@ const Transactions: React.FC = () => {
           <DataTable
             columns={columns}
             data={transactionsData}
-            // paginated={false}
             enableFiltering
-            filterColumns={["Reference", "Date", "Amount"]}
           />
         </>
       )}

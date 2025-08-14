@@ -20,6 +20,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { motion } from "motion/react";
 import {
   container,
+  revealUpVariant,
   slideInLeft,
   slideInRight,
   slideUpVariant,
@@ -33,23 +34,45 @@ export const HeroSectionByAnima = (): JSX.Element => {
   return (
     <div className="w-full relative min-h-[85vh] md:min-h-fit">
       <MaxWidth as="section" className=" max-w-[78rem] 2xl:max-w-[90rem] mb-16">
-        <div className="flex flex-col md:flex-row justify-between items-start">
+        <motion.div
+          variants={container}
+          initial="hidden"
+          animate="show"
+          exit={"exit"}
+          className="flex flex-col md:flex-row justify-between items-start"
+        >
           {/* SUB: Left content */}
-          <div className="flex flex-col mt-[8%] justify-center text-center  w-full md:text-left lg:w-[740px] items-start gap-4 flex-1 md:pt-14 pt-12">
-            <img
+          <motion.div
+            variants={container}
+            initial="hidden"
+            animate="show"
+            exit={"exit"}
+            className="flex flex-col mt-[8%] justify-center text-center  w-full md:text-left lg:w-[740px] items-start gap-4 flex-1 md:pt-14 pt-12"
+          >
+            <motion.img
+              variants={slideInRight}
               src={coinss}
               alt="logo-cluster"
               className="h-[24px] mx-auto md:mx-0"
             />
-            <h1 className="text-[42px] leading-[56px] w-full  lg:text-6xl font-semibold text-[#0A0E12]  lg:leading-[65px]">
+            <motion.h1
+              variants={slideInRight}
+              className="text-[42px] leading-[56px] w-full  lg:text-6xl font-semibold text-[#0A0E12]  lg:leading-[65px]"
+            >
               Trade, Rest, and <br /> Stay Happy
-            </h1>
-            <p className="w-full lg:w-[541px] text-[16px] leading-[28px] py-3 lg:text-lg lg:leading-[28px] font-normal text-[#515B6E]">
+            </motion.h1>
+            <motion.p
+              variants={revealUpVariant}
+              className="w-full lg:w-[541px] text-[16px] leading-[28px] py-3 lg:text-lg lg:leading-[28px] font-normal text-[#515B6E]"
+            >
               With Bisats, you can say goodbye to your struggles with crypto
               peer-to-peer exchanges
-            </p>
+            </motion.p>
 
-            <div className="flex flex-wrap lg:flex-nowrap items-center w-full  lg:w-4/6 gap-4  ">
+            <motion.div
+              variants={revealUpVariant}
+              className="flex flex-wrap lg:flex-nowrap items-center w-full  lg:w-4/6 gap-4  "
+            >
               {isAuthenticated ? (
                 <a
                   href={APP_ROUTES.DASHBOARD}
@@ -82,8 +105,8 @@ export const HeroSectionByAnima = (): JSX.Element => {
                   </Link>
                 </>
               )}
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
           {/* SUB: Right content */}
           <div className="w-full mt-6 lg:mt-0 flex-1  rounded-xl flex items-center justify-center ">
@@ -140,7 +163,7 @@ export const HeroSectionByAnima = (): JSX.Element => {
               />
             </motion.div>
           </div>
-        </div>
+        </motion.div>
       </MaxWidth>
 
       <img
