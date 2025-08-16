@@ -408,13 +408,22 @@ const AdSchema = Yup.object().shape({
       [
         "type",
         "amount",
+        "amountToken",
         "asset",
         "$walletData",
         "$liveRate",
         "$userTransactionLimits",
       ],
       (
-        [type, amount, assetValue, walletData, liveRate, userTransactionLimits],
+        [
+          type,
+          amount,
+          amountToken,
+          assetValue,
+          walletData,
+          liveRate,
+          userTransactionLimits,
+        ],
         schema
       ) => {
         const limit =
@@ -422,27 +431,27 @@ const AdSchema = Yup.object().shape({
             ? userTransactionLimits?.upper_limit_buy_ad
             : userTransactionLimits?.upper_limit_sell_ad;
 
-        const walletBalance =
-          type.toLowerCase() === "buy"
-            ? walletData?.xNGN
-            : walletData?.[assetValue];
+        const escrowAmount =
+          type.toLowerCase() === "buy" ? amount : amountToken;
+
+        // const walletBalance = Number(walletData?.xNGN || 0)
 
         const tokenRate = liveRate[assetValue as keyof Prices];
 
-        const tokenValue = (Number(tokenRate) * Number(walletBalance)).toFixed(
+        const tokenValue = (Number(tokenRate) * Number(escrowAmount)).toFixed(
           2
         );
 
         const computedMax = Math.min(
           limit || Infinity,
-          type.toLowerCase() === "sell"
-            ? parseFloat(tokenValue)
-            : Number(amount)
+          type.toLowerCase() === "sell" ? parseFloat(tokenValue) : escrowAmount
         );
 
         return schema.max(
           computedMax,
-          `Maximum must not exceed ₦${formatNumber(computedMax)}`
+          `Maximum must not exceed ₦${formatNumber(
+            computedMax
+          )} equivalent to your escrow`
         );
       }
     )

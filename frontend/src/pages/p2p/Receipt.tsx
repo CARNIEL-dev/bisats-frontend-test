@@ -1,17 +1,17 @@
-import { ReactNode, useEffect, useMemo, useState } from "react";
+import MaxWidth from "@/components/shared/MaxWith";
+import TextBox from "@/components/shared/TextBox";
+import { Button } from "@/components/ui/Button";
+import { APP_ROUTES } from "@/constants/app_route";
+import PreLoader from "@/layouts/PreLoader";
+import { formatter } from "@/utils";
+import dayjs from "dayjs";
+import { Check, Copy } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   PrimaryButton,
   WhiteTransparentButton,
 } from "../../components/buttons/Buttons";
-import { typeofSwam } from "./components/Swap";
-import { useLocation, useNavigate } from "react-router-dom";
-import { APP_ROUTES } from "@/constants/app_route";
-import MaxWidth from "@/components/shared/MaxWith";
-import PreLoader from "@/layouts/PreLoader";
-import { formatter } from "@/utils";
-import { Button } from "@/components/ui/Button";
-import { Check, Copy } from "lucide-react";
-import dayjs from "dayjs";
 
 interface Props {
   // type: typeofSwam
@@ -179,18 +179,3 @@ const Receipt: React.FC<Props> = () => {
 };
 
 export default Receipt;
-
-const TextBox = ({
-  label,
-  value,
-}: {
-  label: string;
-  value: string | ReactNode;
-}) => {
-  return (
-    <div className="flex justify-between items-center gap-x-3 gap-y-1 flex-wrap sm:flex-nowrap">
-      <p className="text-gray-600">{label}:</p>
-      <div className="text-gray-500">{value}</div>
-    </div>
-  );
-};

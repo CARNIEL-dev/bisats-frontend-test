@@ -299,3 +299,49 @@ type UserTransactionLimits = {
   totalUsedAmountFiat: number;
   totalUsedAmountFiatCurrency: string;
 };
+
+type UserBalanceType =
+  | {
+      balanceTotal: number;
+      lockedBalanceTotal: number;
+    }
+  | undefined;
+
+type TWallet = {
+  id: string;
+  userId: string;
+  xNGN: number;
+  SOL: number;
+  BTC: number;
+  USDT: number;
+  ETH: number;
+  xNGNLocked: number;
+  SOLLocked: number;
+  BTCLocked: number;
+  USDTLocked: number;
+  ETHLocked: number;
+  NGNMaxDailyWithdrawalLimit: string;
+  USDMaxDailyWithdrawalLimit: string;
+  AdsLimit: {
+    buy: number;
+    sell: number;
+  };
+  vaultAccountId: string;
+  activated: boolean;
+  onHold: boolean;
+  blockWallet: boolean;
+  pin: string | null;
+  pinSet: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+  bankAccount: TBank[];
+  cryptoAssests: {
+    id: string;
+    asset: string;
+    network: string;
+    assetId: string;
+    address: string;
+  }[];
+};
+
+type TokenTypes = "xNGN" | "SOL" | "BTC" | " USDT" | " ETH";

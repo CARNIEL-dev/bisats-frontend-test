@@ -3,12 +3,14 @@ import { cn } from "@/utils";
 const Divider = ({
   text,
   textClassName,
+  className,
 }: {
   text: string;
   textClassName?: string;
+  className?: string;
 }) => {
   return (
-    <div className="relative my-6">
+    <div className={cn("relative my-6", className)}>
       <Separator />
       <p
         className={cn(

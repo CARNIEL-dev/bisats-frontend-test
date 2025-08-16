@@ -87,21 +87,47 @@ function formatEmail({
 }
 
 // HDR: Wallet currency Balance
-const getCurrencyBalance = ({
-  item,
-  isXNGN,
-  defaultCurrency,
-}: {
-  item: Omit<AssetType, "logo" | "Asset">;
-  isXNGN: boolean;
-  defaultCurrency: string;
-}): number => {
-  if (defaultCurrency === "usd") {
-    return isXNGN ? item.Balance / item.NairaRate : item.Balance * item.USDRate;
+// ...existing code...
+
+type CurrencyBalanceParams =
+  | {
+      item: Omit<AssetType, "logo" | "Asset">;
+      isXNGN: boolean;
+      defaultCurrency: string;
+      type?: "balance";
+    }
+  | {
+      item: Omit<AssetType, "logo" | "Asset">;
+      isXNGN: boolean;
+      defaultCurrency: string;
+      type: "locked";
+      lockedBalance: number;
+    };
+
+const getCurrencyBalance = (params: CurrencyBalanceParams): number => {
+  const { item, isXNGN, defaultCurrency } = params;
+
+  if (params.type === "locked") {
+    const { lockedBalance } = params;
+    if (defaultCurrency === "usd") {
+      return isXNGN
+        ? lockedBalance / item.NairaRate
+        : lockedBalance * item.USDRate;
+    } else {
+      return isXNGN ? lockedBalance : lockedBalance * item.NairaRate;
+    }
   } else {
-    return isXNGN ? item.Balance : item.Balance * item.NairaRate;
+    if (defaultCurrency === "usd") {
+      return isXNGN
+        ? item.Balance / item.NairaRate
+        : item.Balance * item.USDRate;
+    } else {
+      return isXNGN ? item.Balance : item.Balance * item.NairaRate;
+    }
   }
 };
+
+// ...existing code...
 
 /**
  * Converts large numbers to compact/shortened format (e.g., 2000 → "2K")

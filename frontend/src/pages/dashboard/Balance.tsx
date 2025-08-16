@@ -22,6 +22,7 @@ import { WalletState } from "@/redux/reducers/walletSlice";
 import { cn, formatter, getCurrencyBalance } from "@/utils";
 import { ChevronDown, Eye, EyeOff } from "lucide-react";
 import { ThreeDot } from "react-loading-indicators";
+import BalanceInfo from "@/components/shared/BalanceInfo";
 
 const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
   const {
@@ -46,52 +47,74 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
         Balance: wallet?.BTC ?? 0,
         USDRate: currencyRate?.bitcoin?.usd ?? 0,
         NairaRate: currencyRate?.bitcoin?.ngn ?? 0,
+        lockedBalance: wallet?.BTCLocked ?? 0,
       },
       {
         name: "Ethereum",
         Balance: wallet?.ETH ?? 0,
         USDRate: currencyRate?.ethereum?.usd ?? 0,
         NairaRate: currencyRate?.ethereum?.ngn ?? 0,
+        lockedBalance: wallet?.ETHLocked ?? 0,
       },
       {
         name: "Solana",
         Balance: wallet?.SOL ?? 0,
         USDRate: currencyRate?.solana?.usd ?? 0,
         NairaRate: currencyRate?.solana?.ngn ?? 0,
+        lockedBalance: wallet?.SOLLocked ?? 0,
       },
       {
         name: "Tether USD",
         Balance: wallet?.USDT ?? 0,
         USDRate: currencyRate?.tether?.usd ?? 0,
         NairaRate: currencyRate?.tether?.ngn ?? 0,
+        lockedBalance: wallet?.USDTLocked ?? 0,
       },
       {
         name: "xNGN",
         Balance: wallet?.xNGN ?? 0,
         USDRate: currencyRate?.tether?.usd ?? 0,
         NairaRate: currencyRate?.tether?.ngn ?? 0,
+        lockedBalance: wallet?.xNGNLocked ?? 0,
       },
     ],
     [currencyRate, wallet]
   );
 
-  const userBalance = useMemo<number | undefined>(() => {
+  const userBalance = useMemo<UserBalanceType>(() => {
     if (!wallet || !currencyRate) return;
     setIsLoading(false);
-    return defaultAssetsData.reduce((total, asset) => {
-      const currencyBal = getCurrencyBalance({
-        item: asset,
-        isXNGN: asset.name === "xNGN",
-        defaultCurrency: currency,
-      });
-      return currencyBal + total;
-    }, 0);
+
+    return defaultAssetsData.reduce(
+      (totals, asset) => {
+        const balance = getCurrencyBalance({
+          item: asset,
+          isXNGN: asset.name === "xNGN",
+          defaultCurrency: currency,
+        });
+
+        // If you have locked balances, replace 0 with the actual locked value
+        const lockedBalance = getCurrencyBalance({
+          item: asset,
+          isXNGN: asset.name === "xNGN",
+          defaultCurrency: currency,
+          type: "locked",
+          lockedBalance: asset.lockedBalance ?? 0,
+        });
+
+        return {
+          balanceTotal: totals.balanceTotal + balance,
+          lockedBalanceTotal: totals.lockedBalanceTotal + lockedBalance,
+        };
+      },
+      { balanceTotal: 0, lockedBalanceTotal: 0 }
+    );
   }, [currencyRate, wallet, currency]);
 
   return (
     <div className="border  flex flex-col gap-2 p-6 rounded-2xl">
       <div className="flex items-center gap-1">
-        <p className="font-semibold text-neutral-800">Total Balance</p>
+        <p className="font-semibold text-neutral-800">Balance</p>
         <Button
           variant="default"
           disabled={isFetching}
@@ -104,6 +127,12 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
             <EyeOff className="!size-5" />
           )}
         </Button>
+        <BalanceInfo
+          className="ml-auto"
+          userBalance={userBalance}
+          currency={currency}
+          wallet={wallet as TWallet}
+        />
       </div>
       <div className="flex items-baseline gap-3">
         {isFetching || isLoading ? (
@@ -127,7 +156,7 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
                 <span className="text-2xl md:text-4xl">
                   {
                     formatter({})
-                      .format(userBalance ?? 0)
+                      .format(userBalance?.balanceTotal ?? 0)
                       .split(".")[0]
                   }
                 </span>
@@ -135,7 +164,7 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
                   .{" "}
                   {
                     formatter({})
-                      .format(userBalance ?? 0)
+                      .format(userBalance?.balanceTotal ?? 0)
                       .split(".")[1]
                   }
                 </span>
