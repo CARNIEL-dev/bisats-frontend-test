@@ -13,10 +13,7 @@ import dispatchWrapper from "@/utils/dispatchWrapper";
 import { useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
 import { motion } from "motion/react";
-
-const isDevelopment =
-  process.env.NODE_ENV === "development" ||
-  process.env.VERCEL_ENV === "development";
+import { isProduction } from "@/utils";
 
 const LogIn = () => {
   const navigate = useNavigate();
@@ -46,7 +43,7 @@ const LogIn = () => {
           return;
         }
 
-        if (data.twoFactorAuthEnabled && !isDevelopment) {
+        if (data.twoFactorAuthEnabled && isProduction) {
           dispatchWrapper({
             type: UserActionTypes.LOG_IN_PENDING,
             payload: data,

@@ -28,16 +28,13 @@ const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    requestPermission();
-  }, []);
-
-  useEffect(() => {
     if (userState.isAuthenticated) {
       rehydrateUser({
         userId: userState.user?.userId,
         token: userState.user?.token,
       });
       GetWallet();
+      requestPermission();
     }
   }, [userState.isAuthenticated]);
 

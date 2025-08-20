@@ -7,14 +7,14 @@ importScripts(
 importScripts(
   "https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging-compat.js"
 );
-const env = process.env;
+
 firebase.initializeApp({
-  apiKey: env?.REACT_APP_FIREBASE_APIKEY,
-  authDomain: env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-  projectId: env.REACT_APP_FIREBASE_PROJECT_ID,
-  storageBucket: env.REACT_APP_FIREBASE_STORAGEBUCKET,
-  messagingSenderId: env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-  appId: env.REACT_APP_FIREBASE_APIID,
+  apiKey: "AIzaSyCvuXHwcOzLTRlTJtWAiOqUzWTQPFl3-yg",
+  authDomain: "bisats-77f41.firebaseapp.com",
+  projectId: "bisats-77f41",
+  storageBucket: "bisats-77f41.firebasestorage.app",
+  messagingSenderId: "153517917101",
+  appId: "1:153517917101:web:7b8224793d1ff0dffe1724",
 });
 
 const messaging = firebase.messaging();

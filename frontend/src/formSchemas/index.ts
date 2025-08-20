@@ -68,7 +68,9 @@ const PhoneSchema = Yup.object().shape({
   phone: Yup.string().required("Phone number is required"),
 });
 const BVNSchema = Yup.object().shape({
-  bvn: Yup.string().required("BVN is required"),
+  bvn: Yup.string()
+    .required("BVN is required")
+    .length(11, "BVN must be 11 digits"),
 });
 const LogInSchema = Yup.object().shape({
   email: Yup.string().email().required(),

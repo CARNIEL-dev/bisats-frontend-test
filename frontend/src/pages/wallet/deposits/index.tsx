@@ -172,11 +172,13 @@ const DepositPage = () => {
                 handleChange={(e) => setSelectedNetworks(e)}
               />
             </div>
-            <CopyDisplay
-              title="Wallet Address"
-              text={getAddress}
-              placeholder="Please select a network"
-            />
+            {getAddress && (
+              <CopyDisplay
+                title="Wallet Address"
+                text={getAddress}
+                placeholder="Please select a network"
+              />
+            )}
             <div className="lg:h-[88px]  border   border-[#F3F4F6] bg-[#F9F9FB] rounded-md py-3 px-5 flex items-start my-5 ">
               <svg
                 width="16"

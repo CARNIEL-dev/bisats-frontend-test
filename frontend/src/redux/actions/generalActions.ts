@@ -35,6 +35,28 @@ export const GetNotification = async (uid: string) => {
     // return error;
   }
 };
+export const GetNotificationById = async (
+  uid: string,
+  notificationId: string
+) => {
+  try {
+    const response = await Bisatsfetch(
+      `/api/v1/user/${uid}/notification/${notificationId}/get-notification-by-id`,
+      {
+        method: "GET",
+      }
+    );
+
+    if (response.statusCode !== 200) {
+      throw new Error(response.message);
+    }
+    return response.data;
+  } catch (error) {
+    // console.log("error notification catch", error);
+    throw error;
+    // return error;
+  }
+};
 
 const useFetchUserNotifications = ({
   userId,

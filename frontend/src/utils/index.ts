@@ -148,6 +148,10 @@ const formatCompactNumber = (value: number): string => {
     : `${scaledValue.toFixed(1)}${unit}`;
 };
 
+const isProduction =
+  process.env.NODE_ENV === "production" ||
+  process.env.VERCEL_ENV === "production";
+
 export {
   formatter,
   formatTime,
@@ -156,4 +160,5 @@ export {
   getCurrencyBalance,
   delay,
   formatCompactNumber,
+  isProduction,
 };

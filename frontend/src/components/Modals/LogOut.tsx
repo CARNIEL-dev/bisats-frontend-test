@@ -6,11 +6,13 @@ import {
 } from "@/components/buttons/Buttons";
 import LogOutIcon from "@/assets/icons/logout-icon.svg";
 import { logoutUser } from "@/redux/actions/userActions";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface Props {
   close: () => void;
 }
 const LogOutModal: React.FC<Props> = ({ close }) => {
+  const queryClient = useQueryClient();
   return (
     <ModalTemplate onClose={close} className="2xl:w-[600px]">
       <div className="flex flex-col gap-4">
@@ -37,6 +39,7 @@ const LogOutModal: React.FC<Props> = ({ close }) => {
             loading={false}
             className="w-1/2 ml-3"
             onClick={() => {
+              queryClient.clear();
               logoutUser();
               close();
             }}

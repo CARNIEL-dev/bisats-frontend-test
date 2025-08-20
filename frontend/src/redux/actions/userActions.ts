@@ -207,7 +207,9 @@ export const logoutUser = () => {
   localStorage.removeItem("_uid");
   localStorage.removeItem("token");
   localStorage.removeItem("refreshToken");
+
   dispatchWrapper({ type: UserActionTypes?.LOG_OUT, payload: null });
+  dispatchWrapper({ type: "RESET_WALLET", payload: null });
 };
 
 export const GoogleAuth = async (payload: { email: string; id: string }) => {
@@ -217,7 +219,6 @@ export const GoogleAuth = async (payload: { email: string; id: string }) => {
       body: JSON.stringify({ email: payload.email, googleId: payload.id }),
     });
     const data = response.data;
-    dispatchWrapper({ type: UserActionTypes.LOG_IN_SUCCESS, payload: data });
     setUserId(data.userId);
     setToken(data.token);
     setRefreshToken(data.refreshToken);
@@ -334,6 +335,7 @@ export const GetUserDetails = async ({
   token: string;
 }) => {
   const refreshToken = getRefreshToken();
+
   try {
     const response = await Bisatsfetch(`/api/v1/user/${userId}/profile`, {
       method: "GET",
@@ -403,7 +405,6 @@ export const PostPhoneNumber_KYC = async (payload: TRequestPhone) => {
         body: JSON.stringify(payload),
       }
     );
-    const data = response.data;
 
     // dispatchWrapper({ type: GeneralTypes.SUCCESS, payload: data });
 

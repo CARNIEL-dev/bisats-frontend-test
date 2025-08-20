@@ -33,6 +33,7 @@ const FileInput: React.FC<TFileInput> = ({
       if (allowedTypes.includes(file1.type)) {
         setFileName(file1.name);
         setFile(file1);
+        setError("");
       } else {
         Toast.warning(
           "Only pdf, jepeg an jpg formats are allowed",

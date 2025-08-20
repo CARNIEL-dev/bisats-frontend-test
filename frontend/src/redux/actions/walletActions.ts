@@ -652,7 +652,8 @@ const useFetchOrder = ({
       if (response.status === true && Array.isArray(response.data)) {
         return response.data as OrderHistory[];
       }
-      throw new Error("Failed to fetch orders");
+
+      throw new Error(response.message || "Failed to fetch orders");
     },
     enabled: Boolean(userId && isKycVerified),
     refetchOnMount: false,

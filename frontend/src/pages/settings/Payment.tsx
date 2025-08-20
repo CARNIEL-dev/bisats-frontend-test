@@ -8,6 +8,8 @@ import WithdrawalBankAccount from "@/components/Modals/WithdrawalBankAccount";
 import { GetWallet } from "@/redux/actions/walletActions";
 import { WalletState } from "@/redux/reducers/walletSlice";
 import { Plus } from "lucide-react";
+import KycManager from "../kyc/KYCManager";
+import { ACTIONS } from "@/utils/transaction_limits";
 
 const Payment = () => {
   const walletState: WalletState = useSelector((state: any) => state.wallet);
@@ -47,18 +49,30 @@ const Payment = () => {
         <h2 className="text-[18px] lg:text-[18px] font-semibold text-[#2B313B]">
           Withdrawal Accounts
         </h2>
-        <WhiteTransparentButton
-          text={
-            <>
-              <Plus className="size-4" />
-              Add
-            </>
-          }
-          size="sm"
-          className="w-[6rem]"
-          loading={false}
-          onClick={() => setOpenModal((prev) => ({ ...prev, add: true }))}
-        />
+
+        <KycManager
+          action={ACTIONS.ADD_BANK}
+          func={() => {
+            setOpenModal((prev) => ({ ...prev, add: true }));
+          }}
+        >
+          {(validateAndExecute) => (
+            <WhiteTransparentButton
+              text={
+                <>
+                  <Plus className="size-4" />
+                  Add
+                </>
+              }
+              size="sm"
+              className="w-[6rem]"
+              loading={false}
+              onClick={() => {
+                validateAndExecute();
+              }}
+            />
+          )}
+        </KycManager>
       </div>
 
       {BankDetails.map((details: TBank, idx: number) => (

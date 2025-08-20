@@ -44,7 +44,7 @@ const BalanceInfo = ({ className, currency, userBalance, wallet }: Props) => {
               <h3
                 className={cn(
                   "font-medium text-sm",
-                  wallet?.activated && "text-green-600"
+                  wallet?.activated ? "text-green-600" : "text-red-500"
                 )}
               >
                 {wallet?.activated
@@ -116,7 +116,7 @@ const BalanceInfo = ({ className, currency, userBalance, wallet }: Props) => {
                   <p className="text-sm text-gray-800">
                     <span className="text-gray-400 text-xs">xNGN</span>{" "}
                     {formatter({ decimal: 0 }).format(
-                      wallet?.AdsLimit.buy ?? 0
+                      wallet?.AdsLimit?.buy ?? 0
                     )}
                   </p>
                 }
@@ -128,7 +128,7 @@ const BalanceInfo = ({ className, currency, userBalance, wallet }: Props) => {
                   <p className="text-sm text-gray-800">
                     <span className="text-gray-400 text-xs">xNGN</span>{" "}
                     {formatter({ decimal: 0 }).format(
-                      wallet?.AdsLimit.sell ?? 0
+                      wallet?.AdsLimit?.sell ?? 0
                     )}
                   </p>
                 }

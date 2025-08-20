@@ -1,8 +1,11 @@
 import { tokenLogos } from "@/assets/tokens";
 import Empty from "@/components/Empty";
 import KycBanner from "@/components/KycBanner";
+import ModalTemplate from "@/components/Modals/ModalTemplate";
 import RefreshButton from "@/components/RefreshButton";
 import ErrorDisplay from "@/components/shared/ErrorDisplay";
+import TextBox from "@/components/shared/TextBox";
+import { Button } from "@/components/ui/Button";
 import { DataTable } from "@/components/ui/data-table";
 import PreLoader from "@/layouts/PreLoader";
 import { useFetchOrder } from "@/redux/actions/walletActions";
@@ -10,11 +13,14 @@ import { UserState } from "@/redux/reducers/userSlice";
 import { cn, formatter } from "@/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
+import { Check, Copy } from "lucide-react";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 
 const OrderHistory = () => {
   const userState: UserState = useSelector((state: any) => state.user);
   const userId: string = userState?.user?.userId || "";
+  const [selectedData, setSelectedData] = useState<OrderHistory | undefined>();
 
   const isKycVerified = [
     userState?.kyc?.identificationVerified,
@@ -34,10 +40,10 @@ const OrderHistory = () => {
     return <KycBanner />;
   }
 
-  const columns = tableColumns(userId);
+  const columns = tableColumns(userId, setSelectedData);
 
   return (
-    <div className="">
+    <>
       <div className="mb-6">
         <h2
           className="font-semibold"
@@ -78,14 +84,161 @@ const OrderHistory = () => {
           />
         </>
       )}
-    </div>
+      {selectedData && (
+        <OrderHistoryDetails
+          close={() => setSelectedData(undefined)}
+          details={selectedData}
+          userId={userId}
+        />
+      )}
+    </>
   );
 };
 
 export default OrderHistory;
 
+// HDR: Order History details
+
+const OrderHistoryDetails = ({
+  close,
+  details,
+  userId,
+}: {
+  close: () => void;
+  details: OrderHistory;
+  userId: string;
+}) => {
+  const [copied, setCopied] = useState(false);
+  const handleCopy = () => {
+    navigator.clipboard.writeText(details.reference);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 3000);
+  };
+  return (
+    <ModalTemplate onClose={close}>
+      <div className="flex flex-col gap-3 mt-6 md:mt-0">
+        <div className="flex items-center gap-2 font-semibold mb-4 ">
+          <p className="text-gray-600">Order Ref:</p>
+          <div className="flex items-center gap-1">
+            <p className=" text-green-600">{details.reference}</p>
+            <Button variant={"ghost"} size={"icon"} onClick={handleCopy}>
+              {copied ? <Check className="text-green-600" /> : <Copy />}
+            </Button>
+          </div>
+        </div>
+        <TextBox
+          label="Type"
+          value={
+            <p
+              className={cn(
+                "capitalize font-semibold",
+                details.type === "buy" ? "text-green-600" : "text-red-600"
+              )}
+            >
+              {details.type === "buy" ? "Bought" : "Sold"}
+            </p>
+          }
+        />
+        <TextBox label="Asset" value={details.asset} />
+        <TextBox
+          label="Price"
+          value={
+            <p className="">
+              {formatter({
+                decimal: 2,
+              }).format(details.price)}{" "}
+              xNGN
+            </p>
+          }
+        />
+        <TextBox
+          label="Amount"
+          value={
+            <p className="">
+              <span className="font-semibold text-xl">
+                {formatter({ decimal: 2 }).format(
+                  details.price * details.quantity
+                )}{" "}
+              </span>
+              xNGN
+            </p>
+          }
+        />
+        <TextBox
+          label="Quantity"
+          value={
+            <p className="">
+              <span className="font-semibold text-xl">
+                {formatter({
+                  decimal:
+                    details.asset === "xNGN"
+                      ? 0
+                      : details.asset === "USDT"
+                      ? 2
+                      : 6,
+                }).format(details.quantity)}{" "}
+              </span>
+              {details.asset}
+            </p>
+          }
+        />
+
+        <TextBox
+          label="Transaction Fee"
+          value={
+            <p className="">
+              {formatter({
+                decimal: 2,
+              }).format(details.transactionFeeInNGN)}{" "}
+              xNGN
+            </p>
+          }
+        />
+        <TextBox
+          label="Counter Party"
+          value={
+            <p className="capitalize">
+              {details.merchantId === userId
+                ? details.buyer?.userName
+                : details.merchant.userName}
+            </p>
+          }
+        />
+        <TextBox
+          label="Status"
+          value={
+            <p
+              className={cn(
+                "text-xs capitalize px-2.5 py-0.5 rounded-full border",
+                details.status === "completed"
+                  ? "text-green-600 bg-green-300/10 border-green-600"
+                  : "text-red-600 border-red-600 bg-red-300/10"
+              )}
+            >
+              {details.status}
+            </p>
+          }
+        />
+        <TextBox
+          label="Date"
+          value={
+            <p className="">
+              {details.createdAt
+                ? dayjs(details.createdAt).format("DD MMM YYYY - hh:mm A")
+                : "N/A"}
+            </p>
+          }
+        />
+      </div>
+    </ModalTemplate>
+  );
+};
+
 // HDR: COLUMNS
-const tableColumns = (userId: string) => {
+const tableColumns = (
+  userId: string,
+  setSelectedData: (data: OrderHistory) => void
+) => {
   const columns: ColumnDef<OrderHistory>[] = [
     {
       header: "Type",
@@ -231,22 +384,24 @@ const tableColumns = (userId: string) => {
         );
       },
     },
+
     {
-      header: "Status",
-      accessorKey: "status",
+      id: "actions",
+      header: "",
       cell: ({ row }) => {
-        const status = row.original.status;
+        const item = row.original;
         return (
-          <p
-            className={cn(
-              "text-xs capitalize px-2.5 py-0.5 rounded-full border",
-              status === "completed"
-                ? "text-green-600 bg-green-300/10 border-green-600"
-                : "text-red-600 border-red-600 bg-red-300/10"
-            )}
-          >
-            {status}
-          </p>
+          <div className="flex justify-end">
+            <Button
+              size={"sm"}
+              variant={"outline"}
+              className={cn("w-fit text-xs bg-transparent")}
+              type="button"
+              onClick={() => setSelectedData(item)}
+            >
+              View details
+            </Button>
+          </div>
         );
       },
     },

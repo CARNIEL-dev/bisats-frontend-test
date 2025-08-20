@@ -47,6 +47,8 @@ import MarketPlacePage from "@/pages/p2p/MarketPlacePage";
 import NotFound from "@/routing/NotFound";
 import { Route, Routes } from "react-router-dom";
 import Verify2FA from "@/pages/auth/Verify2FA";
+import NotificationsPage from "@/pages/notifcations/NotificationsPage";
+import GoogleVerify from "@/pages/auth/GoogleVerify";
 
 const Routing = () => {
   return (
@@ -59,6 +61,10 @@ const Routing = () => {
           <Route
             path={APP_ROUTES?.AUTH.FORGOT_PASSWORD}
             Component={ForgotPassword}
+          />
+          <Route
+            path={APP_ROUTES.AUTH.GOOGLE_VERIFY}
+            Component={GoogleVerify}
           />
           <Route path={`${APP_ROUTES?.AUTH.VERIFY}`} Component={VerifyEmail} />
           <Route path={APP_ROUTES.AUTH.OTP} Component={OTP} />
@@ -119,6 +125,10 @@ const Routing = () => {
             </Route>
 
             <Route path={APP_ROUTES.DASHBOARD} element={<Dashboard />} />
+            <Route
+              path={APP_ROUTES.NOTIFICATION}
+              element={<NotificationsPage />}
+            />
             <Route path={APP_ROUTES.WALLET.HOME} element={<Wallet />} />
             <Route path={APP_ROUTES.PROFILE} element={<Profile />} />
           </Route>

@@ -1,12 +1,15 @@
 import Logo from "@/assets/logo/blackTextLogo.png";
+import LogoWhite from "@/assets/logo/Logo.png";
 import { cn } from "@/utils";
 import { Link } from "react-router-dom";
 const BisatLogo = ({
   className,
   reload = true,
+  variant = "dark",
 }: {
   className?: string;
   reload?: boolean;
+  variant?: "light" | "dark";
 }) => {
   return (
     <>
@@ -18,7 +21,7 @@ const BisatLogo = ({
               className
             )}
             alt="Bisats Logo"
-            src={Logo}
+            src={variant === "dark" ? Logo : LogoWhite}
           />
         </a>
       ) : (
@@ -29,7 +32,7 @@ const BisatLogo = ({
               className
             )}
             alt="Bisats Logo"
-            src={Logo}
+            src={variant === "dark" ? Logo : LogoWhite}
           />
         </Link>
       )}

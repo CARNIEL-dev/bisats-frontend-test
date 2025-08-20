@@ -439,6 +439,7 @@ const CryptoWithdrawal = ({
 
   const tokenData: TNetwork[] = useMemo(() => {
     const token = getUserTokenData();
+
     const networks = token?.find(
       (item: any) => item.tokenName === asset
     )?.networks;

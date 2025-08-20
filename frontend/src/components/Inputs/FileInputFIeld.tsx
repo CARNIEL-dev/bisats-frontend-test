@@ -99,6 +99,9 @@ const FileInputField: React.FC<FileInputProps> = ({
       Toast.warning(msg, "Document type");
       setFieldFail(msg);
       e.target.value = ""; // reset the input
+      if (!autoUpload) {
+        formik.setErrors({ [name]: msg });
+      }
       return;
     }
 
@@ -107,6 +110,7 @@ const FileInputField: React.FC<FileInputProps> = ({
 
     // If no uploader or autoUpload=false → just set the File (parent can upload on submit)
     if (!uploadFile || autoUpload === false) {
+      formik.setFieldValue(name, f, true);
       setFieldOk(f);
       return;
     }

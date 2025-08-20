@@ -1,10 +1,14 @@
-import React from "react";
-import GoogleLogo from "../../assets/logo/Google.svg";
+import GoogleLogo from "@/assets/logo/Google.svg";
+import Toast from "@/components/Toast";
+import { APP_ROUTES } from "@/constants/app_route";
+import { GoogleAuth } from "@/redux/actions/userActions";
+import { UserActionTypes } from "@/redux/types";
+import { isProduction } from "@/utils";
+import { BACKEND_URLS } from "@/utils/backendUrls";
+import dispatchWrapper from "@/utils/dispatchWrapper";
 import { useGoogleLogin } from "@react-oauth/google";
-import { GoogleAuth } from "../../redux/actions/userActions";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import { APP_ROUTES } from "../../constants/app_route";
-import { BACKEND_URLS } from "../../utils/backendUrls";
 
 type TGButtonProps = {
   text: string;
@@ -16,9 +20,13 @@ type Tdata = {
 };
 const GoogleButton: React.FC<TGButtonProps> = ({ text }) => {
   const navigate = useNavigate();
-  const TriigerGoogle = useGoogleLogin({
+
+  const TrigerGoogle = useGoogleLogin({
     onSuccess: (tokenResponse: any) => {
-      console.log(tokenResponse);
+      navigate(APP_ROUTES.AUTH.GOOGLE_VERIFY, {
+        replace: true,
+      });
+
       fetchUserData(tokenResponse.access_token);
     },
     onError(errorResponse: any) {
@@ -28,7 +36,7 @@ const GoogleButton: React.FC<TGButtonProps> = ({ text }) => {
 
   const fetchUserData = async (accessToken: string) => {
     try {
-      // Use the Google People API to fetch the user's profile
+      //? Use the Google People API to fetch the user's profile
       const response = await fetch(BACKEND_URLS.GOOGLEAPI, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -42,7 +50,24 @@ const GoogleButton: React.FC<TGButtonProps> = ({ text }) => {
       const data = (await response.json()) as Tdata;
       const { email, id } = data;
       const SignUpResponse = await GoogleAuth({ email, id });
+
+      const userData = SignUpResponse?.data;
       if (SignUpResponse?.statusCode === 200) {
+        if (userData.twoFactorAuthEnabled && isProduction) {
+          dispatchWrapper({
+            type: UserActionTypes.LOG_IN_PENDING,
+            payload: userData,
+          });
+          navigate(APP_ROUTES.AUTH.VERIFY_2FA);
+          return;
+        }
+
+        Toast.success("", SignUpResponse.message);
+        dispatchWrapper({
+          type: UserActionTypes.LOG_IN_SUCCESS,
+          payload: userData,
+        });
+
         navigate(APP_ROUTES.DASHBOARD);
       }
     } catch (error) {
@@ -52,7 +77,7 @@ const GoogleButton: React.FC<TGButtonProps> = ({ text }) => {
 
   return (
     <button
-      onClick={() => TriigerGoogle()}
+      onClick={() => TrigerGoogle()}
       className=" h-[48px] w-full border border-[#D6DAE1] rounded-[6px] flex items-center justify-center py-2 text-center shadow-[0_1_1px_#000] mb-4 cursor-pointer"
     >
       <img

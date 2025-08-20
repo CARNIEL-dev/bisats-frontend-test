@@ -294,7 +294,7 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
               text={"Edit Ad details"}
               loading={false}
               onClick={() => {
-                navigate(APP_ROUTES.P2P.AD_DETAILS, {
+                navigate(`${APP_ROUTES.P2P.AD_DETAILS}?adId=${ad?.id}`, {
                   state: {
                     adDetail: ad,
                     mode: "edit",

@@ -28,6 +28,7 @@ export enum WalletActionTypes {
   WALLET_SETTINGS = "getwalletsettings",
   TOGGLE_SHOW_BALANCE = "TOGGLE_SHOW_BALANCE",
   SET_DEFAULT_CURRENCY = "SET_DEFAULT_CURRENCY",
+  RESET_WALLET = "RESET_WALLET",
 }
 
 export enum AdvertsActionTypes {

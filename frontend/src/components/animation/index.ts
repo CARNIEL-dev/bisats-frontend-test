@@ -91,7 +91,7 @@ const revealUpVariant: Variants = {
     opacity: 1,
     y: 0,
     scaleY: 1,
-    transformOrigin: "bottom",
+    // transformOrigin: "bottom",
     transition: {
       duration: 0.6,
       ease: "backOut",

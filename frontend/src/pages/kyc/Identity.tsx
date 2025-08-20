@@ -13,6 +13,7 @@ import { UserState } from "@/redux/reducers/userSlice";
 import FileInput from "@/components/Inputs/FileInput";
 import { IdentificationSchema } from "@/formSchemas";
 import Label from "@/components/Inputs/Label";
+import FileInputField from "@/components/Inputs/FileInputFIeld";
 
 const DocTypes = [
   {
@@ -57,35 +58,12 @@ const Identity = () => {
           userId: user?.user?.userId,
           token: user?.user?.token,
         });
-        window.location.href = APP_ROUTES.DASHBOARD;
+        navigate(APP_ROUTES.DASHBOARD);
       } else {
         Toast.error("Error", response.message);
       }
     },
   });
-
-  const handleFile1Change = (e: any) => {
-    formik.setErrors({ selfie: "" });
-    const file1 = e.target?.files[0];
-
-    if (file1) {
-      const allowedTypes = ["application/pdf", "image/jpeg", "image/jpg"];
-      if (allowedTypes.includes(file1.type)) {
-        setFile1Name(file1.name);
-        formik.setFieldValue("selfie", file1);
-      } else {
-        Toast.warning(
-          "Only pdf, jpeg | jpg formats are allowed",
-          "Document type"
-        );
-        setFile1Name("");
-
-        formik.setErrors({
-          selfie: "Only pdf, jpeg | jpg formats are allowed",
-        });
-      }
-    }
-  };
 
   return (
     <div className="py-3 px-5">
@@ -117,11 +95,18 @@ const Identity = () => {
         </div>
         <div className="my-4">
           <div>
-            <FileInput
+            {/* <FileInput
               fileName={file1Name}
               handleFileChange={handleFile1Change}
               error={formik.errors.selfie}
               label={"Upload the selected document"}
+              disabled={user?.kyc?.utilityBillVerified}
+            /> */}
+            <FileInputField
+              label="Upload the selected document"
+              autoUpload={false}
+              formik={formik}
+              name="selfie"
               disabled={user?.kyc?.utilityBillVerified}
             />
           </div>
@@ -132,6 +117,7 @@ const Identity = () => {
             className={"w-full"}
             text={"Continue"}
             loading={formik.isSubmitting}
+            disabled={formik.isSubmitting || !formik.isValid}
           />
         </div>
       </form>

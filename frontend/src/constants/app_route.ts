@@ -15,6 +15,7 @@ export const APP_ROUTES = {
     VERIFY: "/auth/verify",
     RESET_PASSWORD: "/auth/reset-password",
     VERIFY_2FA: "/auth/verify-2fa",
+    GOOGLE_VERIFY: "/auth/google-verify",
   },
   KYC: {
     PERSONAL: "/wallet/kyc/personal-information",
@@ -51,6 +52,7 @@ export const APP_ROUTES = {
     SUPPORT: "/settings/support",
   },
   DASHBOARD: "/dashboard",
+  NOTIFICATION: "/dashboard/notifications",
   AD: "/ad",
   PROFILE: "/profile",
 };

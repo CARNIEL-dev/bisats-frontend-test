@@ -112,6 +112,9 @@ export const KYC_RULES = {
       ACTIONS.WITHDRAW_CRYPTO,
       ACTIONS.WITHDRAW_NGN,
       ACTIONS.SET_2FA,
+      ACTIONS.WITHDRAW,
+      ACTIONS.DEPOSIT,
+      ACTIONS.ADD_BANK,
     ],
     limits: {
       transactionAmount: 1000, // $1000 max per transaction
@@ -129,6 +132,8 @@ export const KYC_RULES = {
       ACTIONS.SET_2FA,
       ACTIONS.DEPOSIT,
       ACTIONS.CREATE_AD,
+      ACTIONS.WITHDRAW,
+      ACTIONS.ADD_BANK,
     ],
     limits: {
       transactionAmount: 10000,
@@ -146,6 +151,8 @@ export const KYC_RULES = {
       ACTIONS.DEPOSIT,
       ACTIONS.SWAP,
       ACTIONS.CREATE_AD,
+      ACTIONS.WITHDRAW,
+      ACTIONS.ADD_BANK,
     ],
     limits: {
       transactionAmount: Infinity,

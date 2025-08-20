@@ -1,12 +1,8 @@
 import { tokenLogos } from "@/assets/tokens";
 import Empty from "@/components/Empty";
-import {
-  MultiSelectDropDown,
-  SelectDropDown,
-} from "@/components/Inputs/MultiSelectInput";
+import { SelectDropDown } from "@/components/Inputs/MultiSelectInput";
 import TransactionDetails from "@/components/Modals/TransactionDetails";
 import ErrorDisplay from "@/components/shared/ErrorDisplay";
-import TokenSelection from "@/components/shared/TokenSelection";
 import { Button } from "@/components/ui/Button";
 import { DataTable } from "@/components/ui/data-table";
 import { TokenData } from "@/data";
@@ -15,7 +11,6 @@ import { useUserWalletHistory } from "@/redux/actions/walletActions";
 import { UserState } from "@/redux/reducers/userSlice";
 import { cn, formatter } from "@/utils";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUp, ArrowUpDown, Divide } from "lucide-react";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 

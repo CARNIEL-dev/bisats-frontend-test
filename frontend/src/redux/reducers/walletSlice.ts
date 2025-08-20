@@ -48,6 +48,11 @@ const walletReducer = (state = initialState, action: WalletActionProp) => {
         ...state,
         defaultCurrency: action.payload,
       };
+    case WalletActionTypes.RESET_WALLET:
+      return {
+        ...state,
+        wallet: null,
+      };
     default:
       return state;
   }

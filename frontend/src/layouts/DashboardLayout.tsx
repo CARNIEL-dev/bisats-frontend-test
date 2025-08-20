@@ -37,6 +37,7 @@ const DashboardLayout: React.FC = () => {
       <SEO
         title="Dashboard"
         description="View all your account details and transactions on Bisats."
+        keywords="Bisats dashboard, manage crypto Nigeria, peer to peer trading Nigeria, crypto wallet dashboard, buy sell bitcoin Nigeria, crypto automation"
       />
     </>
   );

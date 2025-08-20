@@ -16,7 +16,10 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Eye, EyeClosed, EyeOff } from "lucide-react";
 import React, { useMemo } from "react";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import KycManager from "../kyc/KYCManager";
+import { ACTIONS } from "@/utils/transaction_limits";
+import { UserState } from "@/redux/reducers/userSlice";
 
 export enum Fields {
   Asset = "Asset",
@@ -58,7 +61,8 @@ export type PriceData = {
 const Assets: React.FC = () => {
   const walletState: WalletState = useSelector((state: any) => state.wallet);
   const wallet = walletState.wallet;
-
+  const userState: UserState = useSelector((state: any) => state.user);
+  const navigate = useNavigate();
   const {
     data: currencyRate,
     isError,
@@ -204,23 +208,54 @@ const Assets: React.FC = () => {
       cell: ({ row }) => {
         return (
           <div className="flex items-center gap-2 w-full justify-end">
-            <Link
-              to={APP_ROUTES.WALLET.DEPOSIT}
-              state={{ asset: row.original.Asset }}
-              className={cn(buttonVariants(), " text-xs text-black")}
+            <KycManager
+              action={ACTIONS.DEPOSIT}
+              func={() =>
+                navigate(APP_ROUTES.WALLET.DEPOSIT, {
+                  state: { asset: row.original.Asset },
+                })
+              }
             >
-              Deposit
-            </Link>
-            <Link
-              to={APP_ROUTES.WALLET.WITHDRAW}
-              state={{ asset: row.original.Asset }}
-              className={cn(
-                buttonVariants({ variant: "outline" }),
-                "bg-transparent text-gray-600 !border-primary text-xs"
+              {(validateAndExecute) => (
+                <Button
+                  className={cn(" text-xs text-black")}
+                  onClick={() => {
+                    validateAndExecute();
+                  }}
+                  disabled={userState?.user?.accountStatus === "pending"}
+                >
+                  {userState?.user?.accountStatus === "pending"
+                    ? "Pending"
+                    : "Deposit"}
+                </Button>
               )}
+            </KycManager>
+
+            <KycManager
+              action={ACTIONS.WITHDRAW}
+              func={() =>
+                navigate(APP_ROUTES.WALLET.WITHDRAW, {
+                  state: { asset: row.original.Asset },
+                })
+              }
             >
-              Withdraw
-            </Link>
+              {(validateAndExecute) => (
+                <Button
+                  variant={"outline"}
+                  className={cn(
+                    "bg-transparent text-gray-600 !border-primary text-xs"
+                  )}
+                  onClick={() => {
+                    validateAndExecute();
+                  }}
+                  disabled={userState?.user?.accountStatus === "pending"}
+                >
+                  {userState?.user?.accountStatus === "pending"
+                    ? "Pending"
+                    : "Withdraw"}
+                </Button>
+              )}
+            </KycManager>
           </div>
         );
       },

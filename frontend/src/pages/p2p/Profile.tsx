@@ -2,6 +2,7 @@ import BackButton from "@/components/shared/BackButton";
 import ErrorDisplay from "@/components/shared/ErrorDisplay";
 import MaxWidth from "@/components/shared/MaxWith";
 import SEO from "@/components/shared/SEO";
+import { Button } from "@/components/ui/Button";
 import { APP_ROUTES } from "@/constants/app_route";
 import PreLoader from "@/layouts/PreLoader";
 import { GET_ACTIVITY_SUMMARY } from "@/redux/actions/userActions";
@@ -61,6 +62,8 @@ const Profile = () => {
   const userState: UserState = useSelector((state: any) => state.user);
   const user = userState.user;
   const account_level = user?.accountLevel;
+
+  console.log("User State", userState);
 
   const limits = bisats_limit[account_level as AccountLevel] || null;
 
@@ -190,13 +193,18 @@ const Profile = () => {
                 : 3}
             </h1>
             {(!user?.accountLevel || user?.accountLevel !== "level_3") && (
-              <button
+              <Button
                 type="submit"
                 className={`h-[24px]  px-3 rounded-[6px] bg-[#F5BB00] text-[#0A0E12] text-[12px] leading-[24px] font-semibold text-center  shadow-[0_0_0.8px_#000] `}
                 onClick={clickHandler}
+                disabled={user?.accountStatus === "pending"}
               >
-                {!limits ? "Verify" : "Upgrade"}
-              </button>
+                {user?.accountStatus === "pending"
+                  ? "Pending verification"
+                  : !limits
+                  ? "Verify"
+                  : "Upgrade"}
+              </Button>
             )}
           </div>
 

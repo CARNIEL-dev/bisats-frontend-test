@@ -1,10 +1,6 @@
-import ResendCodeButton from "@/components/shared/ResendCodeButton";
-import { useFormik } from "formik";
-import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { useNavigate, useSearchParams } from "react-router-dom";
 import { PrimaryButton } from "@/components/buttons/Buttons";
 import PrimaryInput from "@/components/Inputs/PrimaryInput";
+import ResendCodeButton from "@/components/shared/ResendCodeButton";
 import Toast from "@/components/Toast";
 import { APP_ROUTES } from "@/constants/app_route";
 import { VerificationSchema } from "@/formSchemas";
@@ -13,6 +9,10 @@ import {
   ReSendverificationCode,
   VerifyUser,
 } from "@/redux/actions/userActions";
+import { useFormik } from "formik";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const VerifyEmail = () => {
   const user = useSelector((state: any) => state.user.user);
@@ -58,7 +58,7 @@ const VerifyEmail = () => {
     <div className="lg:w-[442px] mx-auto">
       <OtherSide
         header="Verify your account"
-        subHeader="An verification code has been sent to your registered email. Enter the code below to verify your account."
+        subHeader="A verification code has been sent to your registered email. Enter the code below to verify your account."
         upperSubHeader={<></>}
       />
       <form onSubmit={formik.handleSubmit}>

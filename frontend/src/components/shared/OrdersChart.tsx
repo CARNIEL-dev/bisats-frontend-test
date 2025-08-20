@@ -22,7 +22,7 @@ const daysOption = [7, 14, 30, 60];
 
 const OrdersChart = () => {
   const [showNaira, setShowNaira] = useState(true);
-  const [days, setDays] = useState(7);
+  const [days, setDays] = useState(14);
 
   const userState: UserState = useSelector((state: any) => state.user);
   const userId: string = userState?.user?.userId || "";

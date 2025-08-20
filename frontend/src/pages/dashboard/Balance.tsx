@@ -1,8 +1,9 @@
 import { useMemo, useState } from "react";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-import { Button, buttonVariants } from "@/components/ui/Button";
+import BalanceInfo from "@/components/shared/BalanceInfo";
+import { Button } from "@/components/ui/Button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,13 +19,17 @@ import {
   toggleShowBalance,
   useCryptoRates,
 } from "@/redux/actions/walletActions";
+import { UserState } from "@/redux/reducers/userSlice";
 import { WalletState } from "@/redux/reducers/walletSlice";
 import { cn, formatter, getCurrencyBalance } from "@/utils";
+import { ACTIONS } from "@/utils/transaction_limits";
 import { ChevronDown, Eye, EyeOff } from "lucide-react";
 import { ThreeDot } from "react-loading-indicators";
-import BalanceInfo from "@/components/shared/BalanceInfo";
+import KycManager from "../kyc/KYCManager";
 
 const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
+  const navigate = useNavigate();
+  const userState: UserState = useSelector((state: any) => state.user);
   const {
     showBalance,
     defaultCurrency: currency,
@@ -38,7 +43,7 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
     data: currencyRate,
     isFetching,
     isError,
-  } = useCryptoRates({ isEnabled: Boolean(wallet) });
+  } = useCryptoRates({ isEnabled: Boolean(wallet && userState.user?.userId) });
 
   const defaultAssetsData = useMemo(
     () => [
@@ -109,7 +114,7 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
       },
       { balanceTotal: 0, lockedBalanceTotal: 0 }
     );
-  }, [currencyRate, wallet, currency]);
+  }, [currencyRate, wallet, currency, userState.user?.userId]);
 
   return (
     <div className="border  flex flex-col gap-2 p-6 rounded-2xl">
@@ -135,7 +140,7 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
         />
       </div>
       <div className="flex items-baseline gap-3">
-        {isFetching || isLoading ? (
+        {isLoading || isFetching ? (
           <ThreeDot
             variant="pulsate"
             color={["#F5BB00", "#000"]}
@@ -198,22 +203,47 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
         </div>
       </div>
       <div className="flex gap-2  md:mt-10 mt-6 ">
-        <Link
-          to={APP_ROUTES.WALLET.DEPOSIT}
-          className={cn(buttonVariants({}), "flex-1 py-6")}
+        <KycManager
+          action={ACTIONS.DEPOSIT}
+          func={() => navigate(APP_ROUTES.WALLET.DEPOSIT)}
         >
-          Deposit
-        </Link>
+          {(validateAndExecute) => (
+            <Button
+              className={cn("flex-1 py-6")}
+              onClick={() => {
+                validateAndExecute();
+              }}
+              disabled={userState?.user?.accountStatus === "pending"}
+            >
+              {userState?.user?.accountStatus === "pending"
+                ? !showWithdraw
+                  ? "Pending verification"
+                  : "Pending"
+                : "Deposit"}
+            </Button>
+          )}
+        </KycManager>
+
         {showWithdraw && (
-          <Link
-            to={APP_ROUTES.WALLET.WITHDRAW}
-            className={cn(
-              buttonVariants({ variant: "secondary" }),
-              "flex-1 py-6"
-            )}
+          <KycManager
+            action={ACTIONS.WITHDRAW}
+            func={() => navigate(APP_ROUTES.WALLET.WITHDRAW)}
           >
-            Withdraw
-          </Link>
+            {(validateAndExecute) => (
+              <Button
+                variant={"secondary"}
+                className={cn("flex-1 py-6")}
+                onClick={() => {
+                  validateAndExecute();
+                }}
+                disabled={userState?.user?.accountStatus === "pending"}
+              >
+                {userState?.user?.accountStatus === "pending"
+                  ? "Pending"
+                  : "Withdraw"}
+              </Button>
+            )}
+          </KycManager>
         )}
       </div>
     </div>

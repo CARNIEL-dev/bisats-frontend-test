@@ -10,7 +10,7 @@ import { useSelector } from "react-redux";
 
 import KycBanner from "@/components/KycBanner";
 import ErrorDisplay from "@/components/shared/ErrorDisplay";
-import { buttonVariants } from "@/components/ui/Button";
+import { Button, buttonVariants } from "@/components/ui/Button";
 import { APP_ROUTES } from "@/constants/app_route";
 import PreLoader from "@/layouts/PreLoader";
 import KycManager from "@/pages/kyc/KYCManager";
@@ -274,16 +274,18 @@ const MyAds = () => {
           func={() => navigate(APP_ROUTES.P2P.CREATE_AD)}
         >
           {(validateAndExecute) => (
-            <Link
-              to={APP_ROUTES.P2P.CREATE_AD}
-              className={cn(buttonVariants())}
-              onClick={(e) => {
-                e.preventDefault();
+            <Button
+              // to={APP_ROUTES.P2P.CREATE_AD}
+              className={cn()}
+              onClick={() => {
                 validateAndExecute();
               }}
+              disabled={userState.user?.accountStatus === "pending"}
             >
-              Create Ad
-            </Link>
+              {userState.user?.accountStatus === "pending"
+                ? "Pending Verification"
+                : "Create Ad"}
+            </Button>
           )}
         </KycManager>
       </div>
