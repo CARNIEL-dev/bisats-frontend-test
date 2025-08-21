@@ -16,7 +16,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { UserState } from "@/redux/reducers/userSlice";
 
 const daysOption = [7, 14, 30, 60];
 

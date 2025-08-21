@@ -96,6 +96,7 @@ export const ACTIONS = {
   HIGH_VALUE_TRANSACTION: "high_value_transaction",
   SET_2FA: "set_2fa",
   ADD_BANK: "add_bank",
+  ADD_CORPORATE_BANK: "add_corporate_bank",
   // Add more actions
 };
 
@@ -113,8 +114,8 @@ export const KYC_RULES = {
       ACTIONS.WITHDRAW_NGN,
       ACTIONS.SET_2FA,
       ACTIONS.WITHDRAW,
-      ACTIONS.DEPOSIT,
       ACTIONS.ADD_BANK,
+      ACTIONS.ADD_CORPORATE_BANK,
     ],
     limits: {
       transactionAmount: 1000, // $1000 max per transaction
@@ -134,6 +135,7 @@ export const KYC_RULES = {
       ACTIONS.CREATE_AD,
       ACTIONS.WITHDRAW,
       ACTIONS.ADD_BANK,
+      ACTIONS.ADD_CORPORATE_BANK,
     ],
     limits: {
       transactionAmount: 10000,
@@ -153,6 +155,7 @@ export const KYC_RULES = {
       ACTIONS.CREATE_AD,
       ACTIONS.WITHDRAW,
       ACTIONS.ADD_BANK,
+      ACTIONS.ADD_CORPORATE_BANK,
     ],
     limits: {
       transactionAmount: Infinity,

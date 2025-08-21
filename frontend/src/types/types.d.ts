@@ -27,8 +27,77 @@ interface CryptoRates {
   tether?: PriceChange;
 }
 
+interface WalletState {
+  id: string;
+  userId: string;
+  loading: boolean;
+  wallet: {
+    [key: string]: any;
+  } | null;
+  showBalance: boolean;
+  defaultCurrency: "usd" | "ngn";
+}
+
+type TUser = {
+  token: string;
+  userId: string;
+  userType: string;
+  firstName: string | null;
+  lastName: string | null;
+  middleName?: string | null;
+  accountLevel?: string | null;
+  email: string;
+  phoneNumber: number | null;
+  emailVerified: boolean;
+  phoneNumberVerified: boolean;
+  accountStatus: string;
+  userName: string | null;
+  image: {
+    key: string | number | null;
+    url: string | null;
+  };
+  refreshToken: string;
+  kyc: KycStatus;
+  wallet: {
+    pinSet: boolean;
+  };
+  twoFactorAuthEnabled: boolean;
+  cooperateAccountVerificationRequest: null | {
+    status: string;
+    businessName: string;
+    id: string;
+  };
+  withdrawalAddress:
+    | {
+        id: string;
+        address: string;
+        network: string;
+        asset: string | null;
+        name: string;
+      }[]
+    | null;
+};
+
+interface UserState {
+  isAuthenticated: boolean;
+  user:
+    | TUser
+    | {
+        [key: string]: any;
+      }
+    | null;
+  token: string | null;
+  kyc: KycStatus | null;
+
+  twoFactorAuthEnabled: boolean;
+  wallet: {
+    pinSet: boolean;
+  } | null;
+}
+
 interface RootState {
   wallet: WalletState;
+  user: UserState;
 }
 
 interface Order {
@@ -42,6 +111,13 @@ interface Order {
   createdAt: string;
   merchant?: { userName: string };
   buyer?: { userName: string };
+}
+
+interface TCorporateInfo {
+  userId: string;
+  cacApplicationDocument: File | null;
+  mermartDocument?: File | null;
+  cacDocument: File | null;
 }
 
 interface IAdRequest {
@@ -124,14 +200,6 @@ interface User {
   id: string;
   lastName: string;
   userName: string;
-}
-
-interface RootState {
-  user: {
-    user: {
-      userId: string;
-    } | null;
-  };
 }
 
 interface OrderHistory {

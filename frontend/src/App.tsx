@@ -2,7 +2,7 @@ import Toast from "@/components/Toast";
 import { messaging, onMessage } from "@/firebase";
 import { rehydrateUser } from "@/redux/actions/userActions";
 import { GetWallet } from "@/redux/actions/walletActions";
-import { UserState } from "@/redux/reducers/userSlice";
+
 import Routing from "@/routing/Routing";
 import ScrollToTop from "@/routing/scrollToTop";
 import { requestPermission } from "@/utils/firebaseNotification";

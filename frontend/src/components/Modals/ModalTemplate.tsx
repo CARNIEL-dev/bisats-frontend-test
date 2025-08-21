@@ -26,6 +26,7 @@ interface ModalProps {
   className?: string;
   isOpen?: boolean;
   primary?: boolean;
+  showCloseButton?: boolean;
 }
 const ModalTemplate: React.FC<ModalProps> = ({
   children,
@@ -33,6 +34,7 @@ const ModalTemplate: React.FC<ModalProps> = ({
   className,
   isOpen = true,
   primary = true,
+  showCloseButton = true,
 }) => {
   return (
     <>
@@ -72,15 +74,17 @@ const ModalTemplate: React.FC<ModalProps> = ({
                     className
                   )}
                 >
-                  <Button
-                    type="button"
-                    onClick={onClose}
-                    variant={"outline"}
-                    className="absolute top-4 right-4 rounded-full size-10"
-                  >
-                    <X className="!size-5" />
-                    <span className="sr-only">Close</span>
-                  </Button>
+                  {showCloseButton && (
+                    <Button
+                      type="button"
+                      onClick={onClose}
+                      variant={"outline"}
+                      className="absolute top-4 right-4 rounded-full size-10"
+                    >
+                      <X className="!size-5" />
+                      <span className="sr-only">Close</span>
+                    </Button>
+                  )}
                   <div>{children}</div>
                 </DialogPanel>
               </TransitionChild>
@@ -89,7 +93,10 @@ const ModalTemplate: React.FC<ModalProps> = ({
         </Transition>
       ) : (
         <ShadcnDialog open={isOpen} onOpenChange={onClose}>
-          <DialogContent className={cn(className)}>
+          <DialogContent
+            className={cn(className)}
+            showCloseButton={showCloseButton}
+          >
             <DialogHeader className="hidden">
               <DialogTitle>Bisat modal</DialogTitle>
               <DialogDescription>

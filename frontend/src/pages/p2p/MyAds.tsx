@@ -15,7 +15,7 @@ import { APP_ROUTES } from "@/constants/app_route";
 import PreLoader from "@/layouts/PreLoader";
 import KycManager from "@/pages/kyc/KYCManager";
 import { updateAdStatus, useFetchUserAds } from "@/redux/actions/walletActions";
-import { UserState } from "@/redux/reducers/userSlice";
+
 import { ACTIONS } from "@/utils/transaction_limits";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useMemo } from "react";
@@ -275,14 +275,17 @@ const MyAds = () => {
         >
           {(validateAndExecute) => (
             <Button
-              // to={APP_ROUTES.P2P.CREATE_AD}
               className={cn()}
               onClick={() => {
                 validateAndExecute();
               }}
-              disabled={userState.user?.accountStatus === "pending"}
+              disabled={
+                userState.user?.accountStatus === "pending" &&
+                !userState.user.accountLevel
+              }
             >
-              {userState.user?.accountStatus === "pending"
+              {userState.user?.accountStatus === "pending" &&
+              !userState.user.accountLevel
                 ? "Pending Verification"
                 : "Create Ad"}
             </Button>

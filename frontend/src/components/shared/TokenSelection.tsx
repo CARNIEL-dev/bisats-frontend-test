@@ -6,7 +6,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { TokenData } from "@/data";
-import { WalletState } from "@/redux/reducers/walletSlice";
 import { cn } from "@/utils";
 import { formatNumber } from "@/utils/numberFormat";
 import { useEffect, useMemo, useState } from "react";

@@ -2,7 +2,7 @@ import FileInputField from "@/components/Inputs/FileInputFIeld";
 import { levelThreeValidationSchema } from "@/formSchemas";
 import { useFormik } from "formik";
 import { Check } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { PrimaryButton } from "@/components/buttons/Buttons";
@@ -13,10 +13,15 @@ import {
   Post_Proof_of_Wealth_KYC,
   PostPOA_KYC,
 } from "@/redux/actions/userActions";
-import { UserState } from "@/redux/reducers/userSlice";
+
+import { bisats_limit } from "@/utils/transaction_limits";
+import { formatCompactNumber } from "@/utils";
 
 const Level3Verification = () => {
   const user: UserState = useSelector((state: any) => state.user);
+  const limit = bisats_limit["level_3"];
+
+  console.log("Limits", limit);
 
   const navigate = useNavigate();
   const [responsePending, setResponsePending] = useState(
@@ -48,6 +53,20 @@ const Level3Verification = () => {
     },
   });
 
+  const account_level_features = useMemo(() => {
+    return [
+      `Create sell ads (max ${formatCompactNumber(
+        limit.maximum_ad_creation_amount
+      )} xNGN in crypto assets)`,
+      `Create buy ads (max ${formatCompactNumber(
+        limit.maximum_ad_creation_amount
+      )} xNGN in crypto assets)`,
+      `Max daily limit for withdrawal is Unlimited xNGN and ${formatCompactNumber(
+        limit.daily_withdrawal_limit_crypto
+      )} USD in crypto assets`,
+    ];
+  }, [limit]);
+
   const allFilesSelected =
     !!formik.values.utilityBill &&
     !!formik.values.sourceOfWealth &&
@@ -67,7 +86,15 @@ const Level3Verification = () => {
         />
 
         <div>
-          <Level3Info />
+          <div className="bg-[#F9F9FB] p-3 mt-5 border border-[#F9F9FB] rounded-[8px] text-[12px] text-[#515B6E] w-full h-fit flex flex-col space-y-2 ">
+            {account_level_features.map((feat, idx) => (
+              <p className="flex items-center" key={idx}>
+                <p className="w-[4px] bg-[#C2C7D2] rounded-[50%]  mr-1.5 h-[4px]" />
+                <span>{feat}</span>
+              </p>
+            ))}
+          </div>
+
           {responsePending ? (
             <div className="flex flex-col justify-center items-center text-center gap-1 mb-6  mt-12">
               <div className="text-white size-10 rounded-full flex items-center justify-center bg-green-500 mb-6">
@@ -182,24 +209,3 @@ const Level3Verification = () => {
 };
 
 export default Level3Verification;
-
-const Level3Info = () => {
-  return (
-    <div className="bg-[#F9F9FB] p-2 mt-5 border border-[#F9F9FB] rounded-[8px] text-[12px] text-[#515B6E] w-full h-fit flex flex-col space-y-2 ">
-      <p>
-        <span className="w-[4px] bg-[#C2C7D2] rounded-full  mr-1 h-[4px]"></span>
-        <span>Create sell ads (max 100M NGN in crypto assets)</span>
-      </p>
-      <p>
-        <span className="w-[4px] bg-[#C2C7D2] rounded-full  mr-1 h-[4px]"></span>
-        <span>Create buy ads (max 100M NGN in crypto assets)</span>
-      </p>
-      <p>
-        <span className="w-[4px] bg-[#C2C7D2] rounded-full  mr-1 h-[4px]"></span>
-        <span>
-          Max daily limit for withdrawal is unlimited NGN and 3m USD in crypto
-        </span>
-      </p>
-    </div>
-  );
-};

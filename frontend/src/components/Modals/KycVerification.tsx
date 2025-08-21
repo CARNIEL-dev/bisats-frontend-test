@@ -3,7 +3,7 @@ import { PrimaryButton } from "@/components/buttons/Buttons";
 import ModalTemplate from "@/components/Modals/ModalTemplate";
 import { Button } from "@/components/ui/Button";
 import { APP_ROUTES } from "@/constants/app_route";
-import { UserState } from "@/redux/reducers/userSlice";
+
 import { useSelector } from "react-redux";
 
 interface Props {

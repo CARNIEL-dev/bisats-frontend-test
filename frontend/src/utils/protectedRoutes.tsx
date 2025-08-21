@@ -1,4 +1,3 @@
-import { UserState } from "@/redux/reducers/userSlice";
 import { useSelector } from "react-redux";
 import { Outlet } from "react-router-dom";
 

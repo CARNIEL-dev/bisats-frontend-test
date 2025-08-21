@@ -11,7 +11,6 @@ import { UpdateAdStatusResponse } from "@/pages/p2p/MyAds";
 import { PriceData } from "@/pages/wallet/Assets";
 import { UpdateAd } from "@/redux/actions/adActions";
 import { useCryptoRates } from "@/redux/actions/walletActions";
-import { WalletState } from "@/redux/reducers/walletSlice";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { FormikConfig, useFormik } from "formik";
 import { useMemo, useState } from "react";

@@ -8,7 +8,7 @@ import PreLoader from "@/layouts/PreLoader";
 import Header from "@/pages/p2p/components/Header";
 import MarketPlaceTable from "@/pages/p2p/components/MarketPlaceTable";
 import { GetSearchAds } from "@/redux/actions/walletActions";
-import { UserState } from "@/redux/reducers/userSlice";
+
 import { cn } from "@/utils";
 import { useQuery } from "@tanstack/react-query";
 import { RotateCw, X } from "lucide-react";

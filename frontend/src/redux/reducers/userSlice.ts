@@ -1,6 +1,5 @@
 /** @format */
 
-import { TUser } from "../../types/user";
 import { GeneralTypes, UserActionTypes } from "../types";
 export interface KycStatus {
   identificationVerified: boolean;
@@ -11,22 +10,6 @@ export interface KycStatus {
   bvnVerified: boolean;
 }
 
-export interface UserState {
-  isAuthenticated: boolean;
-  user:
-    | TUser
-    | {
-        [key: string]: any;
-      }
-    | null;
-  token: string | null;
-  kyc: KycStatus | null;
-
-  twoFactorAuthEnabled: boolean;
-  wallet: {
-    pinSet: boolean;
-  } | null;
-}
 interface UserActionProp {
   type: string;
   payload: Record<string, any> | null;

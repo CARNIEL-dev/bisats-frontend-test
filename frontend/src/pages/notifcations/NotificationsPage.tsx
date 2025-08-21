@@ -11,7 +11,7 @@ import {
   Read_Notification,
   useFetchUserNotifications,
 } from "@/redux/actions/generalActions";
-import { UserState } from "@/redux/reducers/userSlice";
+
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";

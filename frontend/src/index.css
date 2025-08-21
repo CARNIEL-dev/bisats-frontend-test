@@ -326,5 +326,5 @@ a.active {
 }
 
 input:read-only {
-  @apply pointer-events-none border outline-none bg-neutral-100;
+  @apply pointer-events-none border opacity-70 outline-none bg-neutral-100;
 }

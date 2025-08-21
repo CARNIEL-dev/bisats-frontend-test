@@ -1,7 +1,7 @@
 import ID from "@/assets/student-card.svg";
 import { Button } from "@/components/ui/Button";
 import { APP_ROUTES } from "@/constants/app_route";
-import { UserState } from "@/redux/reducers/userSlice";
+
 import { useSelector } from "react-redux";
 
 const KycBanner = () => {

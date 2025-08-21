@@ -4,7 +4,7 @@ import ModalTemplate from "@/components/Modals/ModalTemplate";
 import Toast from "@/components/Toast";
 import { VerifyTwoFactorAuth } from "@/redux/actions/userActions";
 import { TwoFactorAuth } from "@/redux/actions/walletActions";
-import { UserState } from "@/redux/reducers/userSlice";
+
 import * as Yup from "yup";
 
 import { useFormik } from "formik";

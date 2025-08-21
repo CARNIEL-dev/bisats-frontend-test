@@ -9,7 +9,7 @@ import { APP_ROUTES } from "@/constants/app_route";
 import NAV_LINKS from "@/data/navlinks";
 import { useIsMobile } from "@/hooks/use-mobile";
 import usePreventScroll from "@/hooks/use-preventScroll";
-import { UserState } from "@/redux/reducers/userSlice";
+
 import { cn } from "@/utils";
 import { Menu, X } from "lucide-react";
 import BisatLogo from "@/components/shared/Logo";

@@ -7,7 +7,7 @@ import ModalTemplate from "@/components/Modals/ModalTemplate";
 import Toast from "@/components/Toast";
 import { ChangePasswordSchema } from "@/formSchemas";
 import { rehydrateUser, UpdatePassword } from "@/redux/actions/userActions";
-import { UserState } from "@/redux/reducers/userSlice";
+
 import { useFormik } from "formik";
 import React from "react";
 import { useSelector } from "react-redux";

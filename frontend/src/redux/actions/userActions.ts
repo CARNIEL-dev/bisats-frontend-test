@@ -19,7 +19,6 @@ import {
   TRequestPhone,
   TSignUp,
   TUpdate2FAStatus,
-  TUser,
   TVerify2FARequest,
   TVerifyPhone,
 } from "@/types/user";
@@ -271,8 +270,6 @@ export const PostPOA_KYC = async (payload: TPOA) => {
     );
     const data = response.json();
 
-    // dispatchWrapper({ type: GeneralTypes.SUCCESS, payload: data });
-
     return data;
   } catch (error) {
     console.log(error);
@@ -302,7 +299,34 @@ export const PostIdentity_KYC = async (payload: TIdentity) => {
     );
     const data = response.json();
 
-    // dispatchWrapper({ type: GeneralTypes.SUCCESS, payload: data });
+    return data;
+  } catch (error) {
+    // throw handleApiError(error);
+    return error;
+  }
+};
+export const PostCorporateInformation = async (payload: TCorporateInfo) => {
+  const formData = new FormData();
+  formData.append("cacApplicationDocument", payload?.cacApplicationDocument!);
+  if (payload.mermartDocument) {
+    formData.append("mermartDocument", payload?.mermartDocument!);
+  }
+  formData.append("cacDocument", payload?.cacDocument!);
+  const token = getToken();
+
+  try {
+    const response = await fetch(
+      `${BACKEND_URLS.BASE_URL}/api/v1/user/${payload.userId}/upload-cooperate-account-documents`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `${token}`,
+        },
+        body: formData,
+      }
+    );
+    const data = response.json();
+
     return data;
   } catch (error) {
     // throw handleApiError(error);
@@ -371,6 +395,7 @@ export const UpdateUserName = async (payload: {
   firstName?: string;
   lastName?: string;
   userName?: string;
+  middleName?: string;
   deviceToken?: string;
 }) => {
   const userId = getUserId();
@@ -386,9 +411,8 @@ export const UpdateUserName = async (payload: {
     );
     const data = response;
 
-    // console.log("After username update", data);
     GetUserDetails({ userId: userId!, token: getToken()! });
-    // dispatchWrapper({ type: GeneralTypes.SUCCESS, payload: data });
+
     return data;
   } catch (error) {
     // throw handleApiError(error);

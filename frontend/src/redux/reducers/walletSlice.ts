@@ -2,17 +2,6 @@
 
 import { WalletActionTypes } from "../types";
 
-export interface WalletState {
-  id: string;
-  userId: string;
-  loading: boolean;
-  wallet: {
-    [key: string]: any;
-  } | null;
-  showBalance: boolean;
-  defaultCurrency: "usd" | "ngn";
-}
-
 interface WalletActionProp {
   type: string;
   payload?: any;

@@ -4,7 +4,7 @@ import HeroNotificationBadge from "@/components/shared/HeroNotificationBadge";
 import MaxWidth from "@/components/shared/MaxWith";
 import { buttonVariants } from "@/components/ui/Button";
 import { APP_ROUTES } from "@/constants/app_route";
-import { UserState } from "@/redux/reducers/userSlice";
+
 import { cn } from "@/utils";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";

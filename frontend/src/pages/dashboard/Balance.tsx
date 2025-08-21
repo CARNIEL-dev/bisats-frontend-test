@@ -19,8 +19,6 @@ import {
   toggleShowBalance,
   useCryptoRates,
 } from "@/redux/actions/walletActions";
-import { UserState } from "@/redux/reducers/userSlice";
-import { WalletState } from "@/redux/reducers/walletSlice";
 import { cn, formatter, getCurrencyBalance } from "@/utils";
 import { ACTIONS } from "@/utils/transaction_limits";
 import { ChevronDown, Eye, EyeOff } from "lucide-react";
@@ -204,7 +202,7 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
       </div>
       <div className="flex gap-2  md:mt-10 mt-6 ">
         <KycManager
-          action={ACTIONS.DEPOSIT}
+          action={ACTIONS.DEPOSIT_CRYPTO}
           func={() => navigate(APP_ROUTES.WALLET.DEPOSIT)}
         >
           {(validateAndExecute) => (
@@ -213,9 +211,13 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
               onClick={() => {
                 validateAndExecute();
               }}
-              disabled={userState?.user?.accountStatus === "pending"}
+              disabled={
+                userState?.user?.accountStatus === "pending" &&
+                !userState.user.accountLevel
+              }
             >
-              {userState?.user?.accountStatus === "pending"
+              {userState?.user?.accountStatus === "pending" &&
+              !userState.user.accountLevel
                 ? !showWithdraw
                   ? "Pending verification"
                   : "Pending"
@@ -236,9 +238,13 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
                 onClick={() => {
                   validateAndExecute();
                 }}
-                disabled={userState?.user?.accountStatus === "pending"}
+                disabled={
+                  userState?.user?.accountStatus === "pending" &&
+                  !userState.user.accountLevel
+                }
               >
-                {userState?.user?.accountStatus === "pending"
+                {userState?.user?.accountStatus === "pending" &&
+                !userState.user.accountLevel
                   ? "Pending"
                   : "Withdraw"}
               </Button>

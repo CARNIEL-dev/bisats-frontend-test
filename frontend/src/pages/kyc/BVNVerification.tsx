@@ -16,7 +16,7 @@ import {
   Resend_OTP_PhoneNumber_KYC,
   Verify_BVN_KYC,
 } from "@/redux/actions/userActions";
-import { UserState } from "@/redux/reducers/userSlice";
+
 import ResendCodeButton from "@/components/shared/ResendCodeButton";
 import { formatCompactNumber } from "@/utils";
 import { bisats_limit } from "@/utils/transaction_limits";

@@ -5,7 +5,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useFetchUserNotifications } from "@/redux/actions/generalActions";
-import { UserState } from "@/redux/reducers/userSlice";
+
 import { cn } from "@/utils";
 
 import { Bell, ChevronRight, Loader2, X } from "lucide-react";

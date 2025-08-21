@@ -6,15 +6,19 @@ import { useSelector } from "react-redux";
 import ModalTemplate from "@/components/Modals/ModalTemplate";
 import WithdrawalBankAccount from "@/components/Modals/WithdrawalBankAccount";
 import { GetWallet } from "@/redux/actions/walletActions";
-import { WalletState } from "@/redux/reducers/walletSlice";
 import { Plus } from "lucide-react";
-import KycManager from "../kyc/KYCManager";
+import KycManager from "@/pages/kyc/KYCManager";
 import { ACTIONS } from "@/utils/transaction_limits";
+import { APP_ROUTES } from "@/constants/app_route";
+import { useNavigate } from "react-router-dom";
 
 const Payment = () => {
-  const walletState: WalletState = useSelector((state: any) => state.wallet);
+  const reduxState: RootState = useSelector((state: any) => state);
 
-  const wallet = walletState?.wallet;
+  const wallet = reduxState.wallet.wallet;
+  const user = reduxState.user;
+
+  const navigate = useNavigate();
 
   const [selectedBank, setSelectedBank] = useState<TBank>();
   const [openModal, setOpenModal] = useState({
@@ -50,29 +54,54 @@ const Payment = () => {
           Withdrawal Accounts
         </h2>
 
-        <KycManager
-          action={ACTIONS.ADD_BANK}
-          func={() => {
-            setOpenModal((prev) => ({ ...prev, add: true }));
-          }}
-        >
-          {(validateAndExecute) => (
-            <WhiteTransparentButton
-              text={
-                <>
-                  <Plus className="size-4" />
-                  Add
-                </>
-              }
-              size="sm"
-              className="w-[6rem]"
-              loading={false}
-              onClick={() => {
-                validateAndExecute();
-              }}
-            />
-          )}
-        </KycManager>
+        <div className="flex items-center flex-wrap justify-end gap-2">
+          <KycManager
+            action={ACTIONS.ADD_BANK}
+            func={() => {
+              setOpenModal((prev) => ({ ...prev, add: true }));
+            }}
+          >
+            {(validateAndExecute) => (
+              <WhiteTransparentButton
+                text={
+                  <>
+                    <Plus className="size-4" />
+                    Add Bank
+                  </>
+                }
+                size="sm"
+                className="w-fit"
+                loading={false}
+                onClick={() => {
+                  validateAndExecute();
+                }}
+              />
+            )}
+          </KycManager>
+          <KycManager
+            action={ACTIONS.ADD_CORPORATE_BANK}
+            func={() => {
+              navigate(APP_ROUTES.SETTINGS.CORPORATE);
+            }}
+          >
+            {(validateAndExecute) => (
+              <WhiteTransparentButton
+                text={
+                  <>
+                    <Plus className="size-4" />
+                    Add Corporate Account
+                  </>
+                }
+                size="sm"
+                className="w-fit"
+                loading={false}
+                onClick={() => {
+                  validateAndExecute();
+                }}
+              />
+            )}
+          </KycManager>
+        </div>
       </div>
 
       {BankDetails.map((details: TBank, idx: number) => (

@@ -9,7 +9,7 @@ import { PostIdentity_KYC, rehydrateUser } from "@/redux/actions/userActions";
 import { APP_ROUTES } from "@/constants/app_route";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { UserState } from "@/redux/reducers/userSlice";
+
 import FileInput from "@/components/Inputs/FileInput";
 import { IdentificationSchema } from "@/formSchemas";
 import Label from "@/components/Inputs/Label";

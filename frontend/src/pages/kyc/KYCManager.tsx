@@ -5,7 +5,7 @@ import SecurityVerification from "@/components/Modals/SecurityVerification";
 import { buttonVariants } from "@/components/ui/Button";
 import { APP_ROUTES } from "@/constants/app_route";
 import Head from "@/pages/wallet/Head";
-import { UserState } from "@/redux/reducers/userSlice";
+
 import { cn } from "@/utils";
 import { ACTIONS_REQUIRING_2FA, KYC_RULES } from "@/utils/transaction_limits";
 

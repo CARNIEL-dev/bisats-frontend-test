@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { APP_ROUTES } from "@/constants/app_route";
 import PreLoader from "@/layouts/PreLoader";
 import { GET_ACTIVITY_SUMMARY } from "@/redux/actions/userActions";
-import { UserState } from "@/redux/reducers/userSlice";
+
 import { formatNumber } from "@/utils/numberFormat";
 import { AccountLevel, bisats_limit } from "@/utils/transaction_limits";
 import { useQuery } from "@tanstack/react-query";
@@ -147,10 +147,6 @@ const Profile = () => {
       },
     ];
   }, [activitySummary]);
-
-  // console.log("activitySummary", activitySummary);
-  // console.log("Error", error);
-  // console.log("User Id", user?.userId);
 
   const clickHandler = () => {
     if (!user?.accountLevel) {

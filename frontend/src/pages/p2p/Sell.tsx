@@ -4,7 +4,7 @@ import MaxWidth from "@/components/shared/MaxWith";
 import PreLoader from "@/layouts/PreLoader";
 import Swap from "@/pages/p2p/components/Swap";
 import { useGetAdsDetail } from "@/redux/actions/walletActions";
-import { UserState } from "@/redux/reducers/userSlice";
+
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";

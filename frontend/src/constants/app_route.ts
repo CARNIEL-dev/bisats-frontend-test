@@ -50,6 +50,7 @@ export const APP_ROUTES = {
     SECURITY: "/settings/security",
     PAYMENT: "/settings/payment",
     SUPPORT: "/settings/support",
+    CORPORATE: "/settings/payment/corporate",
   },
   DASHBOARD: "/dashboard",
   NOTIFICATION: "/dashboard/notifications",

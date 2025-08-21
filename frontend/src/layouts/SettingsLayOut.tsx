@@ -6,7 +6,7 @@ import { Link, Outlet, useLocation } from "react-router-dom";
 
 const PageData = [
   {
-    tab: "User info",
+    tab: "Profile",
     link: APP_ROUTES.SETTINGS.PROFILE,
   },
   {
@@ -17,10 +17,6 @@ const PageData = [
     tab: "Payment",
     link: APP_ROUTES.SETTINGS.PAYMENT,
   },
-  // {
-  //   tab: "Support",
-  //   link: APP_ROUTES.SETTINGS.SUPPORT,
-  // },
 ];
 
 const SettingsLayOut = () => {
@@ -39,23 +35,34 @@ const SettingsLayOut = () => {
           </div>
           <div className=" ">
             <div className="w-fit md:px-8 px-6 mx-auto flex justify-center md:gap-10 gap-4  items-center flex-nowrap text-[#515B6E] dashboard-navbar border border-primary  py-3 rounded-full">
-              {PageData.map((page) => (
-                <Link
-                  to={`${page.link}`}
-                  key={page.link}
-                  className={cn(
-                    "font-semibold text-sm ",
-                    pathname === page.link && "active"
-                  )}
-                >
-                  {page.tab}
-                </Link>
-              ))}
+              {PageData.map((page) => {
+                const isProfile =
+                  page.link === APP_ROUTES.SETTINGS.PROFILE &&
+                  pathname === APP_ROUTES.SETTINGS.PROFILE;
+
+                const isOtherTab =
+                  page.link !== APP_ROUTES.SETTINGS.PROFILE &&
+                  pathname.startsWith(page.link);
+
+                return (
+                  <Link
+                    to={page.link}
+                    key={page.link}
+                    className={cn(
+                      "font-semibold text-sm",
+                      isProfile && "active",
+                      isOtherTab && "active"
+                    )}
+                  >
+                    {page.tab}
+                  </Link>
+                );
+              })}
             </div>
           </div>
         </MaxWidth>
       </div>
-      <MaxWidth className=" md:mt-40 mt-36 max-w-[45rem]  md:min-h-[45dvh] mb-10 min-h-[65dvh]">
+      <MaxWidth className=" mt-40  max-w-[45rem]  md:min-h-[55dvh] mb-10 min-h-[65dvh] w-[90%]">
         <Outlet />
       </MaxWidth>
     </div>

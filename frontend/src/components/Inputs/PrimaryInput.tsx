@@ -77,14 +77,14 @@ const PrimaryInput: React.FC<TInput> = ({
         )}
       </div>
       {info && (
-        <div className="flex  items-center gap-1">
+        <div className="flex items-center gap-1">
           <svg
-            width="16"
-            height="16"
+            width="18"
+            height="18"
             viewBox="0 0 16 16"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            className="w-[25px] h-[25px] shrink-0"
+            className=" shrink-0"
           >
             <path
               d="M7.9987 14.6663C11.6654 14.6663 14.6654 11.6663 14.6654 7.99967C14.6654 4.33301 11.6654 1.33301 7.9987 1.33301C4.33203 1.33301 1.33203 4.33301 1.33203 7.99967C1.33203 11.6663 4.33203 14.6663 7.9987 14.6663Z"

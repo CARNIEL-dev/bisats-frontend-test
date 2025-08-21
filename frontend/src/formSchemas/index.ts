@@ -560,6 +560,14 @@ const getBankSchema = (user?: UserDetails) => {
   });
 };
 
+const corporateSchema = Yup.object().shape({
+  cacApplicationDocument: Yup.mixed().required(
+    "CAC application document is required"
+  ),
+  cacDocument: Yup.mixed().required("CAC document is required"),
+  mermartDocument: Yup.mixed().nullable(),
+});
+
 export {
   AdSchema,
   BVNSchema,
@@ -575,4 +583,5 @@ export {
   VerificationSchema,
   levelThreeValidationSchema,
   getBankSchema,
+  corporateSchema,
 };

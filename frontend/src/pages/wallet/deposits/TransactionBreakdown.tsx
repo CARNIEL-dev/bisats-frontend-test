@@ -11,7 +11,7 @@ import {
   GetWallet,
   TopUpNGNBalance,
 } from "@/redux/actions/walletActions";
-import { UserState } from "@/redux/reducers/userSlice";
+
 import { formatNumber } from "@/utils/numberFormat";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";

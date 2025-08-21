@@ -8,8 +8,7 @@ import { swapSchema } from "@/formSchemas";
 import KycManager from "@/pages/kyc/KYCManager";
 
 import { useCryptoRates } from "@/redux/actions/walletActions";
-import { UserState } from "@/redux/reducers/userSlice";
-import { WalletState } from "@/redux/reducers/walletSlice";
+
 import { formatter } from "@/utils";
 import { assets } from "@/utils/conversions";
 import { formatNumber } from "@/utils/numberFormat";

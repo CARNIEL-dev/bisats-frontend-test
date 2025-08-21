@@ -4,14 +4,13 @@ import { useSelector } from "react-redux";
 import { PrimaryButton } from "@/components/buttons/Buttons";
 import PrimaryInput from "@/components/Inputs/PrimaryInput";
 import SingleToken from "@/components/Inputs/SingleToken";
-import TokenSelect from "@/components/Inputs/TokenSelect";
+
 import SwapConfirmation from "@/components/Modals/SwapConfirmation";
 import Toast from "@/components/Toast";
 import { assets, TokenData } from "@/data";
 import { GetExpressAds, GetLivePrice } from "@/redux/actions/walletActions";
 import Bisatsfetch from "@/redux/fetchWrapper";
-import { UserState } from "@/redux/reducers/userSlice";
-import { WalletState } from "@/redux/reducers/walletSlice";
+
 import { convertAssetToNaira, convertNairaToAsset } from "@/utils/conversions";
 import { ACTIONS, bisats_charges } from "@/utils/transaction_limits";
 import KycManager from "@/pages/kyc/KYCManager";
@@ -386,12 +385,13 @@ const ExpressSwap = () => {
               onChange={handleAmountChange}
             />
             <div className="absolute right-3 top-10 w-2/5">
-              <TokenSelect
-                title={"Select token to sell"}
+              <TokenSelection
+                placeholder={"Select token to sell"}
                 removexNGN={true}
                 label={""}
                 error={undefined}
                 touched={undefined}
+                value={adsParam?.asset}
                 handleChange={(param) => {
                   setAdsParam({ ...adsParam, asset: param });
                 }}

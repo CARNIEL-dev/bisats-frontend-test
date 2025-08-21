@@ -23,7 +23,7 @@ import {
   Resend_OTP_PhoneNumber_KYC,
   Verify_OTP_PhoneNumber_KYC,
 } from "@/redux/actions/userActions";
-import { UserState } from "@/redux/reducers/userSlice";
+
 import { countryDataForPhone } from "@/utils/data";
 import {
   MultiSelectDropDown,

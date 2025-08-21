@@ -14,7 +14,7 @@ import {
   Withdraw_Crypto,
   Withdraw_xNGN,
 } from "@/redux/actions/walletActions";
-import { UserState } from "@/redux/reducers/userSlice";
+
 import {
   AccountLevel,
   ACTIONS,
@@ -32,7 +32,6 @@ import { getUserTokenData } from "@/helpers";
 import PreLoader from "@/layouts/PreLoader";
 import KycManager from "@/pages/kyc/KYCManager";
 import { GET_WITHDRAWAL_LIMIT } from "@/redux/actions/userActions";
-import { WalletState } from "@/redux/reducers/walletSlice";
 import { formatter } from "@/utils";
 import { formatNumber } from "@/utils/numberFormat";
 import { useQuery, useQueryClient } from "@tanstack/react-query";

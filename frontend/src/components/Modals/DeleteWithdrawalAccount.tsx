@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { DeleteBankAccountForWithdrawal } from "@/redux/actions/walletActions";
-import { UserState } from "@/redux/reducers/userSlice";
+
 import {
   PrimaryButton,
   WhiteTransparentButton,

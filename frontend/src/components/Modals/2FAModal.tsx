@@ -11,7 +11,7 @@ import {
   rehydrateUser,
   UpdateTwoFactorAuth,
 } from "@/redux/actions/userActions";
-import { UserState } from "@/redux/reducers/userSlice";
+
 import { Check, Copy } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";

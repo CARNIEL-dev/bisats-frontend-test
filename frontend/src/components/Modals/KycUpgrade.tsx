@@ -1,6 +1,6 @@
 import StudentCard from "@/assets/student-card.svg";
 import { APP_ROUTES } from "@/constants/app_route";
-import { UserState } from "@/redux/reducers/userSlice";
+
 import { useSelector } from "react-redux";
 
 import { formatCompactNumber } from "@/utils";

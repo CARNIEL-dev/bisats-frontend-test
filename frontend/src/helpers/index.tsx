@@ -1,5 +1,4 @@
-import { TUser } from "../types/user";
-import { TDepositBreakDowns } from "../types/wallet";
+import { TDepositBreakDowns } from "@/types/wallet";
 import CryptoJS from "crypto-js";
 
 type NetworkInfo = {

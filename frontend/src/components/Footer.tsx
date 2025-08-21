@@ -3,7 +3,7 @@ import { cn } from "@/utils";
 import { FacebookIcon, TwitterIcon } from "lucide-react";
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
-import { UserState } from "@/redux/reducers/userSlice";
+
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/input";
 import BisatLogo from "@/components/shared/Logo";

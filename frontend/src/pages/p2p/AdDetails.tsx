@@ -6,7 +6,7 @@ import { DataTable } from "@/components/ui/data-table";
 import PreLoader from "@/layouts/PreLoader";
 import EditAds from "@/pages/p2p/ads/EditAds";
 import { useGetAdsDetails } from "@/redux/actions/walletActions";
-import { UserState } from "@/redux/reducers/userSlice";
+
 import { cn, formatter } from "@/utils";
 import { AccountLevel, bisats_limit } from "@/utils/transaction_limits";
 import { ColumnDef } from "@tanstack/react-table";
@@ -49,7 +49,7 @@ const AdDetails = () => {
   } = useGetAdsDetails({
     userId: userId,
     adId: id,
-    enabled: Boolean(!mode && id),
+    enabled: Boolean(id),
   });
 
   useEffect(() => {

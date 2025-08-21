@@ -10,7 +10,6 @@ import {
   toggleShowBalance,
   useCryptoRates,
 } from "@/redux/actions/walletActions";
-import { WalletState } from "@/redux/reducers/walletSlice";
 import { cn, formatter, getCurrencyBalance } from "@/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import { Eye, EyeClosed, EyeOff } from "lucide-react";
@@ -19,7 +18,6 @@ import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import KycManager from "../kyc/KYCManager";
 import { ACTIONS } from "@/utils/transaction_limits";
-import { UserState } from "@/redux/reducers/userSlice";
 
 export enum Fields {
   Asset = "Asset",
@@ -206,10 +204,15 @@ const Assets: React.FC = () => {
       header: "",
 
       cell: ({ row }) => {
+        const asset = row.original.Asset;
         return (
           <div className="flex items-center gap-2 w-full justify-end">
             <KycManager
-              action={ACTIONS.DEPOSIT}
+              action={
+                asset === assets.xNGN
+                  ? ACTIONS.DEPOSIT_NGN
+                  : ACTIONS.DEPOSIT_CRYPTO
+              }
               func={() =>
                 navigate(APP_ROUTES.WALLET.DEPOSIT, {
                   state: { asset: row.original.Asset },
@@ -222,9 +225,13 @@ const Assets: React.FC = () => {
                   onClick={() => {
                     validateAndExecute();
                   }}
-                  disabled={userState?.user?.accountStatus === "pending"}
+                  disabled={
+                    userState?.user?.accountStatus === "pending" &&
+                    !userState.user.accountLevel
+                  }
                 >
-                  {userState?.user?.accountStatus === "pending"
+                  {userState?.user?.accountStatus === "pending" &&
+                  !userState.user.accountLevel
                     ? "Pending"
                     : "Deposit"}
                 </Button>
@@ -248,9 +255,13 @@ const Assets: React.FC = () => {
                   onClick={() => {
                     validateAndExecute();
                   }}
-                  disabled={userState?.user?.accountStatus === "pending"}
+                  disabled={
+                    userState?.user?.accountStatus === "pending" &&
+                    !userState.user.accountLevel
+                  }
                 >
-                  {userState?.user?.accountStatus === "pending"
+                  {userState?.user?.accountStatus === "pending" &&
+                  !userState.user.accountLevel
                     ? "Pending"
                     : "Withdraw"}
                 </Button>

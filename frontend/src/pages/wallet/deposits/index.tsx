@@ -6,7 +6,7 @@ import { APP_ROUTES } from "@/constants/app_route";
 import { getUserTokenData, setDepositTranscBreakDown } from "@/helpers";
 import Head from "@/pages/wallet/Head";
 import { DepositTranscBreakDown } from "@/redux/actions/walletActions";
-import { UserState } from "@/redux/reducers/userSlice";
+
 import { useFormik } from "formik";
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
@@ -18,6 +18,7 @@ import KycManager from "@/pages/kyc/KYCManager";
 import { formatter } from "@/utils";
 import { ACTIONS, bisats_limit } from "@/utils/transaction_limits";
 import * as Yup from "yup";
+import { Button } from "@/components/ui/Button";
 
 export type TNetwork = {
   label: string;
@@ -77,6 +78,20 @@ const DepositPage = () => {
       ),
   });
 
+  const clickHandler = () => {
+    if (!user?.user?.accountLevel) {
+      if (!user?.user?.phoneNumberVerified) {
+        window.location.href = APP_ROUTES.KYC.PHONEVERIFICATION;
+      } else {
+        window.location.href = APP_ROUTES.KYC.PERSONAL;
+      }
+    } else if (user?.user?.accountLevel === "level_1") {
+      window.location.href = APP_ROUTES.KYC.BVNVERIFICATION;
+    } else {
+      window.location.href = APP_ROUTES.KYC.LEVEL3VERIFICATION;
+    }
+  };
+
   //   HDR: FORMIK
   const formik = useFormik({
     initialValues: { amount: "" },
@@ -132,29 +147,49 @@ const DepositPage = () => {
         />
         {selectedToken === "xNGN" && (
           <div className="space-y-4 mt-2">
-            <PrimaryInput
-              className={"w-full"}
-              label={"Amount"}
-              placeholder="Enter amount"
-              name="amount"
-              type="number"
-              error={formik.errors.amount}
-              value={formik.values.amount}
-              touched={formik.touched.amount}
-              onChange={(e) => {
-                formik.setFieldValue("amount", e.target.value);
-              }}
-            />
-            <KycManager action={ACTIONS.DEPOSIT_NGN} func={formik.handleSubmit}>
-              {(validateAndExecute) => (
-                <PrimaryButton
+            {user?.user?.accountLevel === "level_1" ? (
+              <div className="flex flex-col gap-2 mt-10 items-center">
+                <p className="text-sm animate-pulse rounded-full px-4 py-1 border bg-red-500/10 font-medium text-red-500">
+                  Upgrade to level 2 or 3 to deposit xNGN.
+                </p>
+
+                <Button
+                  onClick={clickHandler}
+                  className="w-fit rounded-full px-4 py-2"
+                >
+                  Upgrade
+                </Button>
+              </div>
+            ) : (
+              <>
+                <PrimaryInput
                   className={"w-full"}
-                  text={"Proceed"}
-                  loading={isLoading}
-                  onClick={validateAndExecute}
+                  label={"Amount"}
+                  placeholder="Enter amount"
+                  name="amount"
+                  type="number"
+                  error={formik.errors.amount}
+                  value={formik.values.amount}
+                  touched={formik.touched.amount}
+                  onChange={(e) => {
+                    formik.setFieldValue("amount", e.target.value);
+                  }}
                 />
-              )}
-            </KycManager>
+                <KycManager
+                  action={ACTIONS.DEPOSIT_NGN}
+                  func={formik.handleSubmit}
+                >
+                  {(validateAndExecute) => (
+                    <PrimaryButton
+                      className={"w-full"}
+                      text={"Proceed"}
+                      loading={isLoading}
+                      onClick={validateAndExecute}
+                    />
+                  )}
+                </KycManager>
+              </>
+            )}
           </div>
         )}
 

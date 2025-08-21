@@ -173,7 +173,7 @@ const FileInputField: React.FC<FileInputProps> = ({
             type="file"
             accept={accept}
             onChange={handleFileChange}
-            className="file-upload-input"
+            className="file-upload-input hidden"
             disabled={disabled || loading}
           />
         </label>

@@ -7,8 +7,7 @@ import ModalTemplate from "@/components/Modals/ModalTemplate";
 import Toast from "@/components/Toast";
 import { APP_ROUTES } from "@/constants/app_route";
 import { UpdateAd } from "@/redux/actions/adActions";
-import { UserState } from "@/redux/reducers/userSlice";
-import { WalletState } from "@/redux/reducers/walletSlice";
+
 import { formatNumber } from "@/utils/numberFormat";
 import { AccountLevel, bisats_limit } from "@/utils/transaction_limits";
 import { useFormik } from "formik";
@@ -79,7 +78,7 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
     return liveRate![ad?.asset as keyof typeof liveRate];
   }, [ad?.asset, liveRate]);
 
-  const maxAmount = userTransactionLimits?.maximum_ad_creation_amount;
+  // const maxAmount = userTransactionLimits?.maximum_ad_creation_amount;
 
   //   HDR: SCHEMA
   const AdSchema = Yup.object().shape({
@@ -296,7 +295,6 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
               onClick={() => {
                 navigate(`${APP_ROUTES.P2P.AD_DETAILS}?adId=${ad?.id}`, {
                   state: {
-                    adDetail: ad,
                     mode: "edit",
                   },
                 });

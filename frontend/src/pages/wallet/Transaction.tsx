@@ -8,7 +8,7 @@ import { DataTable } from "@/components/ui/data-table";
 import { TokenData } from "@/data";
 import PreLoader from "@/layouts/PreLoader";
 import { useUserWalletHistory } from "@/redux/actions/walletActions";
-import { UserState } from "@/redux/reducers/userSlice";
+
 import { cn, formatter } from "@/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import React, { useState } from "react";

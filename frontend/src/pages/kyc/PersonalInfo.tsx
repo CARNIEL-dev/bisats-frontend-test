@@ -10,7 +10,7 @@ import {
   GetUserDetails,
   PostPersonalInformation_KYC,
 } from "@/redux/actions/userActions";
-import { UserState } from "@/redux/reducers/userSlice";
+
 import { useFormik } from "formik";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";

@@ -5,7 +5,7 @@ import {
   Set_PIN,
   UPDATE_PIN,
 } from "@/redux/actions/userActions";
-import { UserState } from "@/redux/reducers/userSlice";
+
 import PrimaryInput from "@/components/Inputs/PrimaryInput";
 import Toast from "@/components/Toast";
 import { PrimaryButton } from "@/components/buttons/Buttons";

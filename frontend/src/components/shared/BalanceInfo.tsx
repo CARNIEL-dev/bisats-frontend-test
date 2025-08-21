@@ -139,9 +139,12 @@ const BalanceInfo = ({ className, currency, userBalance, wallet }: Props) => {
                 value={
                   <p className="text-sm text-gray-800">
                     <span className="text-gray-400 text-xs">xNGN</span>{" "}
-                    {formatter({ decimal: 0 }).format(
-                      parseInt(wallet?.NGNMaxDailyWithdrawalLimit || "0")
-                    )}
+                    {wallet?.NGNMaxDailyWithdrawalLimit?.toLowerCase() ===
+                    "unlimited"
+                      ? "Unlimited"
+                      : formatter({ decimal: 0 }).format(
+                          parseInt(wallet?.NGNMaxDailyWithdrawalLimit || "0")
+                        )}
                   </p>
                 }
               />

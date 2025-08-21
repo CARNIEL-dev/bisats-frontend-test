@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { AdsProps } from "@/pages/p2p/ads/CreateAds";
-import { UserState } from "@/redux/reducers/userSlice";
+
 import { cn } from "@/utils";
 import { formatNumber } from "@/utils/numberFormat";
 import { AccountLevel, bisats_limit } from "@/utils/transaction_limits";

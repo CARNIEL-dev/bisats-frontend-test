@@ -14,7 +14,7 @@ import {
   ResolveBankAccoutName,
   useGetBankList,
 } from "@/redux/actions/walletActions";
-import { UserState } from "@/redux/reducers/userSlice";
+
 import { useFormik } from "formik";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";

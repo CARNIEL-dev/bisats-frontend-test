@@ -17,8 +17,7 @@ import HeaderTabs from "@/pages/p2p/ads/HeaderTabs";
 import { PriceData } from "@/pages/wallet/Assets";
 import Head from "@/pages/wallet/Head";
 import { CreateAds, useCryptoRates } from "@/redux/actions/walletActions";
-import { UserState } from "@/redux/reducers/userSlice";
-import { WalletState } from "@/redux/reducers/walletSlice";
+
 import { AccountLevel, bisats_limit } from "@/utils/transaction_limits";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
@@ -93,6 +92,11 @@ const CreateAd = () => {
     onSuccess: (_, variables) => {
       Toast.success("Ad created successfully", "Success");
       startTransition(() => {
+        queryClient.invalidateQueries({
+          queryKey: ["userNotifications", variables.userId],
+          exact: true,
+          refetchType: "all",
+        });
         queryClient
           .invalidateQueries({
             queryKey: ["userAds", variables.userId],

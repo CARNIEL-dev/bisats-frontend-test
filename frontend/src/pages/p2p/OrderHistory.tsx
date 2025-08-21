@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/Button";
 import { DataTable } from "@/components/ui/data-table";
 import PreLoader from "@/layouts/PreLoader";
 import { useFetchOrder } from "@/redux/actions/walletActions";
-import { UserState } from "@/redux/reducers/userSlice";
+
 import { cn, formatter } from "@/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";

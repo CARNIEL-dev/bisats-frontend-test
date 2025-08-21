@@ -33,7 +33,7 @@ import Sell from "@/pages/p2p/Sell";
 import Payment from "@/pages/settings/Payment";
 import Security from "@/pages/settings/Security";
 import Support from "@/pages/settings/Support";
-import UserInfo from "@/pages/settings/UserInfo";
+import UserProfile from "@/pages/settings/Profile";
 import DepositPage from "@/pages/wallet/deposits";
 import TransactionBreakdown from "@/pages/wallet/deposits/TransactionBreakdown";
 import Wallet from "@/pages/wallet/Wallet";
@@ -49,6 +49,7 @@ import { Route, Routes } from "react-router-dom";
 import Verify2FA from "@/pages/auth/Verify2FA";
 import NotificationsPage from "@/pages/notifcations/NotificationsPage";
 import GoogleVerify from "@/pages/auth/GoogleVerify";
+import Corporate from "@/pages/settings/Corporate";
 
 const Routing = () => {
   return (
@@ -114,7 +115,7 @@ const Routing = () => {
             <Route element={<SettingsLayOut />}>
               <Route
                 path={APP_ROUTES.SETTINGS.PROFILE}
-                element={<UserInfo />}
+                element={<UserProfile />}
               />
               <Route
                 path={APP_ROUTES.SETTINGS.SECURITY}
@@ -122,6 +123,10 @@ const Routing = () => {
               />
               <Route path={APP_ROUTES.SETTINGS.PAYMENT} element={<Payment />} />
               <Route path={APP_ROUTES.SETTINGS.SUPPORT} element={<Support />} />
+              <Route
+                path={APP_ROUTES.SETTINGS.CORPORATE}
+                element={<Corporate />}
+              />
             </Route>
 
             <Route path={APP_ROUTES.DASHBOARD} element={<Dashboard />} />

@@ -3,7 +3,7 @@ import MaxWidth from "@/components/shared/MaxWith";
 import OrdersChart from "@/components/shared/OrdersChart";
 import Balance from "@/pages/dashboard/Balance";
 import MarketRate from "@/pages/dashboard/MarketRate";
-import { UserState } from "@/redux/reducers/userSlice";
+
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
