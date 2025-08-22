@@ -78,29 +78,31 @@ const Payment = () => {
               />
             )}
           </KycManager>
-          <KycManager
-            action={ACTIONS.ADD_CORPORATE_BANK}
-            func={() => {
-              navigate(APP_ROUTES.SETTINGS.CORPORATE);
-            }}
-          >
-            {(validateAndExecute) => (
-              <WhiteTransparentButton
-                text={
-                  <>
-                    <Plus className="size-4" />
-                    Add Corporate Account
-                  </>
-                }
-                size="sm"
-                className="w-fit"
-                loading={false}
-                onClick={() => {
-                  validateAndExecute();
-                }}
-              />
-            )}
-          </KycManager>
+          {!user.user?.cooperateAccountVerificationRequest?.id && (
+            <KycManager
+              action={ACTIONS.ADD_CORPORATE_BANK}
+              func={() => {
+                navigate(APP_ROUTES.SETTINGS.CORPORATE);
+              }}
+            >
+              {(validateAndExecute) => (
+                <WhiteTransparentButton
+                  text={
+                    <>
+                      <Plus className="size-4" />
+                      Add Corporate Account
+                    </>
+                  }
+                  size="sm"
+                  className="w-fit"
+                  loading={false}
+                  onClick={() => {
+                    validateAndExecute();
+                  }}
+                />
+              )}
+            </KycManager>
+          )}
         </div>
       </div>
 

@@ -62,11 +62,11 @@ type TUser = {
     pinSet: boolean;
   };
   twoFactorAuthEnabled: boolean;
-  cooperateAccountVerificationRequest: null | {
+  cooperateAccountVerificationRequest: {
     status: string;
     businessName: string;
     id: string;
-  };
+  } | null;
   withdrawalAddress:
     | {
         id: string;

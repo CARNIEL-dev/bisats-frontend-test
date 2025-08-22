@@ -214,6 +214,7 @@ export const GetBankList = async (userId: string) => {
       }
     );
     const data = response.data;
+
     if (response.status) {
       return data;
     } else {
