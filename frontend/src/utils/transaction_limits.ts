@@ -123,7 +123,7 @@ export const KYC_RULES = {
   },
   [KYC_LEVELS.LEVEL_2]: {
     allowedActions: [
-      // ACTIONS.DEPOSIT_NGN,
+      ACTIONS.DEPOSIT_NGN,
       ACTIONS.SWAP,
       ACTIONS.BUY_CRYPTO,
       ACTIONS.WITHDRAW_NGN,
