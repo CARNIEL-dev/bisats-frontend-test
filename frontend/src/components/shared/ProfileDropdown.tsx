@@ -16,10 +16,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { APP_ROUTES } from "@/constants/app_route";
 import { cn } from "@/utils";
-import { ChevronDown } from "lucide-react";
+import { BadgeCheck, ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import LogOutModal from "@/components/Modals/LogOut";
+import { useSelector } from "react-redux";
+import { Separator } from "../ui/separator";
 
 const mainMenuItems = [
   {
@@ -37,11 +39,11 @@ const mainMenuItems = [
     link: APP_ROUTES.SETTINGS.PROFILE,
     icon: Settings,
   },
-  {
-    text: "Support",
-    link: APP_ROUTES.SETTINGS.SUPPORT,
-    icon: Support,
-  },
+  // {
+  //   text: "Support",
+  //   link: APP_ROUTES.SETTINGS.SUPPORT,
+  //   icon: Support,
+  // },
 ];
 
 const mobileMenuItems = [
@@ -73,6 +75,9 @@ const mobileMenuItems = [
 ];
 
 const ProfileDropdown = () => {
+  const userState: UserState = useSelector((state: any) => state.user);
+  const user = userState.user;
+
   const [open, setOpen] = useState(false);
   const [showLogOutModal, setShowLogOutModal] = useState(false);
 
@@ -96,6 +101,20 @@ const ProfileDropdown = () => {
           sideOffset={10}
         >
           <div className="profile-dropdown">
+            <div className="text-sm  px-2 capitalize text-slate-500">
+              <h2>
+                Hello,{" "}
+                <span className="font-medium capitalize text-slate-600">
+                  {user?.firstName || user?.userName || "User"}{" "}
+                </span>
+              </h2>
+
+              <p className="flex items-center gap-1">
+                {user?.accountLevel?.replace("_", " ") || "N/A"}
+                <BadgeCheck fill="#22C55D" stroke="#fff" size={16} />
+              </p>
+            </div>
+            <Separator className="my-2" />
             <div className="md:hidden">
               {mobileMenuItems.map((item, index) => {
                 if (item.subMenu) {
