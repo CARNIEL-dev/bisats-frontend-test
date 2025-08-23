@@ -1,10 +1,9 @@
 /** @format */
 
-import { AdActionTypes } from "../types";
 import { Dispatch } from "redux";
-import Bisatsfetch from "../fetchWrapper";
-import { TCreateAdsRequest, TUpdateAdsRequest } from "../../types/wallet";
-import { BACKEND_URLS } from "../../utils/backendUrls";
+import { TUpdateAdsRequest } from "@/types/wallet";
+import Bisatsfetch from "@/redux/fetchWrapper";
+import { AdActionTypes } from "@/redux/types";
 
 export interface IAd {
   id?: string;

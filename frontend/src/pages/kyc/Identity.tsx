@@ -1,19 +1,18 @@
 import { MultiSelectDropDown } from "@/components/Inputs/MultiSelectInput";
 import PrimaryInput from "@/components/Inputs/PrimaryInput";
-import { PrimaryButton } from "@/components/buttons/Buttons";
-import StepFlow from "@/pages/kyc/StepFlow";
-import { useEffect, useRef, useState } from "react";
 import Toast from "@/components/Toast";
-import { useFormik } from "formik";
-import { PostIdentity_KYC, rehydrateUser } from "@/redux/actions/userActions";
+import { PrimaryButton } from "@/components/buttons/Buttons";
 import { APP_ROUTES } from "@/constants/app_route";
-import { useNavigate } from "react-router-dom";
+import StepFlow from "@/pages/kyc/StepFlow";
+import { PostIdentity_KYC, rehydrateUser } from "@/redux/actions/userActions";
+import { useFormik } from "formik";
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
-import FileInput from "@/components/Inputs/FileInput";
-import { IdentificationSchema } from "@/formSchemas";
-import Label from "@/components/Inputs/Label";
 import FileInputField from "@/components/Inputs/FileInputFIeld";
+import Label from "@/components/Inputs/Label";
+import { IdentificationSchema } from "@/formSchemas";
 
 const DocTypes = [
   {
@@ -31,7 +30,6 @@ const DocTypes = [
 ];
 const Identity = () => {
   const navigate = useNavigate();
-  const [file1Name, setFile1Name] = useState("");
 
   const user = useSelector((state: { user: UserState }) => state.user);
 
@@ -179,7 +177,7 @@ const SelfieSnap = () => {
       const context = canvas.getContext("2d");
       context?.drawImage(video, 0, 0, canvas.width, canvas.height);
       const imageDataUrl = canvas.toDataURL("image/jpeg");
-      const file = base64ToFile(imageDataUrl, "user-image.jpg");
+      // const file = base64ToFile(imageDataUrl, "user-image.jpg");
       setCapturedImage(imageDataUrl);
       //   formik.setFieldValue("selfie", file);
       stopCamera();
@@ -273,3 +271,5 @@ const SelfieSnap = () => {
     </div>
   );
 };
+
+export { SelfieSnap };

@@ -160,6 +160,7 @@ type SelectDropDownProps = {
   placeholder?: string;
   className?: string;
   defaultValue?: string;
+  style?: React.CSSProperties;
 };
 export const SelectDropDown = ({
   onChange,
@@ -170,6 +171,7 @@ export const SelectDropDown = ({
   placeholder,
   className,
   defaultValue,
+  style,
 }: SelectDropDownProps) => {
   return (
     <div>
@@ -188,6 +190,7 @@ export const SelectDropDown = ({
         >
           <SelectTrigger
             className={cn("w-full", error && "border-red-500", className)}
+            style={style}
           >
             <SelectValue placeholder={placeholder || "Select option"} />
           </SelectTrigger>

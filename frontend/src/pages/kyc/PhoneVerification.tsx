@@ -1,19 +1,7 @@
-import ResendCodeButton from "@/components/shared/ResendCodeButton";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useFormik } from "formik";
-import { useMemo, useState } from "react";
-import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import Flag from "react-world-flags";
 import PrimaryInput from "@/components/Inputs/PrimaryInput";
 import Toast from "@/components/Toast";
 import { PrimaryButton } from "@/components/buttons/Buttons";
+import ResendCodeButton from "@/components/shared/ResendCodeButton";
 import { APP_ROUTES } from "@/constants/app_route";
 import { PhoneSchema, VerificationSchema } from "@/formSchemas";
 import OtherSide from "@/layouts/auth/OtherSide";
@@ -23,12 +11,14 @@ import {
   Resend_OTP_PhoneNumber_KYC,
   Verify_OTP_PhoneNumber_KYC,
 } from "@/redux/actions/userActions";
+import { useFormik } from "formik";
+import { useMemo, useState } from "react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import Flag from "react-world-flags";
 
+import { SelectDropDown } from "@/components/Inputs/MultiSelectInput";
 import { countryDataForPhone } from "@/utils/data";
-import {
-  MultiSelectDropDown,
-  SelectDropDown,
-} from "@/components/Inputs/MultiSelectInput";
 
 const PhoneVerifcation = () => {
   const user: UserState = useSelector((state: any) => state.user);
@@ -71,7 +61,7 @@ const PhoneVerifcation = () => {
   };
 
   const listOptions = useMemo(() => {
-    return countryDataForPhone.slice(0, 1).map((country) => ({
+    return countryDataForPhone.slice(0, 4).map((country) => ({
       value: country.code,
       label: (
         <>
@@ -192,16 +182,19 @@ const PhoneVerifcation = () => {
         ) : (
           <form onSubmit={formik.handleSubmit}>
             <div className="w-full mt-10">
-              <div className="w-full mb-4 relative">
+              <div className="w-full  relative">
                 <SelectDropDown
-                  onChange={setSelectedCountry}
+                  onChange={(val) => {
+                    setSelectedCountry(val);
+                    formik.setFieldValue("phone", "", false);
+                  }}
                   options={listOptions}
                   defaultValue={selectedCountry}
-                  className="w-fit z-10  bg-transparent cursor-pointer px-1  py-0 border rounded-md absolute top-1/2 -translate-y-1/2 left-1 !h-[30px] outline-hidden curor-pointer border-transparent"
+                  className="w-fit z-10  bg-transparent cursor-pointer px-1  py-0 border rounded-md absolute top-2/3 -translate-y-1/2 left-1 !h-[30px] outline-none  border-transparent"
                 />
 
                 <PrimaryInput
-                  className="w-full p-2.5 mb-7 pl-28"
+                  className="w-full p-2.5 pl-28"
                   label="Phone Number"
                   placeholder="Enter phone number"
                   type="tel"
@@ -214,11 +207,14 @@ const PhoneVerifcation = () => {
                     );
                     formik.setFieldValue("phone", normalized);
                   }}
-                  error={formik.errors.phone}
+                  error={undefined}
                   touched={undefined}
                 />
               </div>
-              <div className="w-full mb-3">
+              {formik.errors.phone && (
+                <span className="error-text">{formik.errors.phone}</span>
+              )}
+              <div className="w-full mb-3 mt-4">
                 <PrimaryButton
                   className={"w-full"}
                   text={"Send code"}

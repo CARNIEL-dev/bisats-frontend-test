@@ -1,22 +1,20 @@
-import TokenSelection from "@/components/shared/TokenSelection";
-import { useEffect, useMemo, useState } from "react";
-import { useSelector } from "react-redux";
 import { PrimaryButton } from "@/components/buttons/Buttons";
 import PrimaryInput from "@/components/Inputs/PrimaryInput";
 import SingleToken from "@/components/Inputs/SingleToken";
+import TokenSelection from "@/components/shared/TokenSelection";
+import { useEffect, useMemo, useState } from "react";
+import { useSelector } from "react-redux";
 
-import SwapConfirmation from "@/components/Modals/SwapConfirmation";
 import Toast from "@/components/Toast";
 import { assets, TokenData } from "@/data";
 import { GetExpressAds, GetLivePrice } from "@/redux/actions/walletActions";
 import Bisatsfetch from "@/redux/fetchWrapper";
 
-import { convertAssetToNaira, convertNairaToAsset } from "@/utils/conversions";
-import { ACTIONS, bisats_charges } from "@/utils/transaction_limits";
 import KycManager from "@/pages/kyc/KYCManager";
 import { PriceData } from "@/pages/wallet/Assets";
+import { convertAssetToNaira, convertNairaToAsset } from "@/utils/conversions";
+import { ACTIONS, bisats_charges } from "@/utils/transaction_limits";
 import Header from "./Header";
-import { typeofSwam } from "./Swap";
 
 interface NetworkFeeResponse {
   status: boolean;

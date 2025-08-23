@@ -1,12 +1,11 @@
-import SideFrame from "@/assets/illustrations/side-frame1.png";
 import BisatLogo from "@/components/shared/Logo";
+import MaxWidth from "@/components/shared/MaxWith";
+import { GOOGLE } from "@/utils/googleCred";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { Outlet } from "react-router-dom";
-import { GOOGLE } from "@/utils/googleCred";
-import MaxWidth from "@/components/shared/MaxWith";
 
-import AuthOverlay from "@/assets/illustrations/auth_overlay.png";
 import AuthIcons from "@/assets/icons/auth_icons.png";
+import AuthOverlay from "@/assets/illustrations/auth_overlay.png";
 
 const AuthLayout = () => {
   return (

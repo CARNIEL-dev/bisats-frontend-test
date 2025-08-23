@@ -1,6 +1,6 @@
 import DownTrend from "@/assets/icons/downTrend.svg";
 import UpTrend from "@/assets/icons/upTrend.svg";
-import { NGN, tokenLogos } from "@/assets/tokens/index";
+import { tokenLogos } from "@/assets/tokens/index";
 import { useCryptoRates } from "@/redux/actions/walletActions";
 import { useMemo } from "react";
 import Marquee from "react-fast-marquee";

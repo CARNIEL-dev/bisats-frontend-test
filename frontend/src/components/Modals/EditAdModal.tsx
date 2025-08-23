@@ -24,6 +24,7 @@ import Divider from "@/components/shared/Divider";
 import { Badge } from "@/components/ui/badge";
 import PreLoader from "@/layouts/PreLoader";
 import ErrorDisplay from "@/components/shared/ErrorDisplay";
+import { Check } from "lucide-react";
 
 interface Props {
   close: () => void;
@@ -90,8 +91,8 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
       })
       .when([], ([], schema) => {
         const nRate = Number(rate ?? 0).toFixed(2);
-        const minPrice = 0.9 * parseFloat(nRate);
-        const maxPrice = 1.1 * parseFloat(nRate);
+        const minPrice = 0.9 * Number(rate);
+        const maxPrice = 1.1 * Number(rate);
 
         return schema
           .min(minPrice, `Price must be greater than 90% of market rate`)
@@ -225,7 +226,7 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
               </div>
             </div>
 
-            <div className="my-3">
+            <div className="my-3 space-y-2">
               <PrimaryInput
                 className={"w-full py-2 "}
                 label={" Price"}
@@ -236,12 +237,30 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
                 inputMode="decimal"
                 onChange={(e) => {
                   const value = e.target.value;
-                  // Allow only digits
-                  const numericValue = value.replace(/\D/g, "");
-                  formik.setFieldValue("price", numericValue);
+                  const isValidDecimal = /^(\d+(\.\d*)?|\.\d+)?$/.test(value);
+                  if (isValidDecimal) {
+                    formik.setFieldValue("price", value);
+                  }
                 }}
-                defaultValue={formik.values.price}
+                value={formik.values.price}
               />
+              <div className="flex items-center gap-2">
+                <Badge variant={"secondary"}>
+                  Market Price: xNGN {formatNumber(rate ?? 0)}{" "}
+                </Badge>
+
+                <Badge
+                  role="button"
+                  onClick={() => {
+                    formik.setFieldValue("price", rate, true);
+                  }}
+                  variant={"success"}
+                  tabIndex={0}
+                >
+                  <Check className="mr-1" />
+                  Use Market Price
+                </Badge>
+              </div>
             </div>
             {ad?.type.toLowerCase() === "sell" && (
               <Divider
@@ -268,6 +287,27 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
                       value === "" ? undefined : Number(value)
                     );
                   }
+                }}
+                value={formik.values.amount}
+                maxFnc={() => {
+                  const isBuy = formik.values.type.toLowerCase() === "buy";
+
+                  //? Calculate maximum allowed value in token units (for sell transactions)
+                  const maxTokenValue =
+                    userTransactionLimits.maximum_ad_creation_amount /
+                    (rate || 0);
+
+                  const limit = isBuy
+                    ? userTransactionLimits.maximum_ad_creation_amount // Use normal limit for buy
+                    : Number(maxTokenValue.toFixed(5));
+
+                  //? Get wallet balance in the relevant currency
+                  const walletBal = walletData?.[isBuy ? "xNGN" : ad?.asset!];
+
+                  //? Determine the actual maximum value (minimum between wallet balance and limit)
+                  const val = Math.min(walletBal || 0, limit);
+
+                  formik.setFieldValue("amount", val);
                 }}
               />
               <div className="flex flex-col gap-2 mt-4">

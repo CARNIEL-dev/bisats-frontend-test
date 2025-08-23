@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 
+import { Button } from "@/components/ui/Button";
 import { cn } from "@/utils";
 import {
   Dialog,
@@ -7,17 +8,15 @@ import {
   Transition,
   TransitionChild,
 } from "@headlessui/react";
-import { Fragment } from "react";
 import { X } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { Fragment } from "react";
 
 import {
-  Dialog as ShadcnDialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
+  Dialog as ShadcnDialog,
 } from "@/components/ui/dialog";
 
 interface ModalProps {

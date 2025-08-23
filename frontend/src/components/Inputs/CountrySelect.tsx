@@ -1,17 +1,8 @@
-// import { useOutsideClick } from "@/hooks";
-import { useMemo, useState } from "react";
-import Label from "./Label";
-import Flag from "react-world-flags";
-import { countries } from "../../utils/data";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { cn } from "@/utils";
+import Label from "@/components/Inputs/Label";
 import SearchableDropdown from "@/components/shared/SearchableDropdown";
+import { countries } from "@/utils/data";
+import { useMemo } from "react";
+import Flag from "react-world-flags";
 
 interface TCountrySelectProps {
   label: string;
@@ -26,7 +17,6 @@ interface TCountrySelectProps {
 export const CountrySelect = ({
   label,
   error,
-  touched,
   placeholder,
   handleChange,
   value,
@@ -80,49 +70,5 @@ export const CountrySelect = ({
 
       {error && <p className="text-red-500 text-xs mt-2.5">{error}</p>}
     </div>
-  );
-};
-
-const Test = ({
-  label,
-  error,
-  touched,
-  placeholder,
-  handleChange,
-  value,
-  disabled,
-  allCountries,
-}: TCountrySelectProps) => {
-  return (
-    <Select
-      onValueChange={(val) => {
-        handleChange(val);
-      }}
-      defaultValue={value || ""}
-      //   value={title || ""}
-      disabled={disabled}
-    >
-      <SelectTrigger className={cn("w-full ", error && "border-red-500")}>
-        <SelectValue placeholder={placeholder || "Select option"} />
-      </SelectTrigger>
-      <SelectContent className="!w-full !max-h-[18rem] ">
-        {[{ flag: "NG", value: "Nigeria" }].map((item, idx) => (
-          <SelectItem key={idx} value={item.value}>
-            <div className="flex items-center gap-2 w-full">
-              {item.flag && (
-                <Flag
-                  code={item.flag}
-                  style={{
-                    width: "18px",
-                    height: "20px",
-                  }}
-                />
-              )}
-              {item.value}
-            </div>
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
   );
 };
