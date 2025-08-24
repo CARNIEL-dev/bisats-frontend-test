@@ -141,7 +141,7 @@ const Level3Verification = () => {
 
                     {/* SUB: Source of wealth */}
                     <FileInputField
-                      label={"Source of wealth"}
+                      label={"Certificate of corporation"}
                       name="sourceOfWealth"
                       uploadFile={(file) =>
                         Post_Proof_of_Wealth_KYC({
@@ -150,9 +150,9 @@ const Level3Verification = () => {
                         })
                       }
                       valueMapper={(value) => value}
-                      info={
-                        "Personal bank statement or trades from other platforms"
-                      }
+                      // info={
+                      //   "Personal bank statement or trades from other platforms"
+                      // }
                       disabled={user?.kyc?.sourceOfWealthVerified}
                       formik={formik}
                       placeholder={

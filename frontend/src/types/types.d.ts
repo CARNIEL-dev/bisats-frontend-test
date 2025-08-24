@@ -52,6 +52,7 @@ type TUser = {
   phoneNumberVerified: boolean;
   accountStatus: string;
   userName: string | null;
+  dateOfBirth: string | null;
   image: {
     key: string | number | null;
     url: string | null;

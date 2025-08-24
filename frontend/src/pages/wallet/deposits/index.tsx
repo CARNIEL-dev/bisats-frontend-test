@@ -42,9 +42,15 @@ const DepositPage = () => {
   const navigate = useNavigate();
   const user: UserState = useSelector((state: any) => state.user);
 
+  useEffect(() => {
+    if (!user.user?.accountLevel) {
+      navigate(APP_ROUTES.KYC.PERSONAL);
+    }
+  }, []);
+
   const maxDeposit = useMemo(() => {
     return bisats_limit[user?.user?.accountLevel as keyof typeof bisats_limit]
-      .max_deposit_per_transaction_fiat;
+      ?.max_deposit_per_transaction_fiat;
   }, [user?.user?.accountLevel]);
 
   useEffect(() => {

@@ -4,10 +4,12 @@ import Divider from "@/components/shared/Divider";
 import TextBox from "@/components/shared/TextBox";
 import Toast from "@/components/Toast";
 import { Button } from "@/components/ui/Button";
+import DateInput from "@/components/ui/DatePicker";
 import { APP_ROUTES } from "@/constants/app_route";
 import { UpdateUserName } from "@/redux/actions/userActions";
 
 import { cn, formatEmail, splitTextInMiddle } from "@/utils";
+import dayjs from "dayjs";
 
 import { useFormik } from "formik";
 import { Edit, X } from "lucide-react";
@@ -21,7 +23,7 @@ const Profile = () => {
   const UserData = [
     {
       label: "Display Name",
-      value: `${user?.userName ?? "---"}`,
+      value: `${user?.userName ?? "- - -"}`,
     },
     {
       label: "Full Name",
@@ -36,6 +38,12 @@ const Profile = () => {
         email: user?.email,
         maxChar: 4,
       }),
+    },
+    {
+      label: "Date of Birth",
+      value: user?.dateOfBirth
+        ? dayjs(user?.dateOfBirth).format("MMMM D, YYYY")
+        : "- - -",
     },
 
     {
@@ -58,6 +66,7 @@ const Profile = () => {
       firstName: user?.firstName || "",
       middleName: user?.middleName || "",
       lastName: user?.lastName || "",
+      dateOfBirth: user?.dateOfBirth || "",
     },
     validateOnMount: false,
     validateOnChange: false,
@@ -135,6 +144,7 @@ const Profile = () => {
               "text-gray-500 text-sm hover:bg-primary/20 rounded-full"
             )}
             onClick={() => setIsEditing(true)}
+            disabled={!user?.accountLevel}
           >
             <Edit />
             <span>Edit</span>
@@ -158,7 +168,7 @@ const Profile = () => {
               />
               {isBvnVerified && (
                 <Divider
-                  text="Bvn Verified : Name not editable"
+                  text="Bvn Verified : Not Editable"
                   className="mb-1 mt-5"
                   textClassName="bg-gray-100 text-center text-nowrap border  rounded-full"
                 />
@@ -195,6 +205,16 @@ const Profile = () => {
                   formik.setFieldValue("lastName", e.target.value)
                 }
                 readOnly={isBvnVerified}
+              />
+
+              <DateInput
+                name="dateOfBirth"
+                label={"Date of Birth"}
+                value={user?.dateOfBirth ? user?.dateOfBirth : null}
+                handleChange={(e) =>
+                  formik.setFieldValue("dateOfBirth", String(e.target.value))
+                }
+                disabled={isBvnVerified}
               />
             </div>
           ) : (

@@ -80,10 +80,11 @@ const BVNVerification = () => {
 
       if (response?.status) {
         setIsSuccess(true);
-        navigate(APP_ROUTES?.DASHBOARD);
-        GetUserDetails({
+        await GetUserDetails({
           userId: user?.user?.userId!,
           token: user?.user?.token!,
+        }).then(() => {
+          navigate(APP_ROUTES?.DASHBOARD);
         });
       } else {
         Toast.error(response.message, "Failed");
@@ -139,9 +140,10 @@ const BVNVerification = () => {
           isSuccess ? (
             <div className=" mb-4 mt-10">
               <SucessDisplay
-                heading="BVN submitted successfully"
+                heading="BVN Submitted Successfully"
                 subheading="Your details are currently being reviewed"
                 onClick={() => navigate(APP_ROUTES.KYC.LEVEL3VERIFICATION)}
+                user={user?.user!}
               />
             </div>
           ) : (

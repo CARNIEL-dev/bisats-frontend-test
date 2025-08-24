@@ -23,11 +23,10 @@ const GoogleButton: React.FC<TGButtonProps> = ({ text }) => {
 
   const TrigerGoogle = useGoogleLogin({
     onSuccess: (tokenResponse: any) => {
+      fetchUserData(tokenResponse.access_token);
       navigate(APP_ROUTES.AUTH.GOOGLE_VERIFY, {
         replace: true,
       });
-
-      fetchUserData(tokenResponse.access_token);
     },
     onError(errorResponse: any) {
       console.log(errorResponse);

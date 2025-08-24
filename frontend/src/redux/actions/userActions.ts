@@ -397,6 +397,7 @@ export const UpdateUserName = async (payload: {
   userName?: string;
   middleName?: string;
   deviceToken?: string;
+  dateOfBirth?: string;
 }) => {
   const userId = getUserId();
 

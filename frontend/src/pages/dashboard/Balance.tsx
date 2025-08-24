@@ -23,7 +23,7 @@ import { cn, formatter, getCurrencyBalance } from "@/utils";
 import { ACTIONS } from "@/utils/transaction_limits";
 import { ChevronDown, Eye, EyeOff } from "lucide-react";
 import { ThreeDot } from "react-loading-indicators";
-import KycManager from "../kyc/KYCManager";
+import KycManager from "@/pages/kyc/KYCManager";
 
 const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
   const navigate = useNavigate();

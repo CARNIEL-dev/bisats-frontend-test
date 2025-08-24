@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { APP_ROUTES } from "@/constants/app_route";
 import { cn } from "@/utils";
-import { BadgeCheck, ChevronDown } from "lucide-react";
+import { BadgeCheck, ChevronDown, Medal } from "lucide-react";
 import { useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import LogOutModal from "@/components/Modals/LogOut";
@@ -111,7 +111,12 @@ const ProfileDropdown = () => {
 
               <p className="flex items-center gap-1">
                 {user?.accountLevel?.replace("_", " ") || "N/A"}
-                <BadgeCheck fill="#22C55D" stroke="#fff" size={16} />
+
+                {user?.accountLevel === "level_3" ? (
+                  <Medal fill="#FFD700" size={16} />
+                ) : (
+                  <BadgeCheck fill="#22C55D" stroke="#fff" size={16} />
+                )}
               </p>
             </div>
             <Separator className="my-2" />

@@ -8,6 +8,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/utils";
+import dayjs from "dayjs";
 import { ChevronsUpDown } from "lucide-react";
 import * as React from "react";
 
@@ -18,6 +19,7 @@ export interface DateInputProps {
   error?: string;
   handleChange: (e: React.ChangeEvent<any>) => void;
   value?: string;
+  disabled?: boolean;
 }
 
 const DateInput: React.FC<DateInputProps> = ({
@@ -27,6 +29,7 @@ const DateInput: React.FC<DateInputProps> = ({
   error,
   handleChange,
   value,
+  disabled = false,
 }) => {
   const [open, setOpen] = React.useState(false);
   const [date, setDate] = React.useState<Date | undefined>(
@@ -37,7 +40,7 @@ const DateInput: React.FC<DateInputProps> = ({
     setDate(selected);
     setOpen(false);
     handleChange({
-      target: { name, value: selected && selected.toISOString() },
+      target: { name, value: selected && dayjs(selected).format("YYYY-MM-DD") },
     } as React.ChangeEvent<HTMLInputElement>);
   };
 
@@ -53,6 +56,7 @@ const DateInput: React.FC<DateInputProps> = ({
             "flex items-center text-sm justify-between bg-neutral-100 font-medium text-gray-600 h-12 ",
             error && "!border-red-500"
           )}
+          disabled={disabled}
         >
           {date ? date.toLocaleDateString() : title || "Select date"}
           <ChevronsUpDown className="opacity-50" />

@@ -10,7 +10,7 @@ import { GET_ACTIVITY_SUMMARY } from "@/redux/actions/userActions";
 import { formatNumber } from "@/utils/numberFormat";
 import { AccountLevel, bisats_limit } from "@/utils/transaction_limits";
 import { useQuery } from "@tanstack/react-query";
-import { BadgeCheck, Info } from "lucide-react";
+import { Award, BadgeCheck, Info, Medal } from "lucide-react";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 
@@ -62,8 +62,6 @@ const Profile = () => {
   const userState: UserState = useSelector((state: any) => state.user);
   const user = userState.user;
   const account_level = user?.accountLevel;
-
-  console.log("User State", userState);
 
   const limits = bisats_limit[account_level as AccountLevel] || null;
 
@@ -168,11 +166,16 @@ const Profile = () => {
         as="section"
       >
         <BackButton />
-        <div className="flex items-center mx-3">
-          <p className="text-[28px] md:text-[34px] leading-[40px] font-semibold text-[#0A0E12] mr-4">
+        <div className="flex items-center gap-2 mx-3">
+          <p className="text-[28px] md:text-[34px] leading-[40px] font-semibold text-[#0A0E12]">
             {user?.userName || "Hello, User"}
           </p>
-          <BadgeCheck fill="#22C55D" stroke="#fff" />
+
+          {user?.accountLevel === "level_3" ? (
+            <Medal fill="#FFD700" />
+          ) : (
+            <BadgeCheck fill="#22C55D" stroke="#fff" />
+          )}
         </div>
 
         <div className="border border-[#F3F4F6] p-3 lg:p-5 rounded-[12px] bg-gradient-to-r from-[#FFFFFF] to-[#F6F7F8] w-full mx-3">
