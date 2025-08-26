@@ -109,6 +109,18 @@ const Profile = () => {
     }
   };
 
+  const lastUserNameChange = user?.lastUserNameChange
+    ? dayjs(user?.lastUserNameChange).fromNow()
+    : null;
+
+  //? Calculate next edit date (6 months from last change)
+  const nextEdit = lastUserNameChange
+    ? dayjs(user?.lastUserNameChange).add(6, "month")
+    : null;
+
+  //? Disable display name input if less than 6 months since last change
+  const canEditDisplayName = !nextEdit || dayjs().isAfter(nextEdit);
+
   return (
     <>
       <div className="flex justify-between">
@@ -123,7 +135,11 @@ const Profile = () => {
               loading={formik.isSubmitting}
               className="px-7"
               size="sm"
-              disabled={formik.isSubmitting}
+              disabled={
+                formik.isSubmitting ||
+                (!canEditDisplayName && isBvnVerified) ||
+                (canEditDisplayName && !isBvnVerified)
+              }
               onClick={() => formik.handleSubmit()}
             />
             <Button
@@ -165,7 +181,25 @@ const Profile = () => {
                   formik.setFieldValue("userName", e.target.value)
                 }
                 info="Your display name can only be edited once every 6 months"
+                // info={
+                //   nextEdit
+                //     ? `Next edit available: ${nextEdit.format("MMMM D, YYYY")}`
+                //     : "Your display name can only be edited once every 6 months"
+                // }
+                disabled={!canEditDisplayName}
               />
+              <div className="border space-y-1 font-medium bg-gray-50 rounded-md p-2 text-xs  w-fit shadow">
+                {lastUserNameChange && (
+                  <p className="text-[#606C82] capitalize">
+                    Changed: {lastUserNameChange}
+                  </p>
+                )}
+                {nextEdit && (
+                  <p className="text-[#606C82] capitalize">
+                    Next edit: {nextEdit.format("MMMM D, YYYY")}
+                  </p>
+                )}
+              </div>
               {isBvnVerified && (
                 <Divider
                   text="Bvn Verified : Not Editable"

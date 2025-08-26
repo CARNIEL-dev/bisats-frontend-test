@@ -44,6 +44,7 @@ export const BACKEND_URLS = {
     POST_PROOF_ADDRESS: "/verify-utility-bill",
     POST_SOURCE_WEALTH: "/upload-source-of-wealth-document",
     POST_PROOF_PROFILE: "/upload-proof-of-profile-document",
+    BECOME_MERCHANT: "/become-a-merchant",
   },
 
   DASHBOARD: {

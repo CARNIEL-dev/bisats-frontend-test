@@ -37,6 +37,11 @@ export type TIdentity = {
   identificationNo: string;
   selfie: File | string;
 };
+export type TMerchant = {
+  userId: string;
+  utilityBill: File | string;
+  photoIdentity: File | string;
+};
 
 export type TRequestPhone = {
   userId: string;

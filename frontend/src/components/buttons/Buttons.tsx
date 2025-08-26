@@ -1,5 +1,7 @@
+import { cn } from "@/utils";
 import { Loader2 } from "lucide-react";
 import React, { ButtonHTMLAttributes } from "react";
+import { Button } from "../ui/Button";
 
 interface TButtons extends ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
@@ -53,16 +55,19 @@ export const WhiteTransparentButton: React.FC<TButtons> = ({
   ...props
 }) => {
   return (
-    <button
+    <Button
+      variant={"outline"}
       type="submit"
-      className={`flex justify-center ${className} ${
+      className={cn(
+        "bg-transparent text-[#525C76] hover:text-[#525C76]/90",
         size === "sm"
           ? "h-[32px] text-[12px] py-0.5 px-3"
-          : "h-[48px] text-[14px] py-3"
-      }  rounded-[6px] bg-transparent text-[#525C76] border border-[#D6DAE1] hover:bg-neutral-50 transition-all duration-300 ease font-semibold items-center gap-2 text-center`}
+          : "h-[48px] text-[14px] py-3",
+        className
+      )}
       {...props}
     >
       {loading ? <Loader2 className="animate-spin size-6" /> : text}
-    </button>
+    </Button>
   );
 };

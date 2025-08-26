@@ -6,60 +6,41 @@ import TokenSelection from "@/components/shared/TokenSelection";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/Button";
 import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
+import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { TokenData } from "@/data";
+import { DUMMY_HISTORY, TokenData } from "@/data";
 import { assetIndexMap } from "@/pages/p2p/components/P2PMarket";
 import Head from "@/pages/wallet/Head";
 import { useCryptoRates } from "@/redux/actions/walletActions";
 import { formatter } from "@/utils";
 import { formatNumber } from "@/utils/numberFormat";
-import { History, X } from "lucide-react";
-import { ChangeEventHandler } from "react";
+import dayjs from "dayjs";
+import { useFormik } from "formik";
+import { ArrowRight, History } from "lucide-react";
+import { useMotionValueEvent, useScroll } from "motion/react";
+import { ChangeEventHandler, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-
-const DUMMY_HISTORY = [
-  {
-    id: "nfieijoi4rdfhhefhnf",
-    from: "USDT",
-    to: "ETH",
-    fromAmount: 1,
-    toAmount: 195,
-    rate: 195,
-    timestamp: "2025-03-15T16:00:00Z",
-  },
-  {
-    id: "nfieijoi4rhtfhnf",
-    from: "USDT",
-    to: "ETH",
-    fromAmount: 0.5,
-    toAmount: 2250,
-    rate: 4500,
-    timestamp: "2025-04-15T12:00:00Z",
-  },
-];
 
 const SwapPage = () => {
   const walletState: WalletState = useSelector((state: any) => state.wallet);
+
   const {
     data: currencyRates,
     isFetching,
     isError,
     refetch,
   } = useCryptoRates({ isEnabled: true });
+
   const [searchParams, setSearchParams] = useSearchParams();
 
   const swapHistory = searchParams.get("history");
@@ -88,6 +69,17 @@ const SwapPage = () => {
         return false;
       });
   };
+
+  const formik = useFormik({
+    initialValues: {
+      amount: "",
+      assetFrom: "xNGN",
+    },
+    onSubmit: (values) => {
+      console.log(values);
+    },
+  });
+
   return (
     <>
       <div className="grid  gap-6">
@@ -141,19 +133,23 @@ const SwapPage = () => {
               <InputField
                 label="Amount"
                 id="amt"
-                value={""}
+                value={formik.values.amount}
                 error={undefined}
                 onChange={(e) => {
                   const value = e.target.value;
                   const isValidDecimal = /^(\d+(\.\d*)?|\.\d+)?$/.test(value);
                   if (isValidDecimal) {
+                    formik.setFieldValue("amount", value);
                   }
                 }}
                 onFocus={() => {}}
                 children={
                   <TokenSelection
-                    value="xNGN"
-                    handleChange={() => {}}
+                    value={formik.values.assetFrom}
+                    handleChange={(e) => {
+                      formik.setFieldValue("assetFrom", e);
+                      formik.setFieldValue("amount", "");
+                    }}
                     error={undefined}
                     touched={undefined}
                     showBalance={false}
@@ -164,8 +160,10 @@ const SwapPage = () => {
 
               <Badge variant={"success"}>
                 Balance:{" "}
-                {formatter({ decimal: 2 }).format(walletState?.wallet?.xNGN)}{" "}
-                xNGN
+                {formatter({
+                  decimal: formik.values?.assetFrom === "xNGN" ? 2 : 6,
+                }).format(walletState?.wallet?.[formik.values.assetFrom])}{" "}
+                {formik.values?.assetFrom}
               </Badge>
             </div>
 
@@ -193,8 +191,8 @@ const SwapPage = () => {
         </div>
 
         <Sheet open={Boolean(swapHistory)} onOpenChange={handleSwapHistory}>
-          <SheetContent>
-            <SheetHeader>
+          <SheetContent className="w-full sm:max-w-md">
+            <SheetHeader className="mt-4">
               <SheetTitle className="text-2xl font-semibold">
                 History
               </SheetTitle>
@@ -202,6 +200,11 @@ const SwapPage = () => {
                 View your past swap transactions
               </SheetDescription>
             </SheetHeader>
+            {DUMMY_HISTORY.length > 0 && (
+              <p className="text-gray-500 text-sm px-4 pb-4 border-b">
+                Total: {DUMMY_HISTORY.length}
+              </p>
+            )}
             <SwapHistory history={DUMMY_HISTORY} />
           </SheetContent>
         </Sheet>
@@ -226,21 +229,76 @@ type SwapHistoryProps = {
   }[];
 };
 const SwapHistory = ({ history }: SwapHistoryProps) => {
+  const [hide, setHide] = useState(false);
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ container: containerRef });
+
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    if (latest > 0.98) {
+      setHide(true);
+    } else {
+      setHide(false);
+    }
+  });
+
   return (
-    <div className="flex flex-col gap-2 px-4">
-      {history.map((h, i: number) => {
-        return (
-          <div key={i}>
-            <p>
-              {h.from} → {h.to}
-            </p>
-            <p>
-              {h.fromAmount} → {h.toAmount}
-            </p>
-          </div>
-        );
-      })}
-    </div>
+    <>
+      <div
+        ref={containerRef}
+        className="flex flex-col gap-8 px-6 h-[68dvh] overflow-auto no-scrollbar"
+      >
+        {history.length > 0 ? (
+          history.map((item) => {
+            return (
+              <div key={item.id} className="border-b pb-3 flex flex-col gap-3">
+                <div className="flex justify-between items-center gap-2">
+                  {/* SUB: From */}
+                  <div className="flex items-center gap-2">
+                    <span>
+                      {TokenData[assetIndexMap?.[item.from]].tokenLogo}
+                    </span>
+                    <p className="font-semibold tex-sm">
+                      {formatter({
+                        decimal: item.from === "xNGN" ? 2 : 6,
+                      }).format(item.fromAmount)}{" "}
+                      {item.from}
+                    </p>
+                  </div>
+
+                  <ArrowRight className="text-gray-500" strokeWidth={1.5} />
+
+                  {/* SUB: to */}
+                  <div className="flex items-center gap-2">
+                    <span>{TokenData[assetIndexMap?.[item.to]].tokenLogo}</span>
+                    <p className="font-semibold tex-sm">
+                      {formatter({ decimal: 2 }).format(item.toAmount)}{" "}
+                      {item.to}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between">
+                  <p className="text-xs text-gray-500 ">
+                    1 {item.from}  ≈ {" "}
+                    {formatter({ decimal: 0 }).format(item.rate)} {item.to}
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    {dayjs(item.timestamp).format("MMM D, YYYY - h:mm A")}
+                  </p>
+                </div>
+              </div>
+            );
+          })
+        ) : (
+          <p className="text-center text-gray-500 text-sm">No swap history</p>
+        )}
+      </div>
+      {history.length > 6 && !hide && (
+        <p className="text-xs text-center text-gray-500 animate-bounce">
+          Scroll Down
+        </p>
+      )}
+    </>
   );
 };
 

@@ -13,6 +13,7 @@ import { GeneralTypes, UserActionTypes } from "@/redux/types";
 import {
   TIdentity,
   TLogin,
+  TMerchant,
   TPersonalInfoKYC,
   TPinRequest,
   TPOA,
@@ -121,7 +122,7 @@ export const VerifyForgotPassword = async (payload: {
         body: JSON.stringify(payload),
       }
     );
-    const data = response.data;
+
     return response;
   } catch (error) {
     // throw handleApiError(error);
@@ -139,7 +140,7 @@ export const ResetPassword = async (payload: {
       method: "POST",
       body: JSON.stringify(payload),
     });
-    const data = response.data;
+
     return response;
   } catch (error) {
     // throw handleApiError(error);
@@ -554,6 +555,33 @@ export const Post_Proof_of_Profile_KYC = async (payload: TPOA) => {
         method: "PUT",
         headers: {
           // "Content-Type": "multipart/form-data",
+          Authorization: `${token}`,
+        },
+        body: formData,
+      }
+    );
+    const data = response.json();
+
+    // dispatchWrapper({ type: GeneralTypes.SUCCESS, payload: data });
+
+    return data;
+  } catch (error) {
+    // throw handleApiError(error);
+    return error;
+  }
+};
+export const Become_Merchant_Hanlder = async (payload: TMerchant) => {
+  const formData = new FormData();
+  formData.append("utilityDoc", payload.utilityBill);
+  formData.append("otherDoc", payload.photoIdentity);
+  const token = getToken();
+
+  try {
+    const response = await fetch(
+      `${BACKEND_URLS.BASE_URL}/api/v1/user/${payload.userId}${BACKEND_URLS.KYC.BECOME_MERCHANT}`,
+      {
+        method: "POST",
+        headers: {
           Authorization: `${token}`,
         },
         body: formData,

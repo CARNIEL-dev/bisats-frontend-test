@@ -215,6 +215,8 @@ export const GetBankList = async (userId: string) => {
     );
     const data = response.data;
 
+    // console.log("Banks list", response);
+
     if (response.status) {
       return data;
     } else {

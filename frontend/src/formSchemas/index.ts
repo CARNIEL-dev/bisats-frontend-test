@@ -567,6 +567,10 @@ const corporateSchema = Yup.object().shape({
   cacDocument: Yup.mixed().required("CAC document is required"),
   mermartDocument: Yup.mixed().nullable(),
 });
+const merchantSchema = Yup.object().shape({
+  utilityBill: Yup.mixed().required("Utility bill is required"),
+  photoIdentity: Yup.mixed().required("Proof of identity is required"),
+});
 
 export {
   AdSchema,
@@ -584,4 +588,5 @@ export {
   levelThreeValidationSchema,
   getBankSchema,
   corporateSchema,
+  merchantSchema,
 };

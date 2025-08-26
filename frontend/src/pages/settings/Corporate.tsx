@@ -118,6 +118,7 @@ const Corporate = () => {
                 "mt-4 text-sm rounded-full"
               )}
               to={APP_ROUTES.SETTINGS.PAYMENT}
+              replace
             >
               Back to Payment Settings
             </Link>

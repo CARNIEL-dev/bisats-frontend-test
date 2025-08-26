@@ -3,9 +3,14 @@ import { Check, Info, Verified } from "lucide-react";
 import { useState } from "react";
 import ModalTemplate from "@/components/Modals/ModalTemplate";
 import { Button } from "@/components/ui/Button";
-import TextBox from "./TextBox";
-import Divider from "./Divider";
-import MaxWidth from "./MaxWith";
+import TextBox from "@/components/shared/TextBox";
+import Divider from "@/components/shared/Divider";
+import MaxWidth from "@/components/shared/MaxWith";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 type Props = {
   className?: string;
@@ -20,17 +25,24 @@ const BalanceInfo = ({ className, currency, userBalance, wallet }: Props) => {
 
   return (
     <>
-      <Button
-        onClick={() => setOpen(true)}
-        variant={"ghost"}
-        size={"sm"}
-        className={cn(
-          "hover:bg-primary/10 text-gray-500 hover:text-primary size-10 rounded-full",
-          className
-        )}
-      >
-        <Info className={"!size-5 "} strokeWidth={1.5} />
-      </Button>
+      <Tooltip>
+        <TooltipTrigger className="ml-auto">
+          <Button
+            onClick={() => setOpen(true)}
+            variant={"ghost"}
+            size={"sm"}
+            className={cn(
+              "hover:bg-primary/10 text-gray-500 hover:text-primary size-10 rounded-full",
+              className
+            )}
+          >
+            <Info className={"!size-5 "} strokeWidth={1.5} />
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>View your wallet balance</p>
+        </TooltipContent>
+      </Tooltip>
 
       <ModalTemplate
         primary={false}
