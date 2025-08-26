@@ -93,6 +93,11 @@ const DepositPage = () => {
       }
     } else if (user?.user?.accountLevel === "level_1") {
       window.location.href = APP_ROUTES.KYC.BVNVERIFICATION;
+    } else if (
+      user?.user?.accountLevel === "level_2" &&
+      !user?.user?.hasAppliedToBecomeAMerchant
+    ) {
+      window.location.href = APP_ROUTES.KYC.BECOME_MERCHANT;
     } else {
       window.location.href = APP_ROUTES.KYC.LEVEL3VERIFICATION;
     }
@@ -156,7 +161,7 @@ const DepositPage = () => {
             {user?.user?.accountLevel === "level_1" ? (
               <div className="flex flex-col gap-2 mt-10 items-center">
                 <p className="text-sm animate-pulse rounded-full px-4 py-1 border bg-red-500/10 font-medium text-red-500">
-                  Upgrade to level 2 or 3 to deposit xNGN.
+                  Become a Merchant or upgrade to 3 to deposit xNGN.
                 </p>
 
                 <Button
@@ -164,6 +169,20 @@ const DepositPage = () => {
                   className="w-fit rounded-full px-4 py-2"
                 >
                   Upgrade
+                </Button>
+              </div>
+            ) : user?.user?.accountLevel === "level_2" &&
+              !user?.user?.hasAppliedToBecomeAMerchant ? (
+              <div className="flex flex-col gap-2 mt-10 items-center">
+                <p className="text-sm animate-pulse rounded-full px-4 py-1 border bg-red-500/10 font-medium text-red-500">
+                  Become a Merchant to deposit xNGN.
+                </p>
+
+                <Button
+                  onClick={clickHandler}
+                  className="w-fit rounded-full px-4 py-2"
+                >
+                  Become a Merchant
                 </Button>
               </div>
             ) : (

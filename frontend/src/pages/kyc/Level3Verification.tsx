@@ -21,8 +21,6 @@ const Level3Verification = () => {
   const user: UserState = useSelector((state: any) => state.user);
   const limit = bisats_limit["level_3"];
 
-  console.log("Limits", limit);
-
   const navigate = useNavigate();
   const [responsePending, setResponsePending] = useState(
     user.kyc?.proofOfProfileVerified

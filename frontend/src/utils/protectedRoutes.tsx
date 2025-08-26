@@ -6,6 +6,7 @@ const ProtectedRoute = () => {
 
   if (!userState.isAuthenticated) {
     window.location.href = "/";
+
     return null;
   }
 

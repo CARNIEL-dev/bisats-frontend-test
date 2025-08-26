@@ -31,9 +31,9 @@ import Profile from "@/pages/p2p/Profile";
 import Receipt from "@/pages/p2p/Receipt";
 import Sell from "@/pages/p2p/Sell";
 import Payment from "@/pages/settings/Payment";
+import UserProfile from "@/pages/settings/Profile";
 import Security from "@/pages/settings/Security";
 import Support from "@/pages/settings/Support";
-import UserProfile from "@/pages/settings/Profile";
 import DepositPage from "@/pages/wallet/deposits";
 import TransactionBreakdown from "@/pages/wallet/deposits/TransactionBreakdown";
 import Wallet from "@/pages/wallet/Wallet";
@@ -42,14 +42,16 @@ import ProtectedRoute from "@/utils/protectedRoutes";
 
 import DashboardLayout from "@/layouts/DashboardLayout";
 import Layout from "@/layouts/Layout";
+import Verify2FA from "@/pages/auth/Verify2FA";
+import BecomeMerchant from "@/pages/kyc/BecomeMerchant";
 import { LandingPage } from "@/pages/landing-page/src/screens/Bisats/LandingPage";
+import NotificationsPage from "@/pages/notifcations/NotificationsPage";
 import MarketPlacePage from "@/pages/p2p/MarketPlacePage";
+import Corporate from "@/pages/settings/Corporate";
+import SwapPage from "@/pages/swap/SwapPage";
 import NotFound from "@/routing/NotFound";
 import { Route, Routes } from "react-router-dom";
-import Verify2FA from "@/pages/auth/Verify2FA";
-import NotificationsPage from "@/pages/notifcations/NotificationsPage";
-import GoogleVerify from "@/pages/auth/GoogleVerify";
-import Corporate from "@/pages/settings/Corporate";
+import SwapLayout from "@/layouts/SwapLayout";
 
 const Routing = () => {
   return (
@@ -63,10 +65,7 @@ const Routing = () => {
             path={APP_ROUTES?.AUTH.FORGOT_PASSWORD}
             Component={ForgotPassword}
           />
-          <Route
-            path={APP_ROUTES.AUTH.GOOGLE_VERIFY}
-            Component={GoogleVerify}
-          />
+
           <Route path={`${APP_ROUTES?.AUTH.VERIFY}`} Component={VerifyEmail} />
           <Route path={APP_ROUTES.AUTH.OTP} Component={OTP} />
           <Route
@@ -136,6 +135,9 @@ const Routing = () => {
             />
             <Route path={APP_ROUTES.WALLET.HOME} element={<Wallet />} />
             <Route path={APP_ROUTES.PROFILE} element={<Profile />} />
+            <Route element={<SwapLayout />}>
+              <Route path={APP_ROUTES.SWAP.HOME} element={<SwapPage />} />
+            </Route>
           </Route>
 
           {/* SUB: KYC PAGES */}
@@ -151,6 +153,10 @@ const Routing = () => {
             <Route
               path={APP_ROUTES?.KYC.LEVEL3VERIFICATION}
               Component={Level3Verification}
+            />
+            <Route
+              path={APP_ROUTES?.KYC.BECOME_MERCHANT}
+              Component={BecomeMerchant}
             />
             <Route element={<KycLayOut />}>
               <Route

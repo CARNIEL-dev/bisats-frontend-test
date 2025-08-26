@@ -7,8 +7,9 @@ import { isProduction } from "@/utils";
 import { BACKEND_URLS } from "@/utils/backendUrls";
 import dispatchWrapper from "@/utils/dispatchWrapper";
 import { useGoogleLogin } from "@react-oauth/google";
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import GoogleVerify from "@/components/GoogleVerify";
 
 type TGButtonProps = {
   text: string;
@@ -19,14 +20,14 @@ type Tdata = {
   id: string;
 };
 const GoogleButton: React.FC<TGButtonProps> = ({ text }) => {
+  const [isVerifying, setIsVerifying] = useState(false);
+
   const navigate = useNavigate();
 
   const TrigerGoogle = useGoogleLogin({
     onSuccess: (tokenResponse: any) => {
+      setIsVerifying(true);
       fetchUserData(tokenResponse.access_token);
-      navigate(APP_ROUTES.AUTH.GOOGLE_VERIFY, {
-        replace: true,
-      });
     },
     onError(errorResponse: any) {
       console.log(errorResponse);
@@ -75,19 +76,25 @@ const GoogleButton: React.FC<TGButtonProps> = ({ text }) => {
   };
 
   return (
-    <button
-      onClick={() => TrigerGoogle()}
-      className=" h-[48px] w-full border border-[#D6DAE1] rounded-[6px] flex items-center justify-center py-2 text-center shadow-[0_1_1px_#000] mb-4 cursor-pointer"
-    >
-      <img
-        src={GoogleLogo}
-        alt="google-logo"
-        className="w-[24px] h-[24px] mr-1.5"
-      />
-      <span className="text-[16px] text-[#606C82] font-semibold leading-[25.6px] ">
-        {text}
-      </span>
-    </button>
+    <>
+      {isVerifying ? (
+        <GoogleVerify />
+      ) : (
+        <button
+          onClick={() => TrigerGoogle()}
+          className=" h-[48px] w-full border border-[#D6DAE1] rounded-[6px] flex items-center justify-center py-2 text-center shadow-[0_1_1px_#000] mb-4 cursor-pointer"
+        >
+          <img
+            src={GoogleLogo}
+            alt="google-logo"
+            className="w-[24px] h-[24px] mr-1.5"
+          />
+          <span className="text-[16px] text-[#606C82] font-semibold leading-[25.6px] ">
+            {text}
+          </span>
+        </button>
+      )}
+    </>
   );
 };
 

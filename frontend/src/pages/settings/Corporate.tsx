@@ -1,6 +1,7 @@
 import { PrimaryButton } from "@/components/buttons/Buttons";
 import FileInputField from "@/components/Inputs/FileInputFIeld";
 import ModalTemplate from "@/components/Modals/ModalTemplate";
+import SecurityBanner from "@/components/shared/SecurityBanner";
 import Toast from "@/components/Toast";
 import { buttonVariants } from "@/components/ui/Button";
 import { APP_ROUTES } from "@/constants/app_route";
@@ -70,7 +71,7 @@ const Corporate = () => {
             <FileInputField
               label={"Application for Registration of Company"}
               name="cacApplicationDocument"
-              info="Profiel screenshot"
+              info="Profile screenshot"
               valueMapper={(value) => value}
               formik={formik}
               autoUpload={false}
@@ -96,6 +97,7 @@ const Corporate = () => {
             />
           </div>
         </form>
+        <SecurityBanner />
       </div>
       {showModal && (
         <ModalTemplate onClose={() => {}} showCloseButton={false}>

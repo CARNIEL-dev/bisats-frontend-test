@@ -7,8 +7,6 @@ import { TokenData } from "@/data";
 import { swapSchema } from "@/formSchemas";
 import KycManager from "@/pages/kyc/KYCManager";
 
-import { useCryptoRates } from "@/redux/actions/walletActions";
-
 import { formatter } from "@/utils";
 import { assets } from "@/utils/conversions";
 import { formatNumber } from "@/utils/numberFormat";
@@ -30,7 +28,7 @@ export enum typeofSwam {
   "Buy",
   "Sell",
 }
-const Swap = ({
+const P2PMarket = ({
   type,
   adDetail,
 }: {
@@ -218,7 +216,7 @@ const Swap = ({
   );
 };
 
-export default Swap;
+export default P2PMarket;
 
 type SwapFormType = {
   adDetail: AdsType | undefined;

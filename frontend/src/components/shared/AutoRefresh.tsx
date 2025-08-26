@@ -5,7 +5,7 @@ import { Loader2, Timer } from "lucide-react";
 
 type AutoRefreshTimerProps = {
   defaultTime?: number;
-  queryKey: string[]; // TanStack Query key
+  queryKey?: string[]; // TanStack Query key
 };
 
 const AutoRefreshTimer = ({
@@ -25,14 +25,19 @@ const AutoRefreshTimer = ({
   useEffect(() => {
     if (timeLeft === 0 && !isRefreshing) {
       setIsRefreshing(true);
-      queryClient
-        .refetchQueries({ queryKey })
-        .then(() => {
-          startCountdown();
-        })
-        .finally(() => {
-          setIsRefreshing(false);
-        });
+      if (queryKey) {
+        queryClient
+          .refetchQueries({ queryKey })
+          .then(() => {
+            startCountdown();
+          })
+          .finally(() => {
+            setIsRefreshing(false);
+          });
+      } else {
+        startCountdown();
+        setIsRefreshing(false);
+      }
     }
   }, [timeLeft, isRefreshing, queryClient, queryKey]);
 

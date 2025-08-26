@@ -25,6 +25,7 @@ type IAProps = {
   placeholder?: string;
   className?: string;
   defaultValue?: string;
+  removeToken?: string;
 };
 
 const TokenSelection = ({
@@ -37,7 +38,7 @@ const TokenSelection = ({
   disabled,
   placeholder,
   className,
-  defaultValue,
+  removeToken,
 }: IAProps) => {
   const [selected, setSelected] = useState<string | null>(null);
   const walletState: WalletState = useSelector((state: any) => state.wallet);
@@ -53,8 +54,10 @@ const TokenSelection = ({
 
   const tokenOptions = useMemo(() => {
     if (removexNGN) return TokenData.slice(1);
+    if (removeToken)
+      return TokenData.filter((token) => token.tokenName !== removeToken);
     return TokenData;
-  }, [removexNGN]);
+  }, [removexNGN, removeToken]);
 
   useEffect(() => {
     if (showBalance) {

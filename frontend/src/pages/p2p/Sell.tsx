@@ -2,7 +2,7 @@ import BackButton from "@/components/shared/BackButton";
 import ErrorDisplay from "@/components/shared/ErrorDisplay";
 import MaxWidth from "@/components/shared/MaxWith";
 import PreLoader from "@/layouts/PreLoader";
-import Swap from "@/pages/p2p/components/Swap";
+import P2PMarket from "@/pages/p2p/components/P2PMarket";
 import { useGetAdsDetail } from "@/redux/actions/walletActions";
 
 import { useMemo } from "react";
@@ -51,7 +51,7 @@ const Sell = () => {
             />
           </div>
         ) : (
-          <Swap type={"sell"} adDetail={adData} />
+          <P2PMarket type={"sell"} adDetail={adData} />
         )}
       </MaxWidth>
     </div>

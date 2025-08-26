@@ -2,19 +2,39 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/Button";
 import { Lock, RotateCw } from "lucide-react";
+import { cn } from "@/utils";
 
 interface Props {
   isFetching: boolean;
   refetch: () => void;
   refreshTime?: number;
   disabled?: boolean;
+  className?: string;
 }
 
+/**
+ * A button that will refetch data when clicked.
+ *
+ * It accepts a couple of props:
+ * - `isFetching`: a boolean indicating whether the data is currently being fetched
+ * - `refetch`: a function to call when the button is clicked
+ * - `refreshTime`: the number of milliseconds to wait before allowing another refresh (default: 20000)
+ * - `disabled`: whether the button should be disabled (default: false)
+ * - `className`: an optional class name to add to the button
+ *
+ * The button will be disabled if `isFetching` is true, or if the cooldown period
+ * has not yet expired. When clicked, the button will call the `refetch` function
+ * and start the cooldown period.
+ *
+ * The button will display a spinning icon while fetching, a lock icon while on
+ * cooldown, and a normal refresh icon otherwise.
+ */
 const RefreshButton = ({
   isFetching,
   refetch,
   refreshTime,
   disabled: isDisabled,
+  className,
 }: Props) => {
   const [cooldown, setCooldown] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout>>();
@@ -43,10 +63,10 @@ const RefreshButton = ({
   return (
     <Button
       variant="ghost"
-      size="sm"
+      size="icon"
       onClick={handleRefresh}
       disabled={disabled}
-      className="bg-gray-100 hover:bg-gray-200"
+      className={cn("bg-gray-100 hover:bg-gray-200", className)}
     >
       {/*
         Priority for which icon to show:

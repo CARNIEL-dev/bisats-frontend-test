@@ -6,6 +6,7 @@ import {
   Settings,
   SignOut,
   Support,
+  Swap,
   Wallet,
 } from "@/assets/icons/header-dropdown-icons";
 import { Button } from "@/components/ui/Button";
@@ -58,6 +59,11 @@ const mobileMenuItems = [
     icon: Wallet,
   },
   {
+    text: "Swap",
+    link: APP_ROUTES.SWAP.HOME,
+    icon: Swap,
+  },
+  {
     text: "P2P Marketplace",
     link: APP_ROUTES.P2P.HOME,
     icon: P2PMC,
@@ -105,7 +111,7 @@ const ProfileDropdown = () => {
               <h2>
                 Hello,{" "}
                 <span className="font-medium capitalize text-slate-600">
-                  {user?.firstName || user?.userName || "User"}{" "}
+                  {user?.userName || user?.firstName || "User"}{" "}
                 </span>
               </h2>
 

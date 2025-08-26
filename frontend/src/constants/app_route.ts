@@ -24,6 +24,7 @@ export const APP_ROUTES = {
     PHONEVERIFICATION: "/wallet/kyc/phone-verification",
     BVNVERIFICATION: "/wallet/kyc/bvn-verification",
     LEVEL3VERIFICATION: "/wallet/kyc/level3-verification",
+    BECOME_MERCHANT: "/wallet/kyc/become-a-merchant",
   },
   WALLET: {
     HOME: "/wallet",
@@ -44,6 +45,9 @@ export const APP_ROUTES = {
     SELL: "/p2p/market-place/sell",
     BUY: "/p2p/market-place/buy",
     RECEIPT: "/p2p/market-place/receipt",
+  },
+  SWAP: {
+    HOME: "/swap",
   },
   SETTINGS: {
     PROFILE: "/settings",

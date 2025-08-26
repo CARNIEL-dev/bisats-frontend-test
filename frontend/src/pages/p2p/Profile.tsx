@@ -155,10 +155,16 @@ const Profile = () => {
       }
     } else if (user?.accountLevel === "level_1") {
       window.location.href = APP_ROUTES.KYC.BVNVERIFICATION;
+    } else if (
+      user?.accountLevel === "level_2" &&
+      !user?.hasAppliedToBecomeAMerchant
+    ) {
+      window.location.href = APP_ROUTES.KYC.BECOME_MERCHANT;
     } else {
       window.location.href = APP_ROUTES.KYC.LEVEL3VERIFICATION;
     }
   };
+
   return (
     <>
       <MaxWidth
@@ -196,12 +202,17 @@ const Profile = () => {
                 type="submit"
                 className={`h-[24px]  px-3 rounded-[6px] bg-[#F5BB00] text-[#0A0E12] text-[12px] leading-[24px] font-semibold text-center  shadow-[0_0_0.8px_#000] `}
                 onClick={clickHandler}
-                disabled={user?.accountStatus === "pending"}
+                disabled={
+                  user?.accountStatus === "pending" && !user.accountLevel
+                }
               >
                 {user?.accountStatus === "pending"
                   ? "Pending verification"
                   : !limits
                   ? "Verify"
+                  : user?.accountLevel === "level_2" &&
+                    !user?.hasAppliedToBecomeAMerchant
+                  ? "Become a Merchant"
                   : "Upgrade"}
               </Button>
             )}

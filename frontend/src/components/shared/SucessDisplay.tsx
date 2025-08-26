@@ -16,7 +16,11 @@ const SucessDisplay = ({
   onClick: () => void;
   user: TUser | { [key: string]: any };
 }) => {
-  const isPending = user.accountLevel === "level_1" && user.kyc.bvnVerified;
+  const isPending =
+    (user.accountLevel === "level_1" && user.kyc.bvnVerified) ||
+    (user.accountLevel === "level_2" &&
+      user.kyc.bvnVerified &&
+      !user.hasAppliedToBecomeAMerchant);
 
   return (
     <div className="flex items-center flex-col gap-4 w-full">

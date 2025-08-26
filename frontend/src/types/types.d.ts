@@ -63,6 +63,7 @@ type TUser = {
     pinSet: boolean;
   };
   twoFactorAuthEnabled: boolean;
+  lastUserNameChange: string | null;
   cooperateAccountVerificationRequest: {
     status: string;
     businessName: string;
@@ -77,6 +78,11 @@ type TUser = {
         name: string;
       }[]
     | null;
+
+  hasAppliedToBecomeAMerchant: boolean;
+  bankAccounts: {
+    [key: string]: any;
+  }[];
 };
 
 interface UserState {
