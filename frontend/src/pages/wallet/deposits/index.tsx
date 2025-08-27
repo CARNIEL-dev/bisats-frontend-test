@@ -1,5 +1,5 @@
 import { PrimaryButton } from "@/components/buttons/Buttons";
-import { MultiSelectDropDown } from "@/components/Inputs/MultiSelectInput";
+import { SelectDropDown } from "@/components/Inputs/MultiSelectInput";
 import PrimaryInput from "@/components/Inputs/PrimaryInput";
 import Toast from "@/components/Toast";
 import { APP_ROUTES } from "@/constants/app_route";
@@ -14,11 +14,11 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import CopyDisplay from "@/components/shared/CopyDisplay";
 import TokenSelection from "@/components/shared/TokenSelection";
+import { Button } from "@/components/ui/Button";
 import KycManager from "@/pages/kyc/KYCManager";
 import { formatter } from "@/utils";
 import { ACTIONS, bisats_limit } from "@/utils/transaction_limits";
 import * as Yup from "yup";
-import { Button } from "@/components/ui/Button";
 
 export type TNetwork = {
   label: string;
@@ -152,6 +152,7 @@ const DepositPage = () => {
           touched={undefined}
           handleChange={(e) => {
             setSelectedToken(e);
+            setSelectedNetworks(undefined);
           }}
           value={selectedToken}
           placeholder="Select an asset"
@@ -221,15 +222,13 @@ const DepositPage = () => {
         {selectedToken && selectedToken !== "xNGN" && (
           <div>
             <div className="my-3">
-              <MultiSelectDropDown
-                parentId={""}
-                value={selectedNetwork}
+              <SelectDropDown
+                defaultValue={selectedNetwork}
                 placeholder="Select option"
-                choices={networks}
+                options={networks}
                 error={undefined}
-                touched={undefined}
                 label={"Select Network"}
-                handleChange={(e) => setSelectedNetworks(e)}
+                onChange={(e) => setSelectedNetworks(e)}
               />
             </div>
             {getAddress && (

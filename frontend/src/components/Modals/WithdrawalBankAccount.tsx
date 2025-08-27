@@ -8,6 +8,7 @@ import SearchableDropdown from "@/components/shared/SearchableDropdown";
 import Toast from "@/components/Toast";
 import { getBankSchema } from "@/formSchemas";
 import PreLoader from "@/layouts/PreLoader";
+import { GetUserDetails } from "@/redux/actions/userActions";
 import {
   AddBankAccountForWithdrawal,
   EditBankAccountForWithdrawal,
@@ -79,8 +80,9 @@ const WithdrawalBankAccount: React.FC<Props> = ({
       if (mode === "add") {
         await AddBankAccountForWithdrawal({
           ...payload,
-        }).then((res) => {
+        }).then(async (res) => {
           if (res?.status) {
+            await GetUserDetails({ userId: user?.userId, token: user?.token });
             Toast.success(res.message, "Account Added");
             close();
           } else {
@@ -91,8 +93,9 @@ const WithdrawalBankAccount: React.FC<Props> = ({
         await EditBankAccountForWithdrawal({
           ...payload,
           bankId: defaultBank?.id,
-        }).then((res) => {
+        }).then(async (res) => {
           if (res?.status) {
+            await GetUserDetails({ userId: user?.userId, token: user?.token });
             Toast.success(res.message, "Account Updated");
             close();
           } else {

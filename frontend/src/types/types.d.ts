@@ -38,6 +38,14 @@ interface WalletState {
   defaultCurrency: "usd" | "ngn";
 }
 
+type TUserWalletAddress = {
+  id: string;
+  address: string;
+  network: string;
+  asset: string;
+  name: string;
+};
+
 type TUser = {
   token: string;
   userId: string;
@@ -69,15 +77,7 @@ type TUser = {
     businessName: string;
     id: string;
   } | null;
-  withdrawalAddress:
-    | {
-        id: string;
-        address: string;
-        network: string;
-        asset: string | null;
-        name: string;
-      }[]
-    | null;
+  withdrawalAddresses: TUserWalletAddress[] | null;
 
   hasAppliedToBecomeAMerchant: boolean;
   bankAccounts: {

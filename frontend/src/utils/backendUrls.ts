@@ -64,6 +64,7 @@ export const BACKEND_URLS = {
     WITHDRAW: "/withdraw",
     WITHDRAW_CRYPTO: "/withdraw-token",
     WALLET_TRANSC_HISTORY: "/transactions",
+    WITHDRAWAL_ADDRESS: "/withdrawal-addresses",
   },
   P2P: {
     ADS: {

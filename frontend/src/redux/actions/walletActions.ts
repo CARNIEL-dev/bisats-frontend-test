@@ -17,6 +17,7 @@ import {
   TDeleteWithdrawalRequest,
   TPayloadTransHistory,
   TTopUpNGN,
+  TWithdrawalAddress,
   TWithdrawalBankAccount,
   TWithdrawalRequest,
 } from "@/types/wallet";
@@ -289,8 +290,24 @@ export const DeleteBankAccountForWithdrawal = async (
       }
     );
     const data = response;
-    console.log(data);
     return data;
+  } catch (error) {
+    // throw handleApiError(error);
+    return error;
+  }
+};
+
+export const saveWalletAddressHandler = async (payload: TWithdrawalAddress) => {
+  try {
+    const response = await Bisatsfetch(
+      `/api/v1/user/${payload.userId}${BACKEND_URLS.WALLET.WITHDRAWAL_ADDRESS}`,
+      {
+        method: "POST",
+        body: JSON.stringify(payload),
+      }
+    );
+
+    return response;
   } catch (error) {
     // throw handleApiError(error);
     return error;

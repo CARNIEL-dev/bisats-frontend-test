@@ -4,7 +4,6 @@ import RefreshButton from "@/components/RefreshButton";
 import AutoRefreshTimer from "@/components/shared/AutoRefresh";
 import TokenSelection from "@/components/shared/TokenSelection";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/Button";
 import {
   Sheet,
   SheetContent,
@@ -105,19 +104,13 @@ const SwapPage = () => {
               refreshTime={60 * 1000} // 1 minute
             />
             <Tooltip>
-              <TooltipTrigger className="ml-auto">
-                <Button
-                  variant={"ghost"}
-                  size={"icon"}
-                  className="hover:bg-primary-light"
-                  onClick={handleSwapHistory}
-                >
-                  <History
-                    className="!size-6 text-gray-500"
-                    strokeWidth={1.5}
-                  />
-                  <span className="sr-only">Swap history</span>
-                </Button>
+              <TooltipTrigger
+                className="ml-auto flex items-center justify-center hover:bg-primary-light"
+                onClick={handleSwapHistory}
+              >
+                <History className="!size-6 text-gray-500" strokeWidth={1.5} />
+
+                <span className="sr-only">Swap history</span>
               </TooltipTrigger>
               <TooltipContent>
                 <p>

@@ -1,7 +1,7 @@
 import { cn } from "@/utils";
 import { Loader2 } from "lucide-react";
 import React, { ButtonHTMLAttributes } from "react";
-import { Button } from "../ui/Button";
+import { Button } from "@/components/ui/Button";
 
 interface TButtons extends ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
