@@ -584,6 +584,35 @@ const CryptoWithdrawal = ({
                 <X className="!size-5" />
               </Button>
             </div>
+            {formik.values.walletName && (
+              <div
+                role="button"
+                className={cn("bg-gray-50 p-3 relative  rounded-md mt-2 ")}
+              >
+                {formik.values.walletAddress && (
+                  <span className="absolute top-2 right-2 text-green-600 font-semibold text-sm">
+                    Selected
+                  </span>
+                )}
+                <div className="flex flex-col gap-1  text-sm text-gray-500">
+                  <h4 className="text-medium text-gray-800">
+                    {formik.values.walletName}
+                  </h4>
+                  <div>
+                    <p>Network</p>
+                    <p className="font-medium text-gray-600">
+                      {formik.values.network}
+                    </p>
+                  </div>
+                  <div>
+                    <p>Wallet</p>
+                    <p className="font-medium text-gray-600 text-xs">
+                      {formik.values.walletAddress}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         ) : (
           <>
@@ -647,22 +676,34 @@ const CryptoWithdrawal = ({
             userTransactionLimits?.daily_withdrawal_limit_crypto -
               (usedUpLimit?.totalUsedAmountCrypto ?? 0)
           )} USD`}
-          fee={formatter({ decimal: asset === "USDT" ? 2 : 5 }).format(
-            !formik.values.amount
-              ? 0
-              : userTransactionLimits?.charge_on_single_withdrawal_crypto
-          )}
-          amount={formatter({ decimal: asset === "USDT" ? 2 : 5 }).format(
-            isNaN(parseFloat(formik.values.amount))
-              ? 0
-              : parseFloat(formik.values.amount)
-          )}
-          total={`${formatter({ decimal: asset === "USDT" ? 2 : 5 }).format(
-            !formik.values.amount
-              ? 0
-              : parseFloat(formik.values.amount ?? 0) +
-                  userTransactionLimits?.charge_on_single_withdrawal_crypto
-          )}`}
+          fee={
+            formik.errors.amount || !formik.isValid
+              ? "-"
+              : formatter({ decimal: asset === "USDT" ? 2 : 5 }).format(
+                  !formik.values.amount
+                    ? 0
+                    : userTransactionLimits?.charge_on_single_withdrawal_crypto
+                )
+          }
+          amount={
+            formik.errors.amount || !formik.isValid
+              ? "-"
+              : formatter({ decimal: asset === "USDT" ? 2 : 5 }).format(
+                  isNaN(parseFloat(formik.values.amount))
+                    ? 0
+                    : parseFloat(formik.values.amount)
+                )
+          }
+          total={
+            formik.errors.amount || !formik.isValid
+              ? "-"
+              : `${formatter({ decimal: asset === "USDT" ? 2 : 5 }).format(
+                  !formik.values.amount
+                    ? 0
+                    : parseFloat(formik.values.amount ?? 0) +
+                        userTransactionLimits?.charge_on_single_withdrawal_crypto
+                )}`
+          }
         />
         <KycManager
           action={ACTIONS.WITHDRAW_NGN}
@@ -694,7 +735,6 @@ const CryptoWithdrawal = ({
       <ModalTemplate
         isOpen={showSavedAddressModal}
         onClose={() => setShowSavedAddressModal(false)}
-        primary={false}
       >
         <div className="space-y-4 mt-3">
           <h5 className="font-semibold text-xl">Select Saved Address</h5>
