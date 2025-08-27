@@ -151,8 +151,7 @@ const BVNVerification = () => {
           ) : (
             <form onSubmit={formik.handleSubmit}>
               <p className=" mt-5  text-[14px] text-[#515B6E] w-full h-fit flex flex-col  ">
-                A verification code has been sent to the phone number linked to
-                your BVN
+                A verification code has been sent to your email
               </p>
 
               <div className="w-full mt-10">
@@ -186,7 +185,6 @@ const BVNVerification = () => {
                     }
                   />
                 </div>
-                {/* <p className="text-[14px] text-[#515B6E] leading-[24px] font-semibold text-left">Need help?<span className="text-[#C49600] pl-2 cursor-pointer">Contact Support</span></p> */}
               </div>
             </form>
           )

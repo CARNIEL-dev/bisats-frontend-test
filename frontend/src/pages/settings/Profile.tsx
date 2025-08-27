@@ -6,14 +6,14 @@ import Toast from "@/components/Toast";
 import { Button } from "@/components/ui/Button";
 import DateInput from "@/components/ui/DatePicker";
 import { APP_ROUTES } from "@/constants/app_route";
-import { UpdateUserName } from "@/redux/actions/userActions";
+import { GetUserDetails, UpdateUserName } from "@/redux/actions/userActions";
 
 import { cn, formatEmail, splitTextInMiddle } from "@/utils";
 import dayjs from "dayjs";
 
 import { useFormik } from "formik";
 import { Edit, X } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 const Profile = () => {
   const userState: UserState = useSelector((state: any) => state.user);
@@ -60,14 +60,18 @@ const Profile = () => {
 
   const isBvnVerified = user?.kyc.bvnVerified;
 
-  const formik = useFormik({
-    initialValues: {
+  const InitialValue = useMemo(() => {
+    return {
       userName: user?.userName || "",
       firstName: user?.firstName || "",
       middleName: user?.middleName || "",
       lastName: user?.lastName || "",
       dateOfBirth: user?.dateOfBirth || "",
-    },
+    };
+  }, [user]);
+
+  const formik = useFormik({
+    initialValues: InitialValue,
     validateOnMount: false,
     validateOnChange: false,
     onSubmit: async (values) => {
@@ -86,7 +90,6 @@ const Profile = () => {
       if (response.status) {
         Toast.success(response.message, "User Profile");
         setIsEditing(false);
-        formik.resetForm();
         return;
       } else {
         Toast.error(response.message, "User Profile");
@@ -121,6 +124,8 @@ const Profile = () => {
   //? Disable display name input if less than 6 months since last change
   const canEditDisplayName = !nextEdit || dayjs().isAfter(nextEdit);
 
+  console.log("User Data", user?.lastUserNameChange);
+
   return (
     <>
       <div className="flex justify-between">
@@ -136,9 +141,7 @@ const Profile = () => {
               className="px-7"
               size="sm"
               disabled={
-                formik.isSubmitting ||
-                (!canEditDisplayName && isBvnVerified) ||
-                (canEditDisplayName && !isBvnVerified)
+                formik.isSubmitting || (!canEditDisplayName && isBvnVerified)
               }
               onClick={() => formik.handleSubmit()}
             />
@@ -188,18 +191,20 @@ const Profile = () => {
                 // }
                 disabled={!canEditDisplayName}
               />
-              <div className="border space-y-1 font-medium bg-gray-50 rounded-md p-2 text-xs  w-fit shadow">
-                {lastUserNameChange && (
-                  <p className="text-[#606C82] capitalize">
-                    Changed: {lastUserNameChange}
-                  </p>
-                )}
-                {nextEdit && (
-                  <p className="text-[#606C82] capitalize">
-                    Next edit: {nextEdit.format("MMMM D, YYYY")}
-                  </p>
-                )}
-              </div>
+              {(lastUserNameChange || nextEdit) && (
+                <div className="border space-y-1 font-medium bg-gray-50 rounded-md p-2 text-xs  w-fit shadow">
+                  {lastUserNameChange && (
+                    <p className="text-[#606C82] capitalize">
+                      Changed: {lastUserNameChange}
+                    </p>
+                  )}
+                  {nextEdit && (
+                    <p className="text-[#606C82] capitalize">
+                      Next edit: {nextEdit.format("MMMM D, YYYY")}
+                    </p>
+                  )}
+                </div>
+              )}
               {isBvnVerified && (
                 <Divider
                   text="Bvn Verified : Not Editable"

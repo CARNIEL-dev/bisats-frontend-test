@@ -313,6 +313,24 @@ export const saveWalletAddressHandler = async (payload: TWithdrawalAddress) => {
     return error;
   }
 };
+export const deleteWalletAddressHandler = async (payload: {
+  userId: string;
+  addressId: string;
+}) => {
+  try {
+    const response = await Bisatsfetch(
+      `/api/v1/user/${payload.userId}${BACKEND_URLS.WALLET.WITHDRAWAL_ADDRESS}/${payload.addressId}`,
+      {
+        method: "DELETE",
+      }
+    );
+
+    return response;
+  } catch (error) {
+    // throw handleApiError(error);
+    return error;
+  }
+};
 export const Withdraw_xNGN = async (payload: TWithdrawalRequest) => {
   try {
     const response = await Bisatsfetch(

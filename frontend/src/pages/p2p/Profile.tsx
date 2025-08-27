@@ -10,7 +10,7 @@ import { GET_ACTIVITY_SUMMARY } from "@/redux/actions/userActions";
 import { formatNumber } from "@/utils/numberFormat";
 import { AccountLevel, bisats_limit } from "@/utils/transaction_limits";
 import { useQuery } from "@tanstack/react-query";
-import { Award, BadgeCheck, Info, Medal } from "lucide-react";
+import { BadgeCheck, Info } from "lucide-react";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 
@@ -178,7 +178,8 @@ const Profile = () => {
           </p>
 
           {user?.accountLevel === "level_3" ? (
-            <Medal fill="#FFD700" />
+            // <Medal fill="#FFD700" />
+            <BadgeCheck fill="#F5BB00" stroke="#fff" size={30} />
           ) : (
             <BadgeCheck fill="#22C55D" stroke="#fff" />
           )}

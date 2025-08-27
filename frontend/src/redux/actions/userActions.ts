@@ -413,7 +413,7 @@ export const UpdateUserName = async (payload: {
     );
     const data = response;
 
-    GetUserDetails({ userId: userId!, token: getToken()! });
+    await GetUserDetails({ userId: userId!, token: getToken()! });
 
     return data;
   } catch (error) {

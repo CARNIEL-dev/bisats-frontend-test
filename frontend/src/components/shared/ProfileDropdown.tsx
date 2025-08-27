@@ -5,10 +5,10 @@ import {
   Profile,
   Settings,
   SignOut,
-  Support,
   Swap,
   Wallet,
 } from "@/assets/icons/header-dropdown-icons";
+import LogOutModal from "@/components/Modals/LogOut";
 import { Button } from "@/components/ui/Button";
 import {
   DropdownMenu,
@@ -17,11 +17,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { APP_ROUTES } from "@/constants/app_route";
 import { cn } from "@/utils";
-import { BadgeCheck, ChevronDown, Medal } from "lucide-react";
+import { BadgeCheck, ChevronDown } from "lucide-react";
 import { useState } from "react";
-import { NavLink, useLocation } from "react-router-dom";
-import LogOutModal from "@/components/Modals/LogOut";
 import { useSelector } from "react-redux";
+import { NavLink, useLocation } from "react-router-dom";
 import { Separator } from "../ui/separator";
 
 const mainMenuItems = [
@@ -119,7 +118,8 @@ const ProfileDropdown = () => {
                 {user?.accountLevel?.replace("_", " ") || "N/A"}
 
                 {user?.accountLevel === "level_3" ? (
-                  <Medal fill="#FFD700" size={16} />
+                  // <Medal fill="#FFD700" size={16} />
+                  <BadgeCheck fill="#F5BB00" stroke="#fff" size={20} />
                 ) : (
                   <BadgeCheck fill="#22C55D" stroke="#fff" size={16} />
                 )}

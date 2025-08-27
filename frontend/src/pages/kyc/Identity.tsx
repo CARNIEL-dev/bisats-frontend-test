@@ -4,7 +4,11 @@ import Toast from "@/components/Toast";
 import { PrimaryButton } from "@/components/buttons/Buttons";
 import { APP_ROUTES } from "@/constants/app_route";
 import StepFlow from "@/pages/kyc/StepFlow";
-import { PostIdentity_KYC, rehydrateUser } from "@/redux/actions/userActions";
+import {
+  GetUserDetails,
+  PostIdentity_KYC,
+  rehydrateUser,
+} from "@/redux/actions/userActions";
 import { useFormik } from "formik";
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
@@ -51,11 +55,11 @@ const Identity = () => {
       const response = await PostIdentity_KYC(payloadd);
 
       if (response.statusCode === 200) {
-        Toast.success("Success", response.message);
-        rehydrateUser({
+        await GetUserDetails({
           userId: user?.user?.userId,
           token: user?.user?.token,
         });
+        Toast.success("Success", response.message);
         navigate(APP_ROUTES.DASHBOARD);
       } else {
         Toast.error("Error", response.message);

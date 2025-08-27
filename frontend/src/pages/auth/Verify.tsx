@@ -54,6 +54,18 @@ const VerifyEmail = () => {
     }
   }, []);
 
+  const resendCodeHandler = async () => {
+    const res = await ReSendverificationCode({ userId: user.userId });
+
+    if (res.status) {
+      Toast.success(res.message, "Success");
+      return true;
+    }
+
+    Toast.error(res.message, "Error");
+    return false;
+  };
+
   return (
     <div className="lg:w-[442px] mx-auto">
       <OtherSide
@@ -86,7 +98,7 @@ const VerifyEmail = () => {
             />
           </div>
           <ResendCodeButton
-            onClick={() => ReSendverificationCode({ userId: user?.userId })}
+            onClick={resendCodeHandler}
             text="Resend a new code"
             defaultTime={30}
           />

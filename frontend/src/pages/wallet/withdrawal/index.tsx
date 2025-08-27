@@ -29,9 +29,12 @@ import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import * as Yup from "yup";
 
+import ModalTemplate from "@/components/Modals/ModalTemplate";
 import WithdrawalBankAccount from "@/components/Modals/WithdrawalBankAccount";
 import ErrorDisplay from "@/components/shared/ErrorDisplay";
+import SummaryCard from "@/components/shared/SummaryCard";
 import TokenSelection from "@/components/shared/TokenSelection";
+import { Button } from "@/components/ui/Button";
 import { getUserTokenData } from "@/helpers";
 import PreLoader from "@/layouts/PreLoader";
 import KycManager from "@/pages/kyc/KYCManager";
@@ -43,10 +46,7 @@ import { cn, formatter } from "@/utils";
 import { formatNumber } from "@/utils/numberFormat";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Decimal from "decimal.js";
-import { useFormik } from "formik";
-import SummaryCard from "@/components/shared/SummaryCard";
-import ModalTemplate from "@/components/Modals/ModalTemplate";
-import { Button } from "@/components/ui/Button";
+import { FormikProps, useFormik } from "formik";
 import { X } from "lucide-react";
 
 export type TNetwork = {
@@ -449,7 +449,10 @@ const CryptoWithdrawal = ({
 
   useEffect(() => {
     setShowSavedAddressOptions(savedAddress.length > 0);
-  }, [savedAddress]);
+  }, [savedAddress, user]);
+
+  console.log("savedAddress", savedAddress);
+  console.log("Wallet ad", user?.withdrawalAddresses);
 
   // SUB: ========= Used up limit =======================
   const usedUpLimit = useMemo(() => {
@@ -589,7 +592,7 @@ const CryptoWithdrawal = ({
                 role="button"
                 className={cn("bg-gray-50 p-3 relative  rounded-md mt-2 ")}
               >
-                {formik.values.walletAddress && (
+                {formik.values.walletName && (
                   <span className="absolute top-2 right-2 text-green-600 font-semibold text-sm">
                     Selected
                   </span>
@@ -650,6 +653,7 @@ const CryptoWithdrawal = ({
               }}
               userId={user?.userId}
               token={user?.token}
+              parentFormik={formik}
             />
           )}
         <PrimaryInput
@@ -794,9 +798,15 @@ type SaveWalletAddressProps = {
   };
   userId: string;
   token: string;
+  parentFormik: FormikProps<any>;
 };
 
-const SaveWalletAddress = ({ data, userId, token }: SaveWalletAddressProps) => {
+const SaveWalletAddress = ({
+  data,
+  userId,
+  token,
+  parentFormik,
+}: SaveWalletAddressProps) => {
   const [saveWalletAddressModal, setSaveWalletAddressModal] = useState(false);
 
   const formik = useFormik({
@@ -813,19 +823,15 @@ const SaveWalletAddress = ({ data, userId, token }: SaveWalletAddressProps) => {
         ...payload,
         name: payload.name.trim() as string,
       };
-      await saveWalletAddressHandler(dataInfo)
-        .then(async (res) => {
-          if (res?.status || res?.statusCode === 201) {
-            await GetUserDetails({ userId, token });
-            Toast.success(res.message, "Success");
-            setSaveWalletAddressModal(false);
-          } else {
-            Toast.error(res.message, "");
-          }
-        })
-        .catch((err) => {
-          Toast.error(err.message, "");
-        });
+      const res = await saveWalletAddressHandler(dataInfo);
+      if (res?.status || res?.statusCode === 201) {
+        await GetUserDetails({ userId, token });
+        Toast.success(res.message, "Success");
+        parentFormik.setFieldValue("walletName", dataInfo.name);
+        setSaveWalletAddressModal(false);
+      } else {
+        Toast.error(res.message, "");
+      }
     },
   });
 

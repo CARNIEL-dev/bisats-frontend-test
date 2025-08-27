@@ -11,6 +11,7 @@ import KycManager from "@/pages/kyc/KYCManager";
 import { ACTIONS } from "@/utils/transaction_limits";
 import { APP_ROUTES } from "@/constants/app_route";
 import { useNavigate } from "react-router-dom";
+import DeleteWalletAddressModal from "@/components/Modals/DeleteWalletAddressModal";
 
 const Payment = () => {
   const reduxState: RootState = useSelector((state: any) => state);
@@ -21,6 +22,9 @@ const Payment = () => {
   const navigate = useNavigate();
 
   const [selectedBank, setSelectedBank] = useState<TBank>();
+  const [selectWalletAddress, setSelectWalletAddress] =
+    useState<TUserWalletAddress>();
+
   const [openModal, setOpenModal] = useState({
     add: false,
     edit: false,
@@ -45,6 +49,18 @@ const Payment = () => {
       bankName: bank?.bankName,
       bankCode: bank?.bankCode,
     })
+  );
+
+  const WalletAddress = user.user?.withdrawalAddresses.map(
+    (item: TUserWalletAddress) => {
+      return {
+        id: item?.id,
+        address: item?.address,
+        network: item?.network,
+        name: item?.name,
+        asset: item?.asset,
+      };
+    }
   );
 
   return (
@@ -106,62 +122,126 @@ const Payment = () => {
         </div>
       </div>
 
-      {BankDetails.map((details: TBank, idx: number) => (
-        <div className="bg-[#F9F9FB] rounded-[8px] p-3 px-10 my-5" key={idx}>
-          <div className="flex items-center justify-between">
-            <p className="text-[14px] leading-[24px] font-normal text-[#2B313B]">
-              Account {idx + 1}
-            </p>
-            <div className="flex items-center gap-2 text-[12px] font-semibold">
-              <button
-                type="button"
-                className="text-[#515B6E]"
-                onClick={() => {
-                  setSelectedBank(details);
-                  setOpenModal((prev) => ({ ...prev, edit: true }));
-                }}
-              >
-                Edit
-              </button>
-              <button
-                type="button"
-                className="text-[#B91C1B] "
-                onClick={() => {
-                  setSelectedBank(details);
-                  setOpenModal((prev) => ({ ...prev, delete: true }));
-                }}
-              >
-                Delete
-              </button>
+      {BankDetails.length > 0 && (
+        <div>
+          <h4 className="font-semibold">Bank Account</h4>
+          {BankDetails.map((details: TBank, idx: number) => (
+            <div
+              className="bg-[#F9F9FB] rounded-[8px] p-3 md:px-10 px-4 my-5"
+              key={idx}
+            >
+              <div className="flex items-center justify-between">
+                <p className="text-[14px] leading-[24px] font-normal text-[#2B313B]">
+                  Account {idx + 1}
+                </p>
+                <div className="flex items-center gap-2 text-[12px] font-semibold">
+                  <button
+                    type="button"
+                    className="text-[#515B6E]"
+                    onClick={() => {
+                      setSelectedBank(details);
+                      setOpenModal((prev) => ({ ...prev, edit: true }));
+                    }}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    type="button"
+                    className="text-[#B91C1B] "
+                    onClick={() => {
+                      setSelectedBank(details);
+                      setOpenModal((prev) => ({ ...prev, delete: true }));
+                    }}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+              <div className="flex  flex-wrap items-center justify-between mt-0 lg:my-5">
+                <div className="my-3 lg:my-0 text-left w-1/2 lg:w-fit">
+                  <p className="text-xs text-[#515B6E] mb-2"> Account Name</p>
+                  <p className="text-xs font-normal text-[#2B313B]">
+                    {details?.accountName}
+                  </p>
+                </div>
+                <div className="my-3 lg:my-0 text-left w-1/2 lg:w-fit">
+                  <p className="text-xs text-[#515B6E] mb-2"> Account Number</p>
+                  <p className="text-xs font-normal text-[#2B313B]">
+                    {details?.accountNumber}
+                  </p>
+                </div>
+                <div className="my-3 lg:my-0 text-left w-1/2 lg:w-fit">
+                  <p className="text-xs text-[#515B6E] mb-2"> Bank Name</p>
+                  <p className="text-xs font-normal text-[#2B313B]">
+                    {details?.bankName}
+                  </p>
+                </div>
+              </div>
             </div>
-          </div>
-          <div className="flex  flex-wrap items-center justify-between mt-0 lg:my-5">
-            <div className="my-3 lg:my-0 text-left w-1/2 lg:w-fit">
-              <p className="text-xs text-[#515B6E] mb-2"> Account Name</p>
-              <p className="text-xs font-normal text-[#2B313B]">
-                {details?.accountName}
-              </p>
-            </div>
-            <div className="my-3 lg:my-0 text-left w-1/2 lg:w-fit">
-              <p className="text-xs text-[#515B6E] mb-2"> Account Number</p>
-              <p className="text-xs font-normal text-[#2B313B]">
-                {details?.accountNumber}
-              </p>
-            </div>
-            <div className="my-3 lg:my-0 text-left w-1/2 lg:w-fit">
-              <p className="text-xs text-[#515B6E] mb-2"> Bank Name</p>
-              <p className="text-xs font-normal text-[#2B313B]">
-                {details?.bankName}
-              </p>
-            </div>
-          </div>
+          ))}
         </div>
-      ))}
+      )}
 
+      {WalletAddress.length > 0 && (
+        <div>
+          <h4 className="font-semibold">Wallet Addres</h4>
+          {WalletAddress.map((details: TUserWalletAddress, idx: number) => (
+            <div
+              className="bg-[#F9F9FB] rounded-[8px] p-3 md:px-10 px-4 my-5"
+              key={idx}
+            >
+              <div className="flex items-center justify-between">
+                <p className="text-[14px] leading-[24px] font-normal text-[#2B313B]">
+                  {details.name}
+                </p>
+                <div className="flex items-center gap-2 text-[12px] font-semibold">
+                  <button
+                    type="button"
+                    className="text-[#B91C1B] "
+                    onClick={() => {
+                      setSelectWalletAddress(details);
+                    }}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+              <div className="flex  flex-wrap items-center justify-between mt-0 lg:my-5">
+                <div className="my-3 lg:my-0 text-left w-1/2 lg:w-fit">
+                  <p className="text-xs text-[#515B6E] mb-2">Wallet Address</p>
+                  <p className="text-xs font-normal text-[#2B313B]">
+                    {details?.address}
+                  </p>
+                </div>
+                <div className="my-3 lg:my-0 text-left w-1/2 lg:w-fit">
+                  <p className="text-xs text-[#515B6E] mb-2"> Asset</p>
+                  <p className="text-xs font-normal text-[#2B313B]">
+                    {details?.asset}
+                  </p>
+                </div>
+                <div className="my-3 lg:my-0 text-left w-1/2 lg:w-fit">
+                  <p className="text-xs text-[#515B6E] mb-2"> Network</p>
+                  <p className="text-xs font-normal text-[#2B313B]">
+                    {details?.network}
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* HDR: MODALS */}
       {openModal.delete && (
         <DeleteWithdrawalAccount
           close={() => setOpenModal((prev) => ({ ...prev, delete: false }))}
           bank={selectedBank}
+        />
+      )}
+      {selectWalletAddress?.id && (
+        <DeleteWalletAddressModal
+          close={() => setSelectWalletAddress(undefined)}
+          wallet={selectWalletAddress}
         />
       )}
 
