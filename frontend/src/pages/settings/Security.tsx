@@ -72,12 +72,12 @@ const Security = () => {
               onClick={() => setShow2FAModal({ disable: false, enable: true })}
             />
           ) : (
-            <div className="hidden">
+            <div className="flex gap-1">
               <WhiteTransparentButton
                 text={"Disable"}
                 loading={false}
                 size="sm"
-                className="w-[137px]"
+                className="w-[100px]"
                 onClick={() =>
                   setShow2FAModal({ disable: true, enable: false })
                 }
@@ -86,7 +86,7 @@ const Security = () => {
                 text={"Reset"}
                 loading={resetLoading}
                 size="sm"
-                className="w-[137px]"
+                className="w-[100px]"
                 onClick={async () => {
                   setResetLoading(true);
                   await ResetTwoFactorAuth(user?.userId)

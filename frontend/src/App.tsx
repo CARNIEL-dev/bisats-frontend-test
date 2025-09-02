@@ -1,11 +1,11 @@
-import Toast from "@/components/Toast";
-import { messaging, onMessage } from "@/firebase";
+// import Toast from "@/components/Toast";
+// import { messaging, onMessage } from "@/firebase";
 import { rehydrateUser } from "@/redux/actions/userActions";
 import { GetWallet } from "@/redux/actions/walletActions";
 
 import Routing from "@/routing/Routing";
 import ScrollToTop from "@/routing/scrollToTop";
-import { requestPermission } from "@/utils/firebaseNotification";
+// import { requestPermission } from "@/utils/firebaseNotification";
 
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
@@ -16,16 +16,16 @@ import "react-toastify/dist/ReactToastify.css";
 const App: React.FC = () => {
   const userState: UserState = useSelector((state: any) => state.user);
 
-  useEffect(() => {
-    onMessage(messaging, (payload) => {
-      if (payload) {
-        Toast.success(
-          payload?.notification?.body ?? "",
-          payload?.notification?.title ?? ""
-        );
-      }
-    });
-  }, []);
+  // useEffect(() => {
+  //   onMessage(messaging, (payload) => {
+  //     if (payload) {
+  //       Toast.success(
+  //         payload?.notification?.body ?? "",
+  //         payload?.notification?.title ?? ""
+  //       );
+  //     }
+  //   });
+  // }, []);
 
   useEffect(() => {
     if (userState.isAuthenticated) {
@@ -34,7 +34,7 @@ const App: React.FC = () => {
         token: userState.user?.token,
       });
       GetWallet();
-      requestPermission();
+      // requestPermission();
     }
   }, [userState.isAuthenticated]);
 

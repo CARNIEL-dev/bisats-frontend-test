@@ -124,8 +124,6 @@ const Profile = () => {
   //? Disable display name input if less than 6 months since last change
   const canEditDisplayName = !nextEdit || dayjs().isAfter(nextEdit);
 
-  console.log("User Data", user?.lastUserNameChange);
-
   return (
     <>
       <div className="flex justify-between">

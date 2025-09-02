@@ -260,6 +260,9 @@ type AdsType = {
   updatedAt: string;
   user: {
     userName: string;
+    firstName: string;
+    lastName: string;
+    accountLevel: string;
   };
 };
 

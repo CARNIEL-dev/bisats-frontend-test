@@ -3,7 +3,6 @@ import {
   WhiteTransparentButton,
 } from "@/components/buttons/Buttons";
 import PrimaryInput from "@/components/Inputs/PrimaryInput";
-import ModalTemplate from "@/components/Modals/ModalTemplate";
 import Toast from "@/components/Toast";
 import { APP_ROUTES } from "@/constants/app_route";
 import { UpdateAd } from "@/redux/actions/adActions";
@@ -16,14 +15,13 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 
+import ErrorDisplay from "@/components/shared/ErrorDisplay";
+import { Badge } from "@/components/ui/badge";
+import PreLoader from "@/layouts/PreLoader";
 import { UpdateAdStatusResponse } from "@/pages/p2p/MyAds";
 import { useCryptoRates } from "@/redux/actions/walletActions";
 import { cn, formatter } from "@/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import Divider from "@/components/shared/Divider";
-import { Badge } from "@/components/ui/badge";
-import PreLoader from "@/layouts/PreLoader";
-import ErrorDisplay from "@/components/shared/ErrorDisplay";
 import { Check } from "lucide-react";
 
 interface Props {
@@ -90,7 +88,7 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
         return Number(originalValue);
       })
       .when([], ([], schema) => {
-        const nRate = Number(rate ?? 0).toFixed(2);
+        // const nRate = Number(rate ?? 0).toFixed(2);
         const minPrice = 0.9 * Number(rate);
         const maxPrice = 1.1 * Number(rate);
 
@@ -119,7 +117,7 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
           // For sell transactions, check the naira equivalent
           // Use your rate function here
 
-          const prevAmout = (ad?.amount || 0) + (value ? Number(value) : 0);
+          const prevAmout = value ? Number(value) : 0;
           if (Number(rate) * prevAmout > maxAmount) {
             return this.createError({
               message: `Amount must not exceed  ${formatNumber(
@@ -164,7 +162,7 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
 
   const formik = useFormik<TEditAd & { type: string }>({
     initialValues: {
-      amount: "",
+      amount: `${ad?.amount}`,
       price: `${ad?.price}`,
       type: ad?.type ?? "Buy",
     },
@@ -185,7 +183,7 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
   });
 
   return (
-    <ModalTemplate onClose={close}>
+    <div>
       <p className="text-[#455062] text-[18px] lg:text-[22px] leading-[32px] font-semibold">
         Edit Ad
       </p>
@@ -262,19 +260,12 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
                 </Badge>
               </div>
             </div>
-            {ad?.type.toLowerCase() === "sell" && (
-              <Divider
-                text={`Previous Amount: ${formatter({ decimal: 5 }).format(
-                  ad?.amount || 0
-                )} ${ad?.asset}`}
-                textClassName="whitespace-nowrap"
-              />
-            )}
+
             <div className="">
               {/* SUB: Top Amount */}
               <PrimaryInput
                 className={"w-full py-2 "}
-                label={"Top Up Amount to add to Ad Escrow"}
+                label={"Amount in Ad Escrow"}
                 error={formik.errors.amount}
                 touched={formik.touched.amount}
                 onChange={(e) => {
@@ -320,11 +311,6 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
                   )}{" "}
                   {ad?.type.toLowerCase() === "buy" ? "xNGN" : ad?.asset}
                 </Badge>
-                {ad?.type.toLowerCase() === "sell" && (
-                  <Badge variant={"secondary"}>
-                    Market Price: {formatNumber(rate || 0)} NGN
-                  </Badge>
-                )}
               </div>
             </div>
           </div>
@@ -352,7 +338,7 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
           </div>
         </div>
       )}
-    </ModalTemplate>
+    </div>
   );
 };
 

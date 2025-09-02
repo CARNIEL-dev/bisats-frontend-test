@@ -165,6 +165,8 @@ const Profile = () => {
     }
   };
 
+  console.log("user", user);
+
   return (
     <>
       <MaxWidth

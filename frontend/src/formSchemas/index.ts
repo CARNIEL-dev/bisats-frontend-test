@@ -121,12 +121,12 @@ const swapSchema = Yup.object().shape({
               const adsBal =
                 type === "sell"
                   ? adDetail.amountAvailable / adDetail.price
-                  : adDetail.amountAvailable;
+                  : adDetail.amountAvailable.toFixed(4);
 
               const amountVal =
                 type === "sell" ? value : value / Number(adDetail.price);
               return typeof amountVal === "number"
-                ? amountVal <= adsBal
+                ? amountVal <= Number(adsBal)
                 : false;
             }
           ) //? Lower limit check

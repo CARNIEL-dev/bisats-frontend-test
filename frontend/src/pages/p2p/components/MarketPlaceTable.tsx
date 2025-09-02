@@ -5,6 +5,7 @@ import { APP_ROUTES } from "@/constants/app_route";
 
 import { cn, formatter } from "@/utils";
 import { ColumnDef } from "@tanstack/react-table";
+import { BadgeCheck } from "lucide-react";
 import React from "react";
 import { Link } from "react-router-dom";
 
@@ -43,8 +44,9 @@ const MarketPlaceTable = ({ type, ads, asset }: MarketPlaceContentProps) => {
       },
 
       cell: ({ row }) => {
-        const ad = row.original.user.userName;
-        const initials = ad.charAt(0);
+        const user = row.original.user;
+        const userName = row.original.user.userName;
+        const initials = userName.charAt(0);
 
         return (
           <div className=" flex items-center md:gap-3 gap-1">
@@ -58,7 +60,12 @@ const MarketPlaceTable = ({ type, ads, asset }: MarketPlaceContentProps) => {
             >
               <p className="font-semibold">{initials}</p>
             </div>
-            <p className="text-gray-600">{ad}</p>
+            <p className="text-gray-600">{userName}</p>
+            <div className="-ml-2">
+              {user.accountLevel === "level_3" && (
+                <BadgeCheck fill="#F5BB00" stroke="#fff" size={20} />
+              )}
+            </div>
           </div>
         );
       },

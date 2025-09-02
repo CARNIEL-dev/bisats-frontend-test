@@ -19,7 +19,9 @@ import { Link } from "react-router-dom";
 const BecomeMerchant = () => {
   const userState: UserState = useSelector((state: any) => state.user);
   const userId: string = userState.user?.userId || "";
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(
+    userState.user?.hasAppliedToBecomeAMerchant
+  );
 
   const formik = useFormik({
     initialValues: {

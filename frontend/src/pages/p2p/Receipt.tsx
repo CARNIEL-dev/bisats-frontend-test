@@ -11,14 +11,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 import {
   PrimaryButton,
   WhiteTransparentButton,
-} from "../../components/buttons/Buttons";
+} from "@/components/buttons/Buttons";
 
-interface Props {
-  // type: typeofSwam
-}
-
-const type = "buy";
-const Receipt: React.FC<Props> = () => {
+const Receipt = () => {
   const { state } = useLocation();
   const [loading, setLoading] = useState(true);
   const [isCopied, setIsCopied] = useState(false);
@@ -113,7 +108,9 @@ const Receipt: React.FC<Props> = () => {
               }
             />
             <TextBox
-              label="Transaction Fees"
+              label={
+                orderData?.type === "buy" ? "Transaction Fees" : "Buyer's Fee"
+              }
               value={
                 <p>
                   {formatter({}).format(orderData?.transactionFeeInNGN || 0)}{" "}

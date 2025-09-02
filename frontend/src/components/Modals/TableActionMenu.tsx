@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { APP_ROUTES } from "@/constants/app_route";
+import ModalTemplate from "./ModalTemplate";
 
 export interface IAd {
   id?: string;
@@ -81,7 +82,13 @@ const TableActionMenu = ({ adDetail, onCloseAd }: TableActionMenuProps) => {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {showEdit && <EditAd close={() => setShowEdit(false)} ad={adDetail} />}
+      <ModalTemplate
+        onClose={() => setShowEdit(false)}
+        isOpen={showEdit}
+        primary={false}
+      >
+        <EditAd close={() => setShowEdit(false)} ad={adDetail} />
+      </ModalTemplate>
     </>
   );
 };

@@ -148,9 +148,10 @@ const formatCompactNumber = (value: number): string => {
     : `${scaledValue.toFixed(1)}${unit}`;
 };
 
-const isProduction =
-  process.env.NODE_ENV === "production" ||
-  process.env.VERCEL_ENV === "production";
+const isProduction = true;
+// const isProduction =
+//   process.env.NODE_ENV === "production" ||
+//   process.env.VERCEL_ENV === "production";
 
 export {
   formatter,

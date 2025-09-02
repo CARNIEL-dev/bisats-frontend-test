@@ -183,7 +183,10 @@ const P2PMarket = ({
         )}
       </div>
 
-      <KycManager action={ACTIONS.SWAP} func={() => setShowConfirmation(true)}>
+      <KycManager
+        action={type === "buy" ? ACTIONS.P2P_BUY : ACTIONS.P2P_SELL}
+        func={() => setShowConfirmation(true)}
+      >
         {(validateAndExecute) => (
           <PrimaryButton
             text={`${type} ${

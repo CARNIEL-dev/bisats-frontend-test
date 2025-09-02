@@ -31,23 +31,23 @@ const Level3Verification = () => {
 
   const formik = useFormik({
     initialValues: {
-      utilityBill: user.kyc?.utilityBillVerified || null,
-      sourceOfWealth: user.kyc?.sourceOfWealthVerified || null,
-      proofOfProfile: user.kyc?.proofOfProfileVerified || null,
+      utilityBill: null,
+      cacDocument: null,
+      mermatDoc: null,
     },
     validationSchema: levelThreeValidationSchema,
     onSubmit: async (values, { setSubmitting }) => {
-      try {
-        if (
-          values.utilityBill &&
-          values.sourceOfWealth &&
-          values.proofOfProfile
-        ) {
-          setResponsePending(true);
-        }
-      } finally {
-        setSubmitting(false);
-      }
+      // try {
+      //   if (
+      //     values.utilityBill &&
+      //     values.sourceOfWealth &&
+      //     values.proofOfProfile
+      //   ) {
+      //     setResponsePending(true);
+      //   }
+      // } finally {
+      //   setSubmitting(false);
+      // }
     },
   });
 
@@ -64,11 +64,6 @@ const Level3Verification = () => {
       )} USD in crypto assets`,
     ];
   }, [limit]);
-
-  const allFilesSelected =
-    !!formik.values.utilityBill &&
-    !!formik.values.sourceOfWealth &&
-    !!formik.values.proofOfProfile;
 
   return (
     <div className="md:w-10/12 mx-auto">
@@ -123,63 +118,28 @@ const Level3Verification = () => {
                       label="Upload a recent utility bill (Not later than 4months ago)"
                       name="utilityBill"
                       info=""
-                      uploadFile={(file) =>
-                        PostPOA_KYC({
-                          userId: user?.user?.userId,
-                          file,
-                        })
-                      }
-                      placeholder={
-                        user?.kyc?.utilityBillVerified ? "Verified" : undefined
-                      }
-                      disabled={user?.kyc?.utilityBillVerified}
+                      autoUpload={false}
                       valueMapper={(value) => value}
                       formik={formik}
                     />
 
-                    {/* SUB: Source of wealth */}
+                    {/* SUB: CAC */}
                     <FileInputField
                       label={"Certificate of corporation"}
-                      name="sourceOfWealth"
-                      uploadFile={(file) =>
-                        Post_Proof_of_Wealth_KYC({
-                          userId: user?.user?.userId,
-                          file,
-                        })
-                      }
+                      name="cacDocument"
+                      autoUpload={false}
                       valueMapper={(value) => value}
-                      // info={
-                      //   "Personal bank statement or trades from other platforms"
-                      // }
-                      disabled={user?.kyc?.sourceOfWealthVerified}
                       formik={formik}
-                      placeholder={
-                        user?.kyc?.sourceOfWealthVerified
-                          ? "Verified"
-                          : undefined
-                      }
                     />
 
-                    {/* SUB: Proof of profile */}
+                    {/* SUB: Mermat */}
                     <FileInputField
-                      label={"Proof of profile from other platforms (optional)"}
-                      info={"Profile screenshot"}
-                      disabled={user?.kyc?.proofOfProfileVerified}
-                      uploadFile={(file) =>
-                        Post_Proof_of_Profile_KYC({
-                          userId: user?.user?.userId,
-                          file,
-                        })
-                      }
+                      label={"Mermat (optional)"}
+                      autoUpload={false}
                       name="proofOfProfile"
                       valueMapper={(value) => value}
                       formik={formik}
                       className="mt-2"
-                      placeholder={
-                        user?.kyc?.proofOfProfileVerified
-                          ? "Verified"
-                          : undefined
-                      }
                     />
                   </div>
 
@@ -189,10 +149,7 @@ const Level3Verification = () => {
                       text={"Submit"}
                       loading={formik.isSubmitting}
                       disabled={
-                        formik.isSubmitting ||
-                        !formik.isValid ||
-                        !formik.dirty ||
-                        !allFilesSelected
+                        formik.isSubmitting || !formik.isValid || !formik.dirty
                       }
                     />
                   </div>

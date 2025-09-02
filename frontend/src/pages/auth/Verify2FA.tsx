@@ -9,10 +9,12 @@ import { UserActionTypes } from "@/redux/types";
 import dispatchWrapper from "@/utils/dispatchWrapper";
 import { useFormik } from "formik";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const Verify2FA = () => {
   const user = useSelector((state: any) => state.user.user);
   const userId = user.userId;
+  const navigate = useNavigate();
 
   const formik = useFormik({
     initialValues: { code: "", userId },
@@ -26,7 +28,7 @@ const Verify2FA = () => {
           type: UserActionTypes.LOG_IN_UPDATE,
           payload: null,
         });
-        window.location.href = APP_ROUTES.DASHBOARD;
+        navigate(APP_ROUTES.DASHBOARD);
       } else {
         Toast.error(response.message, "Verification failed");
       }
