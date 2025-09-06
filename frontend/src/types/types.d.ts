@@ -80,6 +80,7 @@ type TUser = {
   withdrawalAddresses: TUserWalletAddress[] | null;
 
   hasAppliedToBecomeAMerchant: boolean;
+  hasAppliedToBeInLevelOne: boolean;
   bankAccounts: {
     [key: string]: any;
   }[];

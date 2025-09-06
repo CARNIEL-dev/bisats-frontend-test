@@ -2,28 +2,39 @@ import { PrimaryButton } from "@/components/buttons/Buttons";
 import FileInputField from "@/components/Inputs/FileInputFIeld";
 import ModalTemplate from "@/components/Modals/ModalTemplate";
 import SecurityBanner from "@/components/shared/SecurityBanner";
+import StatusBadge from "@/components/shared/StatusBadge";
 import Toast from "@/components/Toast";
 import { buttonVariants } from "@/components/ui/Button";
 import { APP_ROUTES } from "@/constants/app_route";
 import { corporateSchema } from "@/formSchemas";
 import Head from "@/pages/wallet/Head";
-import { PostCorporateInformation } from "@/redux/actions/userActions";
+import {
+  PostCorporateInformation,
+  rehydrateUser,
+} from "@/redux/actions/userActions";
 import { cn } from "@/utils";
 import { useFormik } from "formik";
 import { Check } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 const Corporate = () => {
   const userState: UserState = useSelector((state: any) => state.user);
   const userId: string = userState.user?.userId || "";
-  const [showModal, setShowModal] = useState(
-    Boolean(
-      userState.user?.cooperateAccountVerificationRequest?.status === "pending"
-    )
-  );
 
+  const isCorporatePending =
+    userState.user?.cooperateAccountVerificationRequest?.status === "pending";
+  const isCorporateRejected =
+    userState.user?.cooperateAccountVerificationRequest?.status === "rejected";
+
+  const [showModal, setShowModal] = useState(isCorporatePending);
+
+  useEffect(() => {
+    if (isCorporatePending) {
+      setShowModal(true);
+    }
+  }, []);
   const formik = useFormik({
     initialValues: {
       cacApplicationDocument: null,
@@ -37,15 +48,19 @@ const Corporate = () => {
         Toast.error("Please upload all required documents.", "");
         return;
       }
-      await PostCorporateInformation(payload).then((res) => {
-        if (res.status === 201) {
-          Toast.success("Corporate information submitted successfully.", "");
-          setShowModal(true);
-          formik.resetForm();
-        } else {
-          Toast.error("Failed to submit corporate information.", "");
-        }
-      });
+      await PostCorporateInformation(payload)
+        .then((res) => {
+          if (res.status) {
+            Toast.success("Corporate information submitted successfully.", "");
+            setShowModal(true);
+            formik.resetForm();
+          } else {
+            Toast.error(res.message, "");
+          }
+        })
+        .catch((err) => {
+          Toast.error(err.message, "");
+        });
     },
   });
 
@@ -56,6 +71,15 @@ const Corporate = () => {
           header="Corporate Information"
           subHeader="Submit your corporate documents to enable corporate account name."
         />
+        {isCorporateRejected && (
+          <div className="flex items-center gap-2 !-mb-2">
+            <StatusBadge status="rejected" />
+            <p className="text-gray-500 text-sm">
+              Your corporate information has been rejected.
+            </p>
+          </div>
+        )}
+
         <form onSubmit={formik.handleSubmit} className="md:w-[80%] mx-auto">
           <div className="flex flex-col gap-3">
             {/* SUB: Certificate of Incorporation */}
@@ -106,11 +130,14 @@ const Corporate = () => {
               <Check className="text-green-500 size-6" />
             </div>
             <h4 className="text-lg font-semibold text-gray-800">
-              Corporate Information Submitted
+              {isCorporatePending
+                ? "Your Corporate Information is Pending"
+                : "Your Corporate Information Submitted"}
             </h4>
             <p className="text-sm text-gray-500">
-              Your corporate information has been submitted successfully,
-              Awaiting review.
+              {isCorporatePending
+                ? "Your corporate information is pending for review."
+                : "Your corporate information has been submitted successfully, Awaiting review."}
             </p>
             <Link
               className={cn(
@@ -119,6 +146,12 @@ const Corporate = () => {
               )}
               to={APP_ROUTES.SETTINGS.PAYMENT}
               replace
+              onClick={() =>
+                rehydrateUser({
+                  userId: userState.user?.userId,
+                  token: userState.user?.token,
+                })
+              }
             >
               Back to Payment Settings
             </Link>

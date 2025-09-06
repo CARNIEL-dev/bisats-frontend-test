@@ -192,7 +192,9 @@ export function DataTable<TData, TValue>({
         ))}
       </div>
 
-      {paginated && <DataTablePagination table={table} />}
+      {paginated && table.getRowModel().rows.length > 0 && (
+        <DataTablePagination table={table} />
+      )}
     </div>
   );
 }

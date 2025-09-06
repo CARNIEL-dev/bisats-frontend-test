@@ -24,6 +24,36 @@ type TActivitySummary = {
   totalOrderVolumeIn30d: number;
 };
 
+// pull this out of the component if you want to reuse it
+function getUpgradeButtonState(
+  user?: TUser | { [key: string]: any },
+  limits?: unknown
+) {
+  const appliedLevel1 = !!user?.hasAppliedToBeInLevelOne;
+  const hasLevel = !!user?.accountLevel;
+  const isLevel2 = user?.accountLevel === "level_2";
+  const appliedMerchant = !!user?.hasAppliedToBecomeAMerchant;
+  const bvnOk = !!user?.kyc?.bvnVerified;
+
+  const disabled =
+    (appliedLevel1 && !hasLevel) || (appliedMerchant && isLevel2);
+
+  let label = "Upgrade";
+  if (appliedLevel1 && !hasLevel) {
+    label = "Pending verification";
+  } else if (appliedMerchant && isLevel2) {
+    label = "Pending Merchant Approval";
+  } else if (!hasLevel || !limits) {
+    label = "Verify";
+  } else if (!appliedMerchant && bvnOk) {
+    label = "Become a Merchant";
+  } else if (appliedMerchant && bvnOk) {
+    label = "Become a Super Merchant";
+  }
+
+  return { disabled, label };
+}
+
 const getKycStatus = (userState: UserState) => {
   const kycStatus = [
     {
@@ -165,7 +195,10 @@ const Profile = () => {
     }
   };
 
-  console.log("user", user);
+  const { disabled, label } = useMemo(
+    () => getUpgradeButtonState(user!, limits),
+    [user, limits]
+  );
 
   return (
     <>
@@ -205,18 +238,9 @@ const Profile = () => {
                 type="submit"
                 className={`h-[24px]  px-3 rounded-[6px] bg-[#F5BB00] text-[#0A0E12] text-[12px] leading-[24px] font-semibold text-center  shadow-[0_0_0.8px_#000] `}
                 onClick={clickHandler}
-                disabled={
-                  user?.accountStatus === "pending" && !user.accountLevel
-                }
+                disabled={disabled}
               >
-                {user?.accountStatus === "pending"
-                  ? "Pending verification"
-                  : !limits
-                  ? "Verify"
-                  : user?.accountLevel === "level_2" &&
-                    !user?.hasAppliedToBecomeAMerchant
-                  ? "Become a Merchant"
-                  : "Upgrade"}
+                {label}
               </Button>
             )}
           </div>

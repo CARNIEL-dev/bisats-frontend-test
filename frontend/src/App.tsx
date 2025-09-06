@@ -56,7 +56,6 @@ const App: React.FC = () => {
           draggable
           pauseOnHover
           style={{ marginRight: "90px" }}
-          // theme="colored"
         />
       </Router>
     </>

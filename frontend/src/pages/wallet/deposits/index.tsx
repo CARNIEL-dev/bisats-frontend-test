@@ -162,7 +162,7 @@ const DepositPage = () => {
             {user?.user?.accountLevel === "level_1" ? (
               <div className="flex flex-col gap-2 mt-10 items-center">
                 <p className="text-sm animate-pulse rounded-full px-4 py-1 border bg-red-500/10 font-medium text-red-500">
-                  Become a Merchant or upgrade to 3 to deposit xNGN.
+                  Become a Merchant or Super Merchant to deposit xNGN.
                 </p>
 
                 <Button

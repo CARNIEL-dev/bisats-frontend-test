@@ -211,13 +211,10 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
               onClick={() => {
                 validateAndExecute();
               }}
-              disabled={
-                userState?.user?.accountStatus === "pending" &&
-                !userState.user.accountLevel
-              }
+              disabled={!userState?.user?.accountLevel}
             >
-              {userState?.user?.accountStatus === "pending" &&
-              !userState.user.accountLevel
+              {!userState?.user?.accountLevel &&
+              userState?.user?.hasAppliedToBeInLevelOne
                 ? !showWithdraw
                   ? "Pending verification"
                   : "Pending"
@@ -238,12 +235,9 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
                 onClick={() => {
                   validateAndExecute();
                 }}
-                disabled={
-                  userState?.user?.accountStatus === "pending" &&
-                  !userState.user.accountLevel
-                }
+                disabled={!userState?.user?.accountLevel}
               >
-                {userState?.user?.accountStatus === "pending" &&
+                {userState?.user?.hasAppliedToBeInLevelOne &&
                 !userState.user.accountLevel
                   ? "Pending"
                   : "Withdraw"}

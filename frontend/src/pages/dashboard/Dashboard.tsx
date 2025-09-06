@@ -14,7 +14,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     const unverifiedFields = [
-      !user?.kyc?.identificationVerified,
+      !user?.kyc?.identificationVerified && !user?.hasAppliedToBeInLevelOne,
       !user?.kyc?.personalInformationVerified,
       !user?.phoneNumberVerified,
     ];

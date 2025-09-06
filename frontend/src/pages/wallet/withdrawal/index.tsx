@@ -99,8 +99,6 @@ const WithdrawalPage = () => {
 
   const userBalance: number = wallet?.[selectedToken] || 0;
 
-  console.log("user", user);
-
   return (
     <div className="mb-20">
       <Head
@@ -451,9 +449,6 @@ const CryptoWithdrawal = ({
     setShowSavedAddressOptions(savedAddress.length > 0);
   }, [savedAddress, user]);
 
-  console.log("savedAddress", savedAddress);
-  console.log("Wallet ad", user?.withdrawalAddresses);
-
   // SUB: ========= Used up limit =======================
   const usedUpLimit = useMemo(() => {
     return {
@@ -683,7 +678,7 @@ const CryptoWithdrawal = ({
           fee={
             formik.errors.amount || !formik.isValid
               ? "-"
-              : formatter({ decimal: asset === "USDT" ? 2 : 5 }).format(
+              : formatter({ decimal: 2 }).format(
                   !formik.values.amount
                     ? 0
                     : userTransactionLimits?.charge_on_single_withdrawal_crypto

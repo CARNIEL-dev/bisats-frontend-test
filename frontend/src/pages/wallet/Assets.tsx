@@ -227,12 +227,9 @@ const Assets: React.FC = () => {
                   onClick={() => {
                     validateAndExecute();
                   }}
-                  disabled={
-                    userState?.user?.accountStatus === "pending" &&
-                    !userState.user.accountLevel
-                  }
+                  disabled={!userState?.user?.accountLevel}
                 >
-                  {userState?.user?.accountStatus === "pending" &&
+                  {userState?.user?.hasAppliedToBeInLevelOne &&
                   !userState.user.accountLevel
                     ? "Pending"
                     : "Deposit"}
@@ -257,12 +254,9 @@ const Assets: React.FC = () => {
                   onClick={() => {
                     validateAndExecute();
                   }}
-                  disabled={
-                    userState?.user?.accountStatus === "pending" &&
-                    !userState.user.accountLevel
-                  }
+                  disabled={!userState?.user?.accountLevel}
                 >
-                  {userState?.user?.accountStatus === "pending" &&
+                  {userState?.user?.hasAppliedToBeInLevelOne &&
                   !userState.user.accountLevel
                     ? "Pending"
                     : "Withdraw"}

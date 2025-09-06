@@ -28,9 +28,7 @@ const SummaryCard = ({
         <p className="text-[#424A59] font-normal">
           {type === "fiat" ? "Transaction" : "Network"} fee:
         </p>
-        <p className="text-[#606C82]  font-semibold">
-          {fee} {currency}
-        </p>
+        <p className="text-[#606C82]  font-semibold">{fee} USD</p>
       </div>
       <div className="flex justify-between items-center">
         <p className="text-[#424A59] font-normal">Withdrawal amount:</p>

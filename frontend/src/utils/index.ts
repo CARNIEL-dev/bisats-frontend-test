@@ -148,10 +148,26 @@ const formatCompactNumber = (value: number): string => {
     : `${scaledValue.toFixed(1)}${unit}`;
 };
 
-const isProduction = true;
-// const isProduction =
-//   process.env.NODE_ENV === "production" ||
-//   process.env.VERCEL_ENV === "production";
+// const isProduction = true;
+const isProduction =
+  process.env.NODE_ENV === "production" ||
+  process.env.VERCEL_ENV === "production";
+
+const getPercentage = ({
+  total,
+  filled,
+}: {
+  total: number;
+  filled: number;
+}): number => {
+  if (!total || !filled) return 0;
+  const percent = ((filled / total) * 100).toFixed(2);
+  return Number(percent);
+};
+
+const getSafeValue = (value: number | undefined | null): number => {
+  return value ?? 0;
+};
 
 export {
   formatter,
@@ -162,4 +178,6 @@ export {
   delay,
   formatCompactNumber,
   isProduction,
+  getPercentage,
+  getSafeValue,
 };

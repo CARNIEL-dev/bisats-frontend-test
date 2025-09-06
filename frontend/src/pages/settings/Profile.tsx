@@ -291,7 +291,9 @@ const Profile = () => {
                     className={cn("size-[4px] rounded-full  bg-[#BBF7D0]")}
                   />
                   {user?.accountLevel ? (
-                    user?.accountLevel?.replace("_", " ")
+                    <span className="capitalize">
+                      {user?.accountLevel?.replace("_", " ")}
+                    </span>
                   ) : (
                     <Button
                       size={"sm"}

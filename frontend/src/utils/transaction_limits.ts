@@ -73,8 +73,6 @@ export const bisats_charges = {
   ad_creation_sell: 0,
 };
 
-/// kycRules.js
-
 export const KYC_LEVELS = {
   NONE: 0,
   LEVEL_1: 1,

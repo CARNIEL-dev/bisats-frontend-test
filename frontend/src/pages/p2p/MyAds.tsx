@@ -20,6 +20,7 @@ import { ACTIONS } from "@/utils/transaction_limits";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { Check } from "lucide-react";
 
 export interface Ad {
   id: string;
@@ -49,7 +50,7 @@ const MyAds = () => {
   const navigate = useNavigate();
 
   const isKycVerified = [
-    userState?.kyc?.identificationVerified,
+    userState?.user?.hasAppliedToBeInLevelOne,
     userState?.kyc?.personalInformationVerified,
     userState.user?.phoneNumberVerified,
   ].every(Boolean);
@@ -59,7 +60,10 @@ const MyAds = () => {
     isError,
     error,
     isLoading,
-  } = useFetchUserAds({ userId, isKycVerified });
+  } = useFetchUserAds({
+    userId,
+    isKycVerified: isKycVerified || !userState.user?.hasAppliedToBeInLevelOne,
+  });
 
   const adsData = useMemo(() => {
     const activeAds = userAds.filter((ad) => ad.status !== "closed");
@@ -152,49 +156,96 @@ const MyAds = () => {
         );
       },
     },
+    // {
+    //   accessorKey: "minimumLimit",
+    //   header: "Minimum Limit (xNGN)",
+    //   cell: ({ row }) => {
+    //     const price = row.original.minimumLimit;
+    //     return (
+    //       <span className="text-gray-600 ">
+    //         {formatter({
+    //           decimal: 0,
+    //         }).format(price || 0)}
+    //       </span>
+    //     );
+    //   },
+    // },
+    // {
+    //   accessorKey: "maximumLimit",
+    //   header: "Maximum Limit (xNGN)",
+    //   cell: ({ row }) => {
+    //     const price = row.original.maximumLimit;
+    //     return (
+    //       <span className="text-gray-600 ">
+    //         {formatter({
+    //           decimal: 0,
+    //         }).format(price || 0)}
+    //       </span>
+    //     );
+    //   },
+    // },
     {
-      accessorKey: "minimumLimit",
-      header: "Minimum Limit (xNGN)",
-      cell: ({ row }) => {
-        const price = row.original.minimumLimit;
+      accessorKey: "amountFilled",
+      header: () => {
         return (
-          <span className="text-gray-600 ">
-            {formatter({
-              decimal: 0,
-            }).format(price || 0)}
-          </span>
+          <div className="text-gray-600 flex items-center gap-2 ">
+            Amount Fulfilled
+            <span className="inline-grid border border-green-600  place-content-center rounded-full size-4">
+              <Check className="size-3 text-green-500" />
+            </span>
+          </div>
         );
       },
-    },
-    {
-      accessorKey: "maximumLimit",
-      header: "Maximum Limit (xNGN)",
       cell: ({ row }) => {
-        const price = row.original.maximumLimit;
+        const item = row.original;
+        const amount =
+          item.type !== "buy"
+            ? formatter({ decimal: item.asset === "USDT" ? 2 : 5 }).format(
+                item.amountFilled
+              )
+            : formatter({ decimal: item.asset === "USDT" ? 2 : 5 }).format(
+                item.amountFilled / item.price
+              );
         return (
-          <span className="text-gray-600 ">
-            {formatter({
-              decimal: 0,
-            }).format(price || 0)}
-          </span>
+          <div className="text-gray-600 uppercase ">
+            {amount} <span className="text-gray-400 text-xs">{item.asset}</span>{" "}
+          </div>
         );
       },
     },
 
     {
       accessorKey: "amountAvailable",
-      header: "Amount Filled",
+      header: "Amount Available",
       cell: ({ row }) => {
         const item = row.original;
         const amount =
           item.type !== "buy"
-            ? formatter({ decimal: 5 }).format(item.amountAvailable)
-            : formatter({ decimal: 5 }).format(
+            ? formatter({ decimal: item.asset === "USDT" ? 2 : 5 }).format(
+                item.amountAvailable
+              )
+            : formatter({ decimal: item.asset === "USDT" ? 2 : 5 }).format(
                 item.amountAvailable / item.price
               );
         return (
           <div className="text-gray-600 uppercase ">
-            {amount} {item.asset}{" "}
+            {amount} <span className="text-gray-400 text-xs">{item.asset}</span>{" "}
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "amount",
+      header: "Total Amount ",
+      cell: ({ row }) => {
+        const item = row.original;
+        const amount =
+          item.type !== "buy"
+            ? formatter({ decimal: 5 }).format(item.amount)
+            : formatter({ decimal: 5 }).format(item.amount / item.price);
+        return (
+          <div className="text-gray-600 uppercase ">
+            {amount} <span className="text-gray-400 text-xs">{item.asset}</span>{" "}
           </div>
         );
       },
@@ -279,12 +330,9 @@ const MyAds = () => {
               onClick={() => {
                 validateAndExecute();
               }}
-              disabled={
-                userState.user?.accountStatus === "pending" &&
-                !userState.user.accountLevel
-              }
+              disabled={!userState?.user?.accountLevel}
             >
-              {userState.user?.accountStatus === "pending" &&
+              {userState?.user?.hasAppliedToBeInLevelOne &&
               !userState.user.accountLevel
                 ? "Pending Verification"
                 : "Create Ad"}
@@ -296,6 +344,16 @@ const MyAds = () => {
       <div>
         {!isKycVerified ? (
           <KycBanner />
+        ) : userState?.user?.hasAppliedToBeInLevelOne &&
+          !userState.user.accountLevel ? (
+          <div className="flex flex-col items-center gap-2  border w-fit p-6 mx-auto rounded-md">
+            <h4 className="font-semibold text-lg">
+              Your Acoount is being reviewed
+            </h4>
+            <p className="text-gray-500 text-sm">
+              Please wait for admin approval
+            </p>
+          </div>
         ) : isLoading ? (
           <PreLoader />
         ) : isError ? (

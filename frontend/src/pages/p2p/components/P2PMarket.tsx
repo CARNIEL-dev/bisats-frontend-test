@@ -1,5 +1,6 @@
 import PrimaryInput from "@/components/Inputs/PrimaryInput";
 import SwapConfirmation from "@/components/Modals/SwapConfirmation";
+import Toast from "@/components/Toast";
 import { PrimaryButton } from "@/components/buttons/Buttons";
 import AutoRefreshTimer from "@/components/shared/AutoRefresh";
 import { Badge } from "@/components/ui/badge";
@@ -146,12 +147,18 @@ const P2PMarket = ({
           </h4>
           {type === "buy" ? (
             <p>
-              {adDetail?.amountAvailable} {adDetail?.asset}
+              {adDetail &&
+                formatter({
+                  decimal: adDetail?.asset === "USDT" ? 2 : 6,
+                }).format(adDetail?.amountAvailable)}{" "}
+              {adDetail?.asset}
             </p>
           ) : (
             <p>
               {adDetail &&
-                formatNumber(adDetail?.amountAvailable / adDetail?.price)}{" "}
+                formatter({
+                  decimal: adDetail?.asset === "USDT" ? 2 : 6,
+                }).format(adDetail?.amountAvailable / adDetail?.price)}{" "}
               {adDetail?.asset}
             </p>
           )}
@@ -263,6 +270,10 @@ const BuyForm = ({
             }}
             maxFunc={() => {
               const walletBalance = walletState?.wallet?.xNGN;
+              if (walletBalance <= 0) {
+                Toast.error("Insufficient Wallet Balance", "Wallet Balance");
+                return;
+              }
 
               const availableAmount = adDetail?.maximumLimit || 0;
               const maxValue = Math.min(walletBalance, availableAmount);
@@ -342,6 +353,11 @@ const SellForm = ({
             maxFunc={() => {
               const maxVal = walletState?.wallet?.[adDetail?.asset ?? "USDT"];
 
+              if (maxVal <= 0) {
+                Toast.error("Insufficient Wallet Balance", "Wallet Balance");
+                return;
+              }
+
               const availableAmount =
                 (adDetail?.maximumLimit || 0) / (adDetail?.price || 0);
 
@@ -349,7 +365,7 @@ const SellForm = ({
 
               setFocusedField("amount");
               // formik.setFieldValue("amount", `1.00`);
-              formik.setFieldValue("amount", `${maxValue}`);
+              formik.setFieldValue("amount", maxValue);
             }}
           />
 

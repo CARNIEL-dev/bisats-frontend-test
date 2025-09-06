@@ -8,7 +8,7 @@ const SwapLayout = () => {
   const userState: UserState = useSelector((state: any) => state.user);
 
   const isKycVerified = [
-    userState?.kyc?.identificationVerified,
+    userState?.user?.hasAppliedToBeInLevelOne,
     userState?.kyc?.personalInformationVerified,
     userState.user?.phoneNumberVerified,
   ].every(Boolean);
@@ -23,6 +23,18 @@ const SwapLayout = () => {
         <MaxWidth className="mt-16 md:mt-24 md:min-h-[75dvh] min-h-[95dvh] max-w-[60rem]">
           <KycBanner />
         </MaxWidth>
+      ) : userState?.user?.hasAppliedToBeInLevelOne &&
+        !userState.user.accountLevel ? (
+        <div className="mt-16 md:mt-24 md:min-h-[65dvh] min-h-[85dvh]">
+          <div className="flex flex-col  items-center gap-2  border w-fit p-6 mx-auto rounded-md">
+            <h4 className="font-semibold text-lg">
+              Your Acoount is being reviewed
+            </h4>
+            <p className="text-gray-500 text-sm">
+              Please wait for admin approval
+            </p>
+          </div>
+        </div>
       ) : (
         <MaxWidth
           as="section"

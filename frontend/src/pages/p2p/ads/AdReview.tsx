@@ -99,7 +99,13 @@ const AdReview: React.FC<AdsProps> = ({ formik }) => {
           </span>
         </p>
         <p className="text-[#515B6E] font-semibold">
-          {formik.values.type === "Buy" ? "0.02%" : "0%"}
+          {formik.values.type === "Buy"
+            ? formatter({
+                decimal: 2,
+                currency: "NGN",
+                style: "currency",
+              }).format(0.0002 * (formik.values.amount ?? 0))
+            : "-"}
         </p>
       </div>
 

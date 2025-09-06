@@ -71,7 +71,7 @@ const MarketPlacePage = () => {
   const userId: string = userState?.user?.userId || "";
 
   const isKycVerified = [
-    userState?.kyc?.identificationVerified,
+    userState?.user?.hasAppliedToBeInLevelOne,
     userState?.kyc?.personalInformationVerified,
     userState.user?.phoneNumberVerified,
   ].every(Boolean);
@@ -138,6 +138,16 @@ const MarketPlacePage = () => {
 
         {!isKycVerified ? (
           <KycBanner />
+        ) : userState?.user?.hasAppliedToBeInLevelOne &&
+          !userState.user.accountLevel ? (
+          <div className="flex flex-col items-center gap-2  border w-fit p-6 mx-auto rounded-md">
+            <h4 className="font-semibold text-lg">
+              Your Acoount is being reviewed
+            </h4>
+            <p className="text-gray-500 text-sm">
+              Please wait for admin approval
+            </p>
+          </div>
         ) : (
           <Tabs
             defaultValue={adsParam.type}

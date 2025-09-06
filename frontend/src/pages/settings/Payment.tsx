@@ -3,21 +3,29 @@ import DeleteWithdrawalAccount from "@/components/Modals/DeleteWithdrawalAccount
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
+import DeleteWalletAddressModal from "@/components/Modals/DeleteWalletAddressModal";
 import ModalTemplate from "@/components/Modals/ModalTemplate";
 import WithdrawalBankAccount from "@/components/Modals/WithdrawalBankAccount";
-import { GetWallet } from "@/redux/actions/walletActions";
-import { Plus } from "lucide-react";
-import KycManager from "@/pages/kyc/KYCManager";
-import { ACTIONS } from "@/utils/transaction_limits";
 import { APP_ROUTES } from "@/constants/app_route";
+import KycManager from "@/pages/kyc/KYCManager";
+import { GetWallet } from "@/redux/actions/walletActions";
+import { ACTIONS } from "@/utils/transaction_limits";
+import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import DeleteWalletAddressModal from "@/components/Modals/DeleteWalletAddressModal";
+import StatusBadge from "@/components/shared/StatusBadge";
+import { rehydrateUser } from "@/redux/actions/userActions";
 
 const Payment = () => {
   const reduxState: RootState = useSelector((state: any) => state);
 
   const wallet = reduxState.wallet.wallet;
   const user = reduxState.user;
+
+  const isCorporateRejected =
+    user.user?.cooperateAccountVerificationRequest?.status === "rejected";
+
+  const isCorporatePending =
+    user.user?.cooperateAccountVerificationRequest?.status === "pending";
 
   const navigate = useNavigate();
 
@@ -34,6 +42,15 @@ const Payment = () => {
   useEffect(() => {
     GetWallet();
   }, [openModal.add, openModal.edit, openModal.delete]);
+
+  useEffect(() => {
+    if (isCorporatePending) {
+      rehydrateUser({
+        userId: user.user?.userId,
+        token: user.user?.token,
+      });
+    }
+  }, []);
 
   const BankDetails = wallet?.bankAccount.map(
     (bank: {
@@ -94,7 +111,7 @@ const Payment = () => {
               />
             )}
           </KycManager>
-          {!user.user?.cooperateAccountVerificationRequest?.id && (
+          {!user.user?.cooperateAccountVerificationRequest?.businessName && (
             <KycManager
               action={ACTIONS.ADD_CORPORATE_BANK}
               func={() => {
@@ -105,8 +122,15 @@ const Payment = () => {
                 <WhiteTransparentButton
                   text={
                     <>
-                      <Plus className="size-4" />
-                      Add Corporate Account
+                      {user.user?.cooperateAccountVerificationRequest
+                        ?.status === "pending" ? (
+                        "Corporate Account Pending"
+                      ) : (
+                        <>
+                          <Plus className="size-4" />
+                          Add Corporate Account
+                        </>
+                      )}
                     </>
                   }
                   size="sm"
@@ -115,12 +139,24 @@ const Payment = () => {
                   onClick={() => {
                     validateAndExecute();
                   }}
+                  disabled={
+                    user.user?.cooperateAccountVerificationRequest?.status ===
+                    "pending"
+                  }
                 />
               )}
             </KycManager>
           )}
         </div>
       </div>
+      {isCorporateRejected && (
+        <div className="flex items-center gap-2 mb-6">
+          <StatusBadge status="rejected" />
+          <p className="text-gray-500 text-sm">
+            Your corporate information has been rejected.
+          </p>
+        </div>
+      )}
 
       {BankDetails.length > 0 && (
         <div>

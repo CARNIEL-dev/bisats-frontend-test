@@ -1,21 +1,17 @@
+import { PrimaryButton } from "@/components/buttons/Buttons";
 import FileInputField from "@/components/Inputs/FileInputFIeld";
+import { APP_ROUTES } from "@/constants/app_route";
 import { levelThreeValidationSchema } from "@/formSchemas";
+import OtherSide from "@/layouts/auth/OtherSide";
 import { useFormik } from "formik";
 import { Check } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { PrimaryButton } from "@/components/buttons/Buttons";
-import { APP_ROUTES } from "@/constants/app_route";
-import OtherSide from "@/layouts/auth/OtherSide";
-import {
-  Post_Proof_of_Profile_KYC,
-  Post_Proof_of_Wealth_KYC,
-  PostPOA_KYC,
-} from "@/redux/actions/userActions";
 
-import { bisats_limit } from "@/utils/transaction_limits";
+import Toast from "@/components/Toast";
 import { formatCompactNumber } from "@/utils";
+import { bisats_limit } from "@/utils/transaction_limits";
 
 const Level3Verification = () => {
   const user: UserState = useSelector((state: any) => state.user);
@@ -37,6 +33,7 @@ const Level3Verification = () => {
     },
     validationSchema: levelThreeValidationSchema,
     onSubmit: async (values, { setSubmitting }) => {
+      Toast.info("Pending", "s");
       // try {
       //   if (
       //     values.utilityBill &&

@@ -67,9 +67,11 @@ const KycUpgrade: React.FC<Props> = ({ close }) => {
           Account Upgrade Required
         </h1>
         <p className="text-[#606C82] text-[14px] leading-[24px] lg:text-[14px] lg:leading-[24px] font-normal my-3">
-          To proceed with this action, we need you to upgrade your account to{" "}
+          To proceed with this action, we need you to upgrade your account to a{" "}
           <span className="text-[#17A34A] font-bold">
-            {user?.user?.accountLevel === "level_1" ? "Level 2" : "Level 3"}
+            {user?.user?.accountLevel === "level_1"
+              ? "Merchant"
+              : "Super Merchant"}
           </span>
           . Completing this upgrade will give you access to the following
           features :

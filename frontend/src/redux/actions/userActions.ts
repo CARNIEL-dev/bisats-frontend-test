@@ -572,8 +572,8 @@ export const Post_Proof_of_Profile_KYC = async (payload: TPOA) => {
 };
 export const Become_Merchant_Hanlder = async (payload: TMerchant) => {
   const formData = new FormData();
-  formData.append("utilityDoc", payload.utilityBill);
-  formData.append("otherDoc", payload.photoIdentity);
+  formData.append("document1", payload.utilityBill);
+  formData.append("document2", payload.photoIdentity);
   const token = getToken();
 
   try {
@@ -588,8 +588,6 @@ export const Become_Merchant_Hanlder = async (payload: TMerchant) => {
       }
     );
     const data = response.json();
-
-    // dispatchWrapper({ type: GeneralTypes.SUCCESS, payload: data });
 
     return data;
   } catch (error) {

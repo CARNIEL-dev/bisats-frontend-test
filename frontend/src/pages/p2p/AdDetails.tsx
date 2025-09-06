@@ -1,18 +1,20 @@
 import { tokenLogos } from "@/assets/tokens";
 import BackButton from "@/components/shared/BackButton";
 import ErrorDisplay from "@/components/shared/ErrorDisplay";
+import StatusBadge from "@/components/shared/StatusBadge";
+import TextBox from "@/components/shared/TextBox";
 import { Button } from "@/components/ui/Button";
 import { DataTable } from "@/components/ui/data-table";
 import PreLoader from "@/layouts/PreLoader";
 import EditAds from "@/pages/p2p/ads/EditAds";
 import { useGetAdsDetails } from "@/redux/actions/walletActions";
 
-import { cn, formatter } from "@/utils";
+import { cn, formatter, getPercentage, getSafeValue } from "@/utils";
 import { AccountLevel, bisats_limit } from "@/utils/transaction_limits";
 import { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
 import { Pen, X } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
@@ -57,92 +59,6 @@ const AdDetails = () => {
       navigate(-1);
     }
   }, [id]);
-
-  // HDR: Header info
-  const headerInfo = useMemo(() => {
-    return [
-      {
-        header: "Transaction Type",
-        text: (
-          <span
-            className={cn(
-              "capitalize font-semibold",
-              adsInfo?.type.toLowerCase() === "buy"
-                ? "text-green-600"
-                : "text-red-600"
-            )}
-          >
-            {adsInfo?.type}
-          </span>
-        ),
-      },
-      {
-        header: "Asset",
-        text: (
-          <div className="flex items-center gap-1.5 text-sm text-gray-600">
-            <img
-              src={tokenLogos[adsInfo?.asset as keyof typeof tokenLogos]}
-              alt={adsInfo?.asset}
-              className="size-4 "
-            />
-            <div>
-              <p className="font-semibold">{adsInfo?.asset}</p>
-            </div>
-          </div>
-        ),
-      },
-
-      {
-        header: "Amount Filled",
-        text:
-          adsInfo?.type !== "buy"
-            ? formatter({ decimal: adsInfo?.asset === "USDT" ? 2 : 5 }).format(
-                adsInfo?.amountAvailable || 0
-              ) + ` ${adsInfo?.asset}`
-            : formatter({ decimal: adsInfo?.asset === "USDT" ? 2 : 5 }).format(
-                adsInfo.amountAvailable / adsInfo.price
-              ) +
-              " " +
-              adsInfo.asset,
-      },
-      {
-        header: "Minimum Limit",
-        text: formatter({
-          decimal: 2,
-          currency: "NGN",
-          style: "currency",
-        }).format(Number(adsInfo?.minimumLimit)),
-      },
-      {
-        header: "Maximum Limit",
-        text: formatter({
-          decimal: 2,
-          currency: "NGN",
-          style: "currency",
-        }).format(Number(adsInfo?.maximumLimit)),
-      },
-
-      {
-        header: "Status",
-        text: (
-          <span
-            className={cn(
-              "capitalize font-semibold",
-              adStatus?.toLowerCase() === "closed"
-                ? "text-red-600"
-                : "text-green-600"
-            )}
-          >
-            {adStatus}
-          </span>
-        ),
-      },
-      {
-        header: "Created On",
-        text: formatDate(adsInfo?.createdAt),
-      },
-    ];
-  }, [adsInfo]);
 
   return (
     <div className="flex flex-col gap-6">
@@ -195,26 +111,8 @@ const AdDetails = () => {
         />
       ) : (
         <div className="space-y-10">
-          <div className="h-auto p-4 rounded-lg shadow-sm text-gray-600 bg-gray-100 text-sm space-y-2">
-            <div className="grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-x-4 gap-y-2 items-center">
-              {headerInfo.map((item, index) => (
-                <div key={index} className="p-1 space-y-2">
-                  <p className="font-light">{item.header}</p>
-                  <div className="font-medium">{item.text}</div>
-                </div>
-              ))}
-            </div>
-
-            <div className="p-1 space-y-2">
-              <p className="font-light">Price</p>
-              <p className="font-semibold text-black text-xl">
-                {formatter({
-                  decimal: 2,
-                  style: "currency",
-                  currency: "NGN",
-                }).format(Number(adsInfo?.price))}
-              </p>
-            </div>
+          <div className="h-auto p-4 rounded-lg shadow-sm text-gray-600 bg-gray-100 t space-y-2">
+            <AdsInfo ads={adsInfo!} adStatus={adStatus!} />
           </div>
 
           <div className="mb-2 space-y-4">
@@ -305,6 +203,181 @@ const AdOrderHistoryTable = ({ data }: { data: OrderHistory[] }) => {
   return (
     <div>
       <DataTable columns={columns} data={data} paginated={false} />
+    </div>
+  );
+};
+
+const AdsInfo = ({ ads, adStatus }: { ads: AdsType; adStatus: string }) => {
+  const total =
+    ads.type === "sell"
+      ? getSafeValue(ads.amount)
+      : getSafeValue(ads.amount) / getSafeValue(ads.price);
+
+  const fulfilled =
+    ads.type === "sell"
+      ? getSafeValue(ads.amountFilled)
+      : getSafeValue(ads.amountFilled) / getSafeValue(ads.price);
+
+  const available =
+    ads.type === "sell"
+      ? getSafeValue(ads.amountAvailable)
+      : getSafeValue(ads.amountAvailable) / getSafeValue(ads.price);
+
+  const percentFilled = getPercentage({
+    total,
+    filled: fulfilled,
+  });
+
+  const Info = [
+    {
+      name: "Transaction Type",
+      value: (
+        <p
+          className={cn(
+            ads.type === "buy" ? "text-[#17A34A]" : "text-[#DC2625]",
+            "font-bold uppercase"
+          )}
+        >
+          {ads.type}
+        </p>
+      ),
+    },
+    {
+      name: "Asset",
+      value: (
+        <div className="flex items-center gap-1.5 text-sm text-gray-600">
+          <img
+            src={tokenLogos[ads?.asset as keyof typeof tokenLogos]}
+            alt={ads?.asset}
+            className="size-4 "
+          />
+          <div>
+            <p className="font-semibold">{ads?.asset}</p>
+          </div>
+        </div>
+      ),
+    },
+
+    {
+      name: "Status",
+      value: <StatusBadge status={adStatus} />,
+    },
+    {
+      name: "Currency",
+      value: <p className="font-semibold">{ads.currency || "NGN"}</p>,
+    },
+    {
+      name: "Created On",
+      value: formatDate(ads?.createdAt),
+    },
+
+    {
+      name: ads.type === "sell" ? "Amount Sold" : "Amount Bought",
+      value: (
+        <div className="whitespace-nowrap flex items-center gap-1">
+          <p className="font-semibold whitespace-nowrap">
+            {formatter({ decimal: 5 }).format(fulfilled)}
+          </p>
+          <span className="text-xs text-gray-400">{ads.asset}</span>
+          <span
+            className={
+              percentFilled >= 0 ? "text-[#17A34A]" : "text-yellow-500"
+            }
+          >
+            {percentFilled} %
+          </span>
+        </div>
+      ),
+    },
+    {
+      name: "Amount Available",
+      value: (
+        <div className="whitespace-nowrap flex items-center gap-1">
+          <p className="font-semibold whitespace-nowrap">
+            {formatter({ decimal: 5 }).format(available)}
+          </p>
+          <span className="text-xs text-gray-400">{ads.asset}</span>
+        </div>
+      ),
+    },
+    {
+      name: "Total Amount",
+      value: (
+        <div className="whitespace-nowrap flex items-center gap-1">
+          <p className="font-semibold whitespace-nowrap">
+            {formatter({ decimal: 5 }).format(total)}
+          </p>
+          <span className="text-xs text-gray-400">{ads.asset}</span>
+        </div>
+      ),
+    },
+    {
+      name: "Upper Price Limit",
+      value: (
+        <p>
+          {formatter({ style: "currency", currency: "NGN" }).format(
+            getSafeValue(ads.priceUpperLimit)
+          )}
+        </p>
+      ),
+    },
+    {
+      name: "Lower Price Limit",
+      value: (
+        <p>
+          {formatter({ style: "currency", currency: "NGN" }).format(
+            getSafeValue(ads.priceLowerLimit)
+          )}
+        </p>
+      ),
+    },
+    {
+      name: "Maximum Limit",
+      value: (
+        <p>
+          {formatter({ style: "currency", currency: "NGN" }).format(
+            getSafeValue(ads.maximumLimit)
+          )}
+        </p>
+      ),
+    },
+    {
+      name: "Minimum Limit",
+      value: (
+        <p>
+          {formatter({ style: "currency", currency: "NGN" }).format(
+            getSafeValue(ads.minimumLimit)
+          )}
+        </p>
+      ),
+    },
+    {
+      name: "Price",
+      value: (
+        <p className="font-semibold text-black text-xl">
+          {formatter({ style: "currency", currency: "NGN" }).format(
+            getSafeValue(ads.price)
+          )}
+        </p>
+      ),
+    },
+  ];
+  return (
+    <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-x-2 gap-y-6">
+      {Info.map((item) => {
+        const NEXT_LINE = ["Price"].includes(item.name);
+        return (
+          <TextBox
+            key={item.name}
+            label={item.name}
+            value={item.value}
+            labelClass="text-sm"
+            direction="column"
+            showIndicator={false}
+            containerClassName={cn(NEXT_LINE && "col-start-1")}
+          />
+        );
+      })}
     </div>
   );
 };

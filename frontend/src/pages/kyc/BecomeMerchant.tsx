@@ -8,11 +8,14 @@ import { buttonVariants } from "@/components/ui/Button";
 import { APP_ROUTES } from "@/constants/app_route";
 import { merchantSchema } from "@/formSchemas";
 import OtherSide from "@/layouts/auth/OtherSide";
-import { Become_Merchant_Hanlder } from "@/redux/actions/userActions";
+import {
+  Become_Merchant_Hanlder,
+  GetUserDetails,
+} from "@/redux/actions/userActions";
 import { cn } from "@/utils";
 import { useFormik } from "formik";
 import { Check } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
@@ -22,6 +25,16 @@ const BecomeMerchant = () => {
   const [showModal, setShowModal] = useState(
     userState.user?.hasAppliedToBecomeAMerchant
   );
+
+  const isPending =
+    userState.user?.hasAppliedToBecomeAMerchant &&
+    userState.user?.accountLevel === "level_2";
+
+  useEffect(() => {
+    if (userState.user?.hasAppliedToBecomeAMerchant || isPending) {
+      setShowModal(true);
+    }
+  }, []);
 
   const formik = useFormik({
     initialValues: {
@@ -40,13 +53,17 @@ const BecomeMerchant = () => {
         photoIdentity: payload.photoIdentity,
         userId: payload.userId,
       };
-      await Become_Merchant_Hanlder(dataInfo).then((res) => {
-        if (res.status === 201) {
+      await Become_Merchant_Hanlder(dataInfo).then(async (res) => {
+        if (res.status) {
           Toast.success("Merchant information submitted successfully.", "");
-          setShowModal(true);
-          formik.resetForm();
+          await GetUserDetails({ userId, token: userState.user?.token }).then(
+            () => {
+              setShowModal(true);
+              formik.resetForm();
+            }
+          );
         } else {
-          Toast.error("Failed to submit merchant information.", "");
+          Toast.error(res.message, "");
         }
       });
     },
