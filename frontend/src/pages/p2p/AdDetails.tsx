@@ -38,8 +38,6 @@ const AdDetails = () => {
   const account_level = user.user?.accountLevel as AccountLevel;
   const userTransactionLimits = bisats_limit[account_level];
 
-  const adStatus: string = location.state?.closed;
-
   const id = searchParams.get("adId") || "";
   const navigate = useNavigate();
 
@@ -69,7 +67,7 @@ const AdDetails = () => {
           <h2 className="font-semibold md:text-3xl text-xl">
             {mode ? "Edit Ad" : "Ad details"}
           </h2>
-          {adStatus?.toLowerCase() !== "closed" && (
+          {adsInfo?.status?.toLowerCase() === "active" && (
             <Button
               size={"sm"}
               variant={"outline"}
@@ -111,8 +109,14 @@ const AdDetails = () => {
         />
       ) : (
         <div className="space-y-10">
+          {adsInfo?.status?.toLowerCase() === "disabled" && adsInfo?.reason && (
+            <div className="flex items-center gap-2 !-mb-2">
+              <StatusBadge status={adsInfo?.status} />
+              <p className="text-gray-500 text-sm">{adsInfo?.reason}</p>
+            </div>
+          )}
           <div className="h-auto p-4 rounded-lg shadow-sm text-gray-600 bg-gray-100 t space-y-2">
-            <AdsInfo ads={adsInfo!} adStatus={adStatus!} />
+            <AdsInfo ads={adsInfo!} adStatus={adsInfo?.status!} />
           </div>
 
           <div className="mb-2 space-y-4">
@@ -280,9 +284,7 @@ const AdsInfo = ({ ads, adStatus }: { ads: AdsType; adStatus: string }) => {
           </p>
           <span className="text-xs text-gray-400">{ads.asset}</span>
           <span
-            className={
-              percentFilled >= 0 ? "text-[#17A34A]" : "text-yellow-500"
-            }
+            className={percentFilled > 0 ? "text-[#17A34A]" : "text-yellow-500"}
           >
             {percentFilled} %
           </span>
@@ -363,7 +365,7 @@ const AdsInfo = ({ ads, adStatus }: { ads: AdsType; adStatus: string }) => {
     },
   ];
   return (
-    <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-x-2 gap-y-6">
+    <div className="grid grid-cols-2 sm:grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-x-2 gap-y-6">
       {Info.map((item) => {
         const NEXT_LINE = ["Price"].includes(item.name);
         return (

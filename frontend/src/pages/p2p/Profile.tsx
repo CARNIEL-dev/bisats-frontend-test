@@ -5,14 +5,19 @@ import SEO from "@/components/shared/SEO";
 import { Button } from "@/components/ui/Button";
 import { APP_ROUTES } from "@/constants/app_route";
 import PreLoader from "@/layouts/PreLoader";
-import { GET_ACTIVITY_SUMMARY } from "@/redux/actions/userActions";
+import {
+  GET_ACTIVITY_SUMMARY,
+  GetUserDetails,
+} from "@/redux/actions/userActions";
 
 import { formatNumber } from "@/utils/numberFormat";
 import { AccountLevel, bisats_limit } from "@/utils/transaction_limits";
 import { useQuery } from "@tanstack/react-query";
 import { BadgeCheck, Info } from "lucide-react";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
+import { goToNextKycRoute } from "@/utils/kycNavigation";
+import { getUpgradeButtonState } from "@/utils";
 
 type TActivitySummary = {
   currentActiveAds: number;
@@ -25,34 +30,6 @@ type TActivitySummary = {
 };
 
 // pull this out of the component if you want to reuse it
-function getUpgradeButtonState(
-  user?: TUser | { [key: string]: any },
-  limits?: unknown
-) {
-  const appliedLevel1 = !!user?.hasAppliedToBeInLevelOne;
-  const hasLevel = !!user?.accountLevel;
-  const isLevel2 = user?.accountLevel === "level_2";
-  const appliedMerchant = !!user?.hasAppliedToBecomeAMerchant;
-  const bvnOk = !!user?.kyc?.bvnVerified;
-
-  const disabled =
-    (appliedLevel1 && !hasLevel) || (appliedMerchant && isLevel2);
-
-  let label = "Upgrade";
-  if (appliedLevel1 && !hasLevel) {
-    label = "Pending verification";
-  } else if (appliedMerchant && isLevel2) {
-    label = "Pending Merchant Approval";
-  } else if (!hasLevel || !limits) {
-    label = "Verify";
-  } else if (!appliedMerchant && bvnOk) {
-    label = "Become a Merchant";
-  } else if (appliedMerchant && bvnOk) {
-    label = "Become a Super Merchant";
-  }
-
-  return { disabled, label };
-}
 
 const getKycStatus = (userState: UserState) => {
   const kycStatus = [
@@ -73,16 +50,16 @@ const getKycStatus = (userState: UserState) => {
       verified: userState?.kyc?.bvnVerified,
     },
     {
-      type: "Proof of Address",
-      verified: userState?.kyc?.utilityBillVerified,
+      type: "Is Merchant",
+      verified:
+        userState?.user?.hasAppliedToBecomeAMerchant &&
+        Number(userState?.user?.accountLevel?.split("_")[1]) >= 2,
     },
     {
-      type: "Source of wealth",
-      verified: userState?.kyc?.sourceOfWealthVerified,
-    },
-    {
-      type: "Proof of Profile",
-      verified: userState?.kyc?.proofOfProfileVerified,
+      type: "Is Super Merchant",
+      verified:
+        userState?.user?.accountLevel === "level_3" &&
+        userState.user.hasAppliedToBecomeAMerchant,
     },
   ];
   return kycStatus;
@@ -94,7 +71,7 @@ const Profile = () => {
   const account_level = user?.accountLevel;
 
   const limits = bisats_limit[account_level as AccountLevel] || null;
-
+  console.log("user", user);
   const userLimits = limits
     ? [
         {
@@ -133,6 +110,8 @@ const Profile = () => {
     refetchOnMount: false,
     enabled: Boolean(user?.userId),
   });
+
+  console.log("userState", userState?.user);
 
   const ActivitySummary = useMemo(() => {
     return [
@@ -177,28 +156,24 @@ const Profile = () => {
   }, [activitySummary]);
 
   const clickHandler = () => {
-    if (!user?.accountLevel) {
-      if (!user?.phoneNumberVerified) {
-        window.location.href = APP_ROUTES.KYC.PHONEVERIFICATION;
-      } else {
-        window.location.href = APP_ROUTES.KYC.PERSONAL;
-      }
-    } else if (user?.accountLevel === "level_1") {
-      window.location.href = APP_ROUTES.KYC.BVNVERIFICATION;
-    } else if (
-      user?.accountLevel === "level_2" &&
-      !user?.hasAppliedToBecomeAMerchant
-    ) {
-      window.location.href = APP_ROUTES.KYC.BECOME_MERCHANT;
-    } else {
-      window.location.href = APP_ROUTES.KYC.LEVEL3VERIFICATION;
-    }
+    goToNextKycRoute(userState);
   };
 
   const { disabled, label } = useMemo(
     () => getUpgradeButtonState(user!, limits),
     [user, limits]
   );
+
+  useEffect(() => {
+    const isPending = label.startsWith("Pending");
+
+    if (isPending) {
+      GetUserDetails({
+        userId: user?.userId,
+        token: user?.token,
+      });
+    }
+  }, []);
 
   return (
     <>

@@ -8,7 +8,6 @@ const SwapLayout = () => {
   const userState: UserState = useSelector((state: any) => state.user);
 
   const isKycVerified = [
-    userState?.user?.hasAppliedToBeInLevelOne,
     userState?.kyc?.personalInformationVerified,
     userState.user?.phoneNumberVerified,
   ].every(Boolean);

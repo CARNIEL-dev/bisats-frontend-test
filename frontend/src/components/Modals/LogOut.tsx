@@ -14,7 +14,12 @@ interface Props {
 const LogOutModal: React.FC<Props> = ({ close }) => {
   const queryClient = useQueryClient();
   return (
-    <ModalTemplate onClose={close} className="2xl:w-[600px]">
+    <ModalTemplate
+      onClose={close}
+      isOpen
+      primary={false}
+      className="2xl:w-[600px]"
+    >
       <div className="flex flex-col gap-4">
         <img
           src={LogOutIcon}

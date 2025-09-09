@@ -16,7 +16,8 @@ import CopyDisplay from "@/components/shared/CopyDisplay";
 import TokenSelection from "@/components/shared/TokenSelection";
 import { Button } from "@/components/ui/Button";
 import KycManager from "@/pages/kyc/KYCManager";
-import { formatter } from "@/utils";
+import { formatter, getUpgradeButtonState } from "@/utils";
+import { goToNextKycRoute } from "@/utils/kycNavigation";
 import { ACTIONS, bisats_limit } from "@/utils/transaction_limits";
 import * as Yup from "yup";
 
@@ -48,9 +49,11 @@ const DepositPage = () => {
     }
   }, []);
 
+  const limit =
+    bisats_limit[user?.user?.accountLevel as keyof typeof bisats_limit];
+
   const maxDeposit = useMemo(() => {
-    return bisats_limit[user?.user?.accountLevel as keyof typeof bisats_limit]
-      ?.max_deposit_per_transaction_fiat;
+    return limit?.max_deposit_per_transaction_fiat;
   }, [user?.user?.accountLevel]);
 
   useEffect(() => {
@@ -85,23 +88,13 @@ const DepositPage = () => {
   });
 
   const clickHandler = () => {
-    if (!user?.user?.accountLevel) {
-      if (!user?.user?.phoneNumberVerified) {
-        window.location.href = APP_ROUTES.KYC.PHONEVERIFICATION;
-      } else {
-        window.location.href = APP_ROUTES.KYC.PERSONAL;
-      }
-    } else if (user?.user?.accountLevel === "level_1") {
-      window.location.href = APP_ROUTES.KYC.BVNVERIFICATION;
-    } else if (
-      user?.user?.accountLevel === "level_2" &&
-      !user?.user?.hasAppliedToBecomeAMerchant
-    ) {
-      window.location.href = APP_ROUTES.KYC.BECOME_MERCHANT;
-    } else {
-      window.location.href = APP_ROUTES.KYC.LEVEL3VERIFICATION;
-    }
+    goToNextKycRoute(user);
   };
+
+  const { disabled, label } = useMemo(
+    () => getUpgradeButtonState(user.user!, limit),
+    [user, limit]
+  );
 
   //   HDR: FORMIK
   const formik = useFormik({
@@ -167,9 +160,10 @@ const DepositPage = () => {
 
                 <Button
                   onClick={clickHandler}
-                  className="w-fit rounded-full px-4 py-2"
+                  className="w-fit rounded-full px-4 py-2 text-sm"
+                  disabled={disabled}
                 >
-                  Upgrade
+                  {label || "Upgrade"}
                 </Button>
               </div>
             ) : user?.user?.accountLevel === "level_2" &&

@@ -114,8 +114,6 @@ const Assets: React.FC = () => {
     [currencyRate, wallet]
   );
 
-  console.log("wallet", wallet);
-
   //   HDR: columns
   const column: ColumnDef<AssetType>[] = [
     {

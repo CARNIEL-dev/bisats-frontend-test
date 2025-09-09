@@ -1,3 +1,7 @@
+import {
+  PrimaryButton,
+  WhiteTransparentButton,
+} from "@/components/buttons/Buttons";
 import MaxWidth from "@/components/shared/MaxWith";
 import TextBox from "@/components/shared/TextBox";
 import { Button } from "@/components/ui/Button";
@@ -8,10 +12,6 @@ import dayjs from "dayjs";
 import { Check, Copy } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import {
-  PrimaryButton,
-  WhiteTransparentButton,
-} from "@/components/buttons/Buttons";
 
 const Receipt = () => {
   const { state } = useLocation();
@@ -143,7 +143,7 @@ const Receipt = () => {
               }
             />
           </div>
-          <div className="lg:flex lg:flex-nowrap  gap-x-2 gap-y-4 flex-wrap lg:items-center  w-full lg:justify-between space-y-4">
+          <div className="lg:flex lg:flex-nowrap  gap-x-2 gap-y-4 flex-wrap lg:items-center  w-full lg:justify-between">
             <div className="flex-1">
               <WhiteTransparentButton
                 text={"Dashboard"}
@@ -153,6 +153,7 @@ const Receipt = () => {
                 onClick={() => navigate(APP_ROUTES.DASHBOARD)}
               />
             </div>
+
             <div className="flex-1 ">
               <PrimaryButton
                 text={"Go to Market"}

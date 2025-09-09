@@ -5,10 +5,10 @@ import TextBox from "@/components/shared/TextBox";
 import Toast from "@/components/Toast";
 import { Button } from "@/components/ui/Button";
 import DateInput from "@/components/ui/DatePicker";
-import { APP_ROUTES } from "@/constants/app_route";
-import { GetUserDetails, UpdateUserName } from "@/redux/actions/userActions";
+import { UpdateUserName } from "@/redux/actions/userActions";
 
 import { cn, formatEmail, splitTextInMiddle } from "@/utils";
+import { goToNextKycRoute } from "@/utils/kycNavigation";
 import dayjs from "dayjs";
 
 import { useFormik } from "formik";
@@ -99,17 +99,7 @@ const Profile = () => {
   });
 
   const clickHandler = () => {
-    if (!user?.accountLevel) {
-      if (!user?.phoneNumberVerified) {
-        window.location.href = APP_ROUTES.KYC.PHONEVERIFICATION;
-      } else {
-        window.location.href = APP_ROUTES.KYC.PERSONAL;
-      }
-    } else if (user?.accountLevel === "level_1") {
-      window.location.href = APP_ROUTES.KYC.BVNVERIFICATION;
-    } else {
-      window.location.href = APP_ROUTES.KYC.LEVEL3VERIFICATION;
-    }
+    goToNextKycRoute(userState);
   };
 
   const lastUserNameChange = user?.lastUserNameChange

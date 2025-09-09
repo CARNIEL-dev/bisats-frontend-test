@@ -23,6 +23,8 @@ interface FileInputProps {
   disabled?: boolean;
   accept?: string;
   allowedTypes?: string[];
+  // Maximum allowed file size in megabytes. Default: 5MB
+  maxSizeMB?: number;
   uploadFile?: (file: File) => Promise<UploadResult>;
   autoUpload?: boolean;
   valueMapper?: ValueMapper;
@@ -61,6 +63,7 @@ const FileInputField: React.FC<FileInputProps> = ({
   valueMapper = defaultValueMapper,
   accept = ".pdf, .jpg, .jpeg, .png",
   allowedTypes = DEFAULT_ALLOWED,
+  maxSizeMB = 2,
   placeholder = "Upload (png, jpeg, jpg, pdf only)",
   className,
 }) => {
@@ -97,6 +100,20 @@ const FileInputField: React.FC<FileInputProps> = ({
     if (!allowedTypes.includes(f.type)) {
       const msg = "Only PDF, JPEG/JPG, or PNG are allowed";
       Toast.warning(msg, "Document type");
+      setFieldFail(msg);
+      e.target.value = ""; // reset the input
+      if (!autoUpload) {
+        formik.setErrors({ [name]: msg });
+      }
+      return;
+    }
+
+    // Validate file size
+    const maxBytes = maxSizeMB * 1024 * 1024;
+    if (f.size > maxBytes) {
+      const friendlySize = `${maxSizeMB}MB`;
+      const msg = `File is too large. Maximum allowed size is ${friendlySize}`;
+      Toast.warning(msg, "File size");
       setFieldFail(msg);
       e.target.value = ""; // reset the input
       if (!autoUpload) {

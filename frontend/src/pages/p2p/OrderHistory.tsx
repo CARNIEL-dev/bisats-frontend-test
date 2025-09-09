@@ -23,7 +23,6 @@ const OrderHistory = () => {
   const [selectedData, setSelectedData] = useState<OrderHistory | undefined>();
 
   const isKycVerified = [
-    userState.user?.hasAppliedToBeInLevelOne,
     userState?.kyc?.personalInformationVerified,
     userState.user?.phoneNumberVerified,
   ].every(Boolean);

@@ -48,9 +48,7 @@ const TableActionMenu = ({ adDetail, onCloseAd }: TableActionMenuProps) => {
     }
   };
 
-  const isActiveAd = ["active", "disabled", "open"].includes(
-    adDetail.status.toLowerCase()
-  );
+  const isActiveAd = ["active", "open"].includes(adDetail.status.toLowerCase());
 
   return (
     <>

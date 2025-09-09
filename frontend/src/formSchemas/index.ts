@@ -506,13 +506,17 @@ const IdentificationSchema = Yup.object().shape({
 
 const levelThreeValidationSchema = Yup.object({
   utilityBill: Yup.mixed().required("Utility bill is required"),
-  sourceOfWealth: Yup.mixed().required("Source of wealth is required"),
-  proofOfProfile: Yup.mixed().required("Proof of profile is required"),
+  cacDocument: Yup.mixed().required("Source of wealth is required"),
+  mermatDoc: Yup.mixed().nullable(),
 });
 
 // HDR: BANK SCHEMA
 
-const getBankSchema = (user?: UserDetails) => {
+const getBankSchema = (
+  user?: UserDetails & {
+    businessName: string;
+  }
+) => {
   const norm = (s = "") =>
     s
       .toLowerCase()
@@ -522,10 +526,20 @@ const getBankSchema = (user?: UserDetails) => {
       .replace(/\s+/g, " ")
       .trim();
 
-  const userTokens = [user?.firstName, user?.middleName, user?.lastName]
+  const businessNameTokens = user?.businessName
+    ?.split(" ")
     .filter(Boolean)
     .map((x) => norm(String(x)))
     .filter(Boolean);
+
+  const names = [
+    ...(user?.firstName ? [norm(user?.firstName)] : []),
+    ...(user?.middleName ? [norm(user?.middleName)] : []),
+    ...(user?.lastName ? [norm(user?.lastName)] : []),
+    ...(businessNameTokens ?? []),
+  ];
+
+  const userTokens = Array.from(new Set(names)).filter(Boolean);
 
   return Yup.object().shape({
     userId: Yup.string().required(),
@@ -576,17 +590,17 @@ export {
   AdSchema,
   BVNSchema,
   ChangePasswordSchema,
+  corporateSchema,
   EmailSchema,
+  getBankSchema,
   IdentificationSchema,
+  levelThreeValidationSchema,
   LogInSchema,
+  merchantSchema,
   PersonalInformationSchema,
   PhoneSchema,
   ResetPasswordSchema,
   SignupSchema,
   swapSchema,
   VerificationSchema,
-  levelThreeValidationSchema,
-  getBankSchema,
-  corporateSchema,
-  merchantSchema,
 };

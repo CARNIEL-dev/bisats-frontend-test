@@ -43,6 +43,13 @@ export type TMerchant = {
   photoIdentity: File | string;
 };
 
+export type TSuperMerchant = {
+  userId: string;
+  utilityBill: File | string;
+  cacDocument: File | string;
+  mermatDoc?: File | string | null;
+};
+
 export type TRequestPhone = {
   userId: string;
   phoneNumber: string;

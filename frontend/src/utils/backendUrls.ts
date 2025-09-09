@@ -45,6 +45,7 @@ export const BACKEND_URLS = {
     POST_SOURCE_WEALTH: "/upload-source-of-wealth-document",
     POST_PROOF_PROFILE: "/upload-proof-of-profile-document",
     BECOME_MERCHANT: "/become-a-merchant",
+    BECOME_SUPER_MERCHANT: "/become-a-super-merchant",
   },
 
   DASHBOARD: {

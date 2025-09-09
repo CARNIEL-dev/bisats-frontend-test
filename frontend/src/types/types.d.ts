@@ -80,6 +80,7 @@ type TUser = {
   withdrawalAddresses: TUserWalletAddress[] | null;
 
   hasAppliedToBecomeAMerchant: boolean;
+  hasAppliedToBecomeASuperMerchant: boolean;
   hasAppliedToBeInLevelOne: boolean;
   bankAccounts: {
     [key: string]: any;
@@ -201,6 +202,7 @@ type AdsTypes = {
   minimumLimit: number;
   maximumLimit: number;
   createdAt: string; // ISO timestamp
+  reason?: string | null; // Optional admin reason for disabled ads
 };
 
 interface User {
@@ -265,6 +267,7 @@ type AdsType = {
     lastName: string;
     accountLevel: string;
   };
+  reason?: string;
 };
 
 interface Coin {

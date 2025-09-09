@@ -1,13 +1,16 @@
 import StudentCard from "@/assets/student-card.svg";
-import { APP_ROUTES } from "@/constants/app_route";
 
 import { useSelector } from "react-redux";
 
-import { formatCompactNumber } from "@/utils";
+import { formatCompactNumber, getUpgradeButtonState } from "@/utils";
+import { goToNextKycRoute } from "@/utils/kycNavigation";
 import { bisats_limit } from "@/utils/transaction_limits";
 import { useMemo } from "react";
-import { PrimaryButton, RedTransparentButton } from "../buttons/Buttons";
-import ModalTemplate from "./ModalTemplate";
+import {
+  PrimaryButton,
+  RedTransparentButton,
+} from "@/components/buttons/Buttons";
+import ModalTemplate from "@/components/Modals/ModalTemplate";
 
 interface Props {
   close: () => void;
@@ -24,18 +27,13 @@ const KycUpgrade: React.FC<Props> = ({ close }) => {
   const limit = bisats_limit[userLevel as keyof typeof bisats_limit];
 
   const clickHandler = () => {
-    if (!user?.user?.phoneNumberVerified) {
-      window.location.href = APP_ROUTES.KYC.PHONEVERIFICATION;
-    } else if (!user.kyc?.personalInformationVerified) {
-      window.location.href = APP_ROUTES.KYC.PERSONAL;
-    } else if (!user?.kyc.identificationVerified) {
-      window.location.href = APP_ROUTES.KYC.IDENTITY;
-    } else if (!user?.kyc?.bvnVerified) {
-      window.location.href = APP_ROUTES.KYC.BVNVERIFICATION;
-    } else {
-      window.location.href = APP_ROUTES.KYC.LEVEL3VERIFICATION;
-    }
+    goToNextKycRoute(userState);
   };
+
+  const { disabled, label } = useMemo(
+    () => getUpgradeButtonState(user.user!, limit),
+    [user, limit]
+  );
 
   const account_level_features = useMemo(() => {
     return [
@@ -79,16 +77,17 @@ const KycUpgrade: React.FC<Props> = ({ close }) => {
         <div className="bg-[#F9F9FB] p-2 my-5 w-fit text-left border border-[#F9F9FB] rounded-[8px] text-[12px] text-[#515B6E]  h-fit flex flex-col space-y-2 ">
           {account_level_features.map((feat, idx) => (
             <p className="flex items-center" key={idx}>
-              <p className="w-[4px] bg-[#C2C7D2] rounded-[50%]  mr-1.5 h-[4px]"></p>
+              <span className="w-[4px] bg-[#C2C7D2] rounded-[50%]  mr-1.5 h-[4px]"></span>
               <span>{feat}</span>
             </p>
           ))}
         </div>
         <PrimaryButton
           className={"w-full"}
-          text={"Upgrade"}
+          text={label || "Upgrade"}
           loading={false}
           onClick={clickHandler}
+          disabled={disabled}
         />
         <RedTransparentButton
           className={"w-full my-3"}

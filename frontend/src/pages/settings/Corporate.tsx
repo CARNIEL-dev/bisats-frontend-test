@@ -24,7 +24,9 @@ const Corporate = () => {
   const userId: string = userState.user?.userId || "";
 
   const isCorporatePending =
-    userState.user?.cooperateAccountVerificationRequest?.status === "pending";
+    userState.user?.cooperateAccountVerificationRequest?.status.toLowerCase() ===
+    "pending";
+
   const isCorporateRejected =
     userState.user?.cooperateAccountVerificationRequest?.status === "rejected";
 
@@ -34,7 +36,8 @@ const Corporate = () => {
     if (isCorporatePending) {
       setShowModal(true);
     }
-  }, []);
+  }, [isCorporatePending]);
+
   const formik = useFormik({
     initialValues: {
       cacApplicationDocument: null,

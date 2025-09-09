@@ -169,6 +169,41 @@ const getSafeValue = (value: number | undefined | null): number => {
   return value ?? 0;
 };
 
+function getUpgradeButtonState(
+  user?: TUser | { [key: string]: any },
+  limits?: unknown
+) {
+  const appliedLevel1 = !!user?.hasAppliedToBeInLevelOne;
+  const hasLevel = !!user?.accountLevel;
+  const isLevel1 = user?.accountLevel === "level_1";
+  const isLevel2 = user?.accountLevel === "level_2";
+  const appliedMerchant = !!user?.hasAppliedToBecomeAMerchant;
+  const appliedSuperMerchant = !!user?.hasAppliedToBecomeASuperMerchant;
+  const bvnOk = !!user?.kyc?.bvnVerified;
+
+  const disabled =
+    (appliedLevel1 && !hasLevel) ||
+    (appliedMerchant && isLevel1) ||
+    (appliedSuperMerchant && isLevel2);
+
+  let label = "Upgrade";
+  if (appliedLevel1 && !hasLevel) {
+    label = "Pending verification";
+  } else if (appliedMerchant && isLevel1) {
+    label = "Pending Merchant Approval";
+  } else if (appliedSuperMerchant && isLevel2) {
+    label = "Pending Super Merchant Approval";
+  } else if (!hasLevel || !limits) {
+    label = "Verify";
+  } else if (!appliedMerchant && bvnOk) {
+    label = "Become a Merchant";
+  } else if (appliedMerchant && bvnOk) {
+    label = "Become a Super Merchant";
+  }
+
+  return { disabled, label };
+}
+
 export {
   formatter,
   formatTime,
@@ -180,4 +215,5 @@ export {
   isProduction,
   getPercentage,
   getSafeValue,
+  getUpgradeButtonState,
 };

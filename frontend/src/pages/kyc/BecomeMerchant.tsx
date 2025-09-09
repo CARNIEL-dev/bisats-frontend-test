@@ -22,13 +22,12 @@ import { Link } from "react-router-dom";
 const BecomeMerchant = () => {
   const userState: UserState = useSelector((state: any) => state.user);
   const userId: string = userState.user?.userId || "";
-  const [showModal, setShowModal] = useState(
-    userState.user?.hasAppliedToBecomeAMerchant
-  );
 
   const isPending =
     userState.user?.hasAppliedToBecomeAMerchant &&
     userState.user?.accountLevel === "level_2";
+
+  const [showModal, setShowModal] = useState(isPending);
 
   useEffect(() => {
     if (userState.user?.hasAppliedToBecomeAMerchant || isPending) {
@@ -91,6 +90,7 @@ const BecomeMerchant = () => {
                 label="Upload a recent utility bill (Not later than 4months ago)"
                 name="utilityBill"
                 autoUpload={false}
+                maxSizeMB={2}
                 valueMapper={(value) => value}
                 formik={formik}
               />
@@ -103,6 +103,7 @@ const BecomeMerchant = () => {
                 valueMapper={(value) => value}
                 formik={formik}
                 autoUpload={false}
+                maxSizeMB={2}
               />
             </div>
 

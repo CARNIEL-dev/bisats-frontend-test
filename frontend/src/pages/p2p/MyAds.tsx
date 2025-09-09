@@ -18,9 +18,10 @@ import { updateAdStatus, useFetchUserAds } from "@/redux/actions/walletActions";
 
 import { ACTIONS } from "@/utils/transaction_limits";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Check } from "lucide-react";
+import ModalTemplate from "@/components/Modals/ModalTemplate";
 
 export interface Ad {
   id: string;
@@ -50,7 +51,6 @@ const MyAds = () => {
   const navigate = useNavigate();
 
   const isKycVerified = [
-    userState?.user?.hasAppliedToBeInLevelOne,
     userState?.kyc?.personalInformationVerified,
     userState.user?.phoneNumberVerified,
   ].every(Boolean);
@@ -105,6 +105,9 @@ const MyAds = () => {
       status: newStatus,
     });
   };
+
+  // SUB: Disabled reason modal state
+  const [showReasonAd, setShowReasonAd] = useState<AdsTypes | null>(null);
 
   const handleCloseAd = (adId: string) => {
     mutation.mutate({
@@ -267,6 +270,10 @@ const MyAds = () => {
       header: "Status",
       cell: ({ row }) => {
         const status = row.original.status;
+        const reason = (row.original as any)?.reason as string | undefined;
+        const hasAdminReason =
+          status?.toLowerCase() === "disabled" &&
+          Boolean(reason && reason.trim());
         const isUpdating =
           mutation.isPending && mutation.variables?.adId === row.original.id;
         return (
@@ -287,6 +294,14 @@ const MyAds = () => {
             {status.toLowerCase() !== "closed" &&
               (isUpdating ? (
                 <div className="w-5 h-5 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin" />
+              ) : hasAdminReason ? (
+                <button
+                  type="button"
+                  onClick={() => setShowReasonAd(row.original)}
+                  className="text-[11px] text-red-600 underline underline-offset-2"
+                >
+                  View reason
+                </button>
               ) : (
                 <Switch
                   checked={status === "active"}
@@ -385,6 +400,52 @@ const MyAds = () => {
           </div>
         )}
       </div>
+
+      {/* SUB: Disabled reason modal */}
+      <ModalTemplate
+        isOpen={Boolean(showReasonAd)}
+        onClose={() => setShowReasonAd(null)}
+        // primary={false}
+      >
+        {showReasonAd && (
+          <div className="space-y-3">
+            <h3 className="text-lg font-semibold text-gray-800">Ad Disabled</h3>
+            <div className="text-sm text-gray-600 grid grid-cols-2 gap-2">
+              <p>
+                <span className="text-gray-400">Type:</span> {showReasonAd.type}
+              </p>
+              <p>
+                <span className="text-gray-400">Asset:</span>{" "}
+                {showReasonAd.asset}
+              </p>
+              <p>
+                <span className="text-gray-400">Price:</span> xNGN{" "}
+                {formatter({ decimal: 0 }).format(showReasonAd.price)}
+              </p>
+              <p>
+                <span className="text-gray-400">Created:</span>{" "}
+                {showReasonAd.createdAt
+                  ? dayjs(showReasonAd.createdAt).format("DD/MM/YYYY")
+                  : "N/A"}
+              </p>
+            </div>
+
+            <div className="rounded-md border bg-neutral-50 p-3">
+              <p className="text-xs text-gray-500 mb-1">Reason</p>
+              <p className="text-sm text-gray-800 whitespace-pre-wrap">
+                {(showReasonAd as any)?.reason || "No reason provided"}
+              </p>
+            </div>
+            <p className="text-[11px] text-gray-500">
+              If you believe this action was a mistake, please contact support
+              to rectify.
+            </p>
+            <div className="flex justify-end">
+              <Button onClick={() => setShowReasonAd(null)}>Close</Button>
+            </div>
+          </div>
+        )}
+      </ModalTemplate>
     </div>
   );
 };

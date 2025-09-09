@@ -210,6 +210,13 @@ const NGNWithdrawal = ({ user, transaction_limits, userBalance }: PropsNGN) => {
     }
   }, [userbank, isLoading]);
 
+  /* 
+    .max(
+          userBalance,
+          `Amount cannot exceed your balance (xNGN ${userBalance.toLocaleString()})`
+        )
+  */
+
   const formik = useFormik({
     initialValues: {
       amount: "",
@@ -225,12 +232,20 @@ const NGNWithdrawal = ({ user, transaction_limits, userBalance }: PropsNGN) => {
         )
         .moreThan(0, "Amount must be greater than 0")
         .max(
-          userBalance,
-          `Amount cannot exceed your balance (xNGN ${userBalance.toLocaleString()})`
-        )
-        .max(
           maxWithdrawalLimit,
           `Amount exceeds your limit per withdrawal (xNGN ${maxWithdrawalLimit.toLocaleString()})`
+        )
+        .test(
+          "max-balance",
+          `Amount cannot exceed your balance (xNGN ${formatter({}).format(
+            userBalance
+          )})`,
+          (value) => {
+            if (value === undefined || value === null) return true;
+            const numericValue = Number(value);
+            if (Number.isNaN(numericValue)) return true; // let Yup handle required/number errors
+            return numericValue <= userBalance;
+          }
         )
         .required("Amount is required"),
     }),
@@ -302,6 +317,7 @@ const NGNWithdrawal = ({ user, transaction_limits, userBalance }: PropsNGN) => {
                   type="number"
                   min={userTransactionLimits?.minimum_fiat_withdrawal}
                   max={Math.min(userBalance, maxWithdrawalLimit)}
+                  inputMode="numeric"
                   error={formik.errors.amount}
                   touched={
                     Number(formik.values.amount) > maxWithdrawalLimit
@@ -322,6 +338,7 @@ const NGNWithdrawal = ({ user, transaction_limits, userBalance }: PropsNGN) => {
                     formik.setFieldValue("amount", val);
                   }}
                 />
+                <p>Balance: {userBalance}</p>
                 <SummaryCard
                   type="fiat"
                   currency={"xNGN"}
@@ -336,13 +353,21 @@ const NGNWithdrawal = ({ user, transaction_limits, userBalance }: PropsNGN) => {
                         )
                   }
                   fee={
-                    !formik.values.amount
+                    !formik.values.amount || !formik.isValid
                       ? "-"
                       : userTransactionLimits?.charge_on_single_withdrawal_fiat
                   }
-                  amount={formatNumber(formik.values.amount ?? "-")}
+                  amount={formatNumber(
+                    formik.errors.amount || !formik.isValid
+                      ? "-"
+                      : formatter({ decimal: 2 }).format(
+                          isNaN(parseFloat(formik.values.amount))
+                            ? 0
+                            : parseFloat(formik.values.amount)
+                        )
+                  )}
                   total={`${formatNumber(
-                    !formik.values.amount
+                    !formik.values.amount || !formik.isValid
                       ? "-"
                       : Number(formik.values.amount ?? 0) +
                           userTransactionLimits?.charge_on_single_withdrawal_fiat

@@ -1,6 +1,6 @@
 import ID from "@/assets/student-card.svg";
 import { Button } from "@/components/ui/Button";
-import { APP_ROUTES } from "@/constants/app_route";
+import { goToNextKycRoute } from "@/utils/kycNavigation";
 
 import { useSelector } from "react-redux";
 
@@ -8,17 +8,7 @@ const KycBanner = () => {
   const user: UserState = useSelector((state: any) => state.user);
 
   const clickHandler = () => {
-    if (!user?.user?.phoneNumberVerified) {
-      window.location.href = APP_ROUTES.KYC.PHONEVERIFICATION;
-    } else if (!user.kyc?.personalInformationVerified) {
-      window.location.href = APP_ROUTES.KYC.PERSONAL;
-    } else if (!user?.kyc.identificationVerified) {
-      window.location.href = APP_ROUTES.KYC.IDENTITY;
-    } else if (!user?.kyc?.bvnVerified) {
-      window.location.href = APP_ROUTES.KYC.BVNVERIFICATION;
-    } else {
-      window.location.href = APP_ROUTES.KYC.LEVEL3VERIFICATION;
-    }
+    goToNextKycRoute(user);
   };
   return (
     <div className="w-full bst-kyc-banner flex items-start py-5 md:px-7 px-3 rounded-[12px] gap-3">

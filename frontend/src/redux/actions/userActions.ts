@@ -22,6 +22,7 @@ import {
   TUpdate2FAStatus,
   TVerify2FARequest,
   TVerifyPhone,
+  TSuperMerchant,
 } from "@/types/user";
 import { BACKEND_URLS } from "@/utils/backendUrls";
 import dispatchWrapper from "@/utils/dispatchWrapper";
@@ -579,6 +580,35 @@ export const Become_Merchant_Hanlder = async (payload: TMerchant) => {
   try {
     const response = await fetch(
       `${BACKEND_URLS.BASE_URL}/api/v1/user/${payload.userId}${BACKEND_URLS.KYC.BECOME_MERCHANT}`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `${token}`,
+        },
+        body: formData,
+      }
+    );
+    const data = response.json();
+
+    return data;
+  } catch (error) {
+    // throw handleApiError(error);
+    return error;
+  }
+};
+
+export const PostLevelThreeInformation = async (payload: TSuperMerchant) => {
+  const formData = new FormData();
+  formData.append("document1", payload.utilityBill);
+  formData.append("document2", payload.cacDocument);
+  if (payload.mermatDoc) {
+    formData.append("document3", payload.mermatDoc);
+  }
+  const token = getToken();
+
+  try {
+    const response = await fetch(
+      `${BACKEND_URLS.BASE_URL}/api/v1/user/${payload.userId}${BACKEND_URLS.KYC.BECOME_SUPER_MERCHANT}`,
       {
         method: "POST",
         headers: {

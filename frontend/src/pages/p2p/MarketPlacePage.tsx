@@ -71,7 +71,6 @@ const MarketPlacePage = () => {
   const userId: string = userState?.user?.userId || "";
 
   const isKycVerified = [
-    userState?.user?.hasAppliedToBeInLevelOne,
     userState?.kyc?.personalInformationVerified,
     userState.user?.phoneNumberVerified,
   ].every(Boolean);

@@ -60,6 +60,13 @@ const WithdrawalBankAccount: React.FC<Props> = ({
     }));
   }, [banks]);
 
+  const corporateName = useMemo(() => {
+    const corporateName = user?.cooperateAccountVerificationRequest;
+    if (!corporateName?.status || corporateName.status !== "approved")
+      return "";
+    return `${corporateName.businessName}`;
+  }, [user]);
+
   const formik = useFormik({
     initialValues: {
       userId: user?.userId as string,
@@ -74,6 +81,7 @@ const WithdrawalBankAccount: React.FC<Props> = ({
       firstName: user?.firstName,
       middleName: user?.middleName,
       lastName: user?.lastName,
+      businessName: corporateName,
     }),
     onSubmit: async (values) => {
       const { ...payload } = values;
@@ -218,7 +226,7 @@ const WithdrawalBankAccount: React.FC<Props> = ({
                   loading={loading}
                   value={formik.values.accountName || ""}
                   readOnly
-                  // disabled
+                  disabled
                   error={
                     formik.touched.accountName && formik.errors.accountName
                   }
