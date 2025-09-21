@@ -6,20 +6,24 @@ import SEO from "@/components/shared/SEO";
 
 const DashboardLayout: React.FC = () => {
   useEffect(() => {
-    (window as any).Tawk_API = (window as any).Tawk_API || {};
-    (window as any).Tawk_LoadStart = new Date();
+    const inlineScript = document.createElement("script");
+    inlineScript.type = "text/javascript";
+    inlineScript.text =
+      "window.$zoho=window.$zoho || {};" +
+      "$zoho.salesiq=$zoho.salesiq||{ready:function(){}};";
 
-    const script = document.createElement("script");
-    script.async = true;
-    script.src = process.env.REACT_APP_TAWK_URL!;
-    script.charset = "UTF-8";
-    script.setAttribute("crossorigin", "*");
+    const zohoScript = document.createElement("script");
+    zohoScript.id = "zsiqscript";
+    zohoScript.src = process.env.REACT_APP_ZOHO_URL!;
+    zohoScript.defer = true;
 
-    document.body.appendChild(script);
+    document.body.appendChild(inlineScript);
+    document.body.appendChild(zohoScript);
 
     // Cleanup on unmount
     return () => {
-      document.body.removeChild(script);
+      document.body.removeChild(inlineScript);
+      document.body.removeChild(zohoScript);
     };
   }, []);
 

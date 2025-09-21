@@ -538,6 +538,7 @@ const CryptoWithdrawal = ({
         amount: inDecimal,
         address: values.walletAddress ?? "",
         asset: getCryptoAssetId(formik.values.network) ?? "",
+        network: values.network,
       };
       await Withdraw_Crypto(payload)
         .then(async (res) => {

@@ -80,6 +80,7 @@ export type TCryptoWithdrawalRequest = {
   amount: number;
   address: string;
   asset: string;
+  network: string;
 };
 
 export type TDepositBreakDowns = {

@@ -244,7 +244,7 @@ export const PostPersonalInformation_KYC = async (
       }
     );
     const data = response.data;
-    console.log(data);
+
     dispatchWrapper({ type: GeneralTypes.SUCCESS, payload: data });
 
     return response;
