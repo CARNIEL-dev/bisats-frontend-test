@@ -35,7 +35,7 @@ import ErrorDisplay from "@/components/shared/ErrorDisplay";
 import SummaryCard from "@/components/shared/SummaryCard";
 import TokenSelection from "@/components/shared/TokenSelection";
 import { Button } from "@/components/ui/Button";
-import { getUserTokenData } from "@/helpers";
+import { getToken, getUserTokenData } from "@/helpers";
 import PreLoader from "@/layouts/PreLoader";
 import KycManager from "@/pages/kyc/KYCManager";
 import {
@@ -486,6 +486,10 @@ const CryptoWithdrawal = ({
   // const maxWithdrawalLimit =
   //   userTransactionLimits?.maximum_crypto_withdrawal || Infinity;
 
+  // const tokens = getToken();
+  // console.log("Tokens", tokens);
+
+  // HDR: : List of networks
   const tokenData: TNetwork[] = useMemo(() => {
     const token = getUserTokenData();
 
@@ -495,16 +499,6 @@ const CryptoWithdrawal = ({
 
     return networks || [];
   }, [asset]);
-
-  const getCryptoAssetId = (network: string) => {
-    const isDev =
-      process.env.REACT_APP_NODE_ENV === "development" ||
-      process.env.VERCEL_ENV === "development";
-
-    const cryptoAsset = cryptoAssets?.find((item) => item?.network === network);
-
-    return isDev ? cryptoAsset?.assetId : cryptoAsset?.asset;
-  };
 
   // SUB: ================= FOrmik =====================
   const formik = useFormik({
@@ -537,8 +531,8 @@ const CryptoWithdrawal = ({
         userId: `${user?.userId}`,
         amount: inDecimal,
         address: values.walletAddress ?? "",
-        asset: getCryptoAssetId(formik.values.network) ?? "",
-        network: values.network,
+        asset: asset,
+        chain: values.network,
       };
       await Withdraw_Crypto(payload)
         .then(async (res) => {

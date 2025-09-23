@@ -1,6 +1,5 @@
 import {
   getToken,
-  getUser,
   getUserId,
   setLivePrices,
   setUserTokenData,
@@ -487,15 +486,19 @@ function transformAssets(data: any[]) {
   const result: {
     id: string;
     tokenName: string;
-    networks: { value: string; label: string; address: string }[];
+    networks: {
+      value: string;
+      label: string;
+      address: string;
+    }[];
   }[] = [];
 
-  data.forEach(({ asset, network, address }) => {
+  data.forEach(({ asset, network, address, displayName }) => {
     let existing = result.find((item) => item.id === asset);
 
     const networkObj = {
       value: network,
-      label: network,
+      label: displayName,
       address,
     };
 
@@ -844,18 +847,18 @@ const useGetBankList = ({
 };
 
 export {
-  getUserAds,
-  updateAdStatus,
-  useFetchOrder,
-  useUserWalletHistory,
-  getCryptoRates,
   getCoinRates,
-  useFetchUserAds,
-  toggleShowBalance,
+  getCryptoRates,
+  getUserAds,
   setWalletCurrency,
-  useCryptoRates,
+  toggleShowBalance,
+  updateAdStatus,
   useAssetRate,
-  useGetAdsDetails,
+  useCryptoRates,
+  useFetchOrder,
+  useFetchUserAds,
   useGetAdsDetail,
+  useGetAdsDetails,
   useGetBankList,
+  useUserWalletHistory,
 };
