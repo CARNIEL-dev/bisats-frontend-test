@@ -23,8 +23,13 @@ import { countryDataForPhone } from "@/utils/data";
 const PhoneVerifcation = () => {
   const user: UserState = useSelector((state: any) => state.user);
 
+  const isWaitingForVerification =
+    user?.user?.phoneNumber && !user?.user?.phoneNumberVerified;
+
   const [selectedCountry, setSelectedCountry] = useState("NG");
-  const [verficationScreen, setVerificationScreen] = useState(false);
+  const [verficationScreen, setVerificationScreen] = useState(
+    isWaitingForVerification
+  );
   const navigate = useNavigate();
 
   const normalizePhoneNumber = (input: string, selectedCountryCode: string) => {
@@ -149,28 +154,30 @@ const PhoneVerifcation = () => {
           }
         />
         {verficationScreen ? (
-          <form onSubmit={formik1.handleSubmit}>
+          <>
             <div className="w-full mt-10">
-              <PrimaryInput
-                type="code"
-                name="code"
-                label="Code"
-                className="w-full h-[48px] px-3 outline-hidden "
-                error={formik1.errors.code}
-                touched={formik1.touched.code}
-                value={formik1.values.code}
-                onChange={formik1.handleChange}
-                onBlur={formik1.handleBlur}
-              />
-              <div className="w-full my-3">
-                <PrimaryButton
-                  className={"w-full"}
-                  text={"Enter code"}
-                  loading={formik1.isSubmitting}
-                  type="submit"
-                  disabled={formik1.isSubmitting || !formik1.isValid}
+              <form onSubmit={formik1.handleSubmit}>
+                <PrimaryInput
+                  type="code"
+                  name="code"
+                  label="Code"
+                  className="w-full h-[48px] px-3 outline-hidden "
+                  error={formik1.errors.code}
+                  touched={formik1.touched.code}
+                  value={formik1.values.code}
+                  onChange={formik1.handleChange}
+                  onBlur={formik1.handleBlur}
                 />
-              </div>
+                <div className="w-full my-3">
+                  <PrimaryButton
+                    className={"w-full"}
+                    text={"Enter code"}
+                    loading={formik1.isSubmitting}
+                    type="submit"
+                    disabled={formik1.isSubmitting || !formik1.isValid}
+                  />
+                </div>
+              </form>
 
               <ResendCodeButton
                 onClick={resendOTP}
@@ -178,7 +185,7 @@ const PhoneVerifcation = () => {
                 text="Resend OTP"
               />
             </div>
-          </form>
+          </>
         ) : (
           <form onSubmit={formik.handleSubmit}>
             <div className="w-full mt-10">

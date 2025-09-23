@@ -151,7 +151,7 @@ const Profile = () => {
               "text-gray-500 text-sm hover:bg-primary/20 rounded-full"
             )}
             onClick={() => setIsEditing(true)}
-            disabled={!user?.accountLevel}
+            // disabled={!user?.accountLevel}
           >
             <Edit />
             <span>Edit</span>

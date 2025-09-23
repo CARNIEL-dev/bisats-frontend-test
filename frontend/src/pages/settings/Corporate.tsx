@@ -115,6 +115,7 @@ const Corporate = () => {
             />
           </div>
 
+          <SecurityBanner />
           <div className="mt-5">
             <PrimaryButton
               className={"w-full"}
@@ -124,7 +125,6 @@ const Corporate = () => {
             />
           </div>
         </form>
-        <SecurityBanner />
       </div>
       {showModal && (
         <ModalTemplate onClose={() => {}} showCloseButton={false}>

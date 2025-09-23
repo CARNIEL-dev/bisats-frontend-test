@@ -220,7 +220,7 @@ const Payment = () => {
 
       {WalletAddress.length > 0 && (
         <div>
-          <h4 className="font-semibold">Wallet Addres</h4>
+          <h4 className="font-semibold">Wallet Address</h4>
           {WalletAddress.map((details: TUserWalletAddress, idx: number) => (
             <div
               className="bg-[#F9F9FB] rounded-[8px] p-3 md:px-10 px-4 my-5"

@@ -70,8 +70,6 @@ const Level3Verification = () => {
     },
   });
 
-  console.log(user);
-
   const account_level_features = useMemo(() => {
     return [
       `Create sell ads (max ${formatCompactNumber(

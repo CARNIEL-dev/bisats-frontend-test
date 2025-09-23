@@ -59,7 +59,7 @@ const KycManager: React.FC<TKycManager> = ({ action, func, children }) => {
         setModal("2fa");
         return;
       }
-      if (user?.user?.wallet?.pinSet && !user?.user?.twoFactorAuthEnabled) {
+      if (!user?.user?.twoFactorAuthEnabled) {
         setModal("required2fa");
         return;
       }

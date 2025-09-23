@@ -35,7 +35,7 @@ import ErrorDisplay from "@/components/shared/ErrorDisplay";
 import SummaryCard from "@/components/shared/SummaryCard";
 import TokenSelection from "@/components/shared/TokenSelection";
 import { Button } from "@/components/ui/Button";
-import { getToken, getUserTokenData } from "@/helpers";
+import { getUserTokenData } from "@/helpers";
 import PreLoader from "@/layouts/PreLoader";
 import KycManager from "@/pages/kyc/KYCManager";
 import {
@@ -48,6 +48,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Decimal from "decimal.js";
 import { FormikProps, useFormik } from "formik";
 import { X } from "lucide-react";
+import { isWalletValid, WalletType } from "r2c-wallet-validator";
 
 export type TNetwork = {
   label: string;
@@ -486,9 +487,6 @@ const CryptoWithdrawal = ({
   // const maxWithdrawalLimit =
   //   userTransactionLimits?.maximum_crypto_withdrawal || Infinity;
 
-  // const tokens = getToken();
-  // console.log("Tokens", tokens);
-
   // HDR: : List of networks
   const tokenData: TNetwork[] = useMemo(() => {
     const token = getUserTokenData();
@@ -509,7 +507,71 @@ const CryptoWithdrawal = ({
       walletName: "",
     },
     validationSchema: Yup.object().shape({
-      walletAddress: Yup.string().required("Wallet address is required"),
+      walletAddress: Yup.string()
+        .required("Wallet address is required")
+        .test("wallet-address-validation", function (value) {
+          const isValid = isWalletValid(value);
+
+          if (isValid.valid) {
+            switch (asset.toLowerCase()) {
+              case "sol":
+                if (isValid.type !== WalletType.SOLANA)
+                  return this.createError({
+                    message: "Please enter a valid Solana wallet address",
+                  });
+                break;
+              case "btc":
+                if (isValid.type !== WalletType.BITCOIN)
+                  return this.createError({
+                    message: "Please enter a valid Bitcoin wallet address",
+                  });
+                break;
+              case "eth":
+                if (isValid.type !== WalletType.EVM)
+                  return this.createError({
+                    message: "Please enter a valid Ethereum wallet address",
+                  });
+                break;
+
+              default:
+                if (
+                  isValid.type === WalletType.BITCOIN &&
+                  asset.toLowerCase() !== "btc"
+                )
+                  return this.createError({
+                    message: "Please enter a valid wallet address",
+                  });
+                if (
+                  isValid.type === WalletType.SOLANA &&
+                  asset.toLowerCase() !== "sol"
+                )
+                  return this.createError({
+                    message: "Please enter a valid wallet address",
+                  });
+
+                return isValid.valid;
+            }
+            // switch (isValid.type) {
+            //   case WalletType.SOLANA:
+            //     if (asset.toLowerCase() !== "sol")
+            //       return this.createError({
+            //         message: "Please enter a valid Solana wallet address",
+            //       });
+            //     break;
+            //   case WalletType.BITCOIN:
+            //     if (asset.toLowerCase() !== "btc")
+            //       return this.createError({
+            //         message: "Please enter a valid Bitcoin wallet address",
+            //       });
+            //     break;
+
+            //   default:
+            //     return isValid.valid;
+            // }
+          }
+
+          return isValid.valid;
+        }),
       amount: Yup.number()
         .transform((_, originalValue) =>
           originalValue === "" || isNaN(originalValue)
@@ -725,7 +787,7 @@ const CryptoWithdrawal = ({
           }
         />
         <KycManager
-          action={ACTIONS.WITHDRAW_NGN}
+          action={ACTIONS.WITHDRAW_CRYPTO}
           func={() => setWithDrawalModal(true)}
         >
           {(validateAndExecute) => (

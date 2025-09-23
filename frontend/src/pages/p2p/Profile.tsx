@@ -3,21 +3,20 @@ import ErrorDisplay from "@/components/shared/ErrorDisplay";
 import MaxWidth from "@/components/shared/MaxWith";
 import SEO from "@/components/shared/SEO";
 import { Button } from "@/components/ui/Button";
-import { APP_ROUTES } from "@/constants/app_route";
 import PreLoader from "@/layouts/PreLoader";
 import {
   GET_ACTIVITY_SUMMARY,
   GetUserDetails,
 } from "@/redux/actions/userActions";
 
+import { getUpgradeButtonState } from "@/utils";
+import { goToNextKycRoute } from "@/utils/kycNavigation";
 import { formatNumber } from "@/utils/numberFormat";
 import { AccountLevel, bisats_limit } from "@/utils/transaction_limits";
 import { useQuery } from "@tanstack/react-query";
 import { BadgeCheck, Info } from "lucide-react";
 import { useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
-import { goToNextKycRoute } from "@/utils/kycNavigation";
-import { getUpgradeButtonState } from "@/utils";
 
 type TActivitySummary = {
   currentActiveAds: number;
@@ -52,14 +51,13 @@ const getKycStatus = (userState: UserState) => {
     {
       type: "Is Merchant",
       verified:
-        userState?.user?.hasAppliedToBecomeAMerchant &&
+        (userState?.user?.hasAppliedToBecomeAMerchant ||
+          Number(userState?.user?.accountLevel?.split("_")[1] > 2)) &&
         Number(userState?.user?.accountLevel?.split("_")[1]) >= 2,
     },
     {
       type: "Is Super Merchant",
-      verified:
-        userState?.user?.accountLevel === "level_3" &&
-        userState.user.hasAppliedToBecomeAMerchant,
+      verified: userState?.user?.accountLevel === "level_3",
     },
   ];
   return kycStatus;

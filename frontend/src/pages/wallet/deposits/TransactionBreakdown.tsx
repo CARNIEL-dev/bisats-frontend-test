@@ -18,6 +18,7 @@ import { useSelector } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Head from "@/pages/wallet/Head";
 import { useQueryClient } from "@tanstack/react-query";
+import SecurityBanner from "@/components/shared/SecurityBanner";
 
 type TBank = {
   id: string;
@@ -175,6 +176,12 @@ const TransactionBreakdown = () => {
                   </p>
                 </div>
               </div>
+            </div>
+            <div className="my-5">
+              <SecurityBanner
+                text="For security reasons, deposits are only accepted from bank accounts that match the name on your Bisats account. Transactions from accounts with different names may be delayed or rejected. "
+                alertType="danger"
+              />
             </div>
             <PrimaryButton
               text={"I have made payment"}

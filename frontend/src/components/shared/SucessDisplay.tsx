@@ -23,7 +23,7 @@ const SucessDisplay = ({
       !user.hasAppliedToBecomeAMerchant);
 
   return (
-    <div className="flex items-center flex-col gap-4 w-full">
+    <div className="flex items-center text-center flex-col gap-4 w-full">
       <div className="size-10 rounded-full flex items-center justify-center bg-amber-300">
         <Check className="size-[25px] text-white" />
       </div>

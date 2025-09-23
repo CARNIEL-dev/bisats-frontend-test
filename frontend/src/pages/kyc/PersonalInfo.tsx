@@ -33,7 +33,7 @@ const PersonalInfo = () => {
       lastName: "",
       dateOfBirth: "",
       nationality: "",
-      businessName: "",
+      // businessName: "",
       address: "",
     },
     validationSchema: PersonalInformationSchema,
@@ -131,7 +131,7 @@ const PersonalInfo = () => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-
+          {/* 
           <PrimaryInput
             className="w-full h-[48px]"
             name="businessName"
@@ -143,7 +143,7 @@ const PersonalInfo = () => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             info="This is very important in verifying your application to be a merchant"
-          />
+          /> */}
 
           <div className="mt-4">
             <PrimaryButton

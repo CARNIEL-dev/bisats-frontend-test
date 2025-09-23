@@ -495,7 +495,7 @@ const PersonalInformationSchema = Yup.object().shape({
   dateOfBirth: Yup.string().required("Date of birth is required"),
   nationality: Yup.string().required("Nationality is required"),
   address: Yup.string().required("Address is required"),
-  businessName: Yup.string().required("Business name is required"),
+  businessName: Yup.string().optional(),
 });
 
 const IdentificationSchema = Yup.object().shape({
@@ -520,14 +520,14 @@ const getBankSchema = (
   const norm = (s = "") =>
     s
       .toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/[^a-z\s]/g, " ")
-      .replace(/\s+/g, " ")
+      .normalize("NFD") // decompose
+      .replace(/[\u0300-\u036f]/g, "") // remove diacritics
+      .replace(/[^a-z\s]/g, " ") // remove non-alphabetic characters
+      .replace(/\s+/g, " ") // replace multiple spaces with a single space
       .trim();
 
   const businessNameTokens = user?.businessName
-    ?.split(" ")
+    ?.split(/[()\s]+/) // split by spaces and brackets
     .filter(Boolean)
     .map((x) => norm(String(x)))
     .filter(Boolean);

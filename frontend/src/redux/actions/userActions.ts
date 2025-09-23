@@ -700,7 +700,6 @@ export const VerifyTwoFactorAuth = async (payload: TVerify2FARequest) => {
 
 export const UpdateTwoFactorAuth = async (payload: TUpdate2FAStatus) => {
   try {
-    console.log("UpdateTwoFactorAuth", payload);
     const response = await Bisatsfetch(
       `/api/v1/user/${payload.userId}${
         payload.enable

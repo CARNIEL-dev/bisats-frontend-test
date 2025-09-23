@@ -143,7 +143,7 @@ const BVNVerification = () => {
             <div className=" mb-4 mt-10">
               <SucessDisplay
                 heading="BVN Submitted Successfully"
-                subheading="Your details are currently being reviewed"
+                subheading="Your details are currently being reviewed, you can apply to be a merchant after the review is complete"
                 onClick={() => navigate(APP_ROUTES.KYC.LEVEL3VERIFICATION)}
                 user={user?.user!}
               />
