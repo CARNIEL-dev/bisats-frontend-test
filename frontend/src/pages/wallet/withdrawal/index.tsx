@@ -12,6 +12,7 @@ import WithdrawalConfirmationNGN from "@/components/Modals/WithdrawalConfirmatio
 import Toast from "@/components/Toast";
 import Head from "@/pages/wallet/Head";
 import {
+  getNetworkFee,
   GetUserBank,
   GetWallet,
   saveWalletAddressHandler,
@@ -26,7 +27,7 @@ import {
 } from "@/utils/transaction_limits";
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 
 import ModalTemplate from "@/components/Modals/ModalTemplate";
@@ -48,6 +49,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Decimal from "decimal.js";
 import { FormikProps, useFormik } from "formik";
 import { X } from "lucide-react";
+import { APP_ROUTES } from "@/constants/app_route";
 // import { isWalletValid, WalletType } from "r2c-wallet-validator";
 
 export type TNetwork = {
@@ -156,6 +158,8 @@ type PropsNGN = {
 const NGNWithdrawal = ({ user, transaction_limits, userBalance }: PropsNGN) => {
   const [addBankModal, setAddBankModal] = useState(false);
   const [withdrawalModal, setWithDrawalModal] = useState(false);
+
+  const navigate = useNavigate();
 
   const account_level = user?.accountLevel as AccountLevel;
   const userTransactionLimits = bisats_limit[account_level];
@@ -266,6 +270,7 @@ const NGNWithdrawal = ({ user, transaction_limits, userBalance }: PropsNGN) => {
                 exact: false,
               }),
               GetWallet(),
+              navigate(APP_ROUTES.WALLET.HOME),
             ]);
           } else {
             Toast.error(res.message, "");
@@ -358,7 +363,7 @@ const NGNWithdrawal = ({ user, transaction_limits, userBalance }: PropsNGN) => {
                       ? "-"
                       : userTransactionLimits?.charge_on_single_withdrawal_fiat
                   }
-                  amount={formatNumber(
+                  amount={
                     formik.errors.amount || !formik.isValid
                       ? "-"
                       : formatter({ decimal: 2 }).format(
@@ -366,7 +371,7 @@ const NGNWithdrawal = ({ user, transaction_limits, userBalance }: PropsNGN) => {
                             ? 0
                             : parseFloat(formik.values.amount)
                         )
-                  )}
+                  }
                   total={`${formatNumber(
                     !formik.values.amount || !formik.isValid
                       ? "-"
@@ -453,6 +458,8 @@ const CryptoWithdrawal = ({
 }: PropsCrypto) => {
   const [withdrawalModal, setWithDrawalModal] = useState(false);
   const [showSavedAddressModal, setShowSavedAddressModal] = useState(false);
+
+  const navigate = useNavigate();
 
   const account_level = user?.accountLevel as AccountLevel;
   const userTransactionLimits = bisats_limit[account_level];
@@ -604,6 +611,7 @@ const CryptoWithdrawal = ({
                 exact: false,
               }),
               GetWallet(),
+              navigate(APP_ROUTES.WALLET.HOME),
             ]);
           } else {
             Toast.error(res.message, "");
@@ -618,6 +626,45 @@ const CryptoWithdrawal = ({
     },
   });
 
+  const [debouncedAmount, setDebouncedAmount] = useState(formik.values.amount);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedAmount(formik.values.amount);
+    }, 800);
+
+    return () => clearTimeout(handler);
+  }, [formik.values.amount]);
+
+  const isAmountReady =
+    debouncedAmount !== "" && !Number.isNaN(Number(debouncedAmount));
+
+  const { data, isLoading, error, isError } = useQuery({
+    queryKey: [
+      "networkFee",
+      asset,
+      debouncedAmount,
+      formik.values.walletAddress,
+      formik.values.network,
+    ],
+    queryFn: async () =>
+      await getNetworkFee({
+        userId: user?.userId,
+        paylod: {
+          amount: Number(debouncedAmount),
+          address: formik.values.walletAddress,
+          asset: asset,
+          chain: formik.values.network,
+        },
+      }),
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    enabled:
+      isAmountReady &&
+      Boolean(formik.values.walletAddress) &&
+      Boolean(formik.values.network),
+  });
+
   useEffect(() => {
     formik.resetForm({
       values: {
@@ -629,6 +676,16 @@ const CryptoWithdrawal = ({
     });
   }, [asset]);
 
+  // console.log(
+  //   "data",
+  //   data,
+  //   "error",
+  //   error,
+  //   "isError",
+  //   isError,
+  //   "Isloading",
+  //   isLoading
+  // );
   return (
     <>
       <div className="flex flex-col gap-3 mt-4">
@@ -750,6 +807,8 @@ const CryptoWithdrawal = ({
 
         <SummaryCard
           type="crypto"
+          loading={isLoading}
+          error={error}
           currency={asset}
           dailyLimit={`${formatNumber(
             userTransactionLimits?.daily_withdrawal_limit_crypto -
@@ -794,7 +853,9 @@ const CryptoWithdrawal = ({
               text={"Withdraw"}
               loading={false}
               onClick={validateAndExecute}
-              disabled={!formik.isValid || !formik.dirty}
+              disabled={
+                !formik.isValid || !formik.dirty || isLoading || isError
+              }
             />
           )}
         </KycManager>
@@ -811,6 +872,7 @@ const CryptoWithdrawal = ({
         network={formik.values.network}
       />
 
+      {/* SUB: Save address modal */}
       <ModalTemplate
         isOpen={showSavedAddressModal}
         onClose={() => setShowSavedAddressModal(false)}

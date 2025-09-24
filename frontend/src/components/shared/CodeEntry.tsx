@@ -14,7 +14,7 @@ const CodeEntry = ({ setCode, onClick, loading }: Props) => {
     <div className="p-6 max-w-md mx-auto bg-white  text-center space-y-4">
       <h2 className="text-xl font-semibold">Enter code</h2>
       <p className="text-gray-500 text-sm">
-        Enter the 6-digit code for "BISATAS" generated from your authenticator.
+        Enter the 6-digit code for "BISATS" generated from your authenticator.
       </p>
       <div className="flex justify-center gap-2">
         <PrimaryInput

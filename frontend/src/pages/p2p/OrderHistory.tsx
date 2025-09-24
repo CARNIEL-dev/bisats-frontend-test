@@ -143,10 +143,10 @@ const OrderHistoryDetails = ({
             <p
               className={cn(
                 "capitalize font-semibold",
-                details.type === "buy" ? "text-green-600" : "text-red-600"
+                details.adType === "buy" ? "text-green-600" : "text-red-600"
               )}
             >
-              {details.type === "buy" ? "Bought" : "Sold"}
+              {details.adType === "buy" ? "Bought" : "Sold"}
             </p>
           }
         />
@@ -195,7 +195,7 @@ const OrderHistoryDetails = ({
         />
 
         <TextBox
-          label="Transaction Fee"
+          label={details.type === "sell" ? "Transaction Fee" : "Buyer's Fee"}
           value={
             <p className="">
               {formatter({

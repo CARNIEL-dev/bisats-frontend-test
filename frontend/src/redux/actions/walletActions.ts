@@ -846,6 +846,36 @@ const useGetBankList = ({
   });
 };
 
+export const getNetworkFee = async ({
+  userId,
+  paylod,
+}: {
+  userId: string;
+  paylod: {
+    amount: number;
+    address: string;
+    asset: string;
+    chain: string;
+  };
+}) => {
+  try {
+    const response = await Bisatsfetch(
+      `/api/v1/user/${userId}${BACKEND_URLS?.WALLET.NETWORK_FEE}`,
+      {
+        method: "POST",
+        body: JSON.stringify(paylod),
+      }
+    );
+
+    if (response.statusCode !== 200) {
+      throw new Error(response.message);
+    }
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export {
   getCoinRates,
   getCryptoRates,

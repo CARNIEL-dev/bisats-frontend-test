@@ -250,7 +250,6 @@ const ExpressSwap = () => {
         setNetworkFee(null);
         setTransactionFee(null);
 
-        // TODO: Show success notification
         Toast.success(orderResult?.message, "Success");
       } else {
         Toast.error(orderResult?.message, "Failed");
