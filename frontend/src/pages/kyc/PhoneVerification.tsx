@@ -28,8 +28,7 @@ const PhoneVerifcation = () => {
 
   const [selectedCountry, setSelectedCountry] = useState("NG");
   const [verficationScreen, setVerificationScreen] = useState(
-    // isWaitingForVerification
-    false
+    isWaitingForVerification
   );
   const navigate = useNavigate();
 
