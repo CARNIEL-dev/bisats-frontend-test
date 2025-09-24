@@ -522,7 +522,6 @@ const getBankSchema = (
       .toLowerCase()
       .normalize("NFD") // decompose
       .replace(/[\u0300-\u036f]/g, "") // remove diacritics
-      .replace(/[^a-z\s]/g, " ") // remove non-alphabetic characters
       .replace(/\s+/g, " ") // replace multiple spaces with a single space
       .trim();
 

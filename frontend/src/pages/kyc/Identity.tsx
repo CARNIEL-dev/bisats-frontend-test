@@ -59,7 +59,7 @@ const Identity = () => {
           userId: user?.user?.userId,
           token: user?.user?.token,
         });
-        Toast.success("Success", response.message);
+        Toast.success("Success", "Your identity has been submitted.");
         navigate(APP_ROUTES.DASHBOARD);
       } else {
         Toast.error("Error", response.message);
