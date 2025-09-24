@@ -28,15 +28,23 @@ const PhoneVerifcation = () => {
 
   const [selectedCountry, setSelectedCountry] = useState("NG");
   const [verficationScreen, setVerificationScreen] = useState(
-    isWaitingForVerification
+    // isWaitingForVerification
+    false
   );
   const navigate = useNavigate();
 
-  const normalizePhoneNumber = (input: string, selectedCountryCode: string) => {
-    const country = countryDataForPhone.find(
-      (c) => c.code === selectedCountryCode
-    );
+  const countryCode = useMemo(() => {
+    const country = countryDataForPhone.find((c) => c.code === selectedCountry);
     const countryDialCode = country?.dialCode || "234";
+
+    return countryDialCode;
+  }, [selectedCountry]);
+
+  const normalizePhoneNumber = (input: string) => {
+    // const country = countryDataForPhone.find(
+    //   (c) => c.code === selectedCountryCode
+    // );
+    const countryDialCode = countryCode;
 
     if (!input) return "";
 
@@ -117,6 +125,7 @@ const PhoneVerifcation = () => {
       const payload = {
         userId: user.user?.userId ?? "",
         phoneNumber: values.phone ?? "",
+        countryCode,
       };
       const response = await PostPhoneNumber_KYC(payload);
 
@@ -208,10 +217,7 @@ const PhoneVerifcation = () => {
                   value={formik.values.phone}
                   onChange={(e) => {
                     const rawInput = e.target.value;
-                    const normalized = normalizePhoneNumber(
-                      rawInput,
-                      selectedCountry
-                    );
+                    const normalized = normalizePhoneNumber(rawInput);
                     formik.setFieldValue("phone", normalized);
                   }}
                   error={undefined}

@@ -134,7 +134,7 @@ const WithdrawalPage = () => {
                 transaction_limits={transaction_limits}
                 userBalance={userBalance}
                 asset={selectedToken}
-                cryptoAssets={wallet?.cryptoAssests}
+                // cryptoAssets={wallet?.cryptoAssests}
               />
             )}
           </>
@@ -443,14 +443,13 @@ type PropsCrypto = {
   transaction_limits: undefined | UserTransactionLimits;
   userBalance: number;
   asset: string;
-  cryptoAssets: WalletState["wallet"][];
+  // cryptoAssets: WalletState["wallet"][];
 };
 const CryptoWithdrawal = ({
   user,
   transaction_limits,
   userBalance,
   asset,
-  cryptoAssets,
 }: PropsCrypto) => {
   const [withdrawalModal, setWithDrawalModal] = useState(false);
   const [showSavedAddressModal, setShowSavedAddressModal] = useState(false);

@@ -53,6 +53,7 @@ export type TSuperMerchant = {
 export type TRequestPhone = {
   userId: string;
   phoneNumber: string;
+  countryCode?: string;
 };
 
 export type TVerifyPhone = {
