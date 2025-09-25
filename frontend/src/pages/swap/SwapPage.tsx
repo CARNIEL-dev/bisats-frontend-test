@@ -24,12 +24,13 @@ import { formatter } from "@/utils";
 import { formatNumber } from "@/utils/numberFormat";
 import dayjs from "dayjs";
 import { useFormik } from "formik";
-import { ArrowRight, History } from "lucide-react";
+import { ArrowRight, History, SmileIcon } from "lucide-react";
 import { useMotionValueEvent, useScroll } from "motion/react";
 import { ChangeEventHandler, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 
+const isComingSoon = true;
 const SwapPage = () => {
   const walletState: WalletState = useSelector((state: any) => state.wallet);
 
@@ -78,6 +79,18 @@ const SwapPage = () => {
       console.log(values);
     },
   });
+
+  if (isComingSoon) {
+    return (
+      <div className="flex flex-col items-center gap-1 border rounded-lg px-4 py-6 shadow bg-background">
+        <SmileIcon className="size-20 text-primary" />
+        <p className="font-semibold text-lg mt-4">
+          The swap feature is coming soon
+        </p>
+        <p className="text-sm text-gray-500">Please check back later</p>
+      </div>
+    );
+  }
 
   return (
     <>

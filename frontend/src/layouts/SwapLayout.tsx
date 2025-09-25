@@ -37,7 +37,7 @@ const SwapLayout = () => {
       ) : (
         <MaxWidth
           as="section"
-          className="md:min-h-[75dvh] min-h-[95dvh] max-w-[35rem] md:mt-24  mt-16"
+          className="md:min-h-[75dvh] min-h-[85dvh] max-w-[35rem] md:mt-24  mt-16"
         >
           <Outlet />
         </MaxWidth>
