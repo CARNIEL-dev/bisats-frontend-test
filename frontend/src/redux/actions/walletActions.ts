@@ -852,6 +852,7 @@ export const getNetworkFee = async ({
 }: {
   userId: string;
   paylod: {
+    userId: string;
     amount: number;
     address: string;
     asset: string;

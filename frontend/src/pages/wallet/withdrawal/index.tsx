@@ -639,7 +639,12 @@ const CryptoWithdrawal = ({
   const isAmountReady =
     debouncedAmount !== "" && !Number.isNaN(Number(debouncedAmount));
 
-  const { data, isLoading, error, isError } = useQuery({
+  const { data, isLoading, error, isError } = useQuery<{
+    assetType: string;
+    network: string;
+    networkFee: number;
+    networkFeeInUSD: string;
+  }>({
     queryKey: [
       "networkFee",
       asset,
@@ -651,6 +656,7 @@ const CryptoWithdrawal = ({
       await getNetworkFee({
         userId: user?.userId,
         paylod: {
+          userId: user?.userId,
           amount: Number(debouncedAmount),
           address: formik.values.walletAddress,
           asset: asset,
@@ -662,7 +668,8 @@ const CryptoWithdrawal = ({
     enabled:
       isAmountReady &&
       Boolean(formik.values.walletAddress) &&
-      Boolean(formik.values.network),
+      Boolean(formik.values.network) &&
+      formik.isValid,
   });
 
   useEffect(() => {
@@ -676,16 +683,6 @@ const CryptoWithdrawal = ({
     });
   }, [asset]);
 
-  // console.log(
-  //   "data",
-  //   data,
-  //   "error",
-  //   error,
-  //   "isError",
-  //   isError,
-  //   "Isloading",
-  //   isLoading
-  // );
   return (
     <>
       <div className="flex flex-col gap-3 mt-4">
@@ -815,14 +812,19 @@ const CryptoWithdrawal = ({
               (usedUpLimit?.totalUsedAmountCrypto ?? 0)
           )} USD`}
           fee={
-            formik.errors.amount || !formik.isValid
-              ? "-"
-              : formatter({ decimal: 2 }).format(
-                  !formik.values.amount
-                    ? 0
-                    : userTransactionLimits?.charge_on_single_withdrawal_crypto
-                )
+            data?.networkFee && formik.isValid
+              ? formatter({ decimal: 2 }).format(data.networkFee)
+              : "-"
           }
+          // fee={
+          //   formik.errors.amount || !formik.isValid
+          //     ? "-"
+          //     : formatter({ decimal: 2 }).format(
+          //         !formik.values.amount
+          //           ? 0
+          //           : userTransactionLimits?.charge_on_single_withdrawal_crypto
+          //       )
+          // }
           amount={
             formik.errors.amount || !formik.isValid
               ? "-"
@@ -839,7 +841,7 @@ const CryptoWithdrawal = ({
                   !formik.values.amount
                     ? 0
                     : parseFloat(formik.values.amount ?? 0) +
-                        userTransactionLimits?.charge_on_single_withdrawal_crypto
+                        (data?.networkFee ?? 0)
                 )}`
           }
         />
