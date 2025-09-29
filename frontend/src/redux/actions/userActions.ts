@@ -767,7 +767,7 @@ export const GET_ACTIVITY_SUMMARY = async (payload: string) => {
     );
     const data = response;
     if (response.status) {
-      return data;
+      return data.data;
     }
 
     throw new Error(data.message);

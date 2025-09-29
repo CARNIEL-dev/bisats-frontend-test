@@ -9,7 +9,7 @@ import {
   GetUserDetails,
 } from "@/redux/actions/userActions";
 
-import { getUpgradeButtonState } from "@/utils";
+import { formatter, getUpgradeButtonState } from "@/utils";
 import { goToNextKycRoute } from "@/utils/kycNavigation";
 import { formatNumber } from "@/utils/numberFormat";
 import { AccountLevel, bisats_limit } from "@/utils/transaction_limits";
@@ -69,7 +69,6 @@ const Profile = () => {
   const account_level = user?.accountLevel;
 
   const limits = bisats_limit[account_level as AccountLevel] || null;
-  console.log("user", user);
   const userLimits = limits
     ? [
         {
@@ -109,46 +108,56 @@ const Profile = () => {
     enabled: Boolean(user?.userId),
   });
 
-  console.log("userState", userState?.user);
-
   const ActivitySummary = useMemo(() => {
     return [
       {
         type: "Volume Traded (30d)",
-        value: `${formatNumber(
+        value: `${formatter({ decimal: 2 }).format(
           activitySummary?.totalOrderVolumeIn30d ?? 0
         )} xNGN`,
       },
       {
         type: "Ads Created (30d) ",
-        value: `${formatNumber(activitySummary?.totalAdsCreatedIn30d ?? 0)} `,
+        value: `${formatter({ decimal: 0 }).format(
+          activitySummary?.totalAdsCreatedIn30d ?? 0
+        )} `,
       },
       {
         type: "Completed Orders (30d)",
-        value: `${formatNumber(
+        value: `${formatter({ decimal: 0 }).format(
           activitySummary?.totalOrderCompletedIn30d ?? 0
         )} `,
       },
 
       {
         type: "Current Running Ads",
-        value: `${formatNumber(activitySummary?.currentActiveAds ?? 0)} `,
+        value: `${formatter({ decimal: 0 }).format(
+          activitySummary?.currentActiveAds ?? 0
+        )} `,
       },
       {
         type: "Total Volume Traded",
-        value: `${formatNumber(activitySummary?.totalOrderVolume ?? 0)} xNGN`,
+        value: `${formatter({ decimal: 2 }).format(
+          activitySummary?.totalOrderVolume ?? 0
+        )} xNGN`,
       },
       {
         type: "Total Ads Created",
-        value: `${formatNumber(activitySummary?.totalAdsCreated ?? 0)} `,
+        value: `${formatter({ decimal: 0 }).format(
+          activitySummary?.totalAdsCreated ?? 0
+        )} `,
       },
       {
         type: "Total Completed Orders",
-        value: `${formatNumber(activitySummary?.totalOrderCompleted ?? 0)} `,
+        value: `${formatter({ decimal: 0 }).format(
+          activitySummary?.totalOrderCompleted ?? 0
+        )} `,
       },
       {
         type: "Total Ads Created",
-        value: `${formatNumber(activitySummary?.totalAdsCreated ?? 0)} `,
+        value: `${formatter({ decimal: 0 }).format(
+          activitySummary?.totalAdsCreated ?? 0
+        )} `,
       },
     ];
   }, [activitySummary]);

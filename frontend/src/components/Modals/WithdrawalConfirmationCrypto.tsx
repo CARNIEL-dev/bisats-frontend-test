@@ -10,6 +10,7 @@ interface Props {
   submit: () => void;
   isLoading: boolean;
   open?: boolean;
+  fee?: string;
 }
 const WithdrawalConfirmationCrypto: React.FC<Props> = ({
   close,
@@ -20,6 +21,7 @@ const WithdrawalConfirmationCrypto: React.FC<Props> = ({
   isLoading,
   network,
   open,
+  fee,
 }) => {
   return (
     <ModalTemplate onClose={close} isOpen={open}>
@@ -47,7 +49,9 @@ const WithdrawalConfirmationCrypto: React.FC<Props> = ({
           </div>
           <div className="flex justify-between items-center mb-2">
             <p className="text-[#424A59] font-normal">Fee:</p>
-            <p className="text-[#606C82]  font-semibold">{2} USDT</p>
+            <p className="text-[#606C82]  font-semibold">
+              {fee} {asset}
+            </p>
           </div>
         </div>
 

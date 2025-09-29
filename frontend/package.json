@@ -40,6 +40,7 @@
     "motion": "^12.23.12",
     "numeral": "^2.0.6",
     "pdfjs-dist": "^4.10.38",
+    "r2c-wallet-validator": "^1.1.7",
     "react": "^18.3.1",
     "react-datepicker": "^8.3.0",
     "react-day-picker": "^9.8.1",

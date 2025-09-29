@@ -11,6 +11,7 @@ import { useUserWalletHistory } from "@/redux/actions/walletActions";
 
 import { cn, formatter } from "@/utils";
 import { ColumnDef } from "@tanstack/react-table";
+import { ArrowDown, ArrowUp } from "lucide-react";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 
@@ -180,7 +181,19 @@ const Transactions: React.FC = () => {
       },
       cell: ({ row }) => {
         const displayValue: string = row.getValue("Type"); // Gets transformed value from accessorFn
-        return <p className={cn("capitalize")}>{displayValue}</p>;
+        return (
+          <p className={cn("capitalize flex items-center gap-1")}>
+            {" "}
+            <span>
+              {displayValue.toLowerCase() === "deposit" ? (
+                <ArrowDown className="size-4 text-green-500" />
+              ) : (
+                <ArrowUp className="size-4 text-red-500" />
+              )}
+            </span>
+            <span>{displayValue}</span>
+          </p>
+        );
       },
       filterFn: (row, id, filterValue) => {
         const displayValue = row.getValue(id) as string;

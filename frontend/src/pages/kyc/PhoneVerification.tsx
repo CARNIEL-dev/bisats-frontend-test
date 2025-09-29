@@ -23,13 +23,11 @@ import { countryDataForPhone } from "@/utils/data";
 const PhoneVerifcation = () => {
   const user: UserState = useSelector((state: any) => state.user);
 
-  const isWaitingForVerification =
-    user?.user?.phoneNumber && !user?.user?.phoneNumberVerified;
+  // const isWaitingForVerification =
+  //   user?.user?.phoneNumber && !user?.user?.phoneNumberVerified;
 
   const [selectedCountry, setSelectedCountry] = useState("NG");
-  const [verficationScreen, setVerificationScreen] = useState(
-    isWaitingForVerification
-  );
+  const [verficationScreen, setVerificationScreen] = useState(false);
   const navigate = useNavigate();
 
   const countryCode = useMemo(() => {
@@ -123,7 +121,7 @@ const PhoneVerifcation = () => {
     onSubmit: async (values) => {
       const payload = {
         userId: user.user?.userId ?? "",
-        phoneNumber: values.phone ?? "",
+        phoneNumber: values.phone ? "+" + values.phone : "",
         countryCode,
       };
       const response = await PostPhoneNumber_KYC(payload);

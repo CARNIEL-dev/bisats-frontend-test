@@ -55,8 +55,8 @@ const BalanceInfo = ({ className, currency, userBalance, wallet }: Props) => {
                 )}
               >
                 {wallet?.activated
-                  ? "Your wallet is activate"
-                  : "Your wallet is not activate"}
+                  ? "Your wallet is active"
+                  : "Your wallet is not active"}
               </h3>
               {wallet?.activated && (
                 <Verified fill="#22c55e" stroke="white" className=" size-5" />
