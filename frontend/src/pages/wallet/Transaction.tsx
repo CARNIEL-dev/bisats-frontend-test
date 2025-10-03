@@ -3,6 +3,7 @@ import Empty from "@/components/Empty";
 import { SelectDropDown } from "@/components/Inputs/MultiSelectInput";
 import TransactionDetails from "@/components/Modals/TransactionDetails";
 import ErrorDisplay from "@/components/shared/ErrorDisplay";
+import StatusBadge from "@/components/shared/StatusBadge";
 import { Button } from "@/components/ui/Button";
 import { DataTable } from "@/components/ui/data-table";
 import { TokenData } from "@/data";
@@ -207,6 +208,7 @@ const Transactions: React.FC = () => {
         );
       },
     },
+    // SUB: DATE
     {
       header: "Date",
       accessorKey: "Date",
@@ -225,15 +227,9 @@ const Transactions: React.FC = () => {
       cell: ({ row }) => {
         const status = row.original.Status;
 
-        const colorClass =
-          status === "Pending"
-            ? "text-amber-600"
-            : status === "success" || status === "active"
-            ? "text-green-600"
-            : "text-red-700";
-
         return (
-          <p className={cn("font-medium capitalize", colorClass)}>{status}</p>
+          // <p className={cn("font-medium capitalize", colorClass)}>{status}</p>
+          <StatusBadge status={status} />
         );
       },
     },

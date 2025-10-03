@@ -14,6 +14,9 @@ const StatusBadge = ({
     "paid",
     "verified",
     "done",
+    "success",
+    "successful",
+    "confirmed",
   ];
 
   const bgColor =

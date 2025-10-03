@@ -216,7 +216,9 @@ const MarketPlacePage = () => {
             {isFetching ? (
               <PreLoader />
             ) : isError ? (
-              <ErrorDisplay message={error.message} />
+              <div className="mt-4">
+                <ErrorDisplay message={error.message} />
+              </div>
             ) : (
               <TabsContent value={adsParam.type}>
                 <MarketPlaceTable

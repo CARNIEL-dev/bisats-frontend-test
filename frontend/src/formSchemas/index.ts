@@ -12,6 +12,17 @@ import * as Yup from "yup";
 
 import Decimal from "decimal.js";
 
+const toSafeDecimal = (value: unknown) => {
+  if (value === null || value === undefined) return new Decimal(0);
+  if (typeof value === "string" && value.trim() === "") return new Decimal(0);
+
+  try {
+    return new Decimal(value as any);
+  } catch (error) {
+    return new Decimal(0);
+  }
+};
+
 //SUB: Auth
 const SignupSchema = Yup.object().shape({
   email: Yup.string().email().required(),
@@ -286,36 +297,49 @@ const AdSchema = Yup.object().shape({
           .test("transaction-limit-and-balance", function (value) {
             // Get all needed values from context/parent
             const { type, asset } = this.parent;
-            const { userTransactionLimits, walletData } = this.options
-              .context as any;
-
-            const numericValue = Number(value || 0);
+            const {
+              userTransactionLimits,
+              walletData,
+              isEditMode,
+              amountAvailable,
+            } = this.options.context as any;
+            const typeLower = String(type ?? "").toLowerCase();
+            const amountDecimal = toSafeDecimal(value);
 
             //? 1. Check maximum transaction limit (for buy orders)
-            if (type.toLowerCase() === "buy") {
-              const maxLimit = Number(
-                userTransactionLimits?.maximum_ad_creation_amount || 0
+            if (typeLower === "buy") {
+              const maxLimitDecimal = toSafeDecimal(
+                userTransactionLimits?.maximum_ad_creation_amount
               );
 
-              if (numericValue > maxLimit) {
+              if (amountDecimal.gt(maxLimitDecimal)) {
                 return this.createError({
                   message: `Amount must not exceed ${formatNumber(
-                    maxLimit
+                    maxLimitDecimal.toNumber()
                   )} xNGN`,
                 });
               }
             }
 
             //? 2. Check wallet balance
-            const walletBalance =
-              type.toLowerCase() === "buy"
-                ? Number(walletData?.xNGN || 0)
-                : Number(walletData?.[asset] || 0);
 
-            if (numericValue > walletBalance) {
+            const walletBaseDecimal =
+              typeLower === "buy"
+                ? toSafeDecimal(walletData?.xNGN)
+                : toSafeDecimal(walletData?.[asset]);
+
+            const editAllowanceDecimal = isEditMode
+              ? toSafeDecimal(amountAvailable)
+              : new Decimal(0);
+
+            const walletBalDecimal = walletBaseDecimal.plus(
+              editAllowanceDecimal
+            );
+
+            if (amountDecimal.gt(walletBalDecimal)) {
               return this.createError({
                 message: `Amount cannot exceed your wallet balance of ${formatNumber(
-                  walletBalance
+                  walletBalDecimal.toNumber()
                 )} xNGN`,
               });
             }
@@ -334,10 +358,16 @@ const AdSchema = Yup.object().shape({
           .moreThan(0, "Token amount must be greater than 0")
           .test("token-validation", function (value) {
             const { type, asset } = this.parent;
-            const { liveRate, userTransactionLimits, walletData } = this.options
-              .context as any;
+            const {
+              liveRate,
+              userTransactionLimits,
+              walletData,
+              isEditMode,
+              amountAvailable,
+            } = this.options.context as any;
 
-            const numericValue = Number(value || 0);
+            const typeLower = String(type ?? "").toLowerCase();
+            const amountDecimal = toSafeDecimal(value);
 
             // 1. Minimum amount check
             // if (numericValue <= 0) {
@@ -347,31 +377,42 @@ const AdSchema = Yup.object().shape({
             // }
 
             // 2. Maximum token limit (NGN converted to tokens)
-            if (type.toLowerCase() === "sell") {
-              const tokenRate = liveRate[asset as keyof PriceData] || 1;
-              const MAX_NAIRA_LIMIT = Number(
-                userTransactionLimits?.maximum_ad_creation_amount || 0
+            if (typeLower === "sell") {
+              const tokenRateDecimal = toSafeDecimal(
+                liveRate[asset as keyof PriceData]
               );
-              const tokenValue = parseFloat(
-                (MAX_NAIRA_LIMIT / tokenRate).toFixed(5)
+              const maxNairaLimitDecimal = toSafeDecimal(
+                userTransactionLimits?.maximum_ad_creation_amount
               );
-              const inDecimalValue = new Decimal(tokenValue).toNumber();
-              const maxTokenValue = tokenRate > 0 ? inDecimalValue : 0;
+              const maxTokenValueDecimal = tokenRateDecimal.gt(0)
+                ? maxNairaLimitDecimal.div(tokenRateDecimal)
+                : new Decimal(0);
 
-              if (numericValue > maxTokenValue) {
+              if (amountDecimal.gt(maxTokenValueDecimal)) {
                 return this.createError({
-                  message: `Amount must not exceed ${inDecimalValue.toFixed(
-                    5
-                  )} ${asset} (xNGN${formatNumber(MAX_NAIRA_LIMIT)} limit)`,
+                  message: `Amount must not exceed ${maxTokenValueDecimal
+                    .toDecimalPlaces(5)
+                    .toString()} ${asset} (xNGN${formatNumber(
+                    maxNairaLimitDecimal.toNumber()
+                  )} limit)`,
                 });
               }
             }
 
             // 3. Wallet balance check
-            const walletBalance = Number(walletData?.[asset] || 0);
-            if (numericValue > walletBalance) {
+            const walletBalanceDecimal = toSafeDecimal(walletData?.[asset]);
+            const editAllowanceDecimal = isEditMode
+              ? toSafeDecimal(amountAvailable)
+              : new Decimal(0);
+            const walletBalDecimal = walletBalanceDecimal.plus(
+              editAllowanceDecimal
+            );
+
+            if (amountDecimal.gt(walletBalDecimal)) {
               return this.createError({
-                message: `Insufficient balance (Available: ${walletBalance} ${asset})`,
+                message: `Insufficient balance (Available: ${walletBalDecimal
+                  .toDecimalPlaces(5)
+                  .toString()} ${asset})`,
               });
             }
 

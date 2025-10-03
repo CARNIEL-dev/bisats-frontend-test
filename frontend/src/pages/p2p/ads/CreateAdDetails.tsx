@@ -53,6 +53,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
   setStage,
   wallet,
   liveRate,
+  editMode,
 }) => {
   const [adType, setAdType] = useState(formik.values.type || "Buy");
   const [token, setToken] = useState(formik.values.asset || "USDT");
@@ -96,19 +97,23 @@ const CreateAdDetails: React.FC<AdsProps> = ({
   };
 
   // SUB: Calculate wallet balance
-  const calculateDisplayWalletBallance = useMemo(() => {
-    if (adType.toLowerCase() === "buy") {
-      return `${formatNumber(walletData?.xNGN)} xNGN`;
-    } else {
-      return walletData ? `${formatNumber(walletData?.[token])} ${token}` : "-";
-    }
-  }, [adType, token, walletData]);
 
   const walletBalance: number = useMemo(() => {
-    if (formik.values.type.toLowerCase() === "buy") {
-      return walletData?.xNGN;
+    if (editMode) {
+      if (adType.toLowerCase() === "buy") {
+        const amountAval = (walletData?.xNGN + formik.values.amount).toFixed(2);
+        return Number(amountAval) || 0;
+      } else {
+        return walletData
+          ? walletData?.[token] + formik.values.amountToken
+          : formik.values.amountToken || 0;
+      }
     } else {
-      return walletData ? walletData?.[formik.values.asset] : 0;
+      if (adType.toLowerCase() === "buy") {
+        return walletData?.xNGN;
+      } else {
+        return walletData ? walletData?.[token] : 0;
+      }
     }
   }, [adType, token, walletData]);
 
@@ -235,12 +240,8 @@ const CreateAdDetails: React.FC<AdsProps> = ({
               ? userTransactionLimits.maximum_ad_creation_amount // Use normal limit for buy
               : Number(maxTokenValue.toFixed(5));
 
-            // Get wallet balance in the relevant currency
-            const walletBal =
-              walletData?.[isBuy ? "xNGN" : formik.values.asset];
-
             // Determine the actual maximum value (minimum between wallet balance and limit)
-            const val = Math.min(walletBal || 0, limit);
+            const val = Math.min(walletBalance || 0, limit);
 
             formik.setFieldValue(isBuy ? "amount" : "amountToken", val);
           }}
@@ -264,7 +265,8 @@ const CreateAdDetails: React.FC<AdsProps> = ({
 
         {/* SUB: Wallet Balance */}
         <Badge variant={"success"}>
-          Wallet Balance: {calculateDisplayWalletBallance}
+          Wallet Balance: {formatNumber(walletBalance)}{" "}
+          {adType === "buy" ? "xNGN" : token}
         </Badge>
       </div>
 

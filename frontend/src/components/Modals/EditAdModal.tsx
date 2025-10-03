@@ -64,20 +64,25 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
   const walletData = walletState?.wallet;
   const queryClient = useQueryClient();
 
+  const amountAvailable = useMemo(() => {
+    return ad?.amountAvailable;
+  }, []);
+
   //   SUB: Calculate balance
   const calculateDisplayWalletBallance: number = useMemo(() => {
     if (ad?.type.toLowerCase() === "buy") {
-      return walletData?.xNGN;
+      const amountAval = (walletData?.xNGN + amountAvailable).toFixed(2);
+      return Number(amountAval) || 0;
     } else {
-      return walletData ? walletData?.[ad?.asset ?? "USDT"] : 0;
+      return walletData
+        ? walletData?.[ad?.asset ?? "USDT"] + amountAvailable
+        : amountAvailable || 0;
     }
-  }, [ad?.asset, ad?.type, walletData]);
+  }, [ad?.asset, ad?.type, walletData, amountAvailable]);
 
   const rate = useMemo(() => {
     return liveRate![ad?.asset as keyof typeof liveRate];
   }, [ad?.asset, liveRate]);
-
-  // const maxAmount = userTransactionLimits?.maximum_ad_creation_amount;
 
   //   HDR: SCHEMA
   const AdSchema = Yup.object().shape({
@@ -105,7 +110,7 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
         const maxAmount = userTransactionLimits?.maximum_ad_creation_amount;
 
         if (type === "buy") {
-          // For buy transactions, just check against the max amount directly
+          //? For buy transactions, just check against the max amount directly
           if (value && value > maxAmount) {
             return this.createError({
               message: `Amount must not exceed ${formatNumber(
@@ -114,7 +119,7 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
             });
           }
         } else if (type === "sell") {
-          // For sell transactions, check the naira equivalent
+          //? For sell transactions, check the naira equivalent
           // Use your rate function here
 
           const prevAmout = value ? Number(value) : 0;
@@ -162,7 +167,7 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
 
   const formik = useFormik<TEditAd & { type: string }>({
     initialValues: {
-      amount: `${ad?.amount}`,
+      amount: `${amountAvailable}`,
       price: `${ad?.price}`,
       type: ad?.type ?? "Buy",
     },
@@ -242,7 +247,7 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
                 }}
                 value={formik.values.price}
               />
-              <div className="flex items-center gap-2">
+              <div className="flex md:items-center gap-2 flex-col md:flex-row">
                 <Badge variant={"secondary"}>
                   Market Price: xNGN {formatNumber(rate ?? 0)}{" "}
                 </Badge>
@@ -292,11 +297,8 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
                     ? userTransactionLimits.maximum_ad_creation_amount // Use normal limit for buy
                     : Number(maxTokenValue.toFixed(5));
 
-                  //? Get wallet balance in the relevant currency
-                  const walletBal = walletData?.[isBuy ? "xNGN" : ad?.asset!];
-
                   //? Determine the actual maximum value (minimum between wallet balance and limit)
-                  const val = Math.min(walletBal || 0, limit);
+                  const val = Math.min(calculateDisplayWalletBallance, limit);
 
                   formik.setFieldValue("amount", val);
                 }}
@@ -304,11 +306,9 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
               <div className="flex flex-col gap-2 mt-4">
                 <Badge variant={"success"}>
                   Balance:{" "}
-                  {formatter({ decimal: 5 }).format(
-                    ad?.type.toLowerCase() === "buy"
-                      ? walletState?.wallet?.xNGN
-                      : walletState?.wallet?.[ad?.asset ?? "USDT"]
-                  )}{" "}
+                  {formatter({
+                    decimal: ad?.type.toLowerCase() === "buy" ? 2 : 5,
+                  }).format(calculateDisplayWalletBallance)}{" "}
                   {ad?.type.toLowerCase() === "buy" ? "xNGN" : ad?.asset}
                 </Badge>
               </div>

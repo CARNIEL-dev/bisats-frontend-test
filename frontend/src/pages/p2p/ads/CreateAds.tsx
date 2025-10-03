@@ -49,6 +49,7 @@ export interface AdsProps {
   setStage: React.Dispatch<React.SetStateAction<"details" | "review">>;
   liveRate?: Partial<PriceData>;
   wallet?: WalletState;
+  editMode?: boolean;
 }
 
 const CreateAd = () => {

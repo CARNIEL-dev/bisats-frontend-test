@@ -45,12 +45,18 @@ const Notification = () => {
   });
 
   const notificationData = useMemo(() => {
-    const hasNotifications = notificationState?.unreadNotifications >= 1;
     const notifications = notificationState?.notifications || [];
 
-    return hasNotifications
-      ? [...notifications].filter((item) => !item.read)
-      : [];
+    const unReadNotifcation = notifications.filter((item) => !item.read);
+
+    const unreadNotifications =
+      unReadNotifcation.length > 0 ? [...unReadNotifcation].slice(0, 3) : [];
+    const unreadNotificationsCount = unReadNotifcation.length || 0;
+
+    return {
+      unreadNotifications,
+      unreadNotificationsCount,
+    };
   }, [
     notificationState?.notifications,
     notificationState?.unreadNotifications,
@@ -65,9 +71,9 @@ const Notification = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="outline-none relative">
-        {notificationState && notificationState?.unreadNotifications >= 1 && (
+        {notificationData.unreadNotificationsCount >= 1 && (
           <small className="absolute -right-2 -top-3 bg-priYellow grid place-content-center w-5 h-5 text-xs font-medium rounded-full ">
-            {notificationState.unreadNotifications}
+            {notificationData.unreadNotificationsCount}
           </small>
         )}
         <Bell />
@@ -84,8 +90,7 @@ const Notification = () => {
           <Link
             className={cn(
               buttonVariants({ variant: "link" }),
-              "text-[#C49600] text-sm",
-              notificationData.length === 0 && "hidden"
+              "text-[#C49600] text-sm"
             )}
             to={APP_ROUTES.NOTIFICATION}
           >
@@ -93,11 +98,11 @@ const Notification = () => {
           </Link>
         </div>
         {/* <DropdownMenuSeparator /> */}
-        <div className="h-full overflow-y-scroll max-h-[21rem] no-scrollbar">
+        <div className="h-full overflow-y-scroll max-h-[20rem] no-scrollbar">
           <>
             <AnimatePresence mode="sync">
-              {notificationData.length >= 1 ? (
-                notificationData?.map(
+              {notificationData.unreadNotifications.length >= 1 ? (
+                notificationData?.unreadNotifications.map(
                   (notification: TNotification, idx: number) => {
                     return (
                       <motion.div

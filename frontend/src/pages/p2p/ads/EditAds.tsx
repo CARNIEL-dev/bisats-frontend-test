@@ -56,6 +56,13 @@ const EditAds = ({
     };
   }, [currencyRates]);
 
+  const amountAvailable = useMemo(() => {
+    if (adDetail.type === "buy") {
+      return Number(adDetail?.amountAvailable.toFixed(2));
+    }
+    return adDetail?.amountAvailable;
+  }, [adDetail]);
+
   const defaultValues = useMemo(() => {
     return {
       type: adDetail.type === "buy" ? "Buy" : "Sell",
@@ -63,7 +70,7 @@ const EditAds = ({
       currency: adDetail.currency || "NGN",
       priceMargin: adDetail.priceMargin,
       asset: adDetail.asset,
-      amount: adDetail.amount,
+      amount: adDetail.amountAvailable,
       amountToken: adDetail.amountAvailable,
       price: adDetail.price,
       minimumLimit: adDetail.minimumLimit,
@@ -104,6 +111,8 @@ const EditAds = ({
             liveRate,
             userTransactionLimits,
             walletData,
+            isEditMode: true,
+            amountAvailable,
           },
         });
         return {};
@@ -143,12 +152,20 @@ const EditAds = ({
       };
       mutation.mutate(payload);
     },
-    context: { liveRate, userTransactionLimits, walletData },
+    context: {
+      liveRate,
+      userTransactionLimits,
+      walletData,
+      isEditMode: true,
+      amountAvailable,
+    },
   } as FormikConfig<IAdRequest> & {
     context: {
       liveRate: Partial<PriceData>;
       userTransactionLimits: typeof userTransactionLimits;
       walletData: { [key: string]: any } | null;
+      isEditMode: boolean;
+      amountAvailable: number;
     };
   });
 
@@ -174,6 +191,7 @@ const EditAds = ({
               setStage={() => setShowConfirmModal(true)}
               wallet={walletState}
               liveRate={liveRate}
+              editMode
             />
           )}
         </>

@@ -61,7 +61,7 @@ const MarketPlaceTable = ({ type, ads, asset }: MarketPlaceContentProps) => {
               <p className="font-semibold">{initials}</p>
             </div>
             <p className="text-gray-600">{userName}</p>
-            <div className="-ml-2">
+            <div className="md:-ml-2">
               {user.accountLevel === "level_3" && (
                 <BadgeCheck fill="#F5BB00" stroke="#fff" size={20} />
               )}
@@ -81,7 +81,7 @@ const MarketPlaceTable = ({ type, ads, asset }: MarketPlaceContentProps) => {
           decimal: 2,
         }).format(row.original.price);
         return (
-          <span className="text-gray-600 md:font-medium text-2xl font-bold md:text-sm">
+          <span className="text-gray-600 md:font-medium text-xl font-bold md:text-sm">
             {price}
           </span>
         );

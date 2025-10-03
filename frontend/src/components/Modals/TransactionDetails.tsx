@@ -34,7 +34,14 @@ const TransactionDetails: React.FC<Props> = ({ close, details }) => {
   }, [copied]);
 
   const isXNGN = details?.Asset === "xNGN";
-  const isSucessful = details?.Status === "success";
+  const isSucessful = [
+    "success",
+    "completed",
+    "paid",
+    "approved",
+    "successful",
+    "confirmed",
+  ].includes(details?.Status!);
 
   return (
     <ModalTemplate onClose={close} className="md:!max-w-[45rem]">
