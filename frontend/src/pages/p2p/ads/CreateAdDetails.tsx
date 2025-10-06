@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/select";
 import { AdsProps } from "@/pages/p2p/ads/CreateAds";
 
-import { cn } from "@/utils";
+import { cn, formatter } from "@/utils";
 import { formatNumber } from "@/utils/numberFormat";
 import { AccountLevel, bisats_limit } from "@/utils/transaction_limits";
 import { Check, Info, TriangleAlert } from "lucide-react";
@@ -110,9 +110,9 @@ const CreateAdDetails: React.FC<AdsProps> = ({
       }
     } else {
       if (adType.toLowerCase() === "buy") {
-        return walletData?.xNGN;
+        return Number(walletData?.xNGN);
       } else {
-        return walletData ? walletData?.[token] : 0;
+        return walletData ? Number(walletData?.[token]) : 0;
       }
     }
   }, [adType, token, walletData]);
@@ -265,8 +265,16 @@ const CreateAdDetails: React.FC<AdsProps> = ({
 
         {/* SUB: Wallet Balance */}
         <Badge variant={"success"}>
-          Wallet Balance: {formatNumber(walletBalance)}{" "}
-          {adType === "buy" ? "xNGN" : token}
+          Wallet Balance:{" "}
+          {formatter({
+            decimal:
+              adType.toLowerCase() === "buy"
+                ? 2
+                : token === "xNGN" || token === "USDT"
+                ? 2
+                : 7,
+          }).format(walletBalance)}{" "}
+          {adType.toLowerCase() === "buy" ? "xNGN" : token}
         </Badge>
       </div>
 

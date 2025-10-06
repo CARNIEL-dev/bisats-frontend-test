@@ -16,7 +16,7 @@ const Dashboard = () => {
     const unverifiedFields = [
       !user?.kyc?.identificationVerified && !user?.hasAppliedToBeInLevelOne,
       !user?.kyc?.personalInformationVerified,
-      !user?.phoneNumberVerified,
+      // !user?.phoneNumberVerified,
     ];
 
     if (unverifiedFields.some(Boolean)) {
@@ -25,7 +25,7 @@ const Dashboard = () => {
   }, [
     user?.kyc?.identificationVerified,
     user?.kyc?.personalInformationVerified,
-    user?.phoneNumberVerified,
+    // user?.phoneNumberVerified,
   ]);
 
   return (

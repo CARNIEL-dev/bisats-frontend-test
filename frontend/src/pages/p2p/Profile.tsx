@@ -38,7 +38,7 @@ const getKycStatus = (userState: UserState) => {
     },
     {
       type: "Phone no",
-      verified: userState?.user?.phoneNumberVerified,
+      verified: userState?.user?.phoneNumber,
     },
     {
       type: "Govt ID",

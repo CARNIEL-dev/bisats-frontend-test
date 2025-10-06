@@ -20,6 +20,8 @@ import Flag from "react-world-flags";
 import { SelectDropDown } from "@/components/Inputs/MultiSelectInput";
 import { countryDataForPhone } from "@/utils/data";
 
+const verficationScreen = false;
+
 const PhoneVerifcation = () => {
   const user: UserState = useSelector((state: any) => state.user);
 
@@ -27,7 +29,7 @@ const PhoneVerifcation = () => {
   //   user?.user?.phoneNumber && !user?.user?.phoneNumberVerified;
 
   const [selectedCountry, setSelectedCountry] = useState("NG");
-  const [verficationScreen, setVerificationScreen] = useState(false);
+  // const [verficationScreen, setVerificationScreen] = useState(false);
   const navigate = useNavigate();
 
   const countryCode = useMemo(() => {
@@ -127,7 +129,12 @@ const PhoneVerifcation = () => {
       const response = await PostPhoneNumber_KYC(payload);
 
       if (response?.statusCode === 200) {
-        setVerificationScreen(true);
+        // setVerificationScreen(true);
+        GetUserDetails({
+          userId: user?.user?.userId!,
+          token: user?.user?.token!,
+        });
+        navigate(APP_ROUTES.KYC.PERSONAL);
       } else {
         Toast.error(response.message, "Failed");
       }
@@ -227,7 +234,7 @@ const PhoneVerifcation = () => {
               <div className="w-full mb-3 mt-4">
                 <PrimaryButton
                   className={"w-full"}
-                  text={"Send code"}
+                  text={"Continue"}
                   loading={formik.isSubmitting}
                   type="submit"
                   onSubmit={() => formik.handleSubmit()}

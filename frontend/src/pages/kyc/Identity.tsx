@@ -4,11 +4,7 @@ import Toast from "@/components/Toast";
 import { PrimaryButton } from "@/components/buttons/Buttons";
 import { APP_ROUTES } from "@/constants/app_route";
 import StepFlow from "@/pages/kyc/StepFlow";
-import {
-  GetUserDetails,
-  PostIdentity_KYC,
-  rehydrateUser,
-} from "@/redux/actions/userActions";
+import { GetUserDetails, PostIdentity_KYC } from "@/redux/actions/userActions";
 import { useFormik } from "formik";
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
@@ -23,10 +19,10 @@ const DocTypes = [
     label: "International passport",
     value: "passport",
   },
-  {
-    label: "Driver's liscence",
-    value: "driver-liscense",
-  },
+  // {
+  //   label: "Driver's liscence",
+  //   value: "driver-liscense",
+  // },
   {
     label: "National Identity Number",
     value: "nin",

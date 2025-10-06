@@ -16,6 +16,7 @@ import {
   GetUserBank,
   GetWallet,
   saveWalletAddressHandler,
+  useCryptoRates,
   Withdraw_Crypto,
   Withdraw_xNGN,
 } from "@/redux/actions/walletActions";
@@ -43,7 +44,7 @@ import {
   GET_WITHDRAWAL_LIMIT,
   GetUserDetails,
 } from "@/redux/actions/userActions";
-import { cn, formatter } from "@/utils";
+import { cn, formatCompactNumber, formatter } from "@/utils";
 import { formatNumber } from "@/utils/numberFormat";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Decimal from "decimal.js";
@@ -99,6 +100,50 @@ const WithdrawalPage = () => {
     queryFn: () => GET_WITHDRAWAL_LIMIT(user?.userId),
     enabled: Boolean(user?.userId),
   });
+
+  const {
+    data: currencyRate,
+    isFetching,
+    isError: currencyRateError,
+  } = useCryptoRates({ isEnabled: Boolean(wallet && userState.user?.userId) });
+
+  const defaultAssetsData = useMemo(
+    () => [
+      {
+        name: "Bitcoin",
+
+        USDRate: currencyRate?.bitcoin?.usd ?? 0,
+        NairaRate: currencyRate?.bitcoin?.ngn ?? 0,
+      },
+      {
+        name: "Ethereum",
+
+        USDRate: currencyRate?.ethereum?.usd ?? 0,
+        NairaRate: currencyRate?.ethereum?.ngn ?? 0,
+      },
+      {
+        name: "Solana",
+
+        USDRate: currencyRate?.solana?.usd ?? 0,
+        NairaRate: currencyRate?.solana?.ngn ?? 0,
+      },
+      {
+        name: "Tether USD",
+
+        USDRate: currencyRate?.tether?.usd ?? 0,
+        NairaRate: currencyRate?.tether?.ngn ?? 0,
+      },
+      {
+        name: "xNGN",
+
+        USDRate: currencyRate?.tether?.usd ?? 0,
+        NairaRate: currencyRate?.tether?.ngn ?? 0,
+      },
+    ],
+    [currencyRate, wallet]
+  );
+
+  // console.log(defaultAssetsData);
 
   const userBalance: number = wallet?.[selectedToken] || 0;
 
@@ -348,10 +393,12 @@ const NGNWithdrawal = ({ user, transaction_limits, userBalance }: PropsNGN) => {
                   type="fiat"
                   currency={"xNGN"}
                   dailyLimit={
-                    usedUpLimit?.dailyFiatWithdrawalLimit?.toLowerCase() ===
-                    "unlimited"
+                    formatCompactNumber(
+                      parseFloat(usedUpLimit?.dailyFiatWithdrawalLimit || "0") -
+                        (usedUpLimit?.totalUsedAmountFiat || 0)
+                    ).endsWith("T")
                       ? "Unlimited"
-                      : formatNumber(
+                      : formatCompactNumber(
                           parseFloat(
                             usedUpLimit?.dailyFiatWithdrawalLimit || "0"
                           ) - (usedUpLimit?.totalUsedAmountFiat || 0)
@@ -556,23 +603,6 @@ const CryptoWithdrawal = ({
 
                 return isValid.valid;
             }
-            // switch (isValid.type) {
-            //   case WalletType.SOLANA:
-            //     if (asset.toLowerCase() !== "sol")
-            //       return this.createError({
-            //         message: "Please enter a valid Solana wallet address",
-            //       });
-            //     break;
-            //   case WalletType.BITCOIN:
-            //     if (asset.toLowerCase() !== "btc")
-            //       return this.createError({
-            //         message: "Please enter a valid Bitcoin wallet address",
-            //       });
-            //     break;
-
-            //   default:
-            //     return isValid.valid;
-            // }
           }
 
           return isValid.valid;
@@ -807,10 +837,21 @@ const CryptoWithdrawal = ({
           loading={isLoading}
           error={error}
           currency={asset}
-          dailyLimit={`${formatNumber(
-            userTransactionLimits?.daily_withdrawal_limit_crypto -
-              (usedUpLimit?.totalUsedAmountCrypto ?? 0)
-          )} USD`}
+          dailyLimit={
+            formatCompactNumber(
+              parseFloat(usedUpLimit?.dailyCryptoWithdrawalLimit || "0") -
+                (usedUpLimit?.totalUsedAmountCrypto || 0)
+            ).endsWith("T")
+              ? "Unlimited"
+              : formatCompactNumber(
+                  parseFloat(usedUpLimit?.dailyCryptoWithdrawalLimit || "0") -
+                    (usedUpLimit?.totalUsedAmountCrypto || 0)
+                ) + " USD"
+          }
+          // dailyLimit={`${formatNumber(
+          //   userTransactionLimits?.daily_withdrawal_limit_crypto -
+          //     (usedUpLimit?.totalUsedAmountCrypto ?? 0)
+          // )} USD`}
           fee={
             data?.networkFee && formik.isValid
               ? formatter({ decimal: 2 }).format(data.networkFee)

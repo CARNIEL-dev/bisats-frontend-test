@@ -9,7 +9,7 @@ const SwapLayout = () => {
 
   const isKycVerified = [
     userState?.kyc?.personalInformationVerified,
-    userState.user?.phoneNumberVerified,
+    // userState.user?.phoneNumberVerified,
   ].every(Boolean);
 
   return (

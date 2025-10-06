@@ -6,7 +6,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { TokenData } from "@/data";
-import { cn } from "@/utils";
+import { cn, formatter } from "@/utils";
 import { formatNumber } from "@/utils/numberFormat";
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
@@ -48,7 +48,9 @@ const TokenSelection = ({
   const calculateCurrentWalletBallance = useMemo(() => {
     if (!showBalance) return undefined;
     return walletData
-      ? `${formatNumber(walletData[selected ?? "xNGN"])} ${selected}`
+      ? `${formatter({
+          decimal: selected === "xNGN" || selected === "USDT" ? 2 : 7,
+        }).format(walletData[selected ?? "xNGN"])} ${selected}`
       : 0;
   }, [selected, walletData, showBalance]);
 
