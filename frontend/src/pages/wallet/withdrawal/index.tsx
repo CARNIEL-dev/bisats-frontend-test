@@ -52,6 +52,7 @@ import { FormikProps, useFormik } from "formik";
 import { X } from "lucide-react";
 import { APP_ROUTES } from "@/constants/app_route";
 import { isWalletValid, WalletType } from "r2c-wallet-validator";
+import SecurityBanner from "@/components/shared/SecurityBanner";
 
 export type TNetwork = {
   label: string;
@@ -75,6 +76,8 @@ type UserBankListType = {
   bankName: string;
   id: string;
 };
+
+const MIN_CRYPTO_WITHDRAWAL_USD = 12;
 
 const WithdrawalPage = () => {
   const userState: UserState = useSelector((state: any) => state.user);
@@ -101,49 +104,9 @@ const WithdrawalPage = () => {
     enabled: Boolean(user?.userId),
   });
 
-  const {
-    data: currencyRate,
-    isFetching,
-    isError: currencyRateError,
-  } = useCryptoRates({ isEnabled: Boolean(wallet && userState.user?.userId) });
-
-  const defaultAssetsData = useMemo(
-    () => [
-      {
-        name: "Bitcoin",
-
-        USDRate: currencyRate?.bitcoin?.usd ?? 0,
-        NairaRate: currencyRate?.bitcoin?.ngn ?? 0,
-      },
-      {
-        name: "Ethereum",
-
-        USDRate: currencyRate?.ethereum?.usd ?? 0,
-        NairaRate: currencyRate?.ethereum?.ngn ?? 0,
-      },
-      {
-        name: "Solana",
-
-        USDRate: currencyRate?.solana?.usd ?? 0,
-        NairaRate: currencyRate?.solana?.ngn ?? 0,
-      },
-      {
-        name: "Tether USD",
-
-        USDRate: currencyRate?.tether?.usd ?? 0,
-        NairaRate: currencyRate?.tether?.ngn ?? 0,
-      },
-      {
-        name: "xNGN",
-
-        USDRate: currencyRate?.tether?.usd ?? 0,
-        NairaRate: currencyRate?.tether?.ngn ?? 0,
-      },
-    ],
-    [currencyRate, wallet]
-  );
-
-  // console.log(defaultAssetsData);
+  const { data: currencyRate } = useCryptoRates({
+    isEnabled: Boolean(wallet && userState.user?.userId),
+  });
 
   const userBalance: number = wallet?.[selectedToken] || 0;
 
@@ -181,6 +144,7 @@ const WithdrawalPage = () => {
                 transaction_limits={transaction_limits}
                 userBalance={userBalance}
                 asset={selectedToken}
+                currencyRate={currencyRate}
                 // cryptoAssets={wallet?.cryptoAssests}
               />
             )}
@@ -494,6 +458,7 @@ type PropsCrypto = {
   transaction_limits: undefined | UserTransactionLimits;
   userBalance: number;
   asset: string;
+  currencyRate: CryptoRates | undefined;
   // cryptoAssets: WalletState["wallet"][];
 };
 const CryptoWithdrawal = ({
@@ -501,14 +466,12 @@ const CryptoWithdrawal = ({
   transaction_limits,
   userBalance,
   asset,
+  currencyRate,
 }: PropsCrypto) => {
   const [withdrawalModal, setWithDrawalModal] = useState(false);
   const [showSavedAddressModal, setShowSavedAddressModal] = useState(false);
 
   const navigate = useNavigate();
-
-  const account_level = user?.accountLevel as AccountLevel;
-  const userTransactionLimits = bisats_limit[account_level];
 
   const queryClient = useQueryClient();
 
@@ -536,9 +499,6 @@ const CryptoWithdrawal = ({
     };
   }, [transaction_limits]);
 
-  // const maxWithdrawalLimit =
-  //   userTransactionLimits?.maximum_crypto_withdrawal || Infinity;
-
   // HDR: : List of networks
   const tokenData: TNetwork[] = useMemo(() => {
     const token = getUserTokenData();
@@ -549,6 +509,32 @@ const CryptoWithdrawal = ({
 
     return networks || [];
   }, [asset]);
+
+  const assetUsdRate = useMemo(() => {
+    if (!asset || !currencyRate) return 0;
+
+    const rateKey = asset.toUpperCase();
+    const rateMap: Record<string, number | undefined> = {
+      BTC: currencyRate.bitcoin?.usd,
+      ETH: currencyRate.ethereum?.usd,
+      SOL: currencyRate.solana?.usd,
+      USDT: currencyRate.tether?.usd,
+      TRX: currencyRate.tron?.usd,
+    };
+
+    return rateMap[rateKey] ?? 0;
+  }, [asset, currencyRate]);
+
+  const minimumAssetAmount = useMemo(() => {
+    if (!assetUsdRate) return null;
+    return MIN_CRYPTO_WITHDRAWAL_USD / assetUsdRate;
+  }, [assetUsdRate]);
+
+  const formattedMinimumAssetAmount = useMemo(() => {
+    if (!minimumAssetAmount) return null;
+    const decimals = asset?.toUpperCase() === "USDT" ? 2 : 7;
+    return formatter({ decimal: decimals }).format(minimumAssetAmount);
+  }, [asset, minimumAssetAmount]);
 
   // SUB: ================= FOrmik =====================
   const formik = useFormik({
@@ -618,6 +604,18 @@ const CryptoWithdrawal = ({
           userBalance,
           `Amount cannot exceed your balance (${userBalance.toLocaleString()} ${asset})`
         )
+        .test(
+          "min-usd-equivalent",
+          `Amount must be at least equivalent to $${MIN_CRYPTO_WITHDRAWAL_USD}`,
+          (value) => {
+            if (value === undefined || value === null) return true;
+            const numericValue = Number(value);
+            if (Number.isNaN(numericValue)) return true;
+            if (!assetUsdRate) return true;
+            const usdEquivalent = numericValue * assetUsdRate;
+            return usdEquivalent >= MIN_CRYPTO_WITHDRAWAL_USD;
+          }
+        )
         .required("Amount is required"),
     }),
     onSubmit: async (values) => {
@@ -665,6 +663,13 @@ const CryptoWithdrawal = ({
 
     return () => clearTimeout(handler);
   }, [formik.values.amount]);
+
+  useEffect(() => {
+    if (!assetUsdRate) return;
+    if (formik.values.amount) {
+      formik.validateField("amount");
+    }
+  }, [assetUsdRate, formik.values.amount]);
 
   const isAmountReady =
     debouncedAmount !== "" && !Number.isNaN(Number(debouncedAmount));
@@ -830,6 +835,13 @@ const CryptoWithdrawal = ({
           // }
           error={formik.errors.amount}
           touched={undefined}
+        />
+
+        <SecurityBanner
+          text={`Minimum withdrawal amount is $12 equivalent (~${
+            formattedMinimumAssetAmount ?? ""
+          } ${formattedMinimumAssetAmount ? asset : ""}).`}
+          alertType="info"
         />
 
         <SummaryCard

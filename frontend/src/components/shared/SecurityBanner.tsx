@@ -1,26 +1,26 @@
 import { cn } from "@/utils";
-import React from "react";
 
 const SecurityBanner = ({
   text,
   alertType,
 }: {
   text?: string;
-  alertType?: "danger" | "default";
+  alertType?: "danger" | "default" | "info";
 }) => {
   return (
     <div
       className={cn(
         "bg-[#F5FEF8] p-2 border border-[#DCFCE7] rounded-[8px] text-xs text-[#17A34A] w-full h-fit flex items-start",
         alertType === "danger" &&
-          "bg-[#FEF2F2] border border-[#FED7D7] text-[#EF4444]"
+          "bg-[#FEF2F2] border border-[#FED7D7] text-[#EF4444]",
+        alertType === "info" && " border-blue-100 bg-blue-50 text-blue-700"
       )}
     >
       <svg
         width="16"
         height="16"
         viewBox="0 0 16 16"
-        className="w-[5%]"
+        className={cn("w-[5%]", alertType === "info" && "hidden")}
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
