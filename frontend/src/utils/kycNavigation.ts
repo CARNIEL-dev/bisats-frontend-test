@@ -25,7 +25,7 @@ export function getNextKycRoute(
   if (user && user.emailVerified === false) return APP_ROUTES.AUTH.VERIFY;
 
   // 2) Phone verification
-  if (user && Boolean(user.phoneNumber))
+  if (user && !Boolean(user.phoneNumber))
     return APP_ROUTES.KYC.PHONEVERIFICATION;
 
   // 3) Personal information
