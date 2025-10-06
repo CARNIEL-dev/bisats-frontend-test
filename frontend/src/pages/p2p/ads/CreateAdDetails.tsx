@@ -156,6 +156,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
             setAdType(value);
           }}
           defaultValue={formik.values.type}
+          disabled={editMode ? true : false}
         >
           <SelectTrigger
             className={cn(
@@ -192,6 +193,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
         }}
         removexNGN={true}
         showBalance={false}
+        disabled={editMode ? true : false}
       />
 
       {/* SUB: AMOUNT */}

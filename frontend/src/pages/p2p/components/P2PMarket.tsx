@@ -370,7 +370,7 @@ const SellForm = ({
           />
 
           <Badge variant={"success"}>
-            Balance: {formatter({ decimal: isUSDT ? 2 : 6 }).format(balance)}{" "}
+            Balance: {formatter({ decimal: isUSDT ? 2 : 7 }).format(balance)}{" "}
             {adDetail?.asset}
           </Badge>
         </div>

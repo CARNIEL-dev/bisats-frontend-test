@@ -19,7 +19,7 @@ import ErrorDisplay from "@/components/shared/ErrorDisplay";
 import { Badge } from "@/components/ui/badge";
 import PreLoader from "@/layouts/PreLoader";
 import { UpdateAdStatusResponse } from "@/pages/p2p/MyAds";
-import { useCryptoRates } from "@/redux/actions/walletActions";
+import { GetWallet, useCryptoRates } from "@/redux/actions/walletActions";
 import { cn, formatter } from "@/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Check } from "lucide-react";
@@ -159,6 +159,7 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
       queryClient.invalidateQueries({
         queryKey: ["userAds", variables.userId],
       });
+      GetWallet();
     },
     onError: (err) => {
       Toast.error(err.message || "Failed to create ad", "Failed");
@@ -307,7 +308,7 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
                 <Badge variant={"success"}>
                   Balance:{" "}
                   {formatter({
-                    decimal: ad?.type.toLowerCase() === "buy" ? 2 : 5,
+                    decimal: ad?.type.toLowerCase() === "buy" ? 2 : 7,
                   }).format(calculateDisplayWalletBallance)}{" "}
                   {ad?.type.toLowerCase() === "buy" ? "xNGN" : ad?.asset}
                 </Badge>
