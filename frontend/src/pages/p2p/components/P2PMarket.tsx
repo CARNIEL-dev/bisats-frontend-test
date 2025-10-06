@@ -13,6 +13,7 @@ import { assets } from "@/utils/conversions";
 import { formatNumber } from "@/utils/numberFormat";
 import { ACTIONS, bisats_charges } from "@/utils/transaction_limits";
 import { FormikProps, useFormik } from "formik";
+import { BadgeCheck } from "lucide-react";
 import React, { ChangeEventHandler, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -127,8 +128,11 @@ const P2PMarket = ({
         {type === "buy" ? "You're Buying from" : "You're Selling to"}
       </p>
 
-      <h3 className="text-[28px] md:text-[34px]  font-semibold leading-[40px]">
-        {adDetail?.user?.userName}
+      <h3 className="text-[28px] md:text-[34px] flex items-center gap-2  font-semibold leading-[40px]">
+        {adDetail?.user?.userName}{" "}
+        {adDetail?.user?.accountLevel === "level_3" && (
+          <BadgeCheck fill="#F5BB00" stroke="#fff" size={30} />
+        )}
       </h3>
 
       <div className="text-[#515B6E] text-sm flex items-center gap-1 font-normal ">
