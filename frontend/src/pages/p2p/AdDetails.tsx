@@ -280,7 +280,9 @@ const AdsInfo = ({ ads, adStatus }: { ads: AdsType; adStatus: string }) => {
       value: (
         <div className="whitespace-nowrap flex items-center gap-1">
           <p className="font-semibold whitespace-nowrap">
-            {formatter({ decimal: 5 }).format(fulfilled)}
+            {formatter({ decimal: ads.asset === "USDT" ? 2 : 6 }).format(
+              fulfilled
+            )}
           </p>
           <span className="text-xs text-gray-400">{ads.asset}</span>
           <span
@@ -296,7 +298,9 @@ const AdsInfo = ({ ads, adStatus }: { ads: AdsType; adStatus: string }) => {
       value: (
         <div className="whitespace-nowrap flex items-center gap-1">
           <p className="font-semibold whitespace-nowrap">
-            {formatter({ decimal: 5 }).format(available)}
+            {formatter({ decimal: ads.asset === "USDT" ? 2 : 6 }).format(
+              available
+            )}
           </p>
           <span className="text-xs text-gray-400">{ads.asset}</span>
         </div>
@@ -307,7 +311,7 @@ const AdsInfo = ({ ads, adStatus }: { ads: AdsType; adStatus: string }) => {
       value: (
         <div className="whitespace-nowrap flex items-center gap-1">
           <p className="font-semibold whitespace-nowrap">
-            {formatter({ decimal: 5 }).format(total)}
+            {formatter({ decimal: ads.asset === "USDT" ? 2 : 6 }).format(total)}
           </p>
           <span className="text-xs text-gray-400">{ads.asset}</span>
         </div>

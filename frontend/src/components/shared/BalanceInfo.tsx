@@ -7,7 +7,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { cn, formatter } from "@/utils";
+import { cn, formatCompactNumber, formatter } from "@/utils";
 import { Check, Info, Verified } from "lucide-react";
 import { useState } from "react";
 
@@ -122,9 +122,7 @@ const BalanceInfo = ({ className, currency, userBalance, wallet }: Props) => {
                 value={
                   <p className="text-sm text-gray-800">
                     <span className="text-gray-400 text-xs">xNGN</span>{" "}
-                    {formatter({ decimal: 0 }).format(
-                      wallet?.AdsLimit?.buy ?? 0
-                    )}
+                    {formatCompactNumber(wallet?.AdsLimit?.buy ?? 0)}
                   </p>
                 }
               />
@@ -134,9 +132,7 @@ const BalanceInfo = ({ className, currency, userBalance, wallet }: Props) => {
                 value={
                   <p className="text-sm text-gray-800">
                     <span className="text-gray-400 text-xs">xNGN</span>{" "}
-                    {formatter({ decimal: 0 }).format(
-                      wallet?.AdsLimit?.sell ?? 0
-                    )}
+                    {formatCompactNumber(wallet?.AdsLimit?.sell ?? 0)}
                   </p>
                 }
               />
@@ -146,10 +142,11 @@ const BalanceInfo = ({ className, currency, userBalance, wallet }: Props) => {
                 value={
                   <p className="text-sm text-gray-800">
                     <span className="text-gray-400 text-xs">xNGN</span>{" "}
-                    {wallet?.NGNMaxDailyWithdrawalLimit?.toLowerCase() ===
-                    "unlimited"
+                    {formatCompactNumber(
+                      parseInt(wallet?.NGNMaxDailyWithdrawalLimit || "0")
+                    ).endsWith("T")
                       ? "Unlimited"
-                      : formatter({ decimal: 0 }).format(
+                      : formatCompactNumber(
                           parseInt(wallet?.NGNMaxDailyWithdrawalLimit || "0")
                         )}
                   </p>
@@ -161,7 +158,7 @@ const BalanceInfo = ({ className, currency, userBalance, wallet }: Props) => {
                 value={
                   <p className="text-sm text-gray-800">
                     $
-                    {formatter({ decimal: 0 }).format(
+                    {formatCompactNumber(
                       parseInt(wallet?.USDMaxDailyWithdrawalLimit || "0")
                     )}
                   </p>

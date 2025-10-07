@@ -9,7 +9,7 @@ import {
   GetUserDetails,
 } from "@/redux/actions/userActions";
 
-import { formatter, getUpgradeButtonState } from "@/utils";
+import { formatCompactNumber, formatter, getUpgradeButtonState } from "@/utils";
 import { goToNextKycRoute } from "@/utils/kycNavigation";
 import { formatNumber } from "@/utils/numberFormat";
 import { AccountLevel, bisats_limit } from "@/utils/transaction_limits";
@@ -74,22 +74,30 @@ const Profile = () => {
         {
           limit: "Daily Fiat Withdrawal Limit",
           amount: `${
-            limits?.daily_withdrawal_limit_fiat > 500000000
+            formatCompactNumber(limits?.daily_withdrawal_limit_fiat).endsWith(
+              "T"
+            )
               ? "Unlimited"
-              : formatNumber(limits?.daily_withdrawal_limit_fiat)
+              : formatCompactNumber(limits?.daily_withdrawal_limit_fiat)
           } NGN`,
         },
         {
           limit: "Daily Crypto Withdrawal Limit",
-          amount: `${formatNumber(limits?.daily_withdrawal_limit_crypto)} USD`,
+          amount: `${formatCompactNumber(
+            limits?.daily_withdrawal_limit_crypto
+          )} USD`,
         },
         {
           limit: "Sell Ad Limit",
-          amount: `${formatNumber(limits.maximum_ad_creation_amount)} NGN`,
+          amount: `${formatCompactNumber(
+            limits.maximum_ad_creation_amount
+          )} NGN`,
         },
         {
           limit: "Buy Ad limit",
-          amount: `${formatNumber(limits.maximum_ad_creation_amount)} NGN`,
+          amount: `${formatCompactNumber(
+            limits.maximum_ad_creation_amount
+          )} NGN`,
         },
       ]
     : [];

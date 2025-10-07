@@ -244,8 +244,12 @@ const MyAds = () => {
         const item = row.original;
         const amount =
           item.type !== "buy"
-            ? formatter({ decimal: 5 }).format(item.amount)
-            : formatter({ decimal: 5 }).format(item.amount / item.price);
+            ? formatter({ decimal: item.asset === "USDT" ? 2 : 5 }).format(
+                item.amount
+              )
+            : formatter({ decimal: item.asset === "USDT" ? 2 : 5 }).format(
+                item.amount / item.price
+              );
         return (
           <div className="text-gray-600 uppercase ">
             {amount} <span className="text-gray-400 text-xs">{item.asset}</span>{" "}

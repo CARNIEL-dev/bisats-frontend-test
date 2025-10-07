@@ -64,18 +64,18 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
   const walletData = walletState?.wallet;
   const queryClient = useQueryClient();
 
-  const amountAvailable = useMemo(() => {
-    return ad?.amountAvailable;
-  }, []);
+  const amountAvailable = Number(ad?.amountAvailable) || 0;
 
   //   SUB: Calculate balance
   const calculateDisplayWalletBallance: number = useMemo(() => {
     if (ad?.type.toLowerCase() === "buy") {
-      const amountAval = (walletData?.xNGN + amountAvailable).toFixed(2);
+      const amountAval = (Number(walletData?.xNGN) + amountAvailable).toFixed(
+        2
+      );
       return Number(amountAval) || 0;
     } else {
       return walletData
-        ? walletData?.[ad?.asset ?? "USDT"] + amountAvailable
+        ? Number(walletData?.[ad?.asset!]) + amountAvailable
         : amountAvailable || 0;
     }
   }, [ad?.asset, ad?.type, walletData, amountAvailable]);
@@ -152,14 +152,17 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
     Partial<AdsPayload>
   >({
     mutationFn: (payload: Partial<AdsPayload>) => UpdateAd(payload),
-    onSuccess: (info, variables) => {
+    onSuccess: async (info, variables) => {
+      await Promise.all([
+        GetWallet(),
+        queryClient.invalidateQueries({
+          queryKey: ["userAds", variables.userId],
+        }),
+      ]);
+
       Toast.success(info?.message, "Ad Updated");
       close();
       navigate(APP_ROUTES.P2P.MY_ADS);
-      queryClient.invalidateQueries({
-        queryKey: ["userAds", variables.userId],
-      });
-      GetWallet();
     },
     onError: (err) => {
       Toast.error(err.message || "Failed to create ad", "Failed");
@@ -308,7 +311,10 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
                 <Badge variant={"success"}>
                   Balance:{" "}
                   {formatter({
-                    decimal: ad?.type.toLowerCase() === "buy" ? 2 : 7,
+                    decimal:
+                      ad?.type.toLowerCase() === "buy" || ad?.asset === "USDT"
+                        ? 2
+                        : 7,
                   }).format(calculateDisplayWalletBallance)}{" "}
                   {ad?.type.toLowerCase() === "buy" ? "xNGN" : ad?.asset}
                 </Badge>
