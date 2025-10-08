@@ -98,7 +98,7 @@ const MarketPlaceTable = ({ type, ads, asset }: MarketPlaceContentProps) => {
     },
     {
       id: "amountAvailable",
-      header: type === "sell" ? "Maximum" : "Available",
+      header: "Quantity",
       accessorFn: (row: AdsType) => {
         if (row.orderType === "buy") {
           return row.amountAvailable;
@@ -107,7 +107,10 @@ const MarketPlaceTable = ({ type, ads, asset }: MarketPlaceContentProps) => {
       },
       cell: ({ row }) => {
         const value = Number(row.getValue("amountAvailable"));
-        const formatted = formatter({ decimal: 5 }).format(value);
+        const asset = row.original.asset;
+        const formatted = formatter({
+          decimal: asset === "USDT" ? 2 : 5,
+        }).format(value);
         return (
           <div className="text-gray-600 uppercase">
             {formatted} {row.original.asset}

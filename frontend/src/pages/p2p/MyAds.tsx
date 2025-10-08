@@ -10,18 +10,19 @@ import { useSelector } from "react-redux";
 
 import KycBanner from "@/components/KycBanner";
 import ErrorDisplay from "@/components/shared/ErrorDisplay";
-import { Button, buttonVariants } from "@/components/ui/Button";
+import { Button } from "@/components/ui/Button";
 import { APP_ROUTES } from "@/constants/app_route";
 import PreLoader from "@/layouts/PreLoader";
 import KycManager from "@/pages/kyc/KYCManager";
 import { updateAdStatus, useFetchUserAds } from "@/redux/actions/walletActions";
 
+import { tokenLogos } from "@/assets/tokens";
+import ModalTemplate from "@/components/Modals/ModalTemplate";
 import { ACTIONS } from "@/utils/transaction_limits";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
 import { Check } from "lucide-react";
-import ModalTemplate from "@/components/Modals/ModalTemplate";
+import { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export interface Ad {
   id: string;
@@ -89,6 +90,11 @@ const MyAds = () => {
       queryClient.invalidateQueries({
         queryKey: ["userNotifications", variables.userId],
       });
+      queryClient.refetchQueries({
+        queryKey: ["searchAds"],
+        exact: false,
+        type: "all",
+      });
     },
     onError(err) {
       console.log(err);
@@ -142,7 +148,13 @@ const MyAds = () => {
       header: "Asset",
       cell: ({ row }) => {
         const asset = row.original.asset;
-        return <span className="font-semibold text-gray-600 ">{asset}</span>;
+        const logo = tokenLogos[asset as keyof typeof tokenLogos];
+        return (
+          <div className="font-semibold text-gray-600 flex items-center gap-1.5">
+            <img src={logo} alt={asset} width={18} height={18} />
+            <span>{asset}</span>
+          </div>
+        );
       },
     },
     {

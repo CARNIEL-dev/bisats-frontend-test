@@ -71,14 +71,13 @@ const TableActionMenu = ({ adDetail, onCloseAd }: TableActionMenuProps) => {
             <>
               {!adDetail.reason && (
                 <DropdownMenuItem onSelect={() => setShowEdit(true)}>
-                  Edit ad
+                  Edit price
                 </DropdownMenuItem>
               )}
-              {adDetail.status === "active" && (
-                <DropdownMenuItem onSelect={handleCloseAd}>
-                  Close ad
-                </DropdownMenuItem>
-              )}
+
+              <DropdownMenuItem onSelect={handleCloseAd}>
+                Close ad
+              </DropdownMenuItem>
             </>
           )}
         </DropdownMenuContent>

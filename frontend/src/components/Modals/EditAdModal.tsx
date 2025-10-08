@@ -155,13 +155,19 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
     onSuccess: async (info, variables) => {
       await Promise.all([
         GetWallet(),
-        queryClient.invalidateQueries({
+        queryClient.refetchQueries({
           queryKey: ["userAds", variables.userId],
+        }),
+        queryClient.refetchQueries({
+          queryKey: ["searchAds"],
+          exact: false,
+          type: "all",
         }),
       ]);
 
       Toast.success(info?.message, "Ad Updated");
       close();
+      // window.location.reload();
       navigate(APP_ROUTES.P2P.MY_ADS);
     },
     onError: (err) => {
@@ -194,7 +200,7 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
   return (
     <div>
       <p className="text-[#455062] text-[18px] lg:text-[22px] leading-[32px] font-semibold">
-        Edit Ad
+        Edit Price
       </p>
       {fetching ? (
         <div className="h-[15rem] grid place-content-center">
@@ -270,7 +276,7 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
               </div>
             </div>
 
-            <div className="">
+            <div className="hidden">
               {/* SUB: Top Amount */}
               <PrimaryInput
                 className={"w-full py-2 "}
@@ -323,7 +329,7 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
           </div>
           <div className="flex items-center w-full mt-4 gap-2">
             <WhiteTransparentButton
-              text={"Edit Ad details"}
+              text={"Edit Full details"}
               loading={false}
               onClick={() => {
                 navigate(`${APP_ROUTES.P2P.AD_DETAILS}?adId=${ad?.id}`, {
@@ -336,7 +342,7 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
               style={{ width: "50%" }}
             />
             <PrimaryButton
-              text={"Update Ad"}
+              text={"Update Price"}
               loading={mutation.isPending}
               className="w-1/2"
               onClick={formik.submitForm}

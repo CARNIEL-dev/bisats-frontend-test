@@ -10,6 +10,7 @@ interface TInput extends InputHTMLAttributes<HTMLInputElement> {
   format?: boolean;
   maxFnc?: () => void;
   loading?: boolean;
+  maxText?: string;
 }
 const PrimaryInput: React.FC<TInput> = ({
   className,
@@ -21,6 +22,7 @@ const PrimaryInput: React.FC<TInput> = ({
   maxFnc,
   onBlur,
   onFocus,
+  maxText,
   ...props
 }) => {
   // function formatNumberInput(value: string): string {
@@ -72,7 +74,7 @@ const PrimaryInput: React.FC<TInput> = ({
             onClick={() => maxFnc && maxFnc()}
           >
             {" "}
-            Max{" "}
+            {maxText || "Max"}
           </button>
         )}
       </div>

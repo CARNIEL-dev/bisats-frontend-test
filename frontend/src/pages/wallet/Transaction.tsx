@@ -143,9 +143,9 @@ const Transactions: React.FC = () => {
       cell: ({ row }) => {
         const amount = row.original.Amount;
         const asset = row.original.Asset;
-        const price = formatter({ decimal: asset === "xNGN" ? 0 : 4 }).format(
-          amount
-        );
+        const price = formatter({
+          decimal: asset === "xNGN" ? 0 : asset === "USDT" ? 2 : 6,
+        }).format(amount);
 
         return (
           <p className="font-semibold text-gray-600 font-mono ">

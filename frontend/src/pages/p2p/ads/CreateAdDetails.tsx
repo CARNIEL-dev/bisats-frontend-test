@@ -473,6 +473,15 @@ const CreateAdDetails: React.FC<AdsProps> = ({
                 );
               }
             }}
+            maxFnc={() => {
+              formik.setFieldValue(
+                "minimumLimit",
+                adType === "Buy"
+                  ? userTransactionLimits?.lower_limit_buy_ad
+                  : userTransactionLimits?.lower_limit_sell_ad
+              );
+            }}
+            maxText="Min"
           />
 
           {/* SUB: Maximum */}

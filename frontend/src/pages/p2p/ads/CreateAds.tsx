@@ -98,6 +98,11 @@ const CreateAd = () => {
           exact: true,
           refetchType: "all",
         });
+        queryClient.refetchQueries({
+          queryKey: ["searchAds"],
+          exact: false,
+          type: "all",
+        });
         queryClient
           .invalidateQueries({
             queryKey: ["userAds", variables.userId],

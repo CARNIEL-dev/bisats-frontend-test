@@ -87,7 +87,12 @@ const TransactionDetails: React.FC<Props> = ({ close, details }) => {
           <TextBetweenDisplay
             label="Amount"
             value={formatter({
-              decimal: details?.Asset === "xNGN" ? 0 : 4,
+              decimal:
+                details?.Asset === "xNGN"
+                  ? 0
+                  : details?.Asset === "USDT"
+                  ? 2
+                  : 6,
             }).format(details?.Amount || 0)}
           />
           <TextBetweenDisplay

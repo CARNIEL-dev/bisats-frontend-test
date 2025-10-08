@@ -10,12 +10,11 @@ import CreateAdDetails from "@/pages/p2p/ads/CreateAdDetails";
 import { UpdateAdStatusResponse } from "@/pages/p2p/MyAds";
 import { PriceData } from "@/pages/wallet/Assets";
 import { UpdateAd } from "@/redux/actions/adActions";
-import { useCryptoRates } from "@/redux/actions/walletActions";
+import { GetWallet, useCryptoRates } from "@/redux/actions/walletActions";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { FormikConfig, useFormik } from "formik";
 import { useMemo, useState } from "react";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 
 type Props = {
   userId: string;
@@ -29,7 +28,6 @@ const EditAds = ({
   adDetail,
   setMode,
 }: Props) => {
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const walletState: WalletState = useSelector((state: any) => state.wallet);
   const walletData = walletState?.wallet;
@@ -83,15 +81,22 @@ const EditAds = ({
 
   const mutation = useMutation<UpdateAdStatusResponse, Error, AdsPayload>({
     mutationFn: (payload: AdsPayload) => UpdateAd(payload),
-    onSuccess: (_, variables) => {
+    onSuccess: async (_, variables) => {
+      await Promise.all([
+        GetWallet(),
+        queryClient.refetchQueries({
+          queryKey: ["userAds", variables.userId],
+        }),
+        queryClient.refetchQueries({
+          queryKey: ["searchAds"],
+          exact: false,
+          type: "all",
+        }),
+      ]);
       Toast.success("Ad created successfully", "Success");
       setMode(false);
       setShowConfirmModal(false);
       formik.resetForm();
-
-      queryClient.invalidateQueries({
-        queryKey: ["userAds", variables.userId],
-      });
     },
     onError: (err) => {
       Toast.error(err.message || "Failed to create ad", "Failed");

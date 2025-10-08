@@ -1,3 +1,4 @@
+import { tokenLogos } from "@/assets/tokens";
 import KycBanner from "@/components/KycBanner";
 import ErrorDisplay from "@/components/shared/ErrorDisplay";
 import SEO from "@/components/shared/SEO";
@@ -127,6 +128,7 @@ const MarketPlacePage = () => {
   //       skip: (newPage - 1) * pagination.limit,
   //     });
 
+  const assetLogo = tokenLogos[adsParam.asset as keyof typeof tokenLogos];
   return (
     <>
       <div className="space-y-8">
@@ -207,9 +209,17 @@ const MarketPlacePage = () => {
                     </Button>
                   </div>
                 </div>
-                <p className="mb-2 md:mb-3 text-sm font-semibold lg:text-lg">
-                  Open Ads - {adsParam.asset}
-                </p>
+                <div className="mb-2 md:mb-3 flex items-center gap-1.5">
+                  <p className=" text-sm font-semibold lg:text-lg">
+                    Open Ads - {adsParam.asset}
+                  </p>
+                  <img
+                    src={assetLogo}
+                    alt={adsParam.asset}
+                    width={26}
+                    height={26}
+                  />
+                </div>
               </>
             )}
 
