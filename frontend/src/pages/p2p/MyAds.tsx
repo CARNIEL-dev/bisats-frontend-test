@@ -14,7 +14,11 @@ import { Button } from "@/components/ui/Button";
 import { APP_ROUTES } from "@/constants/app_route";
 import PreLoader from "@/layouts/PreLoader";
 import KycManager from "@/pages/kyc/KYCManager";
-import { updateAdStatus, useFetchUserAds } from "@/redux/actions/walletActions";
+import {
+  GetWallet,
+  updateAdStatus,
+  useFetchUserAds,
+} from "@/redux/actions/walletActions";
 
 import { tokenLogos } from "@/assets/tokens";
 import ModalTemplate from "@/components/Modals/ModalTemplate";
@@ -84,6 +88,7 @@ const MyAds = () => {
     mutationFn: ({ userId, adId, status }: UpdateAdStatusVars) =>
       updateAdStatus({ userId, adId, newStatus: status }),
     onSuccess(_, variables) {
+      GetWallet();
       queryClient.invalidateQueries({
         queryKey: ["userAds", variables.userId],
       });

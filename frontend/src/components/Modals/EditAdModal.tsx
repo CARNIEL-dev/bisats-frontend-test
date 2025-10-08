@@ -248,6 +248,7 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
                 type="number"
                 step="0.01"
                 inputMode="decimal"
+                format
                 onChange={(e) => {
                   const value = e.target.value;
                   const isValidDecimal = /^(\d+(\.\d*)?|\.\d+)?$/.test(value);

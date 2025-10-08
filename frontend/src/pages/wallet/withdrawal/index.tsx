@@ -347,6 +347,7 @@ const NGNWithdrawal = ({ user, transaction_limits, userBalance }: PropsNGN) => {
                     // }
                     formik.setFieldValue("amount", e.target.value);
                   }}
+                  format
                   maxFnc={() => {
                     const val = Math.min(maxWithdrawalLimit, userBalance);
                     formik.setFieldValue("amount", val);
@@ -828,11 +829,7 @@ const CryptoWithdrawal = ({
           onChange={(e) => {
             formik.setFieldValue("amount", e.target.value);
           }}
-          // error={
-          //   Number(cryptoWithdrwalAmount || 0) > currentBalance
-          //     ? "Amount exceeds balance"
-          //     : undefined
-          // }
+          format
           error={formik.errors.amount}
           touched={undefined}
         />

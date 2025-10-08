@@ -210,6 +210,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
           step="any"
           min={0}
           inputMode="decimal"
+          format
           onBlur={formik.handleBlur}
           name={
             formik.values.type.toLowerCase() === "buy"
@@ -289,6 +290,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
             type="number"
             step="any"
             inputMode="decimal"
+            format
             name="price"
             error={formik.errors.price}
             defaultValue={formik.values.price}
@@ -366,6 +368,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
             name="priceLowerLimit"
             type="number"
             step="any"
+            format
             error={formik.errors.priceLowerLimit}
             value={formik.values.priceLowerLimit}
             touched={formik.touched.priceLowerLimit}
@@ -391,6 +394,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
             name="priceUpperLimit"
             type="number"
             step="any"
+            format
             error={formik.errors.priceUpperLimit}
             value={formik.values.priceUpperLimit}
             touched={formik.touched.priceUpperLimit}
@@ -455,6 +459,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
             name="minimumLimit"
             type="number"
             step="any"
+            format
             min={
               adType === "Buy"
                 ? userTransactionLimits?.lower_limit_buy_ad
@@ -500,6 +505,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
             name="maximumLimit"
             type="number"
             step="any"
+            format
             max={
               adType === "Buy"
                 ? userTransactionLimits?.upper_limit_buy_ad

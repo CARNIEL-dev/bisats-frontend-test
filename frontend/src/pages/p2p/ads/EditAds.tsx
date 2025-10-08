@@ -85,6 +85,9 @@ const EditAds = ({
       await Promise.all([
         GetWallet(),
         queryClient.refetchQueries({
+          queryKey: ["adDetails", variables.userId, adDetail.id],
+        }),
+        queryClient.refetchQueries({
           queryKey: ["userAds", variables.userId],
         }),
         queryClient.refetchQueries({

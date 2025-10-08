@@ -311,12 +311,23 @@ const AdSchema = Yup.object().shape({
               const maxLimitDecimal = toSafeDecimal(
                 userTransactionLimits?.maximum_ad_creation_amount
               );
+              const minLimitDecimal = toSafeDecimal(
+                userTransactionLimits?.lower_limit_buy_ad
+              );
+
+              if (minLimitDecimal.gt(0) && amountDecimal.lt(minLimitDecimal)) {
+                return this.createError({
+                  message: `Amount must be at least ${formatNumber(
+                    minLimitDecimal.toNumber()
+                  )} xNGN limit`,
+                });
+              }
 
               if (amountDecimal.gt(maxLimitDecimal)) {
                 return this.createError({
                   message: `Amount must not exceed ${formatNumber(
                     maxLimitDecimal.toNumber()
-                  )} xNGN`,
+                  )} xNGN limit`,
                 });
               }
             }
@@ -332,9 +343,8 @@ const AdSchema = Yup.object().shape({
               ? toSafeDecimal(amountAvailable)
               : new Decimal(0);
 
-            const walletBalDecimal = walletBaseDecimal.plus(
-              editAllowanceDecimal
-            );
+            const walletBalDecimal =
+              walletBaseDecimal.plus(editAllowanceDecimal);
 
             if (amountDecimal.gt(walletBalDecimal)) {
               return this.createError({
@@ -368,6 +378,9 @@ const AdSchema = Yup.object().shape({
 
             const typeLower = String(type ?? "").toLowerCase();
             const amountDecimal = toSafeDecimal(value);
+            const tokenRateDecimal = toSafeDecimal(
+              liveRate[asset as keyof PriceData]
+            );
 
             // 1. Minimum amount check
             // if (numericValue <= 0) {
@@ -378,12 +391,30 @@ const AdSchema = Yup.object().shape({
 
             // 2. Maximum token limit (NGN converted to tokens)
             if (typeLower === "sell") {
-              const tokenRateDecimal = toSafeDecimal(
-                liveRate[asset as keyof PriceData]
-              );
               const maxNairaLimitDecimal = toSafeDecimal(
                 userTransactionLimits?.maximum_ad_creation_amount
               );
+              const minNairaLimitDecimal = toSafeDecimal(
+                userTransactionLimits?.lower_limit_sell_ad
+              );
+              const minTokenValueDecimal = tokenRateDecimal.gt(0)
+                ? minNairaLimitDecimal.div(tokenRateDecimal)
+                : new Decimal(0);
+
+              if (
+                tokenRateDecimal.gt(0) &&
+                minNairaLimitDecimal.gt(0) &&
+                amountDecimal.lt(minTokenValueDecimal)
+              ) {
+                return this.createError({
+                  message: `Token amount must be at least ${minTokenValueDecimal
+                    .toDecimalPlaces(5)
+                    .toString()} ${asset} (xNGN${formatNumber(
+                    minNairaLimitDecimal.toNumber()
+                  )} limit) `,
+                });
+              }
+
               const maxTokenValueDecimal = tokenRateDecimal.gt(0)
                 ? maxNairaLimitDecimal.div(tokenRateDecimal)
                 : new Decimal(0);
@@ -404,9 +435,8 @@ const AdSchema = Yup.object().shape({
             const editAllowanceDecimal = isEditMode
               ? toSafeDecimal(amountAvailable)
               : new Decimal(0);
-            const walletBalDecimal = walletBalanceDecimal.plus(
-              editAllowanceDecimal
-            );
+            const walletBalDecimal =
+              walletBalanceDecimal.plus(editAllowanceDecimal);
 
             if (amountDecimal.gt(walletBalDecimal)) {
               return this.createError({
