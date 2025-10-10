@@ -160,6 +160,7 @@ type SelectDropDownProps = {
   placeholder?: string;
   className?: string;
   defaultValue?: string;
+  value?: string;
   style?: React.CSSProperties;
 };
 export const SelectDropDown = ({
@@ -171,6 +172,7 @@ export const SelectDropDown = ({
   placeholder,
   className,
   defaultValue,
+  value,
   style,
 }: SelectDropDownProps) => {
   return (
@@ -184,8 +186,9 @@ export const SelectDropDown = ({
       <div>
         <Select
           onValueChange={onChange}
-          defaultValue={defaultValue}
-          // value={value}
+          value={value ?? undefined}
+          defaultValue={value === undefined ? defaultValue : undefined}
+          // fallback to defaultValue only when value is not provided
           disabled={disabled}
         >
           <SelectTrigger

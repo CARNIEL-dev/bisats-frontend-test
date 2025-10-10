@@ -51,8 +51,9 @@ import Decimal from "decimal.js";
 import { FormikProps, useFormik } from "formik";
 import { X } from "lucide-react";
 import { APP_ROUTES } from "@/constants/app_route";
-import { isWalletValid, WalletType } from "r2c-wallet-validator";
 import SecurityBanner from "@/components/shared/SecurityBanner";
+// @ts-expect-error no types
+import WAValidator from "multicoin-address-validator";
 
 export type TNetwork = {
   label: string;
@@ -548,51 +549,20 @@ const CryptoWithdrawal = ({
     validationSchema: Yup.object().shape({
       walletAddress: Yup.string()
         .required("Wallet address is required")
-        .test("wallet-address-validation", function (value) {
-          const isValid = isWalletValid(value);
+        .test("wallet-address-network-validation", function (value) {
+          const { network } = this.parent;
+          const isValid = WAValidator.validate(
+            value,
+            network === "BSC" ? "0x" : network
+          );
 
-          if (isValid.valid) {
-            switch (asset.toLowerCase()) {
-              case "sol":
-                if (isValid.type !== WalletType.SOLANA)
-                  return this.createError({
-                    message: "Please enter a valid Solana wallet address",
-                  });
-                break;
-              case "btc":
-                if (isValid.type !== WalletType.BITCOIN)
-                  return this.createError({
-                    message: "Please enter a valid Bitcoin wallet address",
-                  });
-                break;
-              case "eth":
-                if (isValid.type !== WalletType.EVM)
-                  return this.createError({
-                    message: "Please enter a valid Ethereum wallet address",
-                  });
-                break;
-
-              default:
-                if (
-                  isValid.type === WalletType.BITCOIN &&
-                  asset.toLowerCase() !== "btc"
-                )
-                  return this.createError({
-                    message: "Please enter a valid wallet address",
-                  });
-                if (
-                  isValid.type === WalletType.SOLANA &&
-                  asset.toLowerCase() !== "sol"
-                )
-                  return this.createError({
-                    message: "Please enter a valid wallet address",
-                  });
-
-                return isValid.valid;
-            }
+          if (!isValid) {
+            return this.createError({
+              message: `Please enter a valid wallet address`,
+            });
           }
 
-          return isValid.valid;
+          return isValid;
         }),
       amount: Yup.number()
         .transform((_, originalValue) =>
@@ -717,6 +687,7 @@ const CryptoWithdrawal = ({
         walletName: "",
       },
     });
+    console.log("I reset");
   }, [asset]);
 
   return (
@@ -793,7 +764,7 @@ const CryptoWithdrawal = ({
               onChange={(e) => {
                 formik.setFieldValue("network", e);
               }}
-              defaultValue={formik.values.network}
+              value={formik.values.network || undefined}
             />
             <PrimaryInput
               label={"Wallet Address"}
@@ -809,6 +780,7 @@ const CryptoWithdrawal = ({
         )}
         {formik.values.walletAddress &&
           formik.values.network &&
+          !formik.errors.walletAddress &&
           !showSavedAddressOptions && (
             <SaveWalletAddress
               data={{
@@ -937,7 +909,7 @@ const CryptoWithdrawal = ({
         <div className="space-y-4 mt-3">
           <h5 className="font-semibold text-xl">Select Saved Address</h5>
 
-          <div>
+          <div className="space-y-3 max-h-[20rem] no-scrollbar overflow-y-auto">
             {savedAddress?.map((item: TUserWalletAddress, index: number) => (
               <div
                 key={index}

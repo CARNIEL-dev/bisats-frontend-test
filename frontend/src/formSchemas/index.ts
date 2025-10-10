@@ -560,7 +560,7 @@ const AdSchema = Yup.object().shape({
 });
 
 const PersonalInformationSchema = Yup.object().shape({
-  firstName: Yup.string().required("First name is required"),
+  firstName: Yup.string().required("Given name is required"),
   lastName: Yup.string().required("Last name is required"),
   middleName: Yup.string().optional(),
   dateOfBirth: Yup.string().required("Date of birth is required"),
