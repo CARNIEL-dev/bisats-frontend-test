@@ -6,39 +6,36 @@ import { Card, CardContent } from "@/components/ui/card";
 import MaxWidth from "@/components/shared/MaxWith";
 import { cn } from "@/utils";
 
+import lightning from "@/assets/landingPage/lightning.svg";
+import shield from "@/assets/landingPage/shield.svg";
+import vault from "@/assets/landingPage/vault.svg";
+import courthouse from "@/assets/landingPage/courthouse.svg";
+
 // Feature card data for mapping
 const featureCards = [
   {
     title: "Speedy Transactions",
     description:
       "Time is money, and we value yours. Our platform helps you trade faster while you enjoy seamless experience.",
-    icon: (
-      <ZapIcon className="w-[98px] h-[98px] text-primaryprimary-5 opacity-50" />
-    ),
+    icon: lightning,
   },
   {
     title: "Fraud proof",
     description:
       "We know the pain in the crypto market. So we beat other platforms through our escrow protection and thorough verification processes. We ensure that every profile is genuine, validated, and secured for transaction.",
-    icon: (
-      <ShieldIcon className="w-[98px] h-[98px] text-primaryprimary-5 opacity-50" />
-    ),
+    icon: vault,
   },
   {
     title: "Regulatory Compliant",
     description:
       "We don’t just give you our words; we adhere strictly to legal policies and regulatory standard both locally and internationally.Bisats is that platform you use with confidence.",
-    icon: (
-      <BuildingIcon className="w-[137px] h-[137px] text-primaryprimary-5 opacity-50" />
-    ),
+    icon: courthouse,
   },
   {
     title: "Secure",
     description:
       "Protecting your assets is our top priority. With our advanced encryption and secured wallets, you experience zero market risk or losses.",
-    icon: (
-      <LockIcon className="w-[98px] h-[98px] text-primaryprimary-5 opacity-50" />
-    ),
+    icon: shield,
   },
 ];
 
@@ -51,7 +48,7 @@ export const ChangingTheByAnima = (): JSX.Element => {
             Bettering the peer-to-peer experience-
             <br />
           </span>
-          <span className=" text-[#C49600]">How Bisats Dominate Others </span>
+          <span className=" text-[#f5bb00]">How Bisats Dominate Others </span>
         </h2>
 
         <div className="relative mx-auto max-w-[75rem] ">
@@ -93,11 +90,18 @@ export const ChangingTheByAnima = (): JSX.Element => {
                   index % 2 === 0 && "justify-self-start"
                 )}
               >
-                <CardContent className="flex flex-col gap-2 h-full relative">
+                <CardContent className="flex flex-col gap-2 h-full relative isolate">
                   <h3 className="font-semibold  text-[22px]">{card.title}</h3>
                   <p className="font-normal text-gray-600 text-[13px] leading-[24px]">
                     {card.description}
                   </p>
+                  <div className="absolute bottom-0 right-5 -z-[5]">
+                    <img
+                      src={card.icon}
+                      alt={card.title}
+                      className="size-[100px]"
+                    />
+                  </div>
                 </CardContent>
               </Card>
             ))}

@@ -14,12 +14,12 @@ export const HowItWorksByAnima = (): JSX.Element => {
       id: 1,
       title: "Make a deposit",
       image: isMobile
-        ? "/landingpage/deposit-mobile.png"
+        ? "/landingpage/mobile/deposit.webp"
         : "/landingpage/deposit.png",
       description: "Fund your wallets with cash or crypto",
       iconAlt: "Deposit",
       iconSrc: DepositIcon,
-      mobileImage: "/landingpage/deposit-mobile.png",
+      mobileImage: "/landingpage/mobile/deposit.webp",
     },
     {
       id: 2,
@@ -27,10 +27,10 @@ export const HowItWorksByAnima = (): JSX.Element => {
       description: "Make a p2p swap on Bisats, fast and easy",
       iconAlt: "Alter",
       image: isMobile
-        ? "/landingpage/exchange-mobile.png"
+        ? "/landingpage/mobile/exchange.webp"
         : "/landingpage/exchange.png",
       iconSrc: Alter,
-      mobileImage: "/landingpage/exchange-mobile.png",
+      mobileImage: "/landingpage/mobile/exchange.webp",
     },
     {
       id: 3,
@@ -38,10 +38,10 @@ export const HowItWorksByAnima = (): JSX.Element => {
       description: "Make Withdrawals to your bank or cypto wallet.",
       iconAlt: "Withdraw",
       image: isMobile
-        ? "/landingpage/withdrawal-mobile.png"
+        ? "/landingpage/mobile/withdrawal.webp"
         : "/landingpage/withdrawal.png",
       iconSrc: Withdraw,
-      mobileImage: "/landingpage/withdrawal-mobile.png",
+      mobileImage: "/landingpage/mobile/withdrawal.webp",
     },
   ];
 
@@ -49,7 +49,7 @@ export const HowItWorksByAnima = (): JSX.Element => {
     <MaxWidth as="section" className=" 2xl:max-w-[100rem] bg-[#FDFDFC]">
       <div className="">
         <div className="flex flex-col items-center gap-1 mb-12">
-          <h2 className="text-[28px] text-[#0A0E12] lg:text-[42px] text-center leading-[40px] lg:leading-[56px] lg:w-3/5">
+          <h2 className="text-[28px] font-medium text-[#0A0E12] lg:text-[42px] text-center leading-[40px] lg:leading-[56px] lg:w-3/5">
             At Bisats, you start and end every transactions with peace of mind.
           </h2>
           <p className="font-normal text-[#606C82] text-[16px] text-center leading-[28px]">
@@ -61,9 +61,9 @@ export const HowItWorksByAnima = (): JSX.Element => {
           {steps.map((step) => (
             <Card
               key={step.id}
-              className="w-full md:w-[280px] lg:w-[356px] h-[464px] lg:h-[504px] rounded-xl border [background:linear-gradient(135deg,rgba(255,255,255,1)_0%,rgba(246,247,248,1)_100%)] relative overflow-hidden md:last:mx-auto lg:last:mx-0"
+              className="w-full md:w-[280px] lg:w-[356px] h-[464px] lg:h-auto rounded-xl border [background:linear-gradient(135deg,rgba(255,255,255,1)_0%,rgba(246,247,248,1)_100%)] relative overflow-hidden md:last:mx-auto lg:last:mx-0 p-0 pb-2"
             >
-              <CardContent className="flex flex-col h-full items-start  lg:gap-2 p-4">
+              <CardContent className="flex flex-col h-full items-start  lg:gap-2 p-3">
                 <img
                   className="w-full h-[300px] mb-3"
                   src={step.image}
@@ -76,7 +76,7 @@ ${step.mobileImage} 480w,
                   sizes="(max-width: 600px) 100vw, 1024px"
                 />
                 <img
-                  className="w-12 h-12 object-cover"
+                  className="w-10 h-10 object-cover"
                   alt={step.iconAlt}
                   src={step.iconSrc}
                   loading="lazy"
@@ -86,7 +86,7 @@ ${step.mobileImage} 480w,
                   {step.title}
                 </h3>
 
-                <p className="font-desktop-body-4 text-greysgrey-8 text-[14px] leading-[24px]">
+                <p className=" text-[#606C82] text-[14px] leading-[24px]">
                   {step.description}
                 </p>
               </CardContent>

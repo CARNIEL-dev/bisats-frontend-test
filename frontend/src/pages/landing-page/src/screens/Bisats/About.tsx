@@ -14,7 +14,7 @@ const About = (): JSX.Element => {
           <h2 className="text-[28px] lg:text-[42px] font-medium text-[#0A0E12] lg-[8px] lg:mb-[24px]">
             About Us
           </h2>
-          <p className="text-[16px] lg:[18px] font-normal text-[#515B6E] lg:text-center w-full max-w-[808px]">
+          <p className=" text-[#515B6E] lg:text-center w-full max-w-[808px]">
             Bisats is the first peer-to-peer cryptocurrency platform in Nigeria
             trusted for its fast, secured and seamless vantage points in the
             Blockchain Ecosystem. Bisats rules other blockchain platforms using
@@ -28,7 +28,7 @@ const About = (): JSX.Element => {
             <h2 className="text-[#0A0E12] font-medium text-[32px] text-center lg:text-left mb-[16px]">
               We eliminate the middle man
             </h2>
-            <p className="text-[18px] text-[#515B6E] font-normal">
+            <p className=" text-[#515B6E]">
               With our innovation, we eliminate the middleman, filter
               insecurities, and help you prevent costly delays. Now you can
               hold, buy, and sell all your crypto assets with zero fees and

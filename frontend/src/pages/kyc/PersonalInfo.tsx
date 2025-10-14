@@ -93,7 +93,7 @@ const PersonalInfo = () => {
             <PrimaryInput
               name="lastName"
               className={"w-full  h-[48px]"}
-              label={"Last Name"}
+              label={"Surname"}
               error={formik.errors.lastName}
               touched={formik.touched.lastName}
               value={formik.values.lastName}

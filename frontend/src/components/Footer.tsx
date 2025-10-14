@@ -1,6 +1,6 @@
 import { footerData, LoggedInLinks } from "@/data/navlinks";
 import { cn } from "@/utils";
-import { FacebookIcon, TwitterIcon } from "lucide-react";
+import { FacebookIcon, InstagramIcon, TwitterIcon } from "lucide-react";
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 
@@ -9,7 +9,11 @@ import { Input } from "@/components/ui/input";
 import BisatLogo from "@/components/shared/Logo";
 import MaxWidth from "./shared/MaxWith";
 
-// Define footer navigation data for better maintainability
+const ICONS = {
+  facebook: FacebookIcon,
+  "X (Twitter)": TwitterIcon,
+  instagram: InstagramIcon,
+};
 
 export const Footer = (): JSX.Element => {
   const user = useSelector((state: { user: UserState }) => state.user);
@@ -72,13 +76,23 @@ export const Footer = (): JSX.Element => {
                   Exchange your crypto assets in a fast, secure and fraudproof
                   platform with our escrow system.
                 </p>
-                <div className="flex gap-6">
+                <div className="flex gap-4">
                   <div className="w-8 h-8 rounded-[20px] bg-neutralswhite bg-opacity-20 flex items-center justify-center">
                     <FacebookIcon className="w-6 h-6 text-white" />
                   </div>
-                  <div className="w-8 h-8 rounded-[20px] bg-neutralswhite bg-opacity-20 flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-[20px]  bg-opacity-20 flex items-center justify-center">
                     <TwitterIcon className="w-6 h-6 text-white" />
                   </div>
+                  {/* {footerData.connect.links.map((link, index) => (
+                    <a
+                      key={index}
+                      href={link.url}
+                      className=" text-[#ADB5C3] text-[16px] leading-7"
+                      target="_blank"
+                    >
+                    {  <ICONS[link.name] className="w-8 h-8 text-white" />}
+                    </a>
+                  ))} */}
                 </div>
               </div>
 
@@ -110,6 +124,7 @@ export const Footer = (): JSX.Element => {
                       key={index}
                       href={link.url}
                       className="font-desktop-body-3 text-[#ADB5C3] text-[16px] leading-7"
+                      target="_blank"
                     >
                       {link.name}
                     </a>

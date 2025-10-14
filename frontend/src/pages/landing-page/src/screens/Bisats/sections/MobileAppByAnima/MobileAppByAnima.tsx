@@ -1,15 +1,14 @@
-import Phones from "@/assets/landingPage/phone-mockup.png";
+import Phones from "@/assets/landingPage/mock.png";
 import AppStores from "@/assets/mobil-stores.svg";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 
 export const MobileAppByAnima = (): JSX.Element => {
   return (
-    <section className="relative w-full py-28 mt-16 bg-[#0A0E12] bg-mobile-app">
-      <div className="container flex  md:flex-col relative items-center  w-[90%] justify-between mx-auto">
-        <div className="bottom-blur h-[20px] border w-full border-white absolute  -bottom-24 lg:-bottom-28 lg:left-0" />
-        <div className="flex md:hidden">
-          <Card className="relative w-full md:w-[366px] h-[421px] bg-transparent border-0 shadow-none ">
+    <section className="relative w-full pt-20 md:pb-16 mt-16  bg-[#0A0E12] bg-mobile-app">
+      <div className="container flex  flex-col relative items-center  w-[90%] justify-between mx-auto">
+        {/* <div className="flex md:hidden">
+          <Card className="relative w-full md:w-[366px] h-[421px] bg-transparent border-0 shadow-none p-0">
             <CardContent className="p-0 relative h-full">
               <img
                 className={` absolute top-0 left-0`}
@@ -19,7 +18,7 @@ export const MobileAppByAnima = (): JSX.Element => {
               />
             </CardContent>
           </Card>
-        </div>
+        </div> */}
 
         {/* Content Section */}
         <div className="flex flex-col  justify-center text-center w-full md:w-1/2 items-start gap-4 mb-8 md:mb-0">
@@ -51,18 +50,17 @@ export const MobileAppByAnima = (): JSX.Element => {
         </div>
 
         {/* Phone Mockups Section */}
-        <div className="hidden lg:flex">
-          <Card className="relative w-full mt-10 md:w-[366px] h-[421px] bg-transparent border-0 shadow-none ">
-            <CardContent className="p-0 relative h-full">
-              <img
-                className={` absolute top-0 left-0`}
-                src={Phones}
-                alt="Screen"
-                loading="lazy"
-              />
-            </CardContent>
-          </Card>
-        </div>
+
+        <Card className="relative w-[250px] md:mt-10 mt-2  md:w-[366px]  md:h-[421px] bg-transparent  shadow-none border-0  ">
+          <CardContent className="p-0">
+            <img
+              className={` object-cover`}
+              src={Phones}
+              alt="Screen"
+              loading="lazy"
+            />
+          </CardContent>
+        </Card>
       </div>
     </section>
   );

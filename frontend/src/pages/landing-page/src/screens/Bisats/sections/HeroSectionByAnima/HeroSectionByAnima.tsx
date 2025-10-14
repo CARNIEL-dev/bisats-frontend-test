@@ -63,7 +63,7 @@ export const HeroSectionByAnima = (): JSX.Element => {
             </motion.h1>
             <motion.p
               variants={revealUpVariant}
-              className="w-full lg:w-[541px] text-[16px] leading-[28px] py-3 lg:text-lg lg:leading-[28px] font-normal text-[#515B6E]"
+              className="w-full lg:w-[541px] text-[16px] leading-[28px] py-3 lg:text-lg lg:leading-[28px] font-light text-[#515B6E]"
             >
               With Bisats, you can say goodbye to your struggles with crypto
               peer-to-peer exchanges

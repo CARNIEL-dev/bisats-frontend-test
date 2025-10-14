@@ -20,9 +20,15 @@ const footerData = {
   connect: {
     title: "CONNECT",
     links: [
-      { name: "X (Twitter)", url: "#" },
-      { name: "Instagram", url: "#" },
-      { name: "Facebook", url: "#" },
+      { name: "X (Twitter)", url: "https://x.com/bisatsglobal?s=21" },
+      {
+        name: "Instagram",
+        url: "https://www.instagram.com/bisats_official?igsh=MWV6a3oydWpka2hzaw%3D%3D&utm_source=qr",
+      },
+      {
+        name: "Facebook",
+        url: "https://www.facebook.com/share/1DBT8ggYhD/?mibextid=wwXIfr",
+      },
     ],
   },
   contact: {
