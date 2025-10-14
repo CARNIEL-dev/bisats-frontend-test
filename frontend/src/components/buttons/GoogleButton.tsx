@@ -82,7 +82,7 @@ const GoogleButton: React.FC<TGButtonProps> = ({ text }) => {
       ) : (
         <button
           onClick={() => TrigerGoogle()}
-          className=" h-[48px] w-full border border-[#D6DAE1] rounded-[6px] flex items-center justify-center py-2 text-center shadow-[0_1_1px_#000] mb-4 cursor-pointer"
+          className=" h-[48px] w-full border border-[#D6DAE1] rounded-[6px]  items-center justify-center py-2 text-center shadow-[0_1_1px_#000] mb-4 cursor-pointer hidden"
         >
           <img
             src={GoogleLogo}
