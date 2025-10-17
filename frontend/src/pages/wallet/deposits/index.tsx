@@ -194,6 +194,7 @@ const DepositPage = () => {
                   onChange={(e) => {
                     formik.setFieldValue("amount", e.target.value);
                   }}
+                  format
                 />
                 <KycManager
                   action={ACTIONS.DEPOSIT_NGN}

@@ -1,6 +1,6 @@
 const NAV_LINKS = [
   { title: "About us", href: "/about" },
-  { title: "Blog", href: "/blog" },
+  { title: "Resources", href: "/resources" },
   { title: "Contact", href: "/contact" },
 ];
 
@@ -13,7 +13,7 @@ const footerData = {
 
       { name: "T&C for Merchants", url: "/terms&condition" },
       { name: "Policy", url: "/policy" },
-      { name: "Blog", url: "/blog" },
+      { name: "Resources", url: "/resources" },
       { name: "FAQs", url: "/faqs" },
     ],
   },
