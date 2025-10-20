@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/input";
 import BisatLogo from "@/components/shared/Logo";
 import MaxWidth from "./shared/MaxWith";
+import { APP_ROUTES } from "@/constants/app_route";
 
 const ICONS = {
   facebook: FacebookIcon,
@@ -15,7 +16,11 @@ const ICONS = {
   instagram: InstagramIcon,
 };
 
-export const Footer = (): JSX.Element => {
+export const Footer = ({
+  isDashboard,
+}: {
+  isDashboard?: boolean;
+}): JSX.Element => {
   const user = useSelector((state: { user: UserState }) => state.user);
   const isAuth = user?.isAuthenticated;
 
@@ -36,7 +41,10 @@ export const Footer = (): JSX.Element => {
               ))}
             </div>
             <div className="flex items-end justify-end w-2/3 md:w-auto scale-75">
-              <BisatLogo />
+              <BisatLogo
+                reload={isDashboard ? false : true}
+                link={isDashboard ? APP_ROUTES.DASHBOARD : "/"}
+              />
             </div>
           </div>
         </footer>

@@ -25,9 +25,10 @@ import {
   slideInRight,
   slideUpVariant,
 } from "@/components/animation";
+const isAuthenticated = false; // Placeholder for authentication state
 export const HeroSectionByAnima = (): JSX.Element => {
-  const user: UserState = useSelector((state: any) => state.user);
-  const isAuthenticated = user.isAuthenticated;
+  // const user: UserState = useSelector((state: any) => state.user);
+  // const isAuthenticated = user.isAuthenticated;
 
   const isMobile = useIsMobile();
 

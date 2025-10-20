@@ -35,7 +35,7 @@ const DashboardLayout: React.FC = () => {
           <main className="min-h-[60dvh]">
             <Outlet />
           </main>
-          <Footer />
+          <Footer isDashboard />
         </div>
       </div>
       <SEO

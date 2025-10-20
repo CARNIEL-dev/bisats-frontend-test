@@ -6,15 +6,17 @@ const BisatLogo = ({
   className,
   reload = true,
   variant = "dark",
+  link,
 }: {
   className?: string;
   reload?: boolean;
   variant?: "light" | "dark";
+  link?: string;
 }) => {
   return (
     <>
       {reload ? (
-        <a href="/" className="cursor-pointer">
+        <a href={link || "/"} className="cursor-pointer">
           <img
             className={cn(
               "w-[100px] lg:w-[132.92px] h-[24px] object-fit lg:h-8",
@@ -25,7 +27,7 @@ const BisatLogo = ({
           />
         </a>
       ) : (
-        <Link to="/" className="cursor-pointer">
+        <Link to={link || "/"} className="cursor-pointer">
           <img
             className={cn(
               "w-[100px] lg:w-[132.92px] h-[24px] object-fit lg:h-8",

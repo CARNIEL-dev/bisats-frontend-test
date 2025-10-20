@@ -14,9 +14,11 @@ import { cn } from "@/utils";
 import { Menu, X } from "lucide-react";
 import BisatLogo from "@/components/shared/Logo";
 
+const isAuthenticated = false; // Placeholder for authentication state
+
 const NavBar = () => {
-  const user: UserState = useSelector((state: any) => state.user);
-  const isAuthenticated = user.isAuthenticated;
+  // const user: UserState = useSelector((state: any) => state.user);
+  // const isAuthenticated = user.isAuthenticated;
   const isMobile = useIsMobile();
 
   const [toggleMenu, setToggleMenu] = useState(false);

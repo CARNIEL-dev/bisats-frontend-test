@@ -33,7 +33,7 @@ const DashboardNavbar = () => {
     <header className="bg-white shadow-sm fixed inset-x-0 top-0 z-50  w-full">
       <MaxWidth as="nav" className="flex items-center justify-between py-5">
         <div className="scale-75">
-          <BisatLogo />
+          <BisatLogo link={APP_ROUTES.DASHBOARD} reload={false} />
         </div>
         <div className="hidden md:flex justify-center items-center gap-x-12 flex-1  font-semibold text-slate-500 dashboard-navbar">
           <NavLink to={APP_ROUTES.DASHBOARD}>Dashboard</NavLink>
