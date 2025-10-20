@@ -323,7 +323,6 @@ export const PostCorporateInformation = async (payload: TCorporateInfo) => {
         method: "POST",
         headers: {
           Authorization: `${token}`,
-          "Content-Type": "multipart/form-data",
         },
         body: formData,
       }
