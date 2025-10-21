@@ -24,6 +24,7 @@ const OrderHistory = () => {
 
   const isKycVerified = [
     userState?.kyc?.personalInformationVerified,
+    userState?.user?.accountLevel,
     // userState.user?.phoneNumberVerified,
   ].every(Boolean);
 
@@ -125,6 +126,17 @@ const OrderHistoryDetails = ({
     setCopied(true);
     setTimeout(() => setCopied(false), 3000);
   };
+
+  const buyer = details.buyerId === userId ? "buyer" : "merchant";
+  const type =
+    details.adType === "buy"
+      ? buyer === "buyer"
+        ? "sold"
+        : "bought"
+      : buyer === "buyer"
+      ? "bought"
+      : "sold";
+
   return (
     <ModalTemplate onClose={close}>
       <div className="flex flex-col gap-3 mt-6 md:mt-0">
@@ -143,10 +155,10 @@ const OrderHistoryDetails = ({
             <p
               className={cn(
                 "capitalize font-semibold",
-                details.adType === "buy" ? "text-green-600" : "text-red-600"
+                type === "bought" ? "text-green-600" : "text-red-600"
               )}
             >
-              {details.adType === "buy" ? "Bought" : "Sold"}
+              {type}
             </p>
           }
         />

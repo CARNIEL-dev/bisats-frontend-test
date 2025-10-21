@@ -274,7 +274,6 @@ export const PostPOA_KYC = async (payload: TPOA) => {
 
     return data;
   } catch (error) {
-    console.log(error);
     // throw handleApiError(error);
     return error;
   }
@@ -537,7 +536,6 @@ export const Post_Proof_of_Wealth_KYC = async (payload: TPOA) => {
 
     return data;
   } catch (error) {
-    console.log(error);
     // throw handleApiError(error);
     return error;
   }

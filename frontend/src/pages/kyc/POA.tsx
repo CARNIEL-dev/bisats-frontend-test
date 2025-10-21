@@ -52,7 +52,7 @@ const POA = () => {
       userId: user?.userId,
       file: file,
     })) as APIResponseType;
-    console.log(response);
+
     setIsLoading(false);
     if (response.statusCode === 200) {
       Toast.success(response.message, "Success");

@@ -57,6 +57,7 @@ const MyAds = () => {
 
   const isKycVerified = [
     userState?.kyc?.personalInformationVerified,
+    userState?.user?.accountLevel,
     // userState.user?.phoneNumberVerified,
   ].every(Boolean);
 

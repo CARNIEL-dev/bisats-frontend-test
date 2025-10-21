@@ -61,7 +61,7 @@ export const DepositTranscBreakDown = async (payload: TTopUpNGN) => {
       }
     );
     const data = response;
-    console.log(data);
+
     return data;
   } catch (error) {
     // throw handleApiError(error);
@@ -92,7 +92,7 @@ export const ConfirmDeposit = async (payload: {
       }
     );
     const data = response;
-    console.log(data);
+
     return data as any;
   } catch (error) {
     // throw handleApiError(error);
@@ -340,7 +340,7 @@ export const Withdraw_xNGN = async (payload: TWithdrawalRequest) => {
       }
     );
     const data = response;
-    console.log(data);
+
     return data;
   } catch (error) {
     // throw handleApiError(error);

@@ -107,7 +107,6 @@ const SwapConfirmation: React.FC<Props> = ({
         }
       );
 
-      console.log("Place order response", response);
       if (response.status) {
         return {
           success: true,

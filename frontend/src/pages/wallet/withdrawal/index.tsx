@@ -687,7 +687,6 @@ const CryptoWithdrawal = ({
         walletName: "",
       },
     });
-    console.log("I reset");
   }, [asset]);
 
   return (

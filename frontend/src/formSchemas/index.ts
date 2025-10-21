@@ -189,37 +189,47 @@ const swapSchema = Yup.object().shape({
           .required("Amount is required")
           .moreThan(0, "Amount must be greater than 0")
           //? wallet‐balance check
-          .test(
-            "min-wallet-balance",
-            "Insufficient wallet balance",
-            function (value) {
-              const { walletState, adDetail, type } = this.options
-                .context as any;
-              const asset = adDetail.asset;
-              const assetBalance = walletState.wallet?.[asset];
-              const balVal =
-                type.toLowerCase() === "buy"
-                  ? assetBalance
-                  : assetBalance * adDetail.price;
-              return typeof value === "number" ? value <= balVal : false;
+          .test("min-wallet-balance", function (value) {
+            const { walletState, adDetail, type } = this.options.context as any;
+            const asset = adDetail.asset;
+            const assetBalance =
+              walletState.wallet?.[
+                type.toLowerCase() === "buy" ? "xNGN" : asset
+              ];
+            const balVal =
+              type.toLowerCase() === "buy"
+                ? assetBalance
+                : assetBalance * adDetail.price;
+            if (value > balVal) {
+              return this.createError({
+                message: `Insufficient wallet balance`,
+              });
             }
-          )
+
+            return true;
+            // return typeof value === "number" ? value <= balVal : false;
+          })
           //? ad‐availability check
           .test(
             "max-ads-balance",
-            "Available amount exceeded",
+
             function (value) {
               const { adDetail, type } = this.options.context as any;
               const price = Number(adDetail.price);
               const adsBal =
                 type === "sell"
                   ? adDetail.amountAvailable / adDetail.price
-                  : adDetail.amountAvailable;
+                  : Number(adDetail.amountAvailable.toFixed(5));
               const amountVal =
                 type.toLowerCase() === "buy" ? value : value / price;
-              return typeof amountVal === "number"
-                ? amountVal <= adsBal
-                : false;
+
+              if (amountVal > adsBal) {
+                return this.createError({
+                  message: `Available amount exceeded`,
+                });
+              }
+              return true;
+              // return typeof amountVal === "number" ? amountVal < adsBal : false;
             }
           )
           //? Lower limit check

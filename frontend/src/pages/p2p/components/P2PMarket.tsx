@@ -12,6 +12,7 @@ import { formatter } from "@/utils";
 import { assets } from "@/utils/conversions";
 import { formatNumber } from "@/utils/numberFormat";
 import { ACTIONS, bisats_charges } from "@/utils/transaction_limits";
+import Decimal from "decimal.js";
 import { FormikProps, useFormik } from "formik";
 import { BadgeCheck } from "lucide-react";
 import React, { ChangeEventHandler, useEffect, useState } from "react";
@@ -98,7 +99,9 @@ const P2PMarket = ({
 
     if (focusedField === "amount" && !isNaN(amt)) {
       if (adDetail?.orderType === "buy") {
-        formik.setFieldValue("otherAmount", (amt / price).toFixed(6));
+        const val = new Decimal(amt / price).toFixed(6);
+        formik.setFieldValue("otherAmount", val);
+        // formik.setFieldValue("otherAmount", (amt / price).toFixed(6));
       } else if (adDetail?.orderType === "sell") {
         formik.setFieldValue("otherAmount", (amt * price).toFixed(2));
       }

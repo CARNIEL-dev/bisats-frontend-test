@@ -56,7 +56,6 @@ const PersonalInfo = () => {
         navigate(APP_ROUTES.KYC.IDENTITY);
         return;
       } else {
-        console.log(response);
         Toast.error(response.message, "Error");
         return;
       }

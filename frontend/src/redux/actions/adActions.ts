@@ -46,8 +46,6 @@ export const fetchUserAds = (userId: string) => {
       // Make API call using the expected payload structure
       const response = await GetAds({ userId });
 
-      console.log("User Ads API Response:", response);
-
       if (response.status && response.data) {
         // Dispatch success action with ads data
         dispatch(getAdsSuccess(response.data));
@@ -112,7 +110,6 @@ export const GetAdOrder = async (payload: { userId: string; adId: string }) => {
       }
     );
 
-    console.log("Response data:", response);
     return response;
   } catch (error: any) {
     console.error("Error fetching ads:", error);
