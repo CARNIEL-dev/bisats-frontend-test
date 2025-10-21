@@ -331,7 +331,6 @@ export const PostCorporateInformation = async (payload: TCorporateInfo) => {
 
     return data;
   } catch (error) {
-    // throw handleApiError(error);
     return error;
   }
 };
@@ -621,7 +620,6 @@ export const PostLevelThreeInformation = async (payload: TSuperMerchant) => {
 
     return data;
   } catch (error) {
-    // throw handleApiError(error);
     return error;
   }
 };

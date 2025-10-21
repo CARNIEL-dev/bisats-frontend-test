@@ -188,7 +188,7 @@ const MarketPlaceTable = ({ type, ads, asset }: MarketPlaceContentProps) => {
             data={ads}
             columns={column}
             paginated={false}
-            sortColumns={[{ id: "price", desc: true }]}
+            sortColumns={[{ id: "price", desc: type === "buy" ? false : true }]}
             // filterColumns={["price"]}
             enableFiltering
           />

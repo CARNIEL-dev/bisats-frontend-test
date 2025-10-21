@@ -52,7 +52,7 @@ const Payment = () => {
     }
   }, []);
 
-  const BankDetails = wallet?.bankAccount.map(
+  const BankDetails = wallet?.bankAccount?.map(
     (bank: {
       id: string;
       accountNumber: string;
@@ -68,7 +68,7 @@ const Payment = () => {
     })
   );
 
-  const WalletAddress = user.user?.withdrawalAddresses.map(
+  const WalletAddress = user.user?.withdrawalAddresses?.map(
     (item: TUserWalletAddress) => {
       return {
         id: item?.id,
@@ -158,10 +158,10 @@ const Payment = () => {
         </div>
       )}
 
-      {BankDetails.length > 0 && (
+      {BankDetails?.length > 0 && (
         <div>
           <h4 className="font-semibold">Bank Account</h4>
-          {BankDetails.map((details: TBank, idx: number) => (
+          {BankDetails?.map((details: TBank, idx: number) => (
             <div
               className="bg-[#F9F9FB] rounded-[8px] p-3 md:px-10 px-4 my-5"
               key={idx}
@@ -218,10 +218,10 @@ const Payment = () => {
         </div>
       )}
 
-      {WalletAddress.length > 0 && (
+      {WalletAddress?.length > 0 && (
         <div>
           <h4 className="font-semibold">Wallet Address</h4>
-          {WalletAddress.map((details: TUserWalletAddress, idx: number) => (
+          {WalletAddress?.map((details: TUserWalletAddress, idx: number) => (
             <div
               className="bg-[#F9F9FB] rounded-[8px] p-3 md:px-10 px-4 my-5"
               key={idx}
