@@ -66,7 +66,7 @@ const FileInputField: React.FC<FileInputProps> = ({
   valueMapper = defaultValueMapper,
   accept = ".pdf, .jpg, .jpeg, .png, image/*, ",
   allowedTypes = DEFAULT_ALLOWED,
-  maxSizeMB = 2,
+  maxSizeMB = 1,
   placeholder = "Upload (png, jpeg, jpg, pdf only)",
   className,
 }) => {
