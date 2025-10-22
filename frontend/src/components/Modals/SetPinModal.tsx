@@ -32,7 +32,15 @@ const SetPinModal: React.FC<Props> = ({ close, type, open }) => {
       Toast.error("Make sure you entered the same PIN", "PIN mismatch");
       return;
     }
-    if (oldPin) {
+    if (pin.length !== 4 || confirmPin.length !== 4) {
+      Toast.error("PIN must be exactly 4 digits", "Invalid PIN");
+      return;
+    }
+    if (oldPin && type === "change") {
+      if (oldPin.length !== 4) {
+        Toast.error("Old PIN must be exactly 4 digits", "Invalid PIN");
+        return;
+      }
       if (oldPin === confirmPin) {
         Toast.error("New PIN cannot be same as old PIN", "PIN mismatch");
         return;
@@ -71,6 +79,29 @@ const SetPinModal: React.FC<Props> = ({ close, type, open }) => {
     e.stopPropagation();
   };
 
+  // Helper function to handle PIN input changes with max length of 4
+  const handlePinChange = (
+    value: string,
+    setter: React.Dispatch<React.SetStateAction<string>>
+  ) => {
+    const numericValue = value.replace(/\D/g, ""); // Remove non-digit characters
+    if (numericValue.length <= 4) {
+      setter(numericValue);
+    }
+  };
+
+  const isFormValid = () => {
+    if (type === "change") {
+      return (
+        pin.length === 4 &&
+        confirmPin.length === 4 &&
+        oldPin.length === 4 &&
+        pin === confirmPin
+      );
+    }
+    return pin.length === 4 && confirmPin.length === 4 && pin === confirmPin;
+  };
+
   return (
     <ModalTemplate onClose={close} isOpen={open}>
       <div
@@ -83,14 +114,15 @@ const SetPinModal: React.FC<Props> = ({ close, type, open }) => {
         <div className="flex flex-col gap-2 my-4 w-11/12 mx-auto">
           {type === "change" && (
             <PrimaryInput
-              className={"w-full p-2.5 "}
+              className={"w-full p-2.5"}
               label={"Old PIN"}
               error={undefined}
               touched={undefined}
               value={oldPin}
+              maxLength={4}
+              placeholder="Enter 4-digit PIN"
               onChange={(e) => {
-                let value = e.target.value.replace(/\D/g, "");
-                setOldPin(value);
+                handlePinChange(e.target.value, setOldPin);
               }}
             />
           )}
@@ -101,13 +133,14 @@ const SetPinModal: React.FC<Props> = ({ close, type, open }) => {
               label={"Wallet PIN"}
               error={undefined}
               touched={undefined}
+              maxLength={4}
+              placeholder="Enter 4-digit PIN"
               onFocus={() => {
                 setFieldFocused("pin");
               }}
               value={pin}
               onChange={(e) => {
-                let value = e.target.value.replace(/\D/g, "");
-                setPin(value);
+                handlePinChange(e.target.value, setPin);
               }}
             />
           </div>
@@ -120,24 +153,25 @@ const SetPinModal: React.FC<Props> = ({ close, type, open }) => {
                 : false
             }
             touched={undefined}
-            // onFocus={() => {
-            //   setFieldFocused("confirmPin");
-            // }}
-
+            maxLength={4}
+            placeholder="Confirm 4-digit PIN"
             value={confirmPin}
             onChange={(e) => {
               setFieldFocused("confirmPin");
-              let value = e.target.value.replace(/\D/g, "");
-              setConfirmPin(value);
+              handlePinChange(e.target.value, setConfirmPin);
             }}
           />
+
+          <div className="text-sm text-gray-500 text-center">
+            PIN must be exactly 4 digits
+          </div>
 
           <PrimaryButton
             className={"w-full mt-4"}
             text={"Confirm"}
             loading={loading}
             onClick={Submit}
-            disabled={loading || pin !== confirmPin || !pin || !confirmPin}
+            disabled={loading || !isFormValid()}
           />
         </div>
       </div>
