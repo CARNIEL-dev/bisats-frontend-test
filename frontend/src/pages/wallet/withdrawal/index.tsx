@@ -600,6 +600,7 @@ const CryptoWithdrawal = ({
         asset: asset,
         chain: values.network,
       };
+
       await Withdraw_Crypto(payload)
         .then(async (res) => {
           if (res?.status || res?.statusCode === 200) {

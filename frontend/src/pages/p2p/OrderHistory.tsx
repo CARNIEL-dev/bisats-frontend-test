@@ -24,8 +24,7 @@ const OrderHistory = () => {
 
   const isKycVerified = [
     userState?.kyc?.personalInformationVerified,
-    userState?.user?.accountLevel,
-    // userState.user?.phoneNumberVerified,
+    userState?.kyc?.identificationVerified && userState?.user?.accountLevel,
   ].every(Boolean);
 
   const {

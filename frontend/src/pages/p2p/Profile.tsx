@@ -11,7 +11,6 @@ import {
 
 import { formatCompactNumber, formatter, getUpgradeButtonState } from "@/utils";
 import { goToNextKycRoute } from "@/utils/kycNavigation";
-import { formatNumber } from "@/utils/numberFormat";
 import { AccountLevel, bisats_limit } from "@/utils/transaction_limits";
 import { useQuery } from "@tanstack/react-query";
 import { BadgeCheck, Info } from "lucide-react";

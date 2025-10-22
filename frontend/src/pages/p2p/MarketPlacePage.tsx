@@ -73,8 +73,7 @@ const MarketPlacePage = () => {
 
   const isKycVerified = [
     userState?.kyc?.personalInformationVerified,
-    userState?.user?.accountLevel,
-    // userState.user?.phoneNumberVerified,
+    userState?.kyc?.identificationVerified && userState?.user?.accountLevel,
   ].every(Boolean);
 
   const {
@@ -138,7 +137,7 @@ const MarketPlacePage = () => {
           subtext="Fast, secure, and hassle-free. Complete your trades instantly—no waiting, no delays!"
         />
 
-        {!isKycVerified ? (
+        {!isKycVerified && !userState?.user?.hasAppliedToBeInLevelOne ? (
           <KycBanner />
         ) : userState?.user?.hasAppliedToBeInLevelOne &&
           !userState.user.accountLevel ? (
