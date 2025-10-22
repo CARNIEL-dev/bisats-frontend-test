@@ -48,6 +48,7 @@ const Identity = () => {
         ...payload,
         userId: user?.user?.userId,
       };
+
       const response = await PostIdentity_KYC(payloadd);
 
       if (response.statusCode === 200) {

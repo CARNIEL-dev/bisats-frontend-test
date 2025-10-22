@@ -6,6 +6,7 @@ import { FileUp, Loader2 } from "lucide-react";
 import Label from "@/components/Inputs/Label";
 import Toast from "@/components/Toast";
 import { cn } from "@/utils";
+import { heicTo, isHeic } from "heic-to";
 
 type UploadResult =
   | string
@@ -38,6 +39,8 @@ const DEFAULT_ALLOWED = [
   "image/jpeg",
   "image/jpg",
   "image/png",
+  "image/heif",
+  "image/heic",
 ];
 
 const defaultValueMapper: ValueMapper = (file, result) => {
@@ -61,7 +64,7 @@ const FileInputField: React.FC<FileInputProps> = ({
   uploadFile,
   autoUpload = true,
   valueMapper = defaultValueMapper,
-  accept = ".pdf, .jpg, .jpeg, .png",
+  accept = ".pdf, .jpg, .jpeg, .png, image/*, ",
   allowedTypes = DEFAULT_ALLOWED,
   maxSizeMB = 2,
   placeholder = "Upload (png, jpeg, jpg, pdf only)",
@@ -71,6 +74,7 @@ const FileInputField: React.FC<FileInputProps> = ({
   const [fileName, setFileName] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [isConverting, setIsConverting] = useState(false);
 
   const hasFormikError =
     Boolean(formik.touched[name]) && Boolean(formik.errors[name]);
@@ -90,7 +94,7 @@ const FileInputField: React.FC<FileInputProps> = ({
   };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const f = e.target?.files?.[0];
+    let f = e.target?.files?.[0];
     if (!f) return;
 
     // reset UI state for a new selection
@@ -120,6 +124,31 @@ const FileInputField: React.FC<FileInputProps> = ({
         formik.setErrors({ [name]: msg });
       }
       return;
+    }
+
+    const isHeicFile = await isHeic(f);
+
+    if (isHeicFile) {
+      setIsConverting(true);
+      const response = await heicTo({
+        blob: f,
+        type: "image/png",
+        quality: 0.8,
+      });
+
+      if (response) {
+        f = new File([response], f.name.replace(/\.[^/.]+$/, ".png"), {
+          type: "image/png",
+        });
+        setIsConverting(false);
+      } else {
+        const msg = "Failed to convert HEIC image.";
+        Toast.error(msg, "File conversion");
+        setFieldFail(msg);
+        e.target.value = ""; // reset the input
+        setIsConverting(false);
+        return;
+      }
     }
 
     setFileName(f.name);
@@ -172,6 +201,10 @@ const FileInputField: React.FC<FileInputProps> = ({
         >
           {loading ? (
             <Loader2 className="animate-spin size-6" />
+          ) : isConverting ? (
+            <span className="flex items-center gap-2">
+              <Loader2 className="animate-spin size-6" /> Converting...
+            </span>
           ) : (
             <FileUp className="size-6" />
           )}
@@ -191,7 +224,7 @@ const FileInputField: React.FC<FileInputProps> = ({
             accept={accept}
             onChange={handleFileChange}
             className="file-upload-input hidden"
-            disabled={disabled || loading}
+            disabled={disabled || loading || isConverting}
           />
         </label>
 

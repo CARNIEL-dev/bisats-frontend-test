@@ -290,6 +290,7 @@ const BuyForm = ({
 
               formik.setFieldValue("amount", `${maxValue.toFixed(2)}`);
             }}
+            format
           />
 
           <Badge variant={"success"}>
@@ -399,6 +400,7 @@ const SellForm = ({
           onFocus={() => {
             setFocusedField("otherAmount");
           }}
+          format
         />
       </div>
     </>
@@ -415,6 +417,7 @@ type InputFieldProps = {
   onFocus: () => void;
   value: string;
   error: string | boolean | undefined | null;
+  format?: boolean;
 };
 const InputField = ({
   label,
@@ -426,6 +429,7 @@ const InputField = ({
   value,
   onFocus,
   error,
+  format,
 }: InputFieldProps) => {
   return (
     <div className="relative h-32">
@@ -441,6 +445,7 @@ const InputField = ({
         onFocus={onFocus}
         onChange={onChange}
         maxFnc={maxFunc ? maxFunc : undefined}
+        format={format}
       />
 
       <div className="absolute right-1 top-1/2 -translate-y-[63%]">

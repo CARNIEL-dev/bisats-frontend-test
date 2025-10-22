@@ -107,17 +107,19 @@ const Receipt = () => {
                 </p>
               }
             />
-            <TextBox
-              label={
-                orderData?.type === "buy" ? "Transaction Fees" : "Buyer's Fee"
-              }
-              value={
-                <p>
-                  {formatter({}).format(orderData?.transactionFeeInNGN || 0)}{" "}
-                  xNGN
-                </p>
-              }
-            />
+            {orderData?.type === "buy" && (
+              <TextBox
+                label={
+                  orderData?.type === "buy" ? "Transaction Fees" : "Buyer's Fee"
+                }
+                value={
+                  <p>
+                    {formatter({}).format(orderData?.transactionFeeInNGN || 0)}{" "}
+                    xNGN
+                  </p>
+                }
+              />
+            )}
             <TextBox
               label="Order ref"
               value={

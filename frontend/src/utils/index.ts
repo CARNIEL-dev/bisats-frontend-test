@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import Resizer from "react-image-file-resizer";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -204,6 +205,22 @@ function getUpgradeButtonState(
   return { disabled, label };
 }
 
+const resizeFile = (file: File) =>
+  new Promise((resolve) => {
+    Resizer.imageFileResizer(
+      file,
+      1200,
+      1800,
+      "JPEG",
+      80,
+      0,
+      (uri) => {
+        resolve(uri);
+      }
+      // "base64"
+    );
+  });
+
 export {
   formatter,
   formatTime,
@@ -216,4 +233,5 @@ export {
   getPercentage,
   getSafeValue,
   getUpgradeButtonState,
+  resizeFile,
 };

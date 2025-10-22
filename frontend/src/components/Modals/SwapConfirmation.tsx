@@ -2,6 +2,7 @@ import ModalTemplate from "@/components/Modals/ModalTemplate";
 import Toast from "@/components/Toast";
 import { PrimaryButton } from "@/components/buttons/Buttons";
 import { APP_ROUTES } from "@/constants/app_route";
+import { GetWallet } from "@/redux/actions/walletActions";
 import Bisatsfetch from "@/redux/fetchWrapper";
 import { formatter } from "@/utils";
 import { formatNumber } from "@/utils/numberFormat";
@@ -167,6 +168,8 @@ const SwapConfirmation: React.FC<Props> = ({
         queryKey: ["searchAds"],
         exact: false,
       });
+
+      GetWallet();
 
       navigate(APP_ROUTES.P2P.RECEIPT, {
         state: {

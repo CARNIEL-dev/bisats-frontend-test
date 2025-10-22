@@ -128,6 +128,7 @@ const OrderHistoryDetails = ({
   };
 
   const buyer = details.buyerId === userId ? "buyer" : "merchant";
+
   const type =
     details.adType === "buy"
       ? buyer === "buyer"
@@ -199,7 +200,11 @@ const OrderHistoryDetails = ({
                       : details.asset === "USDT"
                       ? 2
                       : 6,
-                }).format(details.quantity)}{" "}
+                }).format(
+                  buyer === "buyer"
+                    ? details.quantity
+                    : details?.amountToReceive ?? details.quantity
+                )}{" "}
               </span>
               {details.asset}
             </p>
@@ -337,10 +342,13 @@ const tableColumns = (
       cell: ({ row }) => {
         const amount = row.original.quantity;
         const asset = row.original.asset;
+        const isBuyer = userId === row.original.buyerId;
+        const amountToReceive = row.original.amountToReceive ?? amount;
+
         const quantity = amount
           ? formatter({
               decimal: asset === "xNGN" ? 0 : asset === "USDT" ? 2 : 6,
-            }).format(amount)
+            }).format(isBuyer ? amount : amountToReceive)
           : "N/A";
 
         return (

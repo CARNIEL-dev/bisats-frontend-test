@@ -228,6 +228,7 @@ interface OrderHistory {
   networkFeeInUSD: number;
   price: number;
   quantity: number;
+  amountToReceive: number;
   reference: string;
   status: "completed" | string;
   transactionFee: number;
