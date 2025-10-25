@@ -170,7 +170,7 @@ const MyAds = () => {
         return (
           <span className="text-gray-600 ">
             {formatter({
-              decimal: 0,
+              decimal: 2,
             }).format(price || 0)}
           </span>
         );
