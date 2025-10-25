@@ -498,7 +498,8 @@ const CreateAdDetails: React.FC<AdsProps> = ({
                 : formatNumber(
                     Math.min(
                       userTransactionLimits?.upper_limit_sell_ad || Infinity,
-                      Number(rate) * Number(formik.values.amountToken)
+                      Number(formik.values.price) *
+                        Number(formik.values.amountToken)
                     )
                   )
             })`}
@@ -534,7 +535,8 @@ const CreateAdDetails: React.FC<AdsProps> = ({
               }
               if (adType.toLowerCase() === "sell") {
                 const tokenValue = (
-                  Number(rate) * Number(formik.values.amountToken)
+                  Number(formik.values.price) *
+                  Number(formik.values.amountToken)
                 ).toFixed(2);
                 const tokenPrice = Math.min(
                   userTransactionLimits?.upper_limit_sell_ad || Infinity,

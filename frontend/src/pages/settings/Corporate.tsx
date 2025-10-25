@@ -1,6 +1,7 @@
 import { PrimaryButton } from "@/components/buttons/Buttons";
 import FileInputField from "@/components/Inputs/FileInputFIeld";
 import ModalTemplate from "@/components/Modals/ModalTemplate";
+import WithdrawalBankAccount from "@/components/Modals/WithdrawalBankAccount";
 import SecurityBanner from "@/components/shared/SecurityBanner";
 import StatusBadge from "@/components/shared/StatusBadge";
 import Toast from "@/components/Toast";
@@ -43,11 +44,16 @@ const Corporate = () => {
       cacApplicationDocument: null,
       mermartDocument: null,
       cacDocument: null,
+      businessName: "",
       userId,
     },
     validationSchema: corporateSchema,
     onSubmit: async (payload) => {
-      if (!payload.cacApplicationDocument || !payload.cacDocument) {
+      if (
+        !payload.cacApplicationDocument ||
+        !payload.cacDocument ||
+        !payload.businessName
+      ) {
         Toast.error("Please upload all required documents.", "");
         return;
       }
@@ -105,14 +111,36 @@ const Corporate = () => {
             />
 
             {/* SUB: Mermart (Optional) */}
-            <FileInputField
+            {/* <FileInputField
               label="Mermart (Optional)"
               name="mermartDocument"
               valueMapper={(value) => value}
               formik={formik}
               className="mt-2"
               autoUpload={false}
-            />
+            /> */}
+            <div
+              className={cn(
+                "bg-neutral-50 rounded-md p-4 border border-dashed mb-6",
+                { "border-red-500 ": formik.errors.businessName }
+              )}
+            >
+              <h3 className="text-sm text-[#606C82] font-semibold">
+                Your Business Bank Account
+              </h3>
+              <WithdrawalBankAccount
+                close={() => {}}
+                mode="custom"
+                customSetValue={(val) =>
+                  formik.setFieldValue("businessName", val)
+                }
+              />
+              {formik.errors.businessName && (
+                <small className="text-red-500">
+                  {formik.errors.businessName}
+                </small>
+              )}
+            </div>
           </div>
 
           <SecurityBanner />

@@ -15,21 +15,25 @@ import {
   ResolveBankAccoutName,
   useGetBankList,
 } from "@/redux/actions/walletActions";
+import { cn } from "@/utils";
+import { on } from "events";
 
 import { useFormik } from "formik";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 
 interface Props {
-  mode: "add" | "edit";
+  mode: "add" | "edit" | "custom";
   defaultBank?: TBank;
   close: () => void;
+  customSetValue?: (value: string) => void;
 }
 
 const WithdrawalBankAccount: React.FC<Props> = ({
   mode,
   defaultBank,
   close,
+  customSetValue,
 }) => {
   const userState: UserState = useSelector((state: any) => state.user);
   const user = userState.user;
@@ -77,14 +81,18 @@ const WithdrawalBankAccount: React.FC<Props> = ({
     },
     validateOnMount: false,
     validateOnChange: true,
-    validationSchema: getBankSchema({
-      firstName: user?.firstName,
-      middleName: user?.middleName,
-      lastName: user?.lastName,
-      businessName: corporateName,
-    }),
+    validationSchema:
+      mode === "custom"
+        ? undefined
+        : getBankSchema({
+            firstName: user?.firstName,
+            middleName: user?.middleName,
+            lastName: user?.lastName,
+            businessName: corporateName,
+          }),
     onSubmit: async (values) => {
       const { ...payload } = values;
+
       if (mode === "add") {
         await AddBankAccountForWithdrawal({
           ...payload,
@@ -92,6 +100,7 @@ const WithdrawalBankAccount: React.FC<Props> = ({
           if (res?.status) {
             await GetUserDetails({ userId: user?.userId, token: user?.token });
             Toast.success(res.message, "Account Added");
+
             close();
           } else {
             Toast.error(res.message, "Failed");
@@ -129,6 +138,9 @@ const WithdrawalBankAccount: React.FC<Props> = ({
     })
       .then((res) => {
         if (res?.status) {
+          if (mode === "custom") {
+            customSetValue?.(res?.data?.account_name);
+          }
           formik.setFieldValue("accountName", res?.data?.account_name);
           formik.setFieldTouched("accountName", true, false);
         } else {
@@ -175,7 +187,12 @@ const WithdrawalBankAccount: React.FC<Props> = ({
   return (
     <>
       <div className="mt-2">
-        <h4 className="text-[#2B313B] text-[18px] lg:text-[22px] leading-[32px] font-semibold">
+        <h4
+          className={cn(
+            "text-[#2B313B] text-[18px] lg:text-[22px] leading-[32px] font-semibold",
+            mode === "custom" && "hidden"
+          )}
+        >
           <span className="capitalize">{mode}</span> Withdrawal Bank Account
         </h4>
         <div>
@@ -192,7 +209,9 @@ const WithdrawalBankAccount: React.FC<Props> = ({
               />
             </div>
           ) : (
-            <form onSubmit={formik.handleSubmit}>
+            <form
+              onSubmit={mode === "custom" ? undefined : formik.handleSubmit}
+            >
               <div className="my-5 space-y-2">
                 <SearchableDropdown
                   items={banksList}
@@ -232,10 +251,19 @@ const WithdrawalBankAccount: React.FC<Props> = ({
                   }
                   touched={formik.touched.accountName}
                   onChange={() => {}}
-                  info="Ensure your Bank Account Name matches exactly with your Account Name on Bisats"
+                  info={
+                    mode !== "custom"
+                      ? "Ensure your Bank Account Name matches exactly with your Account Name on Bisats"
+                      : undefined
+                  }
                 />
               </div>
-              <div className="flex items-center gap-2 w-full mt-5">
+              <div
+                className={cn(
+                  "flex items-center gap-2 w-full mt-5",
+                  mode === "custom" && "hidden"
+                )}
+              >
                 <WhiteTransparentButton
                   text={"Cancel"}
                   loading={false}
@@ -248,7 +276,7 @@ const WithdrawalBankAccount: React.FC<Props> = ({
                   text={mode === "edit" ? "Update Account" : "Save Account"}
                   loading={formik.isSubmitting}
                   className="w-1/2 "
-                  type="submit"
+                  type={mode === "custom" ? "button" : "submit"}
                   disabled={
                     formik.isSubmitting ||
                     !formik.isValid ||

@@ -381,14 +381,14 @@ const NGNWithdrawal = ({ user, transaction_limits, userBalance }: PropsNGN) => {
                       : formatter({ decimal: 2 }).format(
                           isNaN(parseFloat(formik.values.amount))
                             ? 0
-                            : parseFloat(formik.values.amount)
+                            : parseFloat(formik.values.amount) -
+                                userTransactionLimits?.charge_on_single_withdrawal_fiat
                         )
                   }
                   total={`${formatNumber(
                     !formik.values.amount || !formik.isValid
                       ? "-"
-                      : Number(formik.values.amount ?? 0) +
-                          userTransactionLimits?.charge_on_single_withdrawal_fiat
+                      : Number(formik.values.amount ?? 0)
                   )}`}
                 />
                 <KycManager
@@ -433,7 +433,10 @@ const NGNWithdrawal = ({ user, transaction_limits, userBalance }: PropsNGN) => {
       >
         <WithdrawalBankAccount
           mode="add"
-          close={() => setAddBankModal(false)}
+          close={() => {
+            setAddBankModal(false);
+            navigate(0);
+          }}
         />
       </ModalTemplate>
       {withdrawalModal && (
@@ -804,6 +807,9 @@ const CryptoWithdrawal = ({
           format
           error={formik.errors.amount}
           touched={undefined}
+          maxFnc={() => {
+            formik.setFieldValue("amount", userBalance);
+          }}
         />
 
         <SecurityBanner
@@ -829,31 +835,18 @@ const CryptoWithdrawal = ({
                     (usedUpLimit?.totalUsedAmountCrypto || 0)
                 ) + " USD"
           }
-          // dailyLimit={`${formatNumber(
-          //   userTransactionLimits?.daily_withdrawal_limit_crypto -
-          //     (usedUpLimit?.totalUsedAmountCrypto ?? 0)
-          // )} USD`}
           fee={
             data?.networkFee && formik.isValid
               ? formatter({ decimal: 2 }).format(data.networkFee)
               : "-"
           }
-          // fee={
-          //   formik.errors.amount || !formik.isValid
-          //     ? "-"
-          //     : formatter({ decimal: 2 }).format(
-          //         !formik.values.amount
-          //           ? 0
-          //           : userTransactionLimits?.charge_on_single_withdrawal_crypto
-          //       )
-          // }
           amount={
             formik.errors.amount || !formik.isValid
               ? "-"
               : formatter({ decimal: asset === "USDT" ? 2 : 5 }).format(
                   isNaN(parseFloat(formik.values.amount))
                     ? 0
-                    : parseFloat(formik.values.amount)
+                    : parseFloat(formik.values.amount) - (data?.networkFee ?? 0)
                 )
           }
           total={
@@ -862,8 +855,7 @@ const CryptoWithdrawal = ({
               : `${formatter({ decimal: asset === "USDT" ? 2 : 5 }).format(
                   !formik.values.amount
                     ? 0
-                    : parseFloat(formik.values.amount ?? 0) +
-                        (data?.networkFee ?? 0)
+                    : parseFloat(formik.values.amount ?? 0)
                 )}`
           }
         />

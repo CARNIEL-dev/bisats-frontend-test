@@ -493,7 +493,7 @@ const AdSchema = Yup.object().shape({
         "amount",
         "amountToken",
         "asset",
-        "$walletData",
+        "price",
         "$liveRate",
         "$userTransactionLimits",
       ],
@@ -503,7 +503,7 @@ const AdSchema = Yup.object().shape({
           amount,
           amountToken,
           assetValue,
-          walletData,
+          price,
           liveRate,
           userTransactionLimits,
         ],
@@ -517,13 +517,7 @@ const AdSchema = Yup.object().shape({
         const escrowAmount =
           type.toLowerCase() === "buy" ? amount : amountToken;
 
-        // const walletBalance = Number(walletData?.xNGN || 0)
-
-        const tokenRate = liveRate[assetValue as keyof Prices];
-
-        const tokenValue = (Number(tokenRate) * Number(escrowAmount)).toFixed(
-          2
-        );
+        const tokenValue = (Number(price) * Number(escrowAmount)).toFixed(2);
 
         const computedMax = Math.min(
           limit || Infinity,
@@ -660,6 +654,7 @@ const corporateSchema = Yup.object().shape({
   ),
   cacDocument: Yup.mixed().required("CAC document is required"),
   mermartDocument: Yup.mixed().nullable(),
+  businessName: Yup.string().required("Account Name is required"),
 });
 const merchantSchema = Yup.object().shape({
   utilityBill: Yup.mixed().required("Utility bill is required"),
