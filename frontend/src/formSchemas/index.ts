@@ -654,7 +654,9 @@ const corporateSchema = Yup.object().shape({
   ),
   cacDocument: Yup.mixed().required("CAC document is required"),
   mermartDocument: Yup.mixed().nullable(),
-  businessName: Yup.string().required("Account Name is required"),
+  bankName: Yup.string().required("Bank Name is required"),
+  accountNumber: Yup.string().required("Account Number is required"),
+  accountName: Yup.string().required("Account Name is required"),
 });
 const merchantSchema = Yup.object().shape({
   utilityBill: Yup.mixed().required("Utility bill is required"),

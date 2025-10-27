@@ -127,6 +127,9 @@ interface TCorporateInfo {
   cacApplicationDocument: File | null;
   mermartDocument?: File | null;
   cacDocument: File | null;
+  bankName: string;
+  accountNumber: string;
+  accountName: string;
 }
 
 interface IAdRequest {

@@ -16,7 +16,6 @@ import {
   useGetBankList,
 } from "@/redux/actions/walletActions";
 import { cn } from "@/utils";
-import { on } from "events";
 
 import { useFormik } from "formik";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -26,7 +25,11 @@ interface Props {
   mode: "add" | "edit" | "custom";
   defaultBank?: TBank;
   close: () => void;
-  customSetValue?: (value: string) => void;
+  customSetValue?: (value: {
+    accountNumber: string;
+    accountName: string;
+    bankName: string;
+  }) => void;
 }
 
 const WithdrawalBankAccount: React.FC<Props> = ({
@@ -138,9 +141,6 @@ const WithdrawalBankAccount: React.FC<Props> = ({
     })
       .then((res) => {
         if (res?.status) {
-          if (mode === "custom") {
-            customSetValue?.(res?.data?.account_name);
-          }
           formik.setFieldValue("accountName", res?.data?.account_name);
           formik.setFieldTouched("accountName", true, false);
         } else {
@@ -183,6 +183,22 @@ const WithdrawalBankAccount: React.FC<Props> = ({
 
     validateAccountName({ accountNumber, bankCode });
   }, [accountNumber, bankCode, isAcctNumberFocused]);
+
+  useEffect(() => {
+    if (mode === "custom" && customSetValue) {
+      if (
+        formik.values.accountNumber &&
+        formik.values.bankName &&
+        formik.values.accountName
+      ) {
+        customSetValue({
+          accountNumber: formik.values.accountNumber,
+          accountName: formik.values.accountName,
+          bankName: formik.values.bankName,
+        });
+      }
+    }
+  }, [formik.values, mode, customSetValue]);
 
   return (
     <>

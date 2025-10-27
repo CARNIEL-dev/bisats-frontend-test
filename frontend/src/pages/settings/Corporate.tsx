@@ -44,15 +44,19 @@ const Corporate = () => {
       cacApplicationDocument: null,
       mermartDocument: null,
       cacDocument: null,
-      businessName: "",
       userId,
+      bankName: "",
+      accountNumber: "",
+      accountName: "",
     },
     validationSchema: corporateSchema,
     onSubmit: async (payload) => {
       if (
         !payload.cacApplicationDocument ||
         !payload.cacDocument ||
-        !payload.businessName
+        !payload.bankName ||
+        !payload.accountNumber ||
+        !payload.accountName
       ) {
         Toast.error("Please upload all required documents.", "");
         return;
@@ -122,7 +126,12 @@ const Corporate = () => {
             <div
               className={cn(
                 "bg-neutral-50 rounded-md p-4 border border-dashed mb-6",
-                { "border-red-500 ": formik.errors.businessName }
+                {
+                  "border-red-500 ":
+                    formik.errors.bankName ||
+                    formik.errors.accountNumber ||
+                    formik.errors.accountName,
+                }
               )}
             >
               <h3 className="text-sm text-[#606C82] font-semibold">
@@ -132,12 +141,19 @@ const Corporate = () => {
                 close={() => {}}
                 mode="custom"
                 customSetValue={(val) =>
-                  formik.setFieldValue("businessName", val)
+                  formik.setValues({
+                    ...formik.values,
+                    bankName: val.bankName,
+                    accountNumber: val.accountNumber,
+                    accountName: val.accountName,
+                  })
                 }
               />
-              {formik.errors.businessName && (
+              {(formik.errors.bankName ||
+                formik.errors.accountNumber ||
+                formik.errors.accountName) && (
                 <small className="text-red-500">
-                  {formik.errors.businessName}
+                  Bank Information is required
                 </small>
               )}
             </div>

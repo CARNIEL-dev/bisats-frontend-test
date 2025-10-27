@@ -33,6 +33,7 @@ const fetchAds = async ({
     limit: `${pagination.limit}`,
     skip: `${pagination.skip}`,
   });
+
   if (res.statusCode !== 200) {
     throw new Error("Could not find any express ad at this moment");
   }

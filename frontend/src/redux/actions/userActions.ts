@@ -313,6 +313,10 @@ export const PostCorporateInformation = async (payload: TCorporateInfo) => {
     formData.append("mermartDocument", payload?.mermartDocument!);
   }
   formData.append("cacDocument", payload?.cacDocument!);
+  formData.append("bankName", payload.bankName);
+  formData.append("accountNumber", payload.accountNumber);
+  formData.append("accountName", payload.accountName);
+
   const token = getToken();
 
   try {
