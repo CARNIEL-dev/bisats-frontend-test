@@ -80,6 +80,7 @@ const CopyDisplay = ({
         </div>
       </div>
       <Divider text="Or scan Wallet address" />
+
       <QRCode
         value={text ?? ""} // MUST be a string
         size={180} // px

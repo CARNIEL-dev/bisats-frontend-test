@@ -45,8 +45,8 @@ const MarketPlaceTable = ({ type, ads, asset }: MarketPlaceContentProps) => {
 
       cell: ({ row }) => {
         const user = row.original.user;
-        const userName = row.original.user.userName;
-        const initials = userName.charAt(0);
+        const userName = row.original.user?.userName;
+        const initials = userName?.charAt(0) || "B";
 
         return (
           <div className=" flex items-center md:gap-3 gap-1">
@@ -62,7 +62,7 @@ const MarketPlaceTable = ({ type, ads, asset }: MarketPlaceContentProps) => {
             </div>
             <p className="text-gray-600">{userName}</p>
             <div className="md:-ml-2">
-              {user.accountLevel === "level_3" && (
+              {user?.accountLevel === "level_3" && (
                 <BadgeCheck fill="#F5BB00" stroke="#fff" size={20} />
               )}
             </div>

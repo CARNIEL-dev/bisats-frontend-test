@@ -61,6 +61,7 @@ const Corporate = () => {
         Toast.error("Please upload all required documents.", "");
         return;
       }
+
       await PostCorporateInformation(payload)
         .then((res) => {
           if (res.status) {

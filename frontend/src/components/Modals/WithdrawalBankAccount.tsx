@@ -198,7 +198,7 @@ const WithdrawalBankAccount: React.FC<Props> = ({
         });
       }
     }
-  }, [formik.values, mode, customSetValue]);
+  }, [formik.values, mode === "custom"]);
 
   return (
     <>

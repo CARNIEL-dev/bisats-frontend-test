@@ -5,6 +5,7 @@ import SEO from "@/components/shared/SEO";
 import TokenSelection from "@/components/shared/TokenSelection";
 import { Button } from "@/components/ui/Button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { DEFAULT_LIMIT } from "@/constants";
 import PreLoader from "@/layouts/PreLoader";
 import Header from "@/pages/p2p/components/Header";
 import MarketPlaceTable from "@/pages/p2p/components/MarketPlaceTable";
@@ -49,7 +50,10 @@ const MarketPlacePage = () => {
     type: searchParams.get("type") ?? "buy",
   };
   const initialPage = parseInt(searchParams.get("page") ?? "1", 10);
-  const initialLimit = parseInt(searchParams.get("limit") ?? "10", 10);
+  const initialLimit = parseInt(
+    searchParams.get("limit") ?? DEFAULT_LIMIT.toString(),
+    10
+  );
 
   //? Derive skip from page & limit
   const initialPagination: PaginationState = {
@@ -101,7 +105,7 @@ const MarketPlacePage = () => {
     const params = new URLSearchParams(searchParams);
     params.set("type", newType);
     setSearchParams(params, { replace: false });
-    setPagination({ page: 1, limit: 10, skip: 0 });
+    setPagination({ page: 1, limit: DEFAULT_LIMIT, skip: 0 });
   };
 
   const handleTokenChange = (tokenId: string) => {
@@ -109,7 +113,7 @@ const MarketPlacePage = () => {
     params.set("asset", tokenId);
     setSearchParams(params, { replace: false });
     setAdsParam((p) => ({ ...p, asset: tokenId }));
-    setPagination({ page: 1, limit: 10, skip: 0 });
+    setPagination({ page: 1, limit: DEFAULT_LIMIT, skip: 0 });
   };
 
   //   SUB: Clear handler
@@ -130,6 +134,7 @@ const MarketPlacePage = () => {
   //     });
 
   const assetLogo = tokenLogos[adsParam.asset as keyof typeof tokenLogos];
+
   return (
     <>
       <div className="space-y-8">
@@ -140,16 +145,6 @@ const MarketPlacePage = () => {
 
         {!isKycVerified && !userState?.user?.hasAppliedToBeInLevelOne ? (
           <KycBanner />
-        ) : userState?.user?.hasAppliedToBeInLevelOne &&
-          !userState.user.accountLevel ? (
-          <div className="flex flex-col items-center gap-2  border w-fit p-6 mx-auto rounded-md">
-            <h4 className="font-semibold text-lg">
-              Your Account is being reviewed
-            </h4>
-            <p className="text-gray-500 text-sm">
-              Please wait for admin approval
-            </p>
-          </div>
         ) : (
           <Tabs
             defaultValue={adsParam.type}
