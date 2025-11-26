@@ -53,7 +53,6 @@ const WithdrawalBankAccount: React.FC<Props> = ({
     isLoading,
     isError,
   } = useGetBankList({
-    userId: user?.userId,
     enabled: Boolean(user?.userId),
   });
 
@@ -100,7 +99,7 @@ const WithdrawalBankAccount: React.FC<Props> = ({
         await AddBankAccountForWithdrawal({
           ...payload,
         }).then(async (res) => {
-          if (res?.status) {
+          if (res?.status === 201 || res?.success) {
             await GetUserDetails({ userId: user?.userId, token: user?.token });
             Toast.success(res.message, "Account Added");
 
@@ -135,7 +134,6 @@ const WithdrawalBankAccount: React.FC<Props> = ({
   }) => {
     setLoading(true);
     await ResolveBankAccoutName({
-      userId: user?.userId,
       accountNumber,
       bankCode,
     })

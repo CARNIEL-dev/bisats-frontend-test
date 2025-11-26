@@ -41,8 +41,9 @@ const TwoFactorAuthModal: React.FC<Props> = ({
   const [qrSecret, setQRSecret] = useState("");
 
   const GetQRCode = async () => {
-    const response = await Generate2FA_QRCODE(user?.userId);
-    if (response?.status) {
+    const response = await Generate2FA_QRCODE();
+
+    if (response?.status || response?.statusCode === 200) {
       const img = response.data.qrcode;
       const secret = response.data.secret;
       setQRSecret(secret);
@@ -54,28 +55,38 @@ const TwoFactorAuthModal: React.FC<Props> = ({
   };
 
   const Verify2FA = async () => {
+    if (!code) {
+      Toast.error("Please enter a valid code", "2FA Verification failed");
+      return;
+    }
+    if (code.length !== 6) {
+      Toast.error("Please enter a valid code", "2FA Verification failed");
+      return;
+    }
     setLoading(true);
 
     try {
       const verificationResponse = await UpdateTwoFactorAuth({
-        userId: user?.userId,
         code,
         enable: enable,
       });
-      if (!verificationResponse?.status) {
-        Toast.error(verificationResponse.message, "2FA Verification failed");
+      if (!verificationResponse?.success) {
+        Toast.error(
+          verificationResponse.error.message,
+          "2FA Verification failed"
+        );
       } else {
         Toast.success(
           verificationResponse.message,
           enable ? "2FA Enabled" : "2FA Disabled"
         );
+        rehydrateUser({
+          userId: user?.userId,
+          token: user?.token,
+        });
+        close();
       }
       setLoading(false);
-      rehydrateUser({
-        userId: user?.userId,
-        token: user?.token,
-      });
-      close();
     } catch (error) {
       setLoading(false);
 
@@ -201,7 +212,13 @@ const TwoFactorAuthModal: React.FC<Props> = ({
       {currentDisplay === "QRCode" && QRCodeScan()}
       {currentDisplay === "Manual" && ManualSetup()}
       {currentDisplay === "Code" && (
-        <CodeEntry setCode={setCode} onClick={Verify2FA} loading={loading} />
+        <CodeEntry
+          setCode={setCode}
+          onClick={Verify2FA}
+          loading={loading}
+          code={code}
+          enable={enable}
+        />
       )}
     </ModalTemplate>
   );

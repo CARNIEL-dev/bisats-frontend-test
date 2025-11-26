@@ -48,7 +48,6 @@ const SecurityVerification: React.FC<Props> = ({ close, func, mode }) => {
     onSubmit: async (values) => {
       if (mode === "TWO_FA_AND_PIN") {
         await TwoFactorAuth({
-          userId: values.userId,
           pin: values.pin!,
           code: values.code,
         })
@@ -65,7 +64,6 @@ const SecurityVerification: React.FC<Props> = ({ close, func, mode }) => {
           });
       } else {
         await VerifyTwoFactorAuth({
-          userId: values.userId,
           code: values.code,
         })
           .then((res) => {

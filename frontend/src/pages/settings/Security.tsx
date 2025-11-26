@@ -89,7 +89,7 @@ const Security = () => {
                 className="w-[100px]"
                 onClick={async () => {
                   setResetLoading(true);
-                  await ResetTwoFactorAuth(user?.userId)
+                  await ResetTwoFactorAuth()
                     .then(() => {
                       rehydrateUser({
                         userId: user?.userId,

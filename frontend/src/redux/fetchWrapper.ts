@@ -3,6 +3,7 @@
 import { getToken, getRefreshToken } from "@/helpers";
 import { BACKEND_URLS } from "@/utils/backendUrls";
 import { refreshAccessToken } from "./actions/userActions";
+import { decryptDataInfo, encryptDataInfo } from "@/utils/encryptor";
 
 const Bisatsfetch = async (
   url: string,
@@ -11,16 +12,37 @@ const Bisatsfetch = async (
   // Request interceptor: Add Authorization header
   const token = getToken();
 
+  // Check if content type is multipart/form-data
+  const contentType =
+    options.headers &&
+    (options.headers as Record<string, string>)["Content-Type"];
+  const isMultipart =
+    contentType && contentType.includes("multipart/form-data");
+
+  let body = options.body;
+
+  if (!isMultipart && body) {
+    try {
+      // Expect body could be JSON-string or object: normalize to object for encryption
+      const parsedBody = typeof body === "string" ? JSON.parse(body) : body;
+      const encryptedBody = encryptDataInfo(parsedBody);
+      body = JSON.stringify({ data: encryptedBody });
+    } catch (err) {
+      console.warn("Body encryption failed, sending original body", err);
+    }
+  }
+
   const headers = {
     Accept: "application/json",
-    "Content-Type": "application/json",
-    ...(token && { Authorization: `${token}` }),
+    "Content-Type": contentType || "application/json",
+    ...(token && { Authorization: `Bearer ${token}` }),
     ...options.headers,
   };
 
   const config: RequestInit = {
     ...options,
     headers,
+    body,
   };
 
   try {
@@ -44,7 +66,7 @@ const Bisatsfetch = async (
 
           const retryHeaders = {
             ...headers,
-            Authorization: `Bearer ${token}`,
+            Authorization: `${token}`,
           };
           const retryConfig: RequestInit = {
             ...config,
@@ -55,11 +77,12 @@ const Bisatsfetch = async (
             `${BACKEND_URLS.BASE_URL}${originalRequest.url}`,
             retryConfig
           );
-          const retryData = {
-            res: await retryResponse.json(),
-          }; // Get the retry data
+          const retryDataEncrypted = await retryResponse.json();
 
-          return retryData.res;
+          // Decrypt retry response
+          const retryData = decryptDataInfo(retryDataEncrypted);
+
+          return retryData;
         } catch (err) {
           // Handle refresh token failure
           throw new Error("Failed to refresh access token");
@@ -68,12 +91,22 @@ const Bisatsfetch = async (
     }
     // If response is okay, return it
     if (response.res.ok) {
-      const res = await response.res.json(); // Use the raw JSON response
-      return res; // Return the raw data
+      const encryptedData = await response.res.json();
+
+      const decryptedData = decryptDataInfo(encryptedData);
+
+      return decryptedData;
     } else {
-      const res = await response.res.json(); // Use the raw JSON response
-      return res;
-      // Toast.error(res.message, "Er");
+      const encryptedData = await response.res.json();
+
+      try {
+        const decryptedData = decryptDataInfo(encryptedData);
+
+        return decryptedData;
+      } catch (e) {
+        // If decryption fails, return raw data (possibly error message)
+        return encryptedData;
+      }
     }
 
     // If not handled above, throw the error response

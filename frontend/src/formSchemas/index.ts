@@ -68,6 +68,35 @@ const ChangePasswordSchema = Yup.object().shape({
     .required("Confirm password is required"),
 });
 
+// const setPinSchema = Yup.object().shape({
+//   oldPin: Yup.string()
+//     .matches(/^[0-9]{4}$/, "Pin must be 4 digits")
+//     .required("Old pin is required")
+//     .optional(),
+//   pin: Yup.string()
+//     .required("Pin is required")
+//     .matches(/^[0-9]{4}$/, "Pin must be 4 digits"),
+//   confirmPin: Yup.string()
+//     .oneOf([Yup.ref("pin")], "Pins must match")
+//     .required("Confirm pin is required"),
+// });
+
+const setPinSchema = (isUpdateMode: boolean) => {
+  return Yup.object().shape({
+    oldPin: isUpdateMode
+      ? Yup.string()
+          .matches(/^[0-9]{4}$/, "Pin must be 4 digits")
+          .required("Old pin is required")
+      : Yup.string().optional(),
+    pin: Yup.string()
+      .required("Pin is required")
+      .matches(/^[0-9]{4}$/, "Pin must be 4 digits"),
+    confirmPin: Yup.string()
+      .oneOf([Yup.ref("pin")], "Pins must match")
+      .required("Confirm pin is required"),
+  });
+};
+
 const VerificationSchema = Yup.object().shape({
   code: Yup.string().length(6).required("Code is required"),
 });
@@ -680,4 +709,5 @@ export {
   SignupSchema,
   swapSchema,
   VerificationSchema,
+  setPinSchema,
 };

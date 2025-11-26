@@ -100,8 +100,8 @@ const WithdrawalPage = () => {
     isError,
     isLoading,
   } = useQuery<UserTransactionLimits, Error>({
-    queryKey: ["UserTransactions", user?.userId],
-    queryFn: () => GET_WITHDRAWAL_LIMIT(user?.userId),
+    queryKey: ["UserTransactions"],
+    queryFn: GET_WITHDRAWAL_LIMIT,
     enabled: Boolean(user?.userId),
   });
 

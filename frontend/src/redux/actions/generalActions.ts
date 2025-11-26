@@ -16,10 +16,10 @@ export const handleCopy = async (
   }
 };
 
-export const GetNotification = async (uid: string) => {
+export const GetNotification = async () => {
   try {
     const response = await Bisatsfetch(
-      `/api/v1/user/${uid}/notification/get-notifications`,
+      `/api/v1/user/notification/get-notifications`,
       {
         method: "GET",
       }
@@ -35,13 +35,10 @@ export const GetNotification = async (uid: string) => {
     // return error;
   }
 };
-export const GetNotificationById = async (
-  uid: string,
-  notificationId: string
-) => {
+export const GetNotificationById = async (notificationId: string) => {
   try {
     const response = await Bisatsfetch(
-      `/api/v1/user/${uid}/notification/${notificationId}/get-notification-by-id`,
+      `/api/v1/user/notification/${notificationId}/get-notification-by-id`,
       {
         method: "GET",
       }
@@ -67,7 +64,7 @@ const useFetchUserNotifications = ({
 }) => {
   return useQuery<Omit<NotificationState, "loading">, Error>({
     queryKey: ["userNotifications", userId],
-    queryFn: async () => GetNotification(userId),
+    queryFn: GetNotification,
     retry: false,
     staleTime: 5 * 60 * 1000, // 5 minutes
     enabled: Boolean(userId && isKycVerified),
@@ -75,13 +72,10 @@ const useFetchUserNotifications = ({
   });
 };
 
-const Read_Notification = async (payload: {
-  userId: string;
-  notificationId: string;
-}) => {
+const Read_Notification = async (payload: { notificationId: string }) => {
   const res = await Bisatsfetch(
-    `/api/v1/user/${payload.userId}/notification/${payload.notificationId}${BACKEND_URLS.READ_NOTIFICATION}`,
-    { method: "PUT" }
+    `/api/v1/user/notification/${payload.notificationId}${BACKEND_URLS.READ_NOTIFICATION}`,
+    { method: "GET" }
   );
   if (!res?.status) {
     throw new Error(res?.message || "Failed to mark notification as read");
@@ -89,13 +83,10 @@ const Read_Notification = async (payload: {
   return res;
 };
 
-const Delete_Notification = async (payload: {
-  userId: string;
-  notificationId: string;
-}) => {
+const Delete_Notification = async (payload: { notificationId: string }) => {
   try {
     const response = await Bisatsfetch(
-      `/api/v1/user/${payload.userId}/notification/${payload.notificationId}${BACKEND_URLS.DELETE_NOTIFICATION}`,
+      `/api/v1/user/notification/${payload.notificationId}${BACKEND_URLS.DELETE_NOTIFICATION}`,
       {
         method: "DELETE",
       }
@@ -109,12 +100,12 @@ const Delete_Notification = async (payload: {
     throw error;
   }
 };
-const Read_All_Notifications = async (payload: { userId: string }) => {
+const Read_All_Notifications = async () => {
   try {
     const response = await Bisatsfetch(
-      `/api/v1/user/${payload.userId}/notification${BACKEND_URLS.READ_ALL_NOTIFICATION}`,
+      `/api/v1/user/notification${BACKEND_URLS.READ_ALL_NOTIFICATION}`,
       {
-        method: "PUT",
+        method: "GET",
       }
     );
     if (!response.status) {
@@ -126,10 +117,10 @@ const Read_All_Notifications = async (payload: { userId: string }) => {
     throw error;
   }
 };
-const Delete_All_Notifications = async (payload: { userId: string }) => {
+const Delete_All_Notifications = async () => {
   try {
     const response = await Bisatsfetch(
-      `/api/v1/user/${payload.userId}/notification${BACKEND_URLS.DELETE_ALL_NOTIFICATION}`,
+      `/api/v1/user/notification${BACKEND_URLS.DELETE_ALL_NOTIFICATION}`,
       {
         method: "DELETE",
       }

@@ -3,34 +3,45 @@ import PrimaryInput from "@/components/Inputs/PrimaryInput";
 import Toast from "@/components/Toast";
 import { APP_ROUTES } from "@/constants/app_route";
 import { VerificationSchema } from "@/formSchemas";
+import { setRefreshToken, setToken, setUserId } from "@/helpers";
 import OtherSide from "@/layouts/auth/OtherSide";
-import { VerifyTwoFactorAuth } from "@/redux/actions/userActions";
+import { Login } from "@/redux/actions/userActions";
 import { UserActionTypes } from "@/redux/types";
 import dispatchWrapper from "@/utils/dispatchWrapper";
 import { useFormik } from "formik";
-import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Verify2FA = () => {
-  const user = useSelector((state: any) => state.user.user);
-  const userId = user.userId;
+  const state = useLocation().state;
   const navigate = useNavigate();
 
   const formik = useFormik({
-    initialValues: { code: "", userId },
+    initialValues: { code: "" },
     validationSchema: VerificationSchema,
     onSubmit: async (values) => {
-      const { ...payload } = values;
-      const response = await VerifyTwoFactorAuth(payload);
-      if (response?.status) {
+      const payLoad = {
+        ...values,
+        email: state.email,
+        password: state.password,
+        ip: state.ip,
+      };
+      const response = await Login(payLoad);
+
+      if (response.statusCode === 200) {
+        const data = response.data;
         Toast.success(response.message, "Code Verified");
         dispatchWrapper({
-          type: UserActionTypes.LOG_IN_UPDATE,
-          payload: null,
+          type: UserActionTypes.LOG_IN_SUCCESS,
+          payload: response.data,
         });
+        if (data) {
+          data.userId && setUserId(data?.userId);
+          data.token && setToken(data?.token);
+          data.refreshToken && setRefreshToken(data?.refreshToken);
+        }
         navigate(APP_ROUTES.DASHBOARD);
       } else {
-        Toast.error(response.message, "Verification failed");
+        Toast.error(response.error.message, "Verification failed");
       }
     },
   });
@@ -49,7 +60,6 @@ const Verify2FA = () => {
               type="code"
               name="code"
               label="Code"
-              className="w-full h-[48px] px-3 outline-hidden "
               error={formik.errors.code}
               touched={formik.touched.code}
               value={formik.values.code}

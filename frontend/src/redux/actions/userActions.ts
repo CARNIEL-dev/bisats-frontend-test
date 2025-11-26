@@ -19,10 +19,10 @@ import {
   TPOA,
   TRequestPhone,
   TSignUp,
+  TSuperMerchant,
   TUpdate2FAStatus,
   TVerify2FARequest,
   TVerifyPhone,
-  TSuperMerchant,
 } from "@/types/user";
 import { BACKEND_URLS } from "@/utils/backendUrls";
 import dispatchWrapper from "@/utils/dispatchWrapper";
@@ -34,11 +34,6 @@ export const Login = async (payload: TLogin) => {
       body: JSON.stringify(payload),
     });
 
-    const data = response.data;
-
-    setUserId(data?.userId);
-    setToken(data.token);
-    setRefreshToken(data.refreshToken);
     return response;
   } catch (error) {
     // throw handleApiError(error);
@@ -150,14 +145,14 @@ export const ResetPassword = async (payload: {
 };
 
 export const UpdatePassword = async (payload: {
-  userId: string;
   oldPassword: string;
   newPassword: string;
   confirmPassword: string;
+  code: string;
 }) => {
   try {
     const response = await Bisatsfetch(
-      `/api/v1/user/${payload.userId}${BACKEND_URLS.AUTH.CHANGE_PASSWORD}`,
+      `/api/v1/user${BACKEND_URLS.AUTH.CHANGE_PASSWORD}`,
       {
         method: "POST",
         body: JSON.stringify(payload),
@@ -365,12 +360,10 @@ export const GetUserDetails = async ({
   const refreshToken = getRefreshToken();
 
   try {
-    const response = await Bisatsfetch(`/api/v1/user/${userId}/profile`, {
-      method: "GET",
-    });
+    const response = await Bisatsfetch(`/api/v1/user/profile`);
     const data = response.data;
 
-    if (response.status) {
+    if (response.statusCode === 200) {
       dispatchWrapper({
         type: UserActionTypes.UPDATE_USER,
         payload: {
@@ -609,7 +602,7 @@ export const PostLevelThreeInformation = async (payload: TSuperMerchant) => {
 
   try {
     const response = await fetch(
-      `${BACKEND_URLS.BASE_URL}/api/v1/user/${payload.userId}${BACKEND_URLS.KYC.BECOME_SUPER_MERCHANT}`,
+      `${BACKEND_URLS.BASE_URL}/api/v1/user${BACKEND_URLS.KYC.BECOME_SUPER_MERCHANT}`,
       {
         method: "POST",
         headers: {
@@ -629,7 +622,7 @@ export const PostLevelThreeInformation = async (payload: TSuperMerchant) => {
 export const Set_PIN = async (payload: TPinRequest) => {
   try {
     const response = await Bisatsfetch(
-      `/api/v1/user/${payload.userId}${BACKEND_URLS.AUTH.SET_PIN}`,
+      `/api/v1/user${BACKEND_URLS.AUTH.SET_PIN}`,
       {
         method: "POST",
         body: JSON.stringify(payload),
@@ -646,7 +639,7 @@ export const Set_PIN = async (payload: TPinRequest) => {
 export const UPDATE_PIN = async (payload: TPinRequest) => {
   try {
     const response = await Bisatsfetch(
-      `/api/v1/user/${payload.userId}${BACKEND_URLS.AUTH.UPDATE_PIN}`,
+      `/api/v1/user${BACKEND_URLS.AUTH.UPDATE_PIN}`,
       {
         method: "PUT",
         body: JSON.stringify({
@@ -664,18 +657,15 @@ export const UPDATE_PIN = async (payload: TPinRequest) => {
   }
 };
 
-export const Generate2FA_QRCODE = async (payload: string) => {
+export const Generate2FA_QRCODE = async () => {
   try {
     const response = await Bisatsfetch(
-      `/api/v1/user/${payload}${BACKEND_URLS.AUTH.GENERATE_2FA_QRCODE}`,
+      `/api/v1/user${BACKEND_URLS.AUTH.GENERATE_2FA_QRCODE}`,
       {
         method: "GET",
       }
     );
-    const data = response;
-    if (response.status) {
-      return data;
-    }
+    return response;
   } catch (error) {
     return error;
   }
@@ -684,7 +674,7 @@ export const Generate2FA_QRCODE = async (payload: string) => {
 export const VerifyTwoFactorAuth = async (payload: TVerify2FARequest) => {
   try {
     const response = await Bisatsfetch(
-      `/api/v1/user/${payload.userId}${BACKEND_URLS.AUTH.VERIFY_2FA}`,
+      `/api/v1/user${BACKEND_URLS.AUTH.VERIFY_2FA}`,
       {
         method: "POST",
         body: JSON.stringify(payload),
@@ -701,7 +691,7 @@ export const VerifyTwoFactorAuth = async (payload: TVerify2FARequest) => {
 export const UpdateTwoFactorAuth = async (payload: TUpdate2FAStatus) => {
   try {
     const response = await Bisatsfetch(
-      `/api/v1/user/${payload.userId}${
+      `/api/v1/user${
         payload.enable
           ? BACKEND_URLS.AUTH.ENABLE_2FA
           : BACKEND_URLS.AUTH.DISABLE_2FA
@@ -712,19 +702,16 @@ export const UpdateTwoFactorAuth = async (payload: TUpdate2FAStatus) => {
       }
     );
     const data = response;
-    console.log("Data returned", data);
     return data;
   } catch (error) {
     // throw handleApiError(error);
     return error;
   }
 };
-export const ResetTwoFactorAuth = async (
-  userId: TUpdate2FAStatus["userId"]
-) => {
+export const ResetTwoFactorAuth = async () => {
   try {
     const response = await Bisatsfetch(
-      `/api/v1/user/${userId}${BACKEND_URLS.AUTH.RESET_2FA}`,
+      `/api/v1/user${BACKEND_URLS.AUTH.RESET_2FA}`,
       {
         method: "PUT",
       }
@@ -757,10 +744,10 @@ export const ResetTwoFactorAuth = async (
 //   }
 // };
 
-export const GET_ACTIVITY_SUMMARY = async (payload: string) => {
+export const GET_ACTIVITY_SUMMARY = async () => {
   try {
     const response = await Bisatsfetch(
-      `/api/v1/user/${payload}${BACKEND_URLS.AUTH.GET_ACTIVITY_SUMMARY}`,
+      `/api/v1/user${BACKEND_URLS.AUTH.GET_ACTIVITY_SUMMARY}`,
       {
         method: "GET",
       }
@@ -776,10 +763,10 @@ export const GET_ACTIVITY_SUMMARY = async (payload: string) => {
   }
 };
 
-export const GET_WITHDRAWAL_LIMIT = async (userID: string) => {
+export const GET_WITHDRAWAL_LIMIT = async () => {
   try {
     const response = await Bisatsfetch(
-      `/api/v1/user/${userID}${BACKEND_URLS.AUTH.GET_WITHDRAWAL_LIMIT}`,
+      `/api/v1/user${BACKEND_URLS.AUTH.GET_WITHDRAWAL_LIMIT}`,
       {
         method: "GET",
       }

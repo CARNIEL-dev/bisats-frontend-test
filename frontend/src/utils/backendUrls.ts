@@ -3,6 +3,7 @@
 export const BACKEND_URLS = {
   BASE_URL: process.env.REACT_APP_DEV_DOMAIN,
   GOOGLEAPI: "https://www.googleapis.com/oauth2/v2/userinfo",
+  IP_ADDRESS_API: "https://api.ipify.org?format=json",
   AUTH: {
     LOGIN: "/api/v1/user/login",
     SIGNUP: "/api/v1/user/register",

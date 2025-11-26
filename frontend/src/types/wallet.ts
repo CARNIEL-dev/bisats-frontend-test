@@ -1,7 +1,6 @@
 /** @format */
 
 export type TTopUpNGN = {
-  userId: string;
   amount: number;
   bankAccountId?: string;
 };
@@ -51,7 +50,6 @@ export type TbankAccount = {
 };
 
 export type TWithdrawalBankAccount = {
-  userId: string;
   accountNumber: string;
   accountName: string;
   bankName: string;
@@ -59,11 +57,9 @@ export type TWithdrawalBankAccount = {
   bankId?: string;
 };
 export type TDeleteWithdrawalRequest = {
-  userId: string;
   bankAccountId: string;
 };
 export type TWithdrawalRequest = {
-  userId: string;
   amount: number;
   bankAccountId: string;
 };
@@ -72,11 +68,9 @@ export type TWithdrawalAddress = {
   address: string;
   network: string;
   asset: string;
-  userId: string;
 };
 
 export type TCryptoWithdrawalRequest = {
-  userId: string;
   amount: number;
   address: string;
   asset: string;
@@ -125,7 +119,6 @@ export type TUpdateAdsRequest = {
 };
 
 export type T2FARequest = {
-  userId: string;
   code: string;
   pin: string;
 };
@@ -145,7 +138,6 @@ export enum DepositStatus {
 }
 
 export type TPayloadTransHistory = {
-  userID: string;
   reason?: string;
   type?: string;
   asset?: string;

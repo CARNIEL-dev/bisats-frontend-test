@@ -26,15 +26,14 @@ const DeleteWithdrawalAccount: React.FC<Props> = ({ close, bank }) => {
   const DeleteBankAccount = async () => {
     setIsLoading(true);
     const response = await DeleteBankAccountForWithdrawal({
-      userId: user?.userId,
       bankAccountId: bank?.id ?? "",
     });
     setIsLoading(false);
-    if (response?.status) {
+    if (response?.success || response?.status === 200) {
       Toast.success(response.message, "Bank Account Deleted");
       close();
     } else {
-      Toast.error(response.message, "Failed");
+      Toast.error(response.error.message, "Failed");
     }
   };
   return (

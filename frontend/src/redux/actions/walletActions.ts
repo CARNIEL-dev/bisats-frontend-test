@@ -25,10 +25,9 @@ import dispatchWrapper from "@/utils/dispatchWrapper";
 import { useQuery } from "@tanstack/react-query";
 
 export const GetWallet = async () => {
-  const user = getUserId();
   try {
     const response = await Bisatsfetch(
-      `/api/v1/user/${user}${BACKEND_URLS.WALLET.GET_WALLET}`,
+      `/api/v1/user${BACKEND_URLS.WALLET.GET_WALLET}`,
       {
         method: "GET",
       }
@@ -54,7 +53,7 @@ export const GetWallet = async () => {
 export const DepositTranscBreakDown = async (payload: TTopUpNGN) => {
   try {
     const response = await Bisatsfetch(
-      `/api/v1/user/${payload.userId}${BACKEND_URLS.WALLET.TRANSC_BREAKDOWN}`,
+      `/api/v1/user${BACKEND_URLS.WALLET.TRANSC_BREAKDOWN}`,
       {
         method: "POST",
         body: JSON.stringify(payload),
@@ -173,7 +172,7 @@ export const GetLivePrice = async () => {
 export const TopUpNGNBalance = async (payload: TTopUpNGN) => {
   try {
     const response = await Bisatsfetch(
-      `/api/v1/user/${payload.userId}${BACKEND_URLS.WALLET.TOPUPNGN}`,
+      `/api/v1/user${BACKEND_URLS.WALLET.TOPUPNGN}`,
       {
         method: "POST",
         body: JSON.stringify(payload),
@@ -205,10 +204,10 @@ export const GetUserBank = async (userId: string) => {
   }
 };
 
-export const GetBankList = async (userId: string) => {
+export const GetBankList = async () => {
   try {
     const response = await Bisatsfetch(
-      `/api/v1/user/${userId}${BACKEND_URLS?.WALLET?.LIST_BANKS}`,
+      `/api/v1/user${BACKEND_URLS?.WALLET?.LIST_BANKS}`,
       {
         method: "GET",
       }
@@ -228,12 +227,11 @@ export const GetBankList = async (userId: string) => {
 };
 
 export const ResolveBankAccoutName = async (payload: {
-  userId: string;
   accountNumber: string;
   bankCode: string;
 }) => {
   return await Bisatsfetch(
-    `/api/v1/user/${payload.userId}${BACKEND_URLS.WALLET.RESOLVE_ACCOUNT_NAME}`,
+    `/api/v1/user${BACKEND_URLS.WALLET.RESOLVE_ACCOUNT_NAME}`,
     {
       method: "POST",
       body: JSON.stringify(payload),
@@ -245,7 +243,7 @@ export const AddBankAccountForWithdrawal = async (
 ) => {
   try {
     const response = await Bisatsfetch(
-      `/api/v1/user/${payload.userId}${BACKEND_URLS.WALLET.ADD_BANK_ACCOUNT}`,
+      `/api/v1/user${BACKEND_URLS.WALLET.ADD_BANK_ACCOUNT}`,
       {
         method: "POST",
         body: JSON.stringify(payload),
@@ -264,7 +262,7 @@ export const EditBankAccountForWithdrawal = async (
 ) => {
   try {
     const response = await Bisatsfetch(
-      `/api/v1/user/${payload.userId}/bank/${payload.bankId}${BACKEND_URLS.WALLET.EDIT_BANK_ACCOUNT}`,
+      `/api/v1/user/bank/${payload.bankId}${BACKEND_URLS.WALLET.EDIT_BANK_ACCOUNT}`,
       {
         method: "PUT",
         body: JSON.stringify(payload),
@@ -283,7 +281,7 @@ export const DeleteBankAccountForWithdrawal = async (
 ) => {
   try {
     const response = await Bisatsfetch(
-      `/api/v1/user/${payload.userId}/bank/${payload.bankAccountId}${BACKEND_URLS.WALLET.DELE_BANK_ACCOUNT}`,
+      `/api/v1/user/bank/${payload.bankAccountId}${BACKEND_URLS.WALLET.DELE_BANK_ACCOUNT}`,
       {
         method: "DELETE",
       }
@@ -299,7 +297,7 @@ export const DeleteBankAccountForWithdrawal = async (
 export const saveWalletAddressHandler = async (payload: TWithdrawalAddress) => {
   try {
     const response = await Bisatsfetch(
-      `/api/v1/user/${payload.userId}${BACKEND_URLS.WALLET.WITHDRAWAL_ADDRESS}`,
+      `/api/v1/user${BACKEND_URLS.WALLET.WITHDRAWAL_ADDRESS}`,
       {
         method: "POST",
         body: JSON.stringify(payload),
@@ -313,12 +311,11 @@ export const saveWalletAddressHandler = async (payload: TWithdrawalAddress) => {
   }
 };
 export const deleteWalletAddressHandler = async (payload: {
-  userId: string;
   addressId: string;
 }) => {
   try {
     const response = await Bisatsfetch(
-      `/api/v1/user/${payload.userId}${BACKEND_URLS.WALLET.WITHDRAWAL_ADDRESS}/${payload.addressId}`,
+      `/api/v1/user${BACKEND_URLS.WALLET.WITHDRAWAL_ADDRESS}/${payload.addressId}`,
       {
         method: "DELETE",
       }
@@ -333,7 +330,7 @@ export const deleteWalletAddressHandler = async (payload: {
 export const Withdraw_xNGN = async (payload: TWithdrawalRequest) => {
   try {
     const response = await Bisatsfetch(
-      `/api/v1/user/${payload.userId}${BACKEND_URLS.WALLET.WITHDRAW}`,
+      `/api/v1/user${BACKEND_URLS.WALLET.WITHDRAW}`,
       {
         method: "POST",
         body: JSON.stringify(payload),
@@ -351,7 +348,7 @@ export const Withdraw_xNGN = async (payload: TWithdrawalRequest) => {
 export const Withdraw_Crypto = async (payload: TCryptoWithdrawalRequest) => {
   try {
     const response = await Bisatsfetch(
-      `/api/v1/user/${payload.userId}${BACKEND_URLS.WALLET.WITHDRAW_CRYPTO}`,
+      `/api/v1/user${BACKEND_URLS.WALLET.WITHDRAW_CRYPTO}`,
       {
         method: "POST",
         body: JSON.stringify(payload),
@@ -367,7 +364,7 @@ export const Withdraw_Crypto = async (payload: TCryptoWithdrawalRequest) => {
 export const TwoFactorAuth = async (payload: T2FARequest) => {
   try {
     const response = await Bisatsfetch(
-      `/api/v1/user/${payload.userId}${BACKEND_URLS.AUTH.VALIDATE_2FA}`,
+      `/api/v1/user${BACKEND_URLS.AUTH.VALIDATE_2FA}`,
       {
         method: "POST",
         body: JSON.stringify(payload),
@@ -429,11 +426,11 @@ export const GetSearchAds = async (
 ) => {
   try {
     const response = await Bisatsfetch(
-      `/api/v1/user/${payload.userId}${
-        BACKEND_URLS?.P2P.ADS.SEARCH_ADS
-      }?asset=${payload.asset}&type=${
-        payload.type === "buy" ? "sell" : "buy"
-      }&limit=${payload?.limit}&skip=${payload?.skip}`,
+      `/api/v1/user${BACKEND_URLS?.P2P.ADS.SEARCH_ADS}?asset=${
+        payload.asset
+      }&type=${payload.type === "buy" ? "sell" : "buy"}&limit=${
+        payload?.limit
+      }&skip=${payload?.skip}`,
       {
         method: "GET",
       }
@@ -446,7 +443,7 @@ export const GetSearchAds = async (
 const GetAdDetails = async (payload: { userId: string; adId: string }) => {
   try {
     const response = await Bisatsfetch(
-      `/api/v1/user/${payload.userId}/ads/${payload.adId}/get-user-ads-by-id`,
+      `/api/v1/user/ads/${payload.adId}/get-user-ads-by-id`,
       {
         method: "GET",
       }
@@ -536,7 +533,7 @@ export const Fetch_CryptoAssets = async (payload: string) => {
 export const GetWalletTransactions = async (payload: TPayloadTransHistory) => {
   try {
     const response = await Bisatsfetch(
-      `/api/v1/user/${payload.userID}${
+      `/api/v1/user${
         BACKEND_URLS?.WALLET?.WALLET_TRANSC_HISTORY
       }?limit=50&skip=0&reason=${payload.reason ?? ""}&type=${
         payload.type ?? ""
@@ -558,9 +555,9 @@ export const GetWalletTransactions = async (payload: TPayloadTransHistory) => {
 };
 
 // HDR: GET USER ADS
-const getUserAds = async (userId: string) => {
+const getUserAds = async () => {
   try {
-    const endpoint = `/api/v1/user/${userId}/ads/get-user-ads`;
+    const endpoint = `/api/v1/user/ads/get-user-ads`;
 
     const response = await Bisatsfetch(endpoint, {
       method: "GET",
@@ -577,14 +574,12 @@ const getUserAds = async (userId: string) => {
 const updateAdStatus = async ({
   adId,
   newStatus,
-  userId,
 }: {
   adId: string;
   newStatus: string;
-  userId: string;
 }) => {
   try {
-    const endpoint = `/api/v1/user/${userId}/ads/${adId}/update-ads-status`;
+    const endpoint = `/api/v1/user/ads/${adId}/update-ads-status`;
 
     const response = await Bisatsfetch(endpoint, {
       method: "PUT",
@@ -594,8 +589,9 @@ const updateAdStatus = async ({
       body: JSON.stringify({ status: newStatus }),
     });
 
-    if (!response.status) {
-      throw new Error(response.message);
+    if (!response.success) {
+      const message = response.error.message || "Failed to update ad status";
+      throw new Error(message);
     }
     return response.data;
   } catch (err) {
@@ -604,7 +600,6 @@ const updateAdStatus = async ({
 };
 
 const useUserWalletHistory = ({
-  userId,
   reason,
   asset,
   date,
@@ -612,7 +607,6 @@ const useUserWalletHistory = ({
   searchWord,
   isKycVerified,
 }: {
-  userId: string;
   reason: string;
   asset: string;
   date: string;
@@ -626,7 +620,6 @@ const useUserWalletHistory = ({
     ITransaction[], // TSelectResult (same here)
     [
       "userWalletHistory",
-      string, // userId
       string, // reason
       string, // asset
       string, // date
@@ -634,19 +627,10 @@ const useUserWalletHistory = ({
       string // searchWord
     ]
   >({
-    queryKey: [
-      "userWalletHistory",
-      userId,
-      reason,
-      asset,
-      date,
-      type,
-      searchWord,
-    ],
+    queryKey: ["userWalletHistory", reason, asset, date, type, searchWord],
     queryFn: async ({ queryKey }) => {
-      const [_key, u, r, a, d, t, s] = queryKey;
+      const [_key, r, a, d, t, s] = queryKey;
       const res = await GetWalletTransactions({
-        userID: u,
         reason: r,
         asset: a,
         type: t,
@@ -669,24 +653,17 @@ const useUserWalletHistory = ({
       }));
     },
     // staleTime: 1000 * 60 * 5,
-    enabled: Boolean(userId && isKycVerified),
+    enabled: Boolean(isKycVerified),
     refetchOnMount: false,
   });
 };
 
-const useFetchOrder = ({
-  userId,
-  isKycVerified,
-}: {
-  userId: string;
-  isKycVerified?: boolean;
-}) => {
+const useFetchOrder = ({ isKycVerified }: { isKycVerified?: boolean }) => {
   return useQuery<OrderHistory[], Error>({
-    queryKey: ["orders", userId],
-    queryFn: async ({ queryKey }) => {
-      const [, uid] = queryKey;
+    queryKey: ["orders"],
+    queryFn: async () => {
       const response = await Bisatsfetch(
-        `/api/v1/user/${uid}${BACKEND_URLS.P2P.ADS.FETCH_ORDERS}`,
+        `/api/v1/user${BACKEND_URLS.P2P.ADS.FETCH_ORDERS}`,
         { method: "GET" }
       );
 
@@ -696,25 +673,19 @@ const useFetchOrder = ({
 
       throw new Error(response.message || "Failed to fetch orders");
     },
-    enabled: Boolean(userId && isKycVerified),
+    enabled: Boolean(isKycVerified),
     refetchOnMount: false,
   });
 };
 
-const useFetchUserAds = ({
-  userId,
-  isKycVerified,
-}: {
-  userId: string;
-  isKycVerified?: boolean;
-}) => {
+const useFetchUserAds = ({ isKycVerified }: { isKycVerified?: boolean }) => {
   return useQuery<AdsTypes[], Error>({
-    queryKey: ["userAds", userId],
-    queryFn: () => getUserAds(userId),
+    queryKey: ["userAds"],
+    queryFn: getUserAds,
     retry: false,
     refetchOnMount: false,
     staleTime: Infinity,
-    enabled: Boolean(userId && isKycVerified),
+    enabled: Boolean(isKycVerified),
   });
 };
 
@@ -805,19 +776,17 @@ const useGetAdsDetails = ({
   });
 };
 const useGetAdsDetail = ({
-  userId,
   adId,
   enabled,
 }: {
-  userId: string;
   adId: string;
   enabled?: boolean;
 }) => {
   return useQuery<AdsType[], Error>({
-    queryKey: ["searchDetails", userId, adId],
+    queryKey: ["searchDetails", adId],
     queryFn: async () => {
       const response = await Bisatsfetch(
-        `/api/v1/user/${userId}${BACKEND_URLS?.P2P.ADS.SEARCH_ADS}?id=${adId}`,
+        `/api/v1/user${BACKEND_URLS?.P2P.ADS.SEARCH_ADS}?id=${adId}`,
         {
           method: "GET",
         }
@@ -830,16 +799,10 @@ const useGetAdsDetail = ({
     enabled,
   });
 };
-const useGetBankList = ({
-  userId,
-  enabled,
-}: {
-  userId: string;
-  enabled?: boolean;
-}) => {
+const useGetBankList = ({ enabled }: { enabled?: boolean }) => {
   return useQuery<Banks[], Error>({
-    queryKey: ["BankList", userId],
-    queryFn: () => GetBankList(userId),
+    queryKey: ["BankList"],
+    queryFn: GetBankList,
     refetchOnMount: false,
     staleTime: 5 * 60 * 1000, // 5 minutes
     enabled,

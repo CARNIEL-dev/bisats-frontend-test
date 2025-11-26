@@ -33,7 +33,7 @@ const OrderHistory = () => {
     refetch,
     isFetching,
     isError,
-  } = useFetchOrder({ userId, isKycVerified });
+  } = useFetchOrder({ isKycVerified });
 
   if (!isKycVerified) {
     return <KycBanner />;

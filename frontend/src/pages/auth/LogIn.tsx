@@ -6,14 +6,16 @@ import PrimaryInput from "@/components/Inputs/PrimaryInput";
 import Toast from "@/components/Toast";
 import { APP_ROUTES } from "@/constants/app_route";
 import { LogInSchema } from "@/formSchemas";
+import { setRefreshToken, setToken, setUserId } from "@/helpers";
 import OtherSide from "@/layouts/auth/OtherSide";
 import { Login, ReSendverificationCode } from "@/redux/actions/userActions";
 import { UserActionTypes } from "@/redux/types";
+import { getClientIp } from "@/utils";
 import dispatchWrapper from "@/utils/dispatchWrapper";
+
 import { useFormik } from "formik";
-import { useNavigate } from "react-router-dom";
 import { motion } from "motion/react";
-import { isProduction } from "@/utils";
+import { useNavigate } from "react-router-dom";
 
 const LogIn = () => {
   const navigate = useNavigate();
@@ -29,9 +31,29 @@ const LogIn = () => {
     validateOnBlur: false,
     onSubmit: async (values) => {
       const { ...payload } = values;
-      const response = await Login(payload);
+      const ip = await getClientIp();
+      if (!ip) {
+        Toast.error("Failed to get IP", "Login Failed");
+        return;
+      }
+      const response = await Login({
+        ...payload,
+        ip,
+      });
+
       if (response.statusCode === 200) {
         const data = response.data;
+
+        if (data.setTwoFactorCode) {
+          navigate(APP_ROUTES.AUTH.VERIFY_2FA, {
+            state: {
+              email: values.email,
+              password: values.password,
+              ip,
+            },
+          });
+          return;
+        }
 
         if (!data.emailVerified) {
           dispatchWrapper({
@@ -43,25 +65,33 @@ const LogIn = () => {
           return;
         }
 
-        if (data.twoFactorAuthEnabled && isProduction) {
-          dispatchWrapper({
-            type: UserActionTypes.LOG_IN_PENDING,
-            payload: data,
-          });
-          navigate(APP_ROUTES.AUTH.VERIFY_2FA);
-          return;
-        }
-
         Toast.success("", response.message);
+
         dispatchWrapper({
           type: UserActionTypes.LOG_IN_SUCCESS,
           payload: data,
         });
+        if (data) {
+          data.userId && setUserId(data?.userId);
+          data.token && setToken(data?.token);
+          data.refreshToken && setRefreshToken(data?.refreshToken);
+        }
 
         navigate(APP_ROUTES.DASHBOARD);
         // window.location.href = APP_ROUTES.DASHBOARD;
       } else {
-        Toast.error(response.message, "Login Failed");
+        const errMessage = response.error.message as string;
+        if (errMessage.includes("2FA code is required")) {
+          navigate(APP_ROUTES.AUTH.VERIFY_2FA, {
+            state: {
+              email: values.email,
+              password: values.password,
+              ip,
+            },
+          });
+          return;
+        }
+        Toast.error(errMessage, "Login Failed");
       }
     },
   });

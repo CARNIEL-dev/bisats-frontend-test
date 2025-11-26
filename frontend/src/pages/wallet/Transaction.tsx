@@ -70,7 +70,6 @@ const Transactions: React.FC = () => {
     isLoading,
     error,
   } = useUserWalletHistory({
-    userId,
     reason: selectedType === "-" ? "" : selectedType,
     asset: selectedAsset === "-" ? "" : selectedAsset,
     type: "",

@@ -105,7 +105,6 @@ const DepositPage = () => {
       const { ...payload } = values;
       const payloadd = {
         ...payload,
-        userId: `${user?.user?.userId}`,
         amount: Number(payload.amount),
       };
       const response = await DepositTranscBreakDown(payloadd);

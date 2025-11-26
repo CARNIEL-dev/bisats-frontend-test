@@ -110,7 +110,7 @@ const Profile = () => {
     error,
   } = useQuery<TActivitySummary, Error, TActivitySummary, [string, string]>({
     queryKey: ["activitySummary", user?.userId],
-    queryFn: async () => await GET_ACTIVITY_SUMMARY(user?.userId),
+    queryFn: GET_ACTIVITY_SUMMARY,
     refetchOnMount: false,
     enabled: Boolean(user?.userId),
   });

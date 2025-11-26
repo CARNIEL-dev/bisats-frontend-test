@@ -10,6 +10,8 @@ export type TResponse = {
 export type TLogin = {
   email: string;
   password: string;
+  ip: string;
+  code?: string;
 };
 
 export type TSignUp = {
@@ -44,7 +46,6 @@ export type TMerchant = {
 };
 
 export type TSuperMerchant = {
-  userId: string;
   utilityBill: File | string;
   cacDocument: File | string;
   mermatDoc?: File | string | null;
@@ -62,19 +63,16 @@ export type TVerifyPhone = {
 };
 
 export type TPinRequest = {
-  userId?: string;
   pin: string;
   confirmPin: string;
   oldPin?: string;
 };
 
 export type TVerify2FARequest = {
-  userId?: string;
   code: string;
 };
 
 export type TUpdate2FAStatus = {
-  userId?: string;
   enable?: boolean;
   code?: string;
 };

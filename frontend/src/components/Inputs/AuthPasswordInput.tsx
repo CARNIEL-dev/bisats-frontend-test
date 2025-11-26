@@ -73,6 +73,7 @@ const AuthPasswordInput: React.FC<TInput> = ({
               handleChange(e);
               setPasswordString(e.target.value);
             }}
+            autoComplete="off"
           />
           <Button
             variant="ghost"

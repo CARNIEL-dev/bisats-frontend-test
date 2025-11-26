@@ -1,11 +1,12 @@
 import { cn } from "@/utils";
 import { Loader } from "lucide-react";
+import { ChangeEvent, InputHTMLAttributes, useEffect, useState } from "react";
 import {
-  ChangeEvent,
-  InputHTMLAttributes,
-  useEffect,
-  useState,
-} from "react";
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
+import { REGEXP_ONLY_DIGITS } from "input-otp";
 
 interface TInput extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
@@ -16,6 +17,7 @@ interface TInput extends InputHTMLAttributes<HTMLInputElement> {
   maxFnc?: () => void;
   loading?: boolean;
   maxText?: string;
+  otpLength?: number;
 }
 
 const resolveValue = (
@@ -140,15 +142,18 @@ const PrimaryInput: React.FC<TInput> = ({
   maxFnc,
   maxText,
   format,
+  otpLength = 6,
   ...props
 }) => {
   const {
     onChange,
+    onBlur,
     value,
     defaultValue,
     type = "text",
     inputMode,
     style,
+    name,
     ...inputProps
   } = props;
 
@@ -186,10 +191,53 @@ const PrimaryInput: React.FC<TInput> = ({
     }
   };
 
+  const handleOtpChange = (value: string) => {
+    if (onChange && name) {
+      // Create a proper synthetic event for Formik
+      const syntheticEvent = {
+        target: {
+          name,
+          value,
+          type: "text",
+        },
+        currentTarget: {
+          name,
+          value,
+          type: "text",
+        },
+      } as ChangeEvent<HTMLInputElement>;
+
+      onChange(syntheticEvent);
+    }
+  };
+
+  const handleOtpBlur = () => {
+    if (onBlur && name) {
+      // Create a proper synthetic blur event for Formik
+      const syntheticEvent = {
+        target: {
+          name,
+          value: value || "",
+        },
+        currentTarget: {
+          name,
+          value: value || "",
+        },
+      } as React.FocusEvent<HTMLInputElement>;
+
+      onBlur(syntheticEvent);
+    }
+  };
+
   const mergedStyle = { outline: "none", ...style };
 
   return (
-    <div className="w-full flex flex-col gap-1.5 ">
+    <div
+      className={cn(
+        "w-full flex flex-col gap-1.5 ",
+        type == "code" && className && className
+      )}
+    >
       <div className="">
         {label && (
           <label
@@ -201,28 +249,51 @@ const PrimaryInput: React.FC<TInput> = ({
         )}
       </div>
       <div className="relative w-full">
-        <input
-          {...inputProps}
-          type={format ? "text" : type ?? "text"}
-          inputMode={format ? inputMode ?? "decimal" : inputMode}
-          style={mergedStyle}
-          className={cn(
-            `rounded-sm placeholder:text-sm text-base font-normal border border-[#D6DAE1] outline-[none] focus:border-[#C49600] focus:shadow-[0_0_10px_#FEF8E5] w-full text-[#606C82]  p-2.5 no-spinner  px-3 `,
-            error && "border-[#EF4444] outline-0 focus:border-[#EF4444] ",
-            className
-          )}
-          data-raw-value={format ? rawValue : undefined}
-          {...(format
-            ? { value: formattedValue, onChange: handleFormattedChange }
-            : {
-                onChange,
-                ...(value !== undefined
-                  ? { value }
-                  : defaultValue !== undefined
-                  ? { defaultValue }
-                  : {}),
-              })}
-        />
+        {type === "code" ? (
+          <InputOTP
+            maxLength={otpLength}
+            value={String(value || "")}
+            onChange={handleOtpChange}
+            onBlur={handleOtpBlur}
+            name={name}
+            pattern={REGEXP_ONLY_DIGITS}
+          >
+            <InputOTPGroup>
+              {Array.from({ length: otpLength }).map((_, index) => (
+                <InputOTPSlot key={index} index={index} />
+              ))}
+            </InputOTPGroup>
+          </InputOTP>
+        ) : (
+          <input
+            {...inputProps}
+            name={name}
+            type={format ? "text" : type ?? "text"}
+            inputMode={format ? inputMode ?? "decimal" : inputMode}
+            style={mergedStyle}
+            className={cn(
+              `rounded-sm placeholder:text-sm text-base font-normal border border-[#D6DAE1] outline-[none] focus:border-[#C49600] focus:shadow-[0_0_10px_#FEF8E5] w-full text-[#606C82]  p-2.5 no-spinner  px-3 `,
+              error && "border-[#EF4444] outline-0 focus:border-[#EF4444] ",
+              className
+            )}
+            data-raw-value={format ? rawValue : undefined}
+            {...(format
+              ? {
+                  value: formattedValue,
+                  onChange: handleFormattedChange,
+                  onBlur,
+                }
+              : {
+                  onChange,
+                  onBlur,
+                  ...(value !== undefined
+                    ? { value }
+                    : defaultValue !== undefined
+                    ? { defaultValue }
+                    : {}),
+                })}
+          />
+        )}
         {loading && (
           <p className="text-sm  absolute right-5 top-1/2 -translate-y-1/2">
             <Loader className="animate-spin text-gray-400" />

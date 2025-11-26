@@ -1,14 +1,11 @@
 import { useFetchOrder } from "@/redux/actions/walletActions";
 import { useSelector } from "react-redux";
 
-import Switch from "@/components/Switch";
-import PreLoader from "@/layouts/PreLoader";
-import { subDays } from "date-fns";
-import { useMemo, useState } from "react";
-import ErrorDisplay from "@/components/shared/ErrorDisplay";
-import { VolumeByAssetChart } from "@/components/shared/TestChart";
 import RefreshButton from "@/components/RefreshButton";
+import ErrorDisplay from "@/components/shared/ErrorDisplay";
 import OrdersTotalSection from "@/components/shared/OrdersTotalSection";
+import { VolumeByAssetChart } from "@/components/shared/TestChart";
+import Switch from "@/components/Switch";
 import {
   Select,
   SelectContent,
@@ -16,6 +13,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import PreLoader from "@/layouts/PreLoader";
+import { subDays } from "date-fns";
+import { useMemo, useState } from "react";
 
 const daysOption = [7, 14, 30, 60];
 
@@ -37,7 +37,7 @@ const OrdersChart = () => {
     refetch,
     isFetching,
     isError,
-  } = useFetchOrder({ userId, isKycVerified });
+  } = useFetchOrder({ isKycVerified });
 
   // HDR: Data
   const data = useMemo(() => {

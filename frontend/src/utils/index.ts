@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import Resizer from "react-image-file-resizer";
+import { BACKEND_URLS } from "./backendUrls";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -221,6 +222,17 @@ const resizeFile = (file: File) =>
     );
   });
 
+const getClientIp = async (): Promise<string | null> => {
+  try {
+    const res = await fetch(BACKEND_URLS.IP_ADDRESS_API);
+    const data = await res.json();
+    return data.ip;
+  } catch (err) {
+    console.error("Failed to get IP:", err);
+    return null;
+  }
+};
+
 export {
   formatter,
   formatTime,
@@ -234,4 +246,5 @@ export {
   getSafeValue,
   getUpgradeButtonState,
   resizeFile,
+  getClientIp,
 };

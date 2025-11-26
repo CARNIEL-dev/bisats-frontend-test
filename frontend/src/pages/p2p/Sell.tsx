@@ -6,18 +6,13 @@ import P2PMarket from "@/pages/p2p/components/P2PMarket";
 import { useGetAdsDetail } from "@/redux/actions/walletActions";
 
 import { useMemo } from "react";
-import { useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 
 const Sell = () => {
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id") || "";
 
-  const user: UserState = useSelector((state: any) => state.user);
-  const userr = user.user;
-
   const { data, isLoading, isError, error } = useGetAdsDetail({
-    userId: userr?.userId,
     adId: id,
     enabled: Boolean(id),
   });

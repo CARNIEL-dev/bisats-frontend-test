@@ -183,7 +183,6 @@ type AdsPayload = {
 };
 
 type UpdateAdStatusVars = {
-  userId: string;
   adId: string;
   status: string;
 };

@@ -30,16 +30,15 @@ const DeleteWalletAddressModal: React.FC<Props> = ({ close, wallet }) => {
   const DeleteAddress = async () => {
     setIsLoading(true);
     const response = await deleteWalletAddressHandler({
-      userId: user?.userId,
       addressId: wallet?.id ?? "",
     });
     setIsLoading(false);
-    if (response?.status) {
+    if (response?.success || response?.status === 200) {
       await GetUserDetails({ userId: user?.userId, token: user?.token });
       Toast.success(response.message, "Wallet Address Deleted");
       close();
     } else {
-      Toast.error(response.message, "Failed");
+      Toast.error(response.error.message, "Failed");
     }
   };
   return (

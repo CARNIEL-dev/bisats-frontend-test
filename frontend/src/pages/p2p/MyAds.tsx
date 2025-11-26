@@ -50,7 +50,6 @@ export type UpdateAdStatusResponse = {
 
 const MyAds = () => {
   const userState: UserState = useSelector((state: any) => state.user);
-  const userId: string = userState?.user?.userId || "";
   const queryClient = useQueryClient();
 
   const navigate = useNavigate();
@@ -66,7 +65,6 @@ const MyAds = () => {
     error,
     isLoading,
   } = useFetchUserAds({
-    userId,
     isKycVerified: isKycVerified || !userState.user?.hasAppliedToBeInLevelOne,
   });
 
@@ -85,15 +83,15 @@ const MyAds = () => {
     Error,
     UpdateAdStatusVars
   >({
-    mutationFn: ({ userId, adId, status }: UpdateAdStatusVars) =>
-      updateAdStatus({ userId, adId, newStatus: status }),
+    mutationFn: ({ adId, status }: UpdateAdStatusVars) =>
+      updateAdStatus({ adId, newStatus: status }),
     onSuccess(_, variables) {
       GetWallet();
       queryClient.invalidateQueries({
-        queryKey: ["userAds", variables.userId],
+        queryKey: ["userAds"],
       });
       queryClient.invalidateQueries({
-        queryKey: ["userNotifications", variables.userId],
+        queryKey: ["userNotifications"],
       });
       queryClient.refetchQueries({
         queryKey: ["searchAds"],
@@ -102,7 +100,6 @@ const MyAds = () => {
       });
     },
     onError(err) {
-      console.log(err);
       Toast.error(err.message || "Failed to update ad status", "Failed");
     },
   });
@@ -111,7 +108,6 @@ const MyAds = () => {
   const handleStatusToggle = (ad: AdsTypes) => {
     const newStatus = ad.status === "active" ? "disabled" : "active";
     mutation.mutate({
-      userId,
       adId: ad.id,
       status: newStatus,
     });
@@ -122,7 +118,6 @@ const MyAds = () => {
 
   const handleCloseAd = (adId: string) => {
     mutation.mutate({
-      userId,
       adId,
       status: "closed",
     });

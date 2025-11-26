@@ -243,7 +243,7 @@ const Payment = () => {
                 </div>
               </div>
               <div className="flex  flex-wrap items-center justify-between mt-0 lg:my-5">
-                <div className="my-3 lg:my-0 text-left w-1/2 lg:w-fit">
+                <div className="my-3 lg:my-0 text-left w-full lg:w-fit">
                   <p className="text-xs text-[#515B6E] mb-2">Wallet Address</p>
                   <p className="text-xs font-normal text-[#2B313B]">
                     {details?.address}

@@ -93,7 +93,7 @@ const NotificationsPage = () => {
   const notifyId = useQuery({
     queryKey: ["notificationById", id],
     queryFn: async () => {
-      const res = await GetNotificationById(userId, id);
+      const res = await GetNotificationById(id);
 
       if (!res.read) {
         await mutation.mutate({
@@ -113,16 +113,16 @@ const NotificationsPage = () => {
     mutationFn: async (vars) => {
       switch (vars.type) {
         case "read":
-          return Read_Notification({ userId, notificationId: vars.id });
+          return Read_Notification({ notificationId: vars.id });
 
         case "delete":
-          return Delete_Notification({ userId, notificationId: vars.id });
+          return Delete_Notification({ notificationId: vars.id });
 
         case "readAll":
-          return Read_All_Notifications({ userId });
+          return Read_All_Notifications();
 
         case "deleteAll":
-          return Delete_All_Notifications({ userId });
+          return Delete_All_Notifications();
 
         default:
           return Promise.resolve();

@@ -77,7 +77,6 @@ const TransactionBreakdown = () => {
   const onIntiateTopUp = async () => {
     setLoading((prev) => ({ ...prev, topUp: true }));
     const response = await TopUpNGNBalance({
-      userId: `${user?.user?.userId}`,
       amount: Number(TransBreakDown?.amount),
       bankAccountId: selectedBankID,
     });
