@@ -7,6 +7,7 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
+import PinInput from "react-pin-input";
 
 interface TInput extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
@@ -18,6 +19,7 @@ interface TInput extends InputHTMLAttributes<HTMLInputElement> {
   loading?: boolean;
   maxText?: string;
   otpLength?: number;
+  secretMode?: boolean;
 }
 
 const resolveValue = (
@@ -143,6 +145,7 @@ const PrimaryInput: React.FC<TInput> = ({
   maxText,
   format,
   otpLength = 6,
+  secretMode,
   ...props
 }) => {
   const {
@@ -264,6 +267,25 @@ const PrimaryInput: React.FC<TInput> = ({
               ))}
             </InputOTPGroup>
           </InputOTP>
+        ) : type === "pin" ? (
+          <>
+            <PinInput
+              length={otpLength}
+              initialValue={resolveValue(value ?? defaultValue)}
+              onChange={handleOtpChange}
+              secret={secretMode}
+              secretDelay={500}
+              inputMode="numeric"
+              inputStyle={{
+                border: "1px solid #D6DAE1", // Customize the border color
+                borderColor: error ? "#EF4444" : "#D6DAE1",
+                borderRadius: "100%", // Adjust border radius
+                padding: "10px", // Add some padding
+                margin: "2px", // Adjust margin
+                fontSize: "22px", // Adjust font size
+              }}
+            />
+          </>
         ) : (
           <input
             {...inputProps}
@@ -301,8 +323,13 @@ const PrimaryInput: React.FC<TInput> = ({
         )}
       </div>
 
-      <div className="flex items-center justify-between gap-1">
-        <span className="text-red-500 text-xs">{error}</span>
+      <div
+        className={cn(
+          "flex items-center  gap-1",
+          type === "pin" ? "justify-center" : "justify-between"
+        )}
+      >
+        <span className="text-red-500 text-xs ">{error}</span>
 
         {maxFnc && (
           <button

@@ -60,16 +60,17 @@ const SetPinModal: React.FC<Props> = ({ close, type, open }) => {
   return (
     <ModalTemplate onClose={close} isOpen={open} className="md:!max-w-sm">
       <div className="flex flex-col ">
-        <h1 className="text-[#0A0E12] text-[22px] leading-[32px] font-semibold text-left mt-2">
+        <h1 className="text-[#0A0E12] text-[22px]  font-semibold">
           Security Verification
         </h1>
+
         <form
           onSubmit={formik.handleSubmit}
-          className="flex flex-col gap-1.5 mt-6 mb-4 text-center items-center"
+          className="flex flex-col gap-1.5 my-4 text-center items-center"
         >
           {type === "change" && (
             <PrimaryInput
-              type="code"
+              type="pin"
               otpLength={4}
               label={"Old PIN"}
               error={formik.errors.oldPin}
@@ -77,12 +78,11 @@ const SetPinModal: React.FC<Props> = ({ close, type, open }) => {
               value={formik.values.oldPin}
               name="oldPin"
               onChange={formik.handleChange}
-              className="w-fit"
             />
           )}
 
           <PrimaryInput
-            type="code"
+            type="pin"
             otpLength={4}
             name="pin"
             label={"Wallet PIN"}
@@ -90,10 +90,9 @@ const SetPinModal: React.FC<Props> = ({ close, type, open }) => {
             touched={undefined}
             value={formik.values.pin}
             onChange={formik.handleChange}
-            className="w-fit"
           />
           <PrimaryInput
-            type="code"
+            type="pin"
             otpLength={4}
             label={"Confirm PIN"}
             error={formik.errors.confirmPin}
@@ -101,7 +100,6 @@ const SetPinModal: React.FC<Props> = ({ close, type, open }) => {
             name="confirmPin"
             value={formik.values.confirmPin}
             onChange={formik.handleChange}
-            className="w-fit"
           />
 
           <PrimaryButton
