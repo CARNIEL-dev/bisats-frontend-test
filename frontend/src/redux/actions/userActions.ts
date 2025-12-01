@@ -58,15 +58,12 @@ export const SignUp = async (payload: TSignUp) => {
   }
 };
 
-export const VerifyUser = async (payload: { userId: string; code: string }) => {
+export const VerifyUser = async (payload: { code: string }) => {
   try {
-    const response = await Bisatsfetch(
-      `/api/v1/user/${payload.userId}/verify-otp`,
-      {
-        method: "POST",
-        body: JSON.stringify(payload),
-      }
-    );
+    const response = await Bisatsfetch(`/api/v1/user/verify-otp`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
     return response;
   } catch (error) {
     // throw handleApiError(error);
@@ -74,6 +71,18 @@ export const VerifyUser = async (payload: { userId: string; code: string }) => {
   }
 };
 
+export const GetUserInfo = async (payload: { searchParam: string }) => {
+  try {
+    const response = await Bisatsfetch(`/api/v1/user/get-user-info`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+    return response;
+  } catch (error) {
+    // throw handleApiError(error);
+    return error;
+  }
+};
 export const ReSendverificationCode = async (payload: { userId: string }) => {
   try {
     const response = await Bisatsfetch(

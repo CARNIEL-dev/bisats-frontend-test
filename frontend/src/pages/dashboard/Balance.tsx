@@ -228,14 +228,12 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
         >
           {(validateAndExecute) => (
             <Button
+              variant={"secondary"}
               className={cn("flex-1 py-6")}
               onClick={() => {
                 validateAndExecute();
               }}
-              disabled={
-                !userState?.user?.accountLevel ||
-                (userBalance?.balanceTotal || 0) <= 0
-              }
+              disabled={!userState?.user?.accountLevel}
             >
               {!userState?.user?.accountLevel &&
               userState?.user?.hasAppliedToBeInLevelOne

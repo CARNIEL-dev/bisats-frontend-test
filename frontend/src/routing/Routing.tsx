@@ -52,6 +52,7 @@ import SwapPage from "@/pages/swap/SwapPage";
 import NotFound from "@/routing/NotFound";
 import { Route, Routes } from "react-router-dom";
 import SwapLayout from "@/layouts/SwapLayout";
+import TransferPage from "@/pages/wallet/transfer";
 
 const Routing = () => {
   return (
@@ -82,6 +83,10 @@ const Routing = () => {
               <Route
                 path={APP_ROUTES.WALLET.DEPOSIT}
                 element={<DepositPage />}
+              />
+              <Route
+                path={APP_ROUTES.WALLET.TRANSFER}
+                element={<TransferPage />}
               />
               <Route
                 path={APP_ROUTES.WALLET.WITHDRAW}

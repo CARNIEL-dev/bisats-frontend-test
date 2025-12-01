@@ -1,5 +1,5 @@
 import { cn } from "@/utils";
-import { Loader } from "lucide-react";
+import { Check, Loader } from "lucide-react";
 import { ChangeEvent, InputHTMLAttributes, useEffect, useState } from "react";
 import {
   InputOTP,
@@ -20,6 +20,7 @@ interface TInput extends InputHTMLAttributes<HTMLInputElement> {
   maxText?: string;
   otpLength?: number;
   secretMode?: boolean;
+  infoSuccess?: boolean;
 }
 
 const resolveValue = (
@@ -146,6 +147,7 @@ const PrimaryInput: React.FC<TInput> = ({
   format,
   otpLength = 6,
   secretMode,
+  infoSuccess,
   ...props
 }) => {
   const {
@@ -343,34 +345,47 @@ const PrimaryInput: React.FC<TInput> = ({
       </div>
       {info && (
         <div className="flex items-center gap-1">
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 16 16"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className="shrink-0"
+          {infoSuccess ? (
+            <span className="size-4 grid place-content-center bg-green-600 rounded-full text-white ">
+              <Check className="size-3" />
+            </span>
+          ) : (
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 16 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="shrink-0"
+            >
+              <path
+                d="M7.9987 14.6663C11.6654 14.6663 14.6654 11.6663 14.6654 7.99967C14.6654 4.33301 11.6654 1.33301 7.9987 1.33301C4.33203 1.33301 1.33203 4.33301 1.33203 7.99967C1.33203 11.6663 4.33203 14.6663 7.9987 14.6663Z"
+                stroke="#858FA5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M8 5.33301V8.66634"
+                stroke="#858FA5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M7.99609 10.667H8.00208"
+                stroke="#858FA5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          )}
+          <small
+            className={cn(
+              "text-[#606C82] text-xs text-left",
+              infoSuccess && "text-green-600 font-semibold text-sm"
+            )}
           >
-            <path
-              d="M7.9987 14.6663C11.6654 14.6663 14.6654 11.6663 14.6654 7.99967C14.6654 4.33301 11.6654 1.33301 7.9987 1.33301C4.33203 1.33301 1.33203 4.33301 1.33203 7.99967C1.33203 11.6663 4.33203 14.6663 7.9987 14.6663Z"
-              stroke="#858FA5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            <path
-              d="M8 5.33301V8.66634"
-              stroke="#858FA5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            <path
-              d="M7.99609 10.667H8.00208"
-              stroke="#858FA5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-          <small className="text-[#606C82] text-xs text-left">{info}</small>
+            {info}
+          </small>
         </div>
       )}
     </div>

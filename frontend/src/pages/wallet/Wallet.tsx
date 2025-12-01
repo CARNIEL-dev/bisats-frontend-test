@@ -9,7 +9,7 @@ const Wallet = () => {
     <>
       <MaxWidth as="section" className="space-y-8 max-w-6xl lg:pb-5 mb-10 mt-6">
         <div className="w-full space-y-4  ">
-          <div className="sm:w-fit sm:min-w-[29rem] max-w-[43rem]">
+          <div className="sm:w-fit sm:min-w-[30rem] max-w-[45rem]">
             <Balance showWithdraw />
           </div>
 
