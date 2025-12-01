@@ -222,6 +222,30 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
             </Button>
           )}
         </KycManager>
+        <KycManager
+          action={ACTIONS.TRANSFER}
+          func={() => navigate(APP_ROUTES.WALLET.TRANSFER)}
+        >
+          {(validateAndExecute) => (
+            <Button
+              className={cn("flex-1 py-6")}
+              onClick={() => {
+                validateAndExecute();
+              }}
+              disabled={
+                !userState?.user?.accountLevel ||
+                (userBalance?.balanceTotal || 0) <= 0
+              }
+            >
+              {!userState?.user?.accountLevel &&
+              userState?.user?.hasAppliedToBeInLevelOne
+                ? !showWithdraw
+                  ? "Pending verification"
+                  : "Pending"
+                : "Transfer"}
+            </Button>
+          )}
+        </KycManager>
 
         {showWithdraw && (
           <KycManager

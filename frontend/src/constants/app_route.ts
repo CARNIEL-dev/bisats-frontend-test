@@ -30,6 +30,7 @@ export const APP_ROUTES = {
     HOME: "/wallet",
     DEPOSIT: "/wallet/deposit",
     WITHDRAW: "/wallet/withdrawal",
+    TRANSFER: "/wallet/transfer",
     BANK_SELECT: "/wallet/deposit/bank-select",
     TRANSACTION_BREAKDOWN: "/wallet/deposit/transaction-breakdown",
   },

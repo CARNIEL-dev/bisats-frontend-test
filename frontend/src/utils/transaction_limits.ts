@@ -97,6 +97,7 @@ export const ACTIONS = {
   ADD_CORPORATE_BANK: "add_corporate_bank",
   P2P_BUY: "p2p_buy",
   P2P_SELL: "p2p_sell",
+  TRANSFER: "transfer",
   // Add more actions
 };
 
@@ -118,6 +119,7 @@ export const KYC_RULES = {
       ACTIONS.ADD_CORPORATE_BANK,
       ACTIONS.P2P_BUY,
       ACTIONS.P2P_SELL,
+      ACTIONS.TRANSFER,
     ],
     limits: {
       transactionAmount: 1000, // $1000 max per transaction
@@ -140,6 +142,7 @@ export const KYC_RULES = {
       ACTIONS.ADD_CORPORATE_BANK,
       ACTIONS.P2P_BUY,
       ACTIONS.P2P_SELL,
+      ACTIONS.TRANSFER,
     ],
     limits: {
       transactionAmount: 10000,
@@ -162,6 +165,7 @@ export const KYC_RULES = {
       ACTIONS.ADD_CORPORATE_BANK,
       ACTIONS.P2P_BUY,
       ACTIONS.P2P_SELL,
+      ACTIONS.TRANSFER,
     ],
     limits: {
       transactionAmount: Infinity,
