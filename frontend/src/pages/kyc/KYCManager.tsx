@@ -7,7 +7,11 @@ import { APP_ROUTES } from "@/constants/app_route";
 import Head from "@/pages/wallet/Head";
 
 import { cn } from "@/utils";
-import { ACTIONS_REQUIRING_2FA, KYC_RULES } from "@/utils/transaction_limits";
+import {
+  ACTIONS_REQUIRING_2FA,
+  ACTIONS_REQUIRING_PIN,
+  KYC_RULES,
+} from "@/utils/transaction_limits";
 
 import { Lock } from "lucide-react";
 import { useState } from "react";
@@ -16,12 +20,28 @@ import { Link } from "react-router-dom";
 
 interface TKycManager {
   action: string;
-  func: () => void;
+  func: (data?: Record<string, any>) => void;
   children: (trigger: () => void) => React.ReactNode;
+  isManual?: boolean;
 }
 
-const KycManager: React.FC<TKycManager> = ({ action, func, children }) => {
-  const [modal, setModal] = useState<string | null>(null);
+type ModalType =
+  | "kycVerification"
+  | "upgrade"
+  | "requiredPin"
+  | "required2fa"
+  | "2fa"
+  | "2faPIN"
+  | "PIN"
+  | null;
+
+const KycManager: React.FC<TKycManager> = ({
+  action,
+  func,
+  children,
+  isManual,
+}) => {
+  const [modal, setModal] = useState<ModalType>(null);
   const user: UserState = useSelector((state: any) => state.user);
 
   const userKycLevel =
@@ -51,6 +71,13 @@ const KycManager: React.FC<TKycManager> = ({ action, func, children }) => {
     }
 
     if (ACTIONS_REQUIRING_2FA.includes(action)) {
+      if (ACTIONS_REQUIRING_PIN.includes(action)) {
+        if (!user?.user?.wallet?.pinSet) {
+          setModal("requiredPin");
+          return;
+        }
+      }
+
       if (user?.user?.twoFactorAuthEnabled && user?.user?.wallet?.pinSet) {
         setModal("2faPIN");
         return;
@@ -63,6 +90,15 @@ const KycManager: React.FC<TKycManager> = ({ action, func, children }) => {
         setModal("required2fa");
         return;
       }
+      return;
+    }
+    if (ACTIONS_REQUIRING_PIN.includes(action)) {
+      if (!user?.user?.wallet?.pinSet) {
+        setModal("requiredPin");
+        return;
+      }
+      setModal("PIN");
+      return;
     }
 
     func();
@@ -89,21 +125,35 @@ const KycManager: React.FC<TKycManager> = ({ action, func, children }) => {
           func={func}
           close={closeModal}
           mode={modal === "2fa" ? "TWO_FA_ONLY" : "TWO_FA_AND_PIN"}
+          isManual={isManual}
         />
       )}
 
       <ModalTemplate
-        isOpen={modal === "required2fa"}
+        isOpen={modal === "required2fa" || modal === "requiredPin"}
         primary={false}
         onClose={closeModal}
+        key={modal}
       >
         <div className="flex flex-col gap-2 my-3">
           <div className="rounded-full size-12 grid bg-gray-100 place-items-center border">
             <Lock className="text-red-600" />
           </div>
           <Head
-            header="Enable 2FA"
-            subHeader="Enable two factor authentication to continue"
+            header={
+              modal === "requiredPin"
+                ? "Enable PIN"
+                : modal === "required2fa"
+                ? "Enable 2FA"
+                : ""
+            }
+            subHeader={
+              modal === "requiredPin"
+                ? "Enable PIN to continue"
+                : modal === "required2fa"
+                ? "Enable two factor authentication to continue"
+                : ""
+            }
           />
           <Link
             to={APP_ROUTES.SETTINGS.SECURITY}

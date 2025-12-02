@@ -19,6 +19,7 @@ import {
   TWithdrawalAddress,
   TWithdrawalBankAccount,
   TWithdrawalRequest,
+  WithdrawalCompleteType,
 } from "@/types/wallet";
 import { BACKEND_URLS } from "@/utils/backendUrls";
 import dispatchWrapper from "@/utils/dispatchWrapper";
@@ -186,10 +187,10 @@ export const TopUpNGNBalance = async (payload: TTopUpNGN) => {
   }
 };
 
-export const GetUserBank = async (userId: string) => {
+export const GetUserBank = async () => {
   try {
     const response = await Bisatsfetch(
-      `/api/v1/user/${userId}${BACKEND_URLS?.WALLET.MY_BANKS}`,
+      `/api/v1/user${BACKEND_URLS?.WALLET.MY_BANKS}`,
       {
         method: "GET",
       }
@@ -331,6 +332,25 @@ export const Withdraw_xNGN = async (payload: TWithdrawalRequest) => {
   try {
     const response = await Bisatsfetch(
       `/api/v1/user${BACKEND_URLS.WALLET.WITHDRAW}`,
+      {
+        method: "POST",
+        body: JSON.stringify(payload),
+      }
+    );
+    const data = response;
+
+    return data;
+  } catch (error) {
+    // throw handleApiError(error);
+    return error;
+  }
+};
+export const Complete_Withdraw_xNGN = async (
+  payload: WithdrawalCompleteType
+) => {
+  try {
+    const response = await Bisatsfetch(
+      `/api/v1/user${BACKEND_URLS.WALLET.WITHDRAW_COMPLETE}`,
       {
         method: "POST",
         body: JSON.stringify(payload),
@@ -810,10 +830,8 @@ const useGetBankList = ({ enabled }: { enabled?: boolean }) => {
 };
 
 export const getNetworkFee = async ({
-  userId,
   paylod,
 }: {
-  userId: string;
   paylod: {
     userId: string;
     amount: number;
@@ -824,7 +842,7 @@ export const getNetworkFee = async ({
 }) => {
   try {
     const response = await Bisatsfetch(
-      `/api/v1/user/${userId}${BACKEND_URLS?.WALLET.NETWORK_FEE}`,
+      `/api/v1/user${BACKEND_URLS?.WALLET.NETWORK_FEE}`,
       {
         method: "POST",
         body: JSON.stringify(paylod),
@@ -837,6 +855,29 @@ export const getNetworkFee = async ({
     return response.data;
   } catch (error) {
     throw error;
+  }
+};
+
+const transferToken = async (payload: {
+  amount: number;
+  recipientId: string;
+  note: string;
+  asset: string;
+  withdrawalPin: string;
+  twoFactorCode: string;
+}) => {
+  try {
+    const response = await Bisatsfetch(
+      `/api/v1/user${BACKEND_URLS.WALLET.TRANSFER}`,
+      {
+        method: "POST",
+        body: JSON.stringify(payload),
+      }
+    );
+    return response;
+  } catch (error) {
+    // throw handleApiError(error);
+    return error;
   }
 };
 
@@ -855,4 +896,5 @@ export {
   useGetAdsDetails,
   useGetBankList,
   useUserWalletHistory,
+  transferToken,
 };

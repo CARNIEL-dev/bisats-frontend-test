@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/select";
 import { TokenData } from "@/data";
 import { cn, formatter } from "@/utils";
-import { ArrowUpDown, ChevronsUpDown } from "lucide-react";
+import { ArrowUpDown, ChevronsUpDown, Wallet } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 
@@ -77,10 +77,20 @@ const TokenSelection = ({
   }, [selected, walletData, showBalance]);
 
   const tokenOptions = useMemo(() => {
-    if (removexNGN) return TokenData.slice(1);
-    if (removeToken)
-      return TokenData.filter((token) => token.tokenName !== removeToken);
-    return TokenData;
+    let options = TokenData.map((token) => {
+      return {
+        ...token,
+        currentBalance: walletData ? walletData[token.id] : undefined,
+      };
+    });
+
+    if (removexNGN) {
+      options = options.slice(1);
+    }
+    if (removeToken) {
+      options = options.filter((token) => token.tokenName !== removeToken);
+    }
+    return options;
   }, [removexNGN, removeToken]);
 
   const selectedToken = useMemo(() => {

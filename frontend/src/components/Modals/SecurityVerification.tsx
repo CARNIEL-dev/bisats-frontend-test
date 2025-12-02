@@ -8,18 +8,19 @@ import { TwoFactorAuth } from "@/redux/actions/walletActions";
 import * as Yup from "yup";
 
 import { useFormik } from "formik";
-import { useSelector } from "react-redux";
 
 interface Props {
   close: () => void;
-  func: () => void;
-
+  func: (data?: Record<string, any>) => void;
   mode: "TWO_FA_ONLY" | "TWO_FA_AND_PIN";
+  isManual?: boolean;
 }
-const SecurityVerification: React.FC<Props> = ({ close, func, mode }) => {
-  const userState: UserState = useSelector((state: any) => state.user);
-  const user = userState.user;
-
+const SecurityVerification: React.FC<Props> = ({
+  close,
+  func,
+  mode,
+  isManual,
+}) => {
   const initialValues =
     mode === "TWO_FA_AND_PIN"
       ? {
@@ -31,7 +32,6 @@ const SecurityVerification: React.FC<Props> = ({ close, func, mode }) => {
         };
 
   const validationSchema = Yup.object({
-    userId: Yup.string().required(),
     code: Yup.string()
       .required("2FA code is required")
       .length(6, "Must be 6 digits"),
@@ -42,25 +42,31 @@ const SecurityVerification: React.FC<Props> = ({ close, func, mode }) => {
   });
 
   const formik = useFormik({
-    initialValues: { ...initialValues, userId: user?.userId },
+    initialValues: { ...initialValues },
     validationSchema,
     validateOnMount: false,
+
     onSubmit: async (values) => {
+      if (isManual) {
+        func(values);
+        close();
+        return;
+      }
       if (mode === "TWO_FA_AND_PIN") {
         await TwoFactorAuth({
           pin: values.pin!,
           code: values.code,
         })
           .then((res) => {
-            if (res?.status) {
+            if (res?.statusCode === 200) {
               func();
               close();
             } else {
-              Toast.error(res.message, "Error");
+              Toast.error(res.error.message, "Error");
             }
           })
           .catch((err) => {
-            Toast.error(err.message, "Error");
+            Toast.error(err.error.message, "Error");
           });
       } else {
         await VerifyTwoFactorAuth({
@@ -92,38 +98,34 @@ const SecurityVerification: React.FC<Props> = ({ close, func, mode }) => {
           onSubmit={formik.handleSubmit}
         >
           <PrimaryInput
-            className={"w-full p-2.5"}
+            type="code"
             label={"Autheticator App code"}
-            placeholder="Enter code"
             error={formik.errors.code}
             touched={undefined}
             value={formik.values.code}
-            onChange={(e) => {
-              let value = e.target.value.replace(/\D/g, "");
-              formik.setFieldValue("code", value);
-            }}
+            name="code"
+            onChange={formik.handleChange}
           />
 
           {mode === "TWO_FA_AND_PIN" && (
             <PrimaryInput
-              className={"w-full p-2.5"}
+              type="pin"
               label={"Wallet PIN"}
-              placeholder="Enter PIN"
               error={formik.errors.pin}
               touched={undefined}
               value={formik.values.pin}
-              onChange={(e) => {
-                let value = e.target.value.replace(/\D/g, "");
-                formik.setFieldValue("pin", value);
-              }}
+              name="pin"
+              otpLength={4}
+              onChange={formik.handleChange}
             />
           )}
 
           <PrimaryButton
+            type="submit"
             className={"w-full mt-4"}
             text={"Confirm"}
             loading={formik.isSubmitting}
-            disabled={formik.isSubmitting || !formik.dirty || !formik.isValid}
+            disabled={!formik.isValid || formik.isSubmitting}
           />
         </form>
       </div>

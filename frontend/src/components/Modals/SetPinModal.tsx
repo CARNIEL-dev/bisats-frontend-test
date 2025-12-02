@@ -41,7 +41,7 @@ const SetPinModal: React.FC<Props> = ({ close, type, open }) => {
             oldPin: values.oldPin,
           }));
 
-      if (response?.success) {
+      if (response?.statusCode === 200 || response?.statusCode === 201) {
         Toast.success(
           response.message,
           type === "create" ? "PIN Created" : "PIN Updated"

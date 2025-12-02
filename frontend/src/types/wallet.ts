@@ -63,6 +63,12 @@ export type TWithdrawalRequest = {
   amount: number;
   bankAccountId: string;
 };
+
+export type WithdrawalCompleteType = {
+  referenceId: string;
+  withdrawalPin: string;
+  twoFactorCode: string;
+};
 export type TWithdrawalAddress = {
   name: string;
   address: string;

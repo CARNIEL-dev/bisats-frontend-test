@@ -223,7 +223,7 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
           )}
         </KycManager>
         <KycManager
-          action={ACTIONS.TRANSFER}
+          action={ACTIONS.MAKE_TRANSFER}
           func={() => navigate(APP_ROUTES.WALLET.TRANSFER)}
         >
           {(validateAndExecute) => (

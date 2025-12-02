@@ -12,6 +12,7 @@ import WithdrawalConfirmationNGN from "@/components/Modals/WithdrawalConfirmatio
 import Toast from "@/components/Toast";
 import Head from "@/pages/wallet/Head";
 import {
+  Complete_Withdraw_xNGN,
   getNetworkFee,
   GetUserBank,
   GetWallet,
@@ -54,6 +55,7 @@ import { APP_ROUTES } from "@/constants/app_route";
 import SecurityBanner from "@/components/shared/SecurityBanner";
 // @ts-expect-error no types
 import WAValidator from "multicoin-address-validator";
+import { th } from "date-fns/locale";
 
 export type TNetwork = {
   label: string;
@@ -166,8 +168,15 @@ type PropsNGN = {
 };
 
 const NGNWithdrawal = ({ user, transaction_limits, userBalance }: PropsNGN) => {
+  const [withdrawlLoading, setWithdrawlLoading] = useState(false);
+
   const [addBankModal, setAddBankModal] = useState(false);
   const [withdrawalModal, setWithDrawalModal] = useState(false);
+  const [withdrawalData, setWithdrawalData] = useState({
+    referenceId: "",
+    withdrawalPin: "",
+    twoFactorCode: "",
+  });
 
   const navigate = useNavigate();
 
@@ -183,7 +192,7 @@ const NGNWithdrawal = ({ user, transaction_limits, userBalance }: PropsNGN) => {
     isFetching,
   } = useQuery<UserBankListType[], Error>({
     queryKey: ["UserBankList", user?.userId],
-    queryFn: () => GetUserBank(user?.userId),
+    queryFn: GetUserBank,
     refetchOnMount: false,
     enabled: Boolean(user?.userId),
   });
@@ -266,33 +275,60 @@ const NGNWithdrawal = ({ user, transaction_limits, userBalance }: PropsNGN) => {
     }),
     onSubmit: async (values) => {
       const payLoad = {
-        userId: `${user?.userId}`,
         amount: Number(values.amount),
         bankAccountId: values.bank,
       };
       await Withdraw_xNGN(payLoad)
         .then(async (res) => {
-          if (res?.status || res?.statusCode === 200) {
-            Toast.success(res.message, "Withdrawal Initiated");
-            await Promise.all([
-              queryClient.refetchQueries({
-                queryKey: ["userWalletHistory"],
-                exact: false,
-              }),
-              GetWallet(),
-            ]).then(() => navigate(APP_ROUTES.WALLET.HOME));
+          if (typeof res?.status === "boolean" && res?.statusCode === 200) {
+            setWithdrawalData({
+              referenceId: res.data,
+              withdrawalPin: "",
+              twoFactorCode: "",
+            });
+            return true;
           } else {
-            Toast.error(res.message, "");
+            Toast.error(res.error.message, "");
+            return false;
           }
         })
         .catch((err) => {
-          Toast.error(err.message, "");
-        })
-        .finally(() => {
-          setWithDrawalModal(false);
+          Toast.error(err.error.message, "");
+          return false;
         });
     },
   });
+
+  const handlCompleteWithdrawl = async () => {
+    setWithdrawlLoading(true);
+    const payLoad = {
+      referenceId: withdrawalData.referenceId,
+      withdrawalPin: withdrawalData.withdrawalPin,
+      twoFactorCode: withdrawalData.twoFactorCode,
+    };
+    await Complete_Withdraw_xNGN(payLoad)
+      .then(async (res) => {
+        if (res?.status || res?.statusCode === 200) {
+          Toast.success(res.message, "Withdrawal Initiated");
+          await Promise.all([
+            queryClient.refetchQueries({
+              queryKey: ["userWalletHistory"],
+              exact: false,
+            }),
+            GetWallet(),
+          ]).then(() => navigate(APP_ROUTES.WALLET.HOME));
+        } else {
+          Toast.error(res.message, "");
+        }
+      })
+      .catch((err) => {
+        Toast.error(err.message, "");
+      })
+      .finally(() => {
+        setWithDrawalModal(false);
+        setWithdrawlLoading(false);
+      });
+  };
 
   return (
     <>
@@ -393,14 +429,29 @@ const NGNWithdrawal = ({ user, transaction_limits, userBalance }: PropsNGN) => {
                 />
                 <KycManager
                   action={ACTIONS.WITHDRAW_NGN}
-                  func={() => setWithDrawalModal(true)}
+                  func={(val) => {
+                    setWithDrawalModal(true);
+                    setWithdrawalData((prev) => ({
+                      ...prev,
+                      twoFactorCode: val?.code,
+                      withdrawalPin: val?.pin,
+                    }));
+                  }}
+                  isManual
                 >
                   {(validateAndExecute) => (
                     <PrimaryButton
                       className="w-full"
                       text={"Withdraw"}
-                      loading={false}
-                      onClick={validateAndExecute}
+                      loading={formik.isSubmitting}
+                      onClick={async () => {
+                        await formik.submitForm();
+                        setTimeout(() => {
+                          if (withdrawalData.referenceId) {
+                            validateAndExecute();
+                          }
+                        }, 100);
+                      }}
                       disabled={!formik.isValid || !formik.dirty}
                     />
                   )}
@@ -448,8 +499,8 @@ const NGNWithdrawal = ({ user, transaction_limits, userBalance }: PropsNGN) => {
             Number(formik.values.amount ?? 0) +
             userTransactionLimits?.charge_on_single_withdrawal_fiat
           }`}
-          submit={formik.submitForm}
-          isLoading={formik.isSubmitting}
+          submit={handlCompleteWithdrawl}
+          isLoading={withdrawlLoading}
         />
       )}
     </>
@@ -664,7 +715,6 @@ const CryptoWithdrawal = ({
     ],
     queryFn: async () =>
       await getNetworkFee({
-        userId: user?.userId,
         paylod: {
           userId: user?.userId,
           amount: Number(debouncedAmount),

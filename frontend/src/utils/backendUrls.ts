@@ -64,10 +64,13 @@ export const BACKEND_URLS = {
     EDIT_BANK_ACCOUNT: "/update-bank-details",
     DELE_BANK_ACCOUNT: "/delete-bank-details",
     WITHDRAW: "/withdraw",
+    WITHDRAW_COMPLETE: "/complete-ngn-withdraw",
     WITHDRAW_CRYPTO: "/withdraw-token",
+    WITHDRAW_CRYPTO_COMPLETE: "/complete-token-withdraw",
     WALLET_TRANSC_HISTORY: "/transactions",
     WITHDRAWAL_ADDRESS: "/withdrawal-addresses",
     NETWORK_FEE: "/withdrawal/get-network-fee",
+    TRANSFER: "/withdrawal/bisat-to-bisat",
   },
   P2P: {
     ADS: {

@@ -197,7 +197,7 @@ const DepositPage = () => {
                 />
                 <KycManager
                   action={ACTIONS.DEPOSIT_NGN}
-                  func={formik.handleSubmit}
+                  func={() => formik.handleSubmit()}
                 >
                   {(validateAndExecute) => (
                     <PrimaryButton

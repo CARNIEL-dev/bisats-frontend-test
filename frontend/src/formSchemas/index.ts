@@ -592,6 +592,43 @@ const AdSchema = Yup.object().shape({
     .required("Upper price limit is required"),
 });
 
+// HDR: Transfer Schema
+const transferSchema = Yup.object().shape({
+  recipient: Yup.string().required("Recipient is required"),
+  asset: Yup.string().required("Asset is required"),
+  amount: Yup.number()
+    .transform((v, o) => (o === "" || isNaN(o as any) ? undefined : Number(o)))
+    .moreThan(0, "Amount must be greater than 0")
+    .required("Amount is required")
+    .test("max-wallet-balance", function (value) {
+      if (!value) return true; // Skip if no value
+
+      const { walletBal } = this.options.context as any; // Changed from this.parent.context
+      const asset = this.parent.asset;
+
+      if (!asset || !walletBal) {
+        return true; // Skip validation if asset or walletBal is not available
+      }
+
+      const balance = walletBal[asset as keyof typeof walletBal];
+
+      if (balance === undefined || balance === null) {
+        return true; // Skip if balance not found for asset
+      }
+
+      if (Number(value) > Number(balance)) {
+        return this.createError({
+          message: `Amount exceeds wallet balance. Available: ${formatNumber(
+            Number(balance)
+          )} ${asset}`,
+        });
+      }
+
+      return true;
+    }),
+});
+
+// HDR: Level Upgrade Schema
 const PersonalInformationSchema = Yup.object().shape({
   firstName: Yup.string().required("Given name is required"),
   lastName: Yup.string().required("Surname is required"),
@@ -710,4 +747,5 @@ export {
   swapSchema,
   VerificationSchema,
   setPinSchema,
+  transferSchema,
 };
