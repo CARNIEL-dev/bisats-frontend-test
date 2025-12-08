@@ -10,14 +10,17 @@ import { setRefreshToken, setToken, setUserId } from "@/helpers";
 import OtherSide from "@/layouts/auth/OtherSide";
 import { Login, ReSendverificationCode } from "@/redux/actions/userActions";
 import { UserActionTypes } from "@/redux/types";
-import { getClientIp } from "@/utils";
+import { cn, getClientIp } from "@/utils";
 import dispatchWrapper from "@/utils/dispatchWrapper";
 
 import { useFormik } from "formik";
 import { motion } from "motion/react";
+import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 const LogIn = () => {
+  const loginAttemptRef = useRef(0);
+  const isLocked = useRef(false);
   const navigate = useNavigate();
 
   const formik = useFormik({
@@ -80,7 +83,7 @@ const LogIn = () => {
         navigate(APP_ROUTES.DASHBOARD);
         // window.location.href = APP_ROUTES.DASHBOARD;
       } else {
-        const errMessage = response.error.message as string;
+        const errMessage = response.message as string;
         if (errMessage.includes("2FA code is required")) {
           navigate(APP_ROUTES.AUTH.VERIFY_2FA, {
             state: {
@@ -91,6 +94,19 @@ const LogIn = () => {
           });
           return;
         }
+
+        const loginAttempt = errMessage.match(/Attempt\s+(\d+)\//);
+
+        if (loginAttempt) {
+          const attemptCount = loginAttempt[1]; // The first captured group
+          loginAttemptRef.current = parseInt(attemptCount);
+        }
+
+        const lockedRegex = /locked/i;
+        if (lockedRegex.test(errMessage)) {
+          isLocked.current = true;
+        }
+
         Toast.error(errMessage, "Login Failed");
       }
     },
@@ -110,6 +126,33 @@ const LogIn = () => {
       />
       <div>
         <form className="w-full mt-10" onSubmit={formik.handleSubmit}>
+          <p
+            className={cn(
+              "text-sm text-gray-600 mb-2 hidden",
+              (isLocked.current || loginAttemptRef.current > 0) && "block"
+            )}
+          >
+            {loginAttemptRef.current > 0 && (
+              <>
+                Login Attempt:
+                <span
+                  className={cn(
+                    "text-yellow-600 font-semibold",
+                    loginAttemptRef.current >= 3 && "text-red-600 animate-pulse"
+                  )}
+                >
+                  {" "}
+                  {loginAttemptRef.current}/5
+                </span>
+              </>
+            )}
+            {(loginAttemptRef.current >= 5 || isLocked.current) && (
+              <span className="text-red-600 italic font-medium">
+                {" "}
+                - Account is temporarily locked
+              </span>
+            )}
+          </p>
           <PrimaryInput
             type="email"
             name="email"

@@ -240,13 +240,10 @@ export const PostPersonalInformation_KYC = async (
   payload: TPersonalInfoKYC
 ) => {
   try {
-    const response = await Bisatsfetch(
-      `/api/v1/user/${payload.userId}/upload-personal-info`,
-      {
-        method: "POST",
-        body: JSON.stringify(payload),
-      }
-    );
+    const response = await Bisatsfetch(`/api/v1/user/upload-personal-info`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
     const data = response.data;
 
     dispatchWrapper({ type: GeneralTypes.SUCCESS, payload: data });
@@ -264,7 +261,7 @@ export const PostPOA_KYC = async (payload: TPOA) => {
   const token = getToken();
   try {
     const response = await fetch(
-      `${BACKEND_URLS.BASE_URL}/api/v1/user/${payload.userId}${BACKEND_URLS.KYC.POST_PROOF_ADDRESS}`,
+      `${BACKEND_URLS.BASE_URL}/api/v1/user${BACKEND_URLS.KYC.POST_PROOF_ADDRESS}`,
       {
         method: "PUT",
         headers: {
@@ -292,7 +289,7 @@ export const PostIdentity_KYC = async (payload: TIdentity) => {
 
   try {
     const response = await fetch(
-      `${BACKEND_URLS.BASE_URL}/api/v1/user/${payload.userId}/verify-identity`,
+      `${BACKEND_URLS.BASE_URL}/api/v1/user/verify-identity`,
       {
         method: "PUT",
         headers: {
@@ -325,7 +322,7 @@ export const PostCorporateInformation = async (payload: TCorporateInfo) => {
 
   try {
     const response = await fetch(
-      `${BACKEND_URLS.BASE_URL}/api/v1/user/${payload.userId}/upload-cooperate-account-documents`,
+      `${BACKEND_URLS.BASE_URL}/api/v1/user/upload-cooperate-account-documents`,
       {
         method: "POST",
         headers: {
@@ -342,14 +339,11 @@ export const PostCorporateInformation = async (payload: TCorporateInfo) => {
   }
 };
 
-export const GetKYCStatus = async (payload: { userId: string }) => {
+export const GetKYCStatus = async () => {
   try {
-    const response = await Bisatsfetch(
-      `/api/v1/user/${payload.userId}/fetch-kyc-status`,
-      {
-        method: "GET",
-      }
-    );
+    const response = await Bisatsfetch(`/api/v1/user/fetch-kyc-status`, {
+      method: "GET",
+    });
     const data = response.data;
     dispatchWrapper({ type: UserActionTypes.KYC_STATUS, payload: data });
     return data;
@@ -408,14 +402,11 @@ export const UpdateUserName = async (payload: {
   const userId = getUserId();
 
   try {
-    const response = await Bisatsfetch(
-      `/api/v1/user/${userId}/update-profile`,
-      {
-        method: "PUT",
+    const response = await Bisatsfetch(`/api/v1/user/update-profile`, {
+      method: "PUT",
 
-        body: JSON.stringify(payload),
-      }
-    );
+      body: JSON.stringify(payload),
+    });
     const data = response;
 
     await GetUserDetails({ userId: userId!, token: getToken()! });
@@ -430,7 +421,7 @@ export const UpdateUserName = async (payload: {
 export const PostPhoneNumber_KYC = async (payload: TRequestPhone) => {
   try {
     const response = await Bisatsfetch(
-      `/api/v1/user/${payload.userId}${BACKEND_URLS.AUTH.ADD_PHONE}`,
+      `/api/v1/user${BACKEND_URLS.AUTH.ADD_PHONE}`,
       {
         method: "POST",
         body: JSON.stringify(payload),
@@ -449,7 +440,7 @@ export const PostPhoneNumber_KYC = async (payload: TRequestPhone) => {
 export const Verify_OTP_PhoneNumber_KYC = async (payload: TVerifyPhone) => {
   try {
     const response = await Bisatsfetch(
-      `/api/v1/user/${payload.userId}${BACKEND_URLS.AUTH.VERIFY_PHONE}`,
+      `/api/v1/user${BACKEND_URLS.AUTH.VERIFY_PHONE}`,
       {
         method: "POST",
         body: JSON.stringify(payload),
@@ -481,10 +472,10 @@ export const Resend_OTP_PhoneNumber_KYC = async (payload: string) => {
   }
 };
 
-export const PostBVN_KYC = async (payload: { bvn: string; userId: string }) => {
+export const PostBVN_KYC = async (payload: { bvn: string }) => {
   try {
     const response = await Bisatsfetch(
-      `/api/v1/user/${payload.userId}${BACKEND_URLS.KYC.POST_BVN}`,
+      `/api/v1/user${BACKEND_URLS.KYC.POST_BVN}`,
       {
         method: "PUT",
         body: JSON.stringify(payload),
@@ -503,7 +494,7 @@ export const PostBVN_KYC = async (payload: { bvn: string; userId: string }) => {
 export const Verify_BVN_KYC = async (payload: TVerifyPhone) => {
   try {
     const response = await Bisatsfetch(
-      `/api/v1/user/${payload.userId}${BACKEND_URLS.KYC.BVN_VERIFICATION}`,
+      `/api/v1/user${BACKEND_URLS.KYC.BVN_VERIFICATION}`,
       {
         method: "PUT",
         body: JSON.stringify({ code: payload.code }),
@@ -526,7 +517,7 @@ export const Post_Proof_of_Wealth_KYC = async (payload: TPOA) => {
 
   try {
     const response = await fetch(
-      `${BACKEND_URLS.BASE_URL}/api/v1/user/${payload.userId}${BACKEND_URLS.KYC.POST_SOURCE_WEALTH}`,
+      `${BACKEND_URLS.BASE_URL}/api/v1/user${BACKEND_URLS.KYC.POST_SOURCE_WEALTH}`,
       {
         method: "PUT",
         headers: {
@@ -554,7 +545,7 @@ export const Post_Proof_of_Profile_KYC = async (payload: TPOA) => {
 
   try {
     const response = await fetch(
-      `${BACKEND_URLS.BASE_URL}/api/v1/user/${payload.userId}${BACKEND_URLS.KYC.POST_PROOF_PROFILE}`,
+      `${BACKEND_URLS.BASE_URL}/api/v1/user${BACKEND_URLS.KYC.POST_PROOF_PROFILE}`,
       {
         method: "PUT",
         headers: {
@@ -582,7 +573,7 @@ export const Become_Merchant_Hanlder = async (payload: TMerchant) => {
 
   try {
     const response = await fetch(
-      `${BACKEND_URLS.BASE_URL}/api/v1/user/${payload.userId}${BACKEND_URLS.KYC.BECOME_MERCHANT}`,
+      `${BACKEND_URLS.BASE_URL}/api/v1/user${BACKEND_URLS.KYC.BECOME_MERCHANT}`,
       {
         method: "POST",
         headers: {
@@ -710,6 +701,7 @@ export const UpdateTwoFactorAuth = async (payload: TUpdate2FAStatus) => {
         body: JSON.stringify({ code: payload.code }),
       }
     );
+
     const data = response;
     return data;
   } catch (error) {
@@ -717,19 +709,27 @@ export const UpdateTwoFactorAuth = async (payload: TUpdate2FAStatus) => {
     return error;
   }
 };
-export const ResetTwoFactorAuth = async () => {
+export const ResetTwoFactorAuth = async ({
+  password,
+}: {
+  password: string;
+}) => {
   try {
     const response = await Bisatsfetch(
       `/api/v1/user${BACKEND_URLS.AUTH.RESET_2FA}`,
       {
         method: "PUT",
+        body: JSON.stringify({ password }),
       }
     );
     const data = response;
+    if (data.status === false) {
+      throw new Error(data.message);
+    }
     return data;
   } catch (error) {
     // throw handleApiError(error);
-    return error;
+    throw error;
   }
 };
 

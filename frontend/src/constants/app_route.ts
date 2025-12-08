@@ -1,12 +1,17 @@
 /** @format */
 
 export const APP_ROUTES = {
-  OTHERS: {
-    LANDINGPAGE: "/",
-    ABOUT: "/about",
-    TNC: "/terms&conditions",
-    PRIVACY: "/privacypolicy",
-  },
+  HOME: "/",
+  ABOUT: "/about",
+  TERMS: "/terms&conditions",
+  POLICY: "/policy",
+  FAQ: "/faqs",
+  DASHBOARD: "/dashboard",
+  NOTIFICATION: "/dashboard/notifications",
+  AD: "/ad",
+  PROFILE: "/profile",
+  RESOURCES: "/resources",
+
   AUTH: {
     LOGIN: "/auth/login",
     SIGNUP: "/auth/signup",
@@ -57,8 +62,4 @@ export const APP_ROUTES = {
     SUPPORT: "/settings/support",
     CORPORATE: "/settings/payment/corporate",
   },
-  DASHBOARD: "/dashboard",
-  NOTIFICATION: "/dashboard/notifications",
-  AD: "/ad",
-  PROFILE: "/profile",
 };

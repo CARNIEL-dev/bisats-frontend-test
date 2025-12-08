@@ -14,24 +14,19 @@ interface Props {
 const LogOutModal: React.FC<Props> = ({ close }) => {
   const queryClient = useQueryClient();
   return (
-    <ModalTemplate
-      onClose={close}
-      isOpen
-      primary={false}
-      className="2xl:w-[600px]"
-    >
+    <ModalTemplate onClose={close} isOpen>
       <div className="flex flex-col gap-4">
         <img
           src={LogOutIcon}
           alt="logout text"
-          className="w-[32px] h-[32px] lg:w-[48px] lg:h-[48px] "
+          className="size-[32px]  lg:size-[50px] "
         />
 
         <p className="font-semibold lg:text-lg">
           Are you sure you want to Sign out of your Bisats account?
         </p>
 
-        <div className="flex items-center w-full mt-4">
+        <div className="flex items-center w-full mt-2">
           <WhiteTransparentButton
             text={"Cancel"}
             loading={false}

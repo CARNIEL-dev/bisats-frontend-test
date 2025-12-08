@@ -1,3 +1,3 @@
-const DEFAULT_LIMIT = 20;
+const DEFAULT_LIMIT = 100;
 
 export { DEFAULT_LIMIT };

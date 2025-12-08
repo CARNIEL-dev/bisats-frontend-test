@@ -62,7 +62,7 @@ const ChangePasswordSchema = Yup.object().shape({
     .matches(numberRegex)
     .matches(specialCharcterRegex)
     .matches(characterLength)
-    .required(),
+    .required("New password is required"),
   confirmPassword: Yup.string()
     .oneOf([Yup.ref("newPassword")], "Passwords must match")
     .required("Confirm password is required"),

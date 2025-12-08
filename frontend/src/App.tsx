@@ -7,6 +7,7 @@ import Routing from "@/routing/Routing";
 import ScrollToTop from "@/routing/scrollToTop";
 // import { requestPermission } from "@/utils/firebaseNotification";
 
+import { ReactLenis } from "lenis/dist/lenis-react";
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { BrowserRouter as Router } from "react-router-dom";
@@ -15,17 +16,6 @@ import "react-toastify/dist/ReactToastify.css";
 
 const App: React.FC = () => {
   const userState: UserState = useSelector((state: any) => state.user);
-
-  // useEffect(() => {
-  //   onMessage(messaging, (payload) => {
-  //     if (payload) {
-  //       Toast.success(
-  //         payload?.notification?.body ?? "",
-  //         payload?.notification?.title ?? ""
-  //       );
-  //     }
-  //   });
-  // }, []);
 
   useEffect(() => {
     if (userState.isAuthenticated) {
@@ -41,6 +31,7 @@ const App: React.FC = () => {
   return (
     <>
       <Router>
+        <ReactLenis root />
         <ScrollToTop>
           <Routing />
         </ScrollToTop>

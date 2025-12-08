@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useSelector } from "react-redux";
 import { Link, NavLink } from "react-router-dom";
 
 import LogOutModal from "@/components/Modals/LogOut";
@@ -10,15 +9,21 @@ import NAV_LINKS from "@/data/navlinks";
 import { useIsMobile } from "@/hooks/use-mobile";
 import usePreventScroll from "@/hooks/use-preventScroll";
 
+import BisatLogo from "@/components/shared/Logo";
 import { cn } from "@/utils";
 import { Menu, X } from "lucide-react";
-import BisatLogo from "@/components/shared/Logo";
+import { useMotionValueEvent, useScroll } from "motion/react";
+import { useSelector } from "react-redux";
 
-const isAuthenticated = false; // Placeholder for authentication state
+// const isAuthenticated = false; // Placeholder for authentication state
 
 const NavBar = () => {
-  // const user: UserState = useSelector((state: any) => state.user);
-  // const isAuthenticated = user.isAuthenticated;
+  const user: UserState = useSelector((state: any) => state.user);
+  const isAuthenticated = user.isAuthenticated;
+  const { scrollYProgress } = useScroll();
+
+  const [showShadow, setShowShadow] = useState(false);
+
   const isMobile = useIsMobile();
 
   const [toggleMenu, setToggleMenu] = useState(false);
@@ -26,13 +31,26 @@ const NavBar = () => {
 
   usePreventScroll(toggleMenu);
 
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    if (latest > 0.01) {
+      setShowShadow(true);
+    } else {
+      setShowShadow(false);
+    }
+  });
+
   const closeMenu = () => {
     setToggleMenu(false);
   };
 
   return (
     <>
-      <div className="bg-white w-full fixed inset-x-0 top-0 z-50 shadow-xs">
+      <div
+        className={cn(
+          "bg-white w-full fixed inset-x-0 top-0 z-50 shadow-xs transition-shadow duration-300 ease-in-out",
+          showShadow && "shadow-md"
+        )}
+      >
         <MaxWidth
           as="header"
           className="flex items-center justify-between py-5 "
@@ -52,7 +70,7 @@ const NavBar = () => {
                 key={index}
                 to={link.href}
                 onClick={isMobile ? closeMenu : undefined}
-                className="font-normal text-sm leading-[24px] text-slate-600 text-center whitespace-nowrap cursor-pointer"
+                className="font-normal text-sm leading-[24px] text-slate-600 text-center whitespace-nowrap cursor-pointer hover:text-primary transition-all duration-300 ease-in-out hover:underline underline-offset-2"
               >
                 {link.title}
               </NavLink>

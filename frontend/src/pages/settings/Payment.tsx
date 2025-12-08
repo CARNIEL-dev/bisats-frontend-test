@@ -6,20 +6,18 @@ import { useSelector } from "react-redux";
 import DeleteWalletAddressModal from "@/components/Modals/DeleteWalletAddressModal";
 import ModalTemplate from "@/components/Modals/ModalTemplate";
 import WithdrawalBankAccount from "@/components/Modals/WithdrawalBankAccount";
+import StatusBadge from "@/components/shared/StatusBadge";
 import { APP_ROUTES } from "@/constants/app_route";
 import KycManager from "@/pages/kyc/KYCManager";
+import { rehydrateUser } from "@/redux/actions/userActions";
 import { GetWallet } from "@/redux/actions/walletActions";
 import { ACTIONS } from "@/utils/transaction_limits";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import StatusBadge from "@/components/shared/StatusBadge";
-import { rehydrateUser } from "@/redux/actions/userActions";
 
 const Payment = () => {
-  const reduxState: RootState = useSelector((state: any) => state);
-
-  const wallet = reduxState.wallet.wallet;
-  const user = reduxState.user;
+  const wallet = useSelector((state: any) => state.wallet?.wallet);
+  const user = useSelector((state: any) => state.user);
 
   const isCorporateRejected =
     user.user?.cooperateAccountVerificationRequest?.status === "rejected";

@@ -76,7 +76,7 @@ const ExpressSwap = () => {
     const FetchAds = async () => {
       setLoading(true);
 
-      const res = await GetExpressAds({ ...adsParam, userId: userId });
+      const res = await GetExpressAds({ ...adsParam });
 
       if (res.length <= 0 || !res) {
         setError("Could not find any express ad at this moment");

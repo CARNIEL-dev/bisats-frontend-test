@@ -33,7 +33,7 @@ const DeleteWithdrawalAccount: React.FC<Props> = ({ close, bank }) => {
       Toast.success(response.message, "Bank Account Deleted");
       close();
     } else {
-      Toast.error(response.error.message, "Failed");
+      Toast.error(response.message, "Failed");
     }
   };
   return (

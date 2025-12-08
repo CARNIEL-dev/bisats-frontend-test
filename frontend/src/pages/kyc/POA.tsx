@@ -49,7 +49,6 @@ const POA = () => {
     }
     setIsLoading(true);
     const response = (await PostPOA_KYC({
-      userId: user?.userId,
       file: file,
     })) as APIResponseType;
 

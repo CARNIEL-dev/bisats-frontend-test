@@ -21,16 +21,16 @@ const Bisatsfetch = async (
 
   let body = options.body;
 
-  if (!isMultipart && body) {
-    try {
-      // Expect body could be JSON-string or object: normalize to object for encryption
-      const parsedBody = typeof body === "string" ? JSON.parse(body) : body;
-      const encryptedBody = encryptDataInfo(parsedBody);
-      body = JSON.stringify({ data: encryptedBody });
-    } catch (err) {
-      console.warn("Body encryption failed, sending original body", err);
-    }
-  }
+  // if (!isMultipart && body) {
+  //   try {
+  //     // Expect body could be JSON-string or object: normalize to object for encryption
+  //     const parsedBody = typeof body === "string" ? JSON.parse(body) : body;
+  //     const encryptedBody = encryptDataInfo(parsedBody);
+  //     body = JSON.stringify({ data: encryptedBody });
+  //   } catch (err) {
+  //     console.warn("Body encryption failed, sending original body", err);
+  //   }
+  // }
 
   const headers = {
     Accept: "application/json",
@@ -77,43 +77,22 @@ const Bisatsfetch = async (
             `${BACKEND_URLS.BASE_URL}${originalRequest.url}`,
             retryConfig
           );
-          const retryDataEncrypted = await retryResponse.json();
+          const retryDataResponse = await retryResponse.json();
 
           // Decrypt retry response
-          const retryData = decryptDataInfo(retryDataEncrypted);
+          // const retryData = decryptDataInfo(retryDataResponse);
 
-          return retryData;
+          return retryDataResponse;
         } catch (err) {
           // Handle refresh token failure
           throw new Error("Failed to refresh access token");
         }
       }
     }
-    // If response is okay, return it
-    if (response.res.ok) {
-      const encryptedData = await response.res.json();
 
-      const decryptedData = decryptDataInfo(encryptedData);
-
-      return decryptedData;
-    } else {
-      const encryptedData = await response.res.json();
-
-      try {
-        const decryptedData = decryptDataInfo(encryptedData);
-
-        return decryptedData;
-      } catch (e) {
-        // If decryption fails, return raw data (possibly error message)
-        return encryptedData;
-      }
-    }
-
-    // If not handled above, throw the error response
-    throw response;
+    const responseData = await response.res.json();
+    return responseData;
   } catch (error) {
-    // General error handling
-    console.error("Request failed:", error);
     throw error;
   }
 };

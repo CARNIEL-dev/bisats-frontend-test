@@ -62,11 +62,11 @@ const SecurityVerification: React.FC<Props> = ({
               func();
               close();
             } else {
-              Toast.error(res.error.message, "Error");
+              Toast.error(res.message, "Error");
             }
           })
           .catch((err) => {
-            Toast.error(err.error.message, "Error");
+            Toast.error(err.message, "Error");
           });
       } else {
         await VerifyTwoFactorAuth({

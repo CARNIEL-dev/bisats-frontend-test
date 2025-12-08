@@ -84,6 +84,8 @@ const decryptDataInfo = (dataInfo: { data: string }) => {
   const decrypt = innerDecrypted.toString(CryptoJS.enc.Utf8);
   const finalEncryptedBody = JSON.parse(decrypt);
 
+  // console.log("Value after decryption:", finalEncryptedBody);
+
   return finalEncryptedBody;
 };
 

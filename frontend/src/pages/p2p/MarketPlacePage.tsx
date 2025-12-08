@@ -30,14 +30,14 @@ const fetchAds = async ({
   const [, adsParam, pagination, userId] = queryKey;
   const res = await GetSearchAds({
     ...adsParam,
-    userId,
     limit: `${pagination.limit}`,
     skip: `${pagination.skip}`,
   });
 
   if (res.statusCode !== 200) {
-    throw new Error("Could not find any express ad at this moment");
+    throw new Error(res.message);
   }
+
   return res.data;
 };
 

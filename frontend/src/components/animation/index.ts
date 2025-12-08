@@ -38,6 +38,17 @@ const container: Variants = {
   },
 };
 
+const slideUpSmallVariant: Variants = {
+  hidden: { y: 15, opacity: 0 },
+  show: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      duration: 0.5,
+      ease: "anticipate",
+    },
+  },
+};
 const slideUpVariant: Variants = {
   hidden: { y: 100, opacity: 0 },
   show: {
@@ -91,7 +102,7 @@ const revealUpVariant: Variants = {
     opacity: 1,
     y: 0,
     scaleY: 1,
-    // transformOrigin: "bottom",
+    transformOrigin: "bottom",
     transition: {
       duration: 0.6,
       ease: "backOut",
@@ -113,4 +124,5 @@ export {
   slideInLeft,
   slideInRight,
   revealUpVariant,
+  slideUpSmallVariant,
 };

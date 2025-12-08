@@ -38,7 +38,7 @@ const DeleteWalletAddressModal: React.FC<Props> = ({ close, wallet }) => {
       Toast.success(response.message, "Wallet Address Deleted");
       close();
     } else {
-      Toast.error(response.error.message, "Failed");
+      Toast.error(response.message, "Failed");
     }
   };
   return (

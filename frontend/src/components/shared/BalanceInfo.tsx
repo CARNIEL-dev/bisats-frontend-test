@@ -34,7 +34,7 @@ const BalanceInfo = ({ className, currency, userBalance, wallet }: Props) => {
         >
           <Info className={"!size-5 "} strokeWidth={1.5} />
         </TooltipTrigger>
-        <TooltipContent>
+        <TooltipContent align="end">
           <p>View your wallet balance</p>
         </TooltipContent>
       </Tooltip>

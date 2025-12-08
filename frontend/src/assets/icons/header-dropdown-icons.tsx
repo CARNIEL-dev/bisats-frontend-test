@@ -9,19 +9,19 @@ const P2PMC = () => (
     <path
       d="M14.6667 5.66536C14.6667 8.0587 12.7267 9.9987 10.3333 9.9987C10.22 9.9987 10.1 9.99204 9.98667 9.98537C9.82001 7.87204 8.12666 6.17869 6.01333 6.01202C6.00666 5.89869 6 5.7787 6 5.66536C6 3.27203 7.94 1.33203 10.3333 1.33203C12.7267 1.33203 14.6667 3.27203 14.6667 5.66536Z"
       stroke="currentColor"
-      stroke-linecap="round"
+      strokeLinecap="round"
       stroke-linejoin="round"
     />
     <path
       d="M9.9987 10.3333C9.9987 12.7267 8.0587 14.6667 5.66536 14.6667C3.27203 14.6667 1.33203 12.7267 1.33203 10.3333C1.33203 7.94 3.27203 6 5.66536 6C5.7787 6 5.89869 6.00666 6.01202 6.01333C8.12536 6.17999 9.81871 7.87334 9.98537 9.98667C9.99204 10.1 9.9987 10.22 9.9987 10.3333Z"
       stroke="currentColor"
-      stroke-linecap="round"
+      strokeLinecap="round"
       stroke-linejoin="round"
     />
     <path
       d="M5.08 9.74797L5.66667 8.66797L6.25334 9.74797L7.33333 10.3346L6.25334 10.9213L5.66667 12.0013L5.08 10.9213L4 10.3346L5.08 9.74797Z"
       stroke="currentColor"
-      stroke-linecap="round"
+      strokeLinecap="round"
       stroke-linejoin="round"
     />
   </svg>
@@ -38,19 +38,19 @@ const SignOut = () => (
     <path
       d="M5.93359 5.04016C6.14026 2.64016 7.37359 1.66016 10.0736 1.66016H10.1603C13.1403 1.66016 14.3336 2.85349 14.3336 5.83349V10.1802C14.3336 13.1602 13.1403 14.3535 10.1603 14.3535H10.0736C7.39359 14.3535 6.16026 13.3868 5.94026 11.0268"
       stroke="#EF4444"
-      stroke-linecap="round"
+      strokeLinecap="round"
       stroke-linejoin="round"
     />
     <path
       d="M10.0007 8H2.41406"
       stroke="#EF4444"
-      stroke-linecap="round"
+      strokeLinecap="round"
       stroke-linejoin="round"
     />
     <path
       d="M3.9013 5.76562L1.66797 7.99896L3.9013 10.2323"
       stroke="#EF4444"
-      stroke-linecap="round"
+      strokeLinecap="round"
       stroke-linejoin="round"
     />
   </svg>

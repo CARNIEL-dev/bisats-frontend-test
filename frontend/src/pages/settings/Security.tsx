@@ -1,5 +1,6 @@
 import { WhiteTransparentButton } from "@/components/buttons/Buttons";
 import TwoFactorAuthModal from "@/components/Modals/2FAModal";
+import Reset2FAModal from "@/components/Modals/Reset2FAModal";
 import ResetPasswordModal from "@/components/Modals/ResetPassword";
 import SetPinModal from "@/components/Modals/SetPinModal";
 import Toast from "@/components/Toast";
@@ -13,11 +14,11 @@ const Security = () => {
   const user = userState.user;
   const [openResetPasswordModal, setOpenResetPasswordModal] = useState(false);
   const [pinModal, setPinModal] = useState(false);
-  const [resetLoading, setResetLoading] = useState(false);
 
   const [show2FAModal, setShow2FAModal] = useState({
     enable: false,
     disable: false,
+    reset: false,
   });
 
   return (
@@ -69,7 +70,9 @@ const Security = () => {
               loading={false}
               size="sm"
               className="w-[137px]"
-              onClick={() => setShow2FAModal({ disable: false, enable: true })}
+              onClick={() =>
+                setShow2FAModal({ disable: false, enable: true, reset: false })
+              }
             />
           ) : (
             <div className="flex gap-1">
@@ -79,31 +82,24 @@ const Security = () => {
                 size="sm"
                 className="w-[100px]"
                 onClick={() =>
-                  setShow2FAModal({ disable: true, enable: false })
+                  setShow2FAModal({
+                    disable: true,
+                    enable: false,
+                    reset: false,
+                  })
                 }
               />
               <WhiteTransparentButton
                 text={"Reset"}
-                loading={resetLoading}
+                loading={false}
                 size="sm"
-                className="w-[100px]"
-                onClick={async () => {
-                  setResetLoading(true);
-                  await ResetTwoFactorAuth()
-                    .then(() => {
-                      rehydrateUser({
-                        userId: user?.userId,
-                        token: user?.token,
-                      });
-                      Toast.success("2FA Reset Successfully", "2FA Reset");
-                    })
-                    .catch((error) => {
-                      console.error("Error during 2FA reset:", error);
-                      Toast.error("An unexpected error occurred", "2FA Reset");
-                    })
-                    .finally(() => {
-                      setResetLoading(false);
-                    });
+                className="w-[100px] hidden"
+                onClick={() => {
+                  setShow2FAModal({
+                    disable: false,
+                    enable: false,
+                    reset: true,
+                  });
                 }}
               />
             </div>
@@ -147,13 +143,24 @@ const Security = () => {
       )}
       {show2FAModal.enable && (
         <TwoFactorAuthModal
-          close={() => setShow2FAModal({ disable: false, enable: false })}
+          close={() =>
+            setShow2FAModal({ disable: false, enable: false, reset: false })
+          }
         />
       )}
       {show2FAModal.disable && (
         <TwoFactorAuthModal
-          close={() => setShow2FAModal({ disable: false, enable: false })}
+          close={() =>
+            setShow2FAModal({ disable: false, enable: false, reset: false })
+          }
           enable={false}
+        />
+      )}
+      {show2FAModal.reset && (
+        <Reset2FAModal
+          close={() =>
+            setShow2FAModal({ disable: false, enable: false, reset: false })
+          }
         />
       )}
     </div>

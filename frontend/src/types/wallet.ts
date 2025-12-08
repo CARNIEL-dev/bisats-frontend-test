@@ -94,7 +94,6 @@ export type TDepositBreakDowns = {
 };
 
 export type TCreateAdsRequest = {
-  userId: string;
   asset: string;
   type: string;
   amount: number;
@@ -130,7 +129,6 @@ export type T2FARequest = {
 };
 
 export type TAddSearchRequest = {
-  userId: string;
   asset: string;
   type: string;
   amount: string;

@@ -4,16 +4,20 @@ import { FacebookIcon, InstagramIcon, TwitterIcon } from "lucide-react";
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 
+import BisatLogo from "@/components/shared/Logo";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/input";
-import BisatLogo from "@/components/shared/Logo";
-import MaxWidth from "./shared/MaxWith";
 import { APP_ROUTES } from "@/constants/app_route";
+import MaxWidth from "@/components/shared/MaxWith";
 
-const ICONS = {
-  facebook: FacebookIcon,
-  "X (Twitter)": TwitterIcon,
-  instagram: InstagramIcon,
+const getIcon = (name: string) => {
+  const ICONS = {
+    Facebook: FacebookIcon,
+    "X (Twitter)": TwitterIcon,
+    Instagram: InstagramIcon,
+  };
+
+  return ICONS[name as keyof typeof ICONS];
 };
 
 export const Footer = ({
@@ -85,22 +89,21 @@ export const Footer = ({
                   platform with our escrow system.
                 </p>
                 <div className="flex gap-4">
-                  <div className="w-8 h-8 rounded-[20px] bg-neutralswhite bg-opacity-20 flex items-center justify-center">
-                    <FacebookIcon className="w-6 h-6 text-white" />
-                  </div>
-                  <div className="w-8 h-8 rounded-[20px]  bg-opacity-20 flex items-center justify-center">
-                    <TwitterIcon className="w-6 h-6 text-white" />
-                  </div>
-                  {/* {footerData.connect.links.map((link, index) => (
-                    <a
-                      key={index}
-                      href={link.url}
-                      className=" text-[#ADB5C3] text-[16px] leading-7"
-                      target="_blank"
-                    >
-                    {  <ICONS[link.name] className="w-8 h-8 text-white" />}
-                    </a>
-                  ))} */}
+                  {footerData.connect.links.map((link, index) => {
+                    const Icon = getIcon(link.name);
+                    return (
+                      <a
+                        key={index}
+                        href={link.url}
+                        className=" text-[#ADB5C3] text-[16px] leading-7"
+                        target="_blank"
+                      >
+                        {Icon && (
+                          <Icon className="size-6 text-white hover:text-primary duration-300 ease-in-out transition-colors" />
+                        )}
+                      </a>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -115,7 +118,7 @@ export const Footer = ({
                     <NavLink
                       key={index}
                       to={link.url}
-                      className="font-desktop-body-3 text-[#ADB5C3] text-[16px] leading-7"
+                      className="text-[#ADB5C3] text-[16px] leading-7 hover:underline hover:text-primary underline-offset-2 transition-all duration-300 ease-in-out"
                     >
                       {link.name}
                     </NavLink>
@@ -131,7 +134,7 @@ export const Footer = ({
                     <a
                       key={index}
                       href={link.url}
-                      className="font-desktop-body-3 text-[#ADB5C3] text-[16px] leading-7"
+                      className="text-[#ADB5C3] text-[16px] leading-7 hover:underline hover:text-primary underline-offset-2 transition-all duration-300 ease-in-out"
                       target="_blank"
                     >
                       {link.name}
@@ -148,7 +151,7 @@ export const Footer = ({
                     <a
                       key={index}
                       href={link.url}
-                      className="font-desktop-body-3 text-[#ADB5C3] text-[16px] leading-7"
+                      className="text-[#ADB5C3] text-[16px] leading-7 hover:underline hover:text-primary underline-offset-2 transition-all duration-300 ease-in-out"
                     >
                       {link.name}
                     </a>

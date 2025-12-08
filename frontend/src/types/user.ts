@@ -20,7 +20,6 @@ export type TSignUp = {
   confirmPassword: string;
 };
 export type TPersonalInfoKYC = {
-  userId: string;
   firstName: string;
   lastName: string;
   middleName: string;
@@ -29,7 +28,6 @@ export type TPersonalInfoKYC = {
 };
 
 export type TPOA = {
-  userId: string;
   file: File;
 };
 
@@ -40,7 +38,6 @@ export type TIdentity = {
   selfie: File | string;
 };
 export type TMerchant = {
-  userId: string;
   utilityBill: File | string;
   photoIdentity: File | string;
 };
@@ -52,13 +49,11 @@ export type TSuperMerchant = {
 };
 
 export type TRequestPhone = {
-  userId: string;
   phoneNumber: string;
   countryCode?: string;
 };
 
 export type TVerifyPhone = {
-  userId: string;
   code: string;
 };
 

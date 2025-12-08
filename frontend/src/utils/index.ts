@@ -1,7 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import Resizer from "react-image-file-resizer";
-import { BACKEND_URLS } from "./backendUrls";
+import { BACKEND_URLS } from "@/utils/backendUrls";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));

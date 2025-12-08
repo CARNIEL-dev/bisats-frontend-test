@@ -1,20 +1,22 @@
+import { APP_ROUTES } from "@/constants/app_route";
+
 const NAV_LINKS = [
-  { title: "About us", href: "/about" },
-  { title: "Resources", href: "/resources" },
-  { title: "Contact", href: "/contact" },
+  { title: "About us", href: APP_ROUTES.ABOUT },
+  { title: "Resources", href: APP_ROUTES.RESOURCES },
+  // { title: "Contact", href: "/contact" },
 ];
 
 const footerData = {
   site: {
     title: "Pages",
     links: [
-      { name: "Home", url: "#" },
-      { name: "Terms and Conditions", url: "/terms&condition" },
+      { name: "Home", url: APP_ROUTES.HOME },
+      { name: "Terms and Conditions", url: APP_ROUTES.TERMS },
 
-      { name: "T&C for Merchants", url: "/terms&condition" },
-      { name: "Policy", url: "/policy" },
-      { name: "Resources", url: "/resources" },
-      { name: "FAQs", url: "/faqs" },
+      { name: "T&C for Merchants", url: APP_ROUTES.TERMS },
+      { name: "Policy", url: APP_ROUTES.POLICY },
+      { name: "Resources", url: APP_ROUTES.RESOURCES },
+      { name: "FAQs", url: APP_ROUTES.FAQ },
     ],
   },
   connect: {
@@ -44,11 +46,11 @@ const LoggedInLinks = [
   },
   {
     title: "FAQs",
-    link: "/faqs",
+    link: APP_ROUTES.FAQ,
   },
   {
     title: "Terms of Service",
-    link: "terms&condition",
+    link: APP_ROUTES.TERMS,
   },
 ];
 

@@ -41,7 +41,7 @@ const Verify2FA = () => {
         }
         navigate(APP_ROUTES.DASHBOARD);
       } else {
-        Toast.error(response.error.message, "Verification failed");
+        Toast.error(response.message, "Verification failed");
       }
     },
   });

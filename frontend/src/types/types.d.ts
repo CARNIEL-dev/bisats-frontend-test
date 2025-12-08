@@ -123,7 +123,6 @@ interface Order {
 }
 
 interface TCorporateInfo {
-  userId: string;
   cacApplicationDocument: File | null;
   mermartDocument?: File | null;
   cacDocument: File | null;
@@ -352,14 +351,22 @@ type TOrder = {
 };
 
 type Banks = {
-  bank_code: string;
-  bank_logo: string;
-  bank_name: string;
-  bank_type: string;
-  country_code: string;
-  currency_code: string;
-  ussd_code: string | null;
-  ussd_transfer_code: string | null;
+  active: boolean;
+  available_for_direct_debit: boolean;
+  code: string;
+  country: "Nigeria" | string; // if only Nigerian banks
+  createdAt: string;
+  currency: "NGN" | string; // Nigerian Naira
+  gateway: null;
+  id: number;
+  is_deleted: boolean;
+  longcode: string;
+  name: string;
+  pay_with_bank: boolean;
+  slug: string;
+  supports_transfer: boolean;
+  type: "nuban";
+  updatedAt: string;
 };
 
 type TBank = {

@@ -9,19 +9,25 @@ import { transferSchema } from "@/formSchemas";
 import KycManager from "@/pages/kyc/KYCManager";
 import Head from "@/pages/wallet/Head";
 import { GetUserInfo } from "@/redux/actions/userActions";
-import { transferToken } from "@/redux/actions/walletActions";
+import { GetWallet, transferToken } from "@/redux/actions/walletActions";
 import { cn, formatter } from "@/utils";
 import { ACTIONS } from "@/utils/transaction_limits";
 import { FormikConfig, useFormik } from "formik";
 import { useCallback, useMemo, useState } from "react";
 import { ThreeDot } from "react-loading-indicators";
 import { useSelector } from "react-redux";
-import { Link, useSearchParams } from "react-router-dom";
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import verifyBadge from "@/assets/icons/verification-badge.svg";
 import envelope from "@/assets/icons/envelope.svg";
 
 import { APP_ROUTES } from "@/constants/app_route";
 import { buttonVariants } from "@/components/ui/Button";
+import { useQueryClient } from "@tanstack/react-query";
 
 type TransferFormValues = {
   recipient: string;
@@ -31,7 +37,10 @@ type TransferFormValues = {
 };
 
 const TransferPage = () => {
-  const [searchParam, setSearchParam] = useSearchParams();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const stateData = (location.state as any)?.data;
+  const [searchParam] = useSearchParams();
   const [isTransferring, setIsTransferring] = useState(false);
 
   const [secureInfo, setSecureInfo] = useState({
@@ -50,6 +59,8 @@ const TransferPage = () => {
   const userState: UserState = useSelector((state: any) => state.user);
   const userData = userState.user;
   const walletData = walletState.wallet;
+
+  const queryClient = useQueryClient();
 
   const isTransferSuccess = useMemo(() => {
     return searchParam.get("success") === "true";
@@ -137,12 +148,29 @@ const TransferPage = () => {
       const res = await transferToken(combinedValues);
 
       console.log("Responses from sending", res);
-      if (res.status === 200) {
-        Toast.success(res.message, "Success");
-        setSearchParam({ success: "true" });
-        formik.resetForm();
+      if (res.statusCode === 200) {
+        const dataInfo = { ...res.data, recipient: userInfo?.data || "" };
+        await Promise.all([
+          queryClient.refetchQueries({
+            queryKey: ["userWalletHistory"],
+            exact: false,
+          }),
+          queryClient.refetchQueries({
+            queryKey: ["userNotifications"],
+            exact: false,
+          }),
+          GetWallet(),
+        ]).then(() => {
+          Toast.success(res.message, "Success");
+          navigate(`${APP_ROUTES.WALLET.TRANSFER}?success=true`, {
+            replace: true,
+            state: { data: dataInfo },
+          });
+
+          formik.resetForm();
+        });
       } else {
-        Toast.error(res.error.message, "Error");
+        Toast.error(res.message, "Error");
       }
       setIsTransferring(false);
     },
@@ -230,7 +258,14 @@ const TransferPage = () => {
               Transfer Completed
             </h1>
             <p className="text-center text-gray-600 text-sm ">
-              Your transfer was successful
+              You have successfully sent{" "}
+              {formatter({
+                decimal:
+                  stateData?.asset === "xNGN" || stateData?.asset === "USDT"
+                    ? 2
+                    : 6,
+              }).format(Number(stateData?.amountPaidOut))}{" "}
+              {stateData?.asset} to {stateData?.recipient}
             </p>
             <Link
               to={APP_ROUTES.WALLET.HOME}

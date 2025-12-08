@@ -13,7 +13,11 @@ type Props = {
 // HDR: Code Entry
 const CodeEntry = ({ setCode, onClick, loading, code, enable }: Props) => {
   return (
-    <div className="p-6 max-w-md mx-auto  text-center space-y-4">
+    <form
+      onSubmit={onClick}
+      method="POST"
+      className="p-6 max-w-md mx-auto  text-center space-y-4"
+    >
       <h2 className="text-xl font-semibold">
         {!enable ? "Disable" : "Enter"} code
       </h2>
@@ -45,7 +49,7 @@ const CodeEntry = ({ setCode, onClick, loading, code, enable }: Props) => {
           disabled={loading}
         />
       </div>
-    </div>
+    </form>
   );
 };
 

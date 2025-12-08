@@ -78,7 +78,7 @@ export const ConfirmDeposit = async (payload: {
 
   try {
     const response = await Bisatsfetch(
-      `/api/v1/user/${payload.userId}/payment/${payload.paymentId}${BACKEND_URLS.WALLET.CONFIRM_TOPUP}`,
+      `/api/v1/user/payment/${payload.paymentId}${BACKEND_URLS.WALLET.CONFIRM_TOPUP}`,
       {
         method: "POST",
         headers: {
@@ -215,10 +215,8 @@ export const GetBankList = async () => {
     );
     const data = response.data;
 
-    // console.log("Banks list", response);
-
     if (response.status) {
-      return data;
+      return data.data;
     } else {
       throw new Error(data.message);
     }
@@ -380,6 +378,25 @@ export const Withdraw_Crypto = async (payload: TCryptoWithdrawalRequest) => {
     return error;
   }
 };
+export const Complete_Withdraw_Crypto = async (
+  payload: WithdrawalCompleteType
+) => {
+  try {
+    const response = await Bisatsfetch(
+      `/api/v1/user${BACKEND_URLS.WALLET.WITHDRAW_CRYPTO_COMPLETE}`,
+      {
+        method: "POST",
+        body: JSON.stringify(payload),
+      }
+    );
+    const data = response;
+
+    return data;
+  } catch (error) {
+    // throw handleApiError(error);
+    return error;
+  }
+};
 
 export const TwoFactorAuth = async (payload: T2FARequest) => {
   try {
@@ -401,7 +418,7 @@ export const TwoFactorAuth = async (payload: T2FARequest) => {
 export const CreateAds = async (payload: TCreateAdsRequest) => {
   try {
     const response = await Bisatsfetch(
-      `/api/v1/user/${payload.userId}${BACKEND_URLS.P2P.ADS.CREATE}`,
+      `/api/v1/user${BACKEND_URLS.P2P.ADS.CREATE}`,
       {
         method: "POST",
         body: JSON.stringify(payload),
@@ -421,9 +438,9 @@ export const CreateAds = async (payload: TCreateAdsRequest) => {
 export const GetExpressAds = async (payload: TAddSearchRequest) => {
   try {
     const response = await Bisatsfetch(
-      `/api/v1/user/${payload.userId}${
-        BACKEND_URLS?.P2P.ADS.EXPRESS_ADS
-      }?asset=${payload.asset}&amount=${payload.amount}&type=${
+      `/api/v1/user${BACKEND_URLS?.P2P.ADS.EXPRESS_ADS}?asset=${
+        payload.asset
+      }&amount=${payload.amount}&type=${
         payload.type === "buy" ? "sell" : "buy"
       }&limit=1&skip=0`,
       {
@@ -480,11 +497,9 @@ const GetAdDetails = async (payload: { userId: string; adId: string }) => {
 export const GetUserAd = async (payload: TAddSearchRequest) => {
   try {
     const response = await Bisatsfetch(
-      `/api/v1/user/${payload.userId}${
-        BACKEND_URLS?.P2P.ADS.SEARCH_ADS
-      }?asset=${payload.asset}&type=${
-        payload.type === "buy" ? "sell" : "buy"
-      }&limit=10&skip=0`,
+      `/api/v1/user${BACKEND_URLS?.P2P.ADS.SEARCH_ADS}?asset=${
+        payload.asset
+      }&type=${payload.type === "buy" ? "sell" : "buy"}&limit=10&skip=0`,
       {
         method: "GET",
       }
@@ -610,7 +625,7 @@ const updateAdStatus = async ({
     });
 
     if (!response.success) {
-      const message = response.error.message || "Failed to update ad status";
+      const message = response.message || "Failed to update ad status";
       throw new Error(message);
     }
     return response.data;

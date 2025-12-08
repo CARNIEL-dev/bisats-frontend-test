@@ -65,34 +65,31 @@ const TwoFactorAuthModal: React.FC<Props> = ({
     }
     setLoading(true);
 
-    try {
-      const verificationResponse = await UpdateTwoFactorAuth({
-        code,
-        enable: enable,
-      });
-      if (!verificationResponse?.success) {
-        Toast.error(
-          verificationResponse.error.message,
-          "2FA Verification failed"
-        );
-      } else {
-        Toast.success(
-          verificationResponse.message,
-          enable ? "2FA Enabled" : "2FA Disabled"
-        );
-        rehydrateUser({
-          userId: user?.userId,
-          token: user?.token,
-        });
-        close();
-      }
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
+    const verificationResponse = await UpdateTwoFactorAuth({
+      code,
+      enable: enable,
+    });
 
-      console.error("Error during 2FA verification:", error);
-      Toast.error("An unexpected error occurred", "2FA Error");
+    if (
+      typeof verificationResponse.status === "boolean" &&
+      verificationResponse.status
+    ) {
+      Toast.success(
+        verificationResponse.message,
+        enable ? "2FA Enabled" : "2FA Disabled"
+      );
+      rehydrateUser({
+        userId: user?.userId,
+        token: user?.token,
+      });
+      close();
+    } else {
+      Toast.error(
+        verificationResponse?.error?.message,
+        "2FA Verification failed"
+      );
     }
+    setLoading(false);
   };
 
   const formatKey = () => {

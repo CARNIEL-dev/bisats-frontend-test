@@ -60,9 +60,9 @@ const WithdrawalBankAccount: React.FC<Props> = ({
   const banksList = useMemo(() => {
     if (!banks) return [];
 
-    return banks.map((bank: Banks) => ({
-      label: bank?.bank_name,
-      value: bank?.bank_name,
+    return banks?.map((bank: Banks) => ({
+      label: bank?.name,
+      value: bank?.name,
     }));
   }, [banks]);
 
@@ -154,10 +154,10 @@ const WithdrawalBankAccount: React.FC<Props> = ({
   };
 
   const handleSelectBank = (e: string) => {
-    const selected = banks?.find((bank) => bank?.bank_name === e) ?? null;
+    const selected = banks?.find((bank) => bank?.name === e) ?? null;
     const value = {
-      bankCode: selected?.bank_code ?? "",
-      bankName: selected?.bank_name ?? "",
+      bankCode: selected?.code ?? "",
+      bankName: selected?.name ?? "",
     };
     formik.setFieldValue("bankCode", value.bankCode);
     formik.setFieldValue("bankName", value.bankName);

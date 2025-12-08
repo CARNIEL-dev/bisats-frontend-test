@@ -53,6 +53,7 @@ import NotFound from "@/routing/NotFound";
 import { Route, Routes } from "react-router-dom";
 import SwapLayout from "@/layouts/SwapLayout";
 import TransferPage from "@/pages/wallet/transfer";
+import ResourcesPage from "@/pages/landing-page/src/screens/ResourcesPage";
 
 const Routing = () => {
   return (
@@ -177,11 +178,12 @@ const Routing = () => {
         {/* SUB: MAIN PAGES */}
         <Route element={<Layout />}>
           <Route path="*" element={<NotFound />} />
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/terms&condition" element={<TermsAndCondition />} />
-          <Route path="/policy" element={<Policy />} />
-          <Route path="/faqs" element={<FAQs />} />
+          <Route path={APP_ROUTES.HOME} element={<LandingPage />} />
+          <Route path={APP_ROUTES.ABOUT} element={<About />} />
+          <Route path={APP_ROUTES.TERMS} element={<TermsAndCondition />} />
+          <Route path={APP_ROUTES.POLICY} element={<Policy />} />
+          <Route path={APP_ROUTES.FAQ} element={<FAQs />} />
+          <Route path={APP_ROUTES.RESOURCES} element={<ResourcesPage />} />
         </Route>
       </Routes>
     </>

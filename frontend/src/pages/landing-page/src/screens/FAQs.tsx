@@ -1,238 +1,126 @@
-import React, { useState } from "react";
-import { HeroSectionAbout } from "./Bisats/sections/HeroSectionByAnima";
-import NavBar from "../../../../components/NavBar";
-import { parseText, renderParsedText } from "../../../../utils/textParser";
+import { slideUpSmallVariant } from "@/components/animation";
+import NavBar from "@/components/NavBar";
+import MaxWidth from "@/components/shared/MaxWith";
+import { cn } from "@/utils";
+import { faqData } from "@/utils/data";
+import { parseText, renderParsedText } from "@/utils/textParser";
+import { motion } from "motion/react";
+import { useEffect, useRef, useState } from "react";
+import { HeroSectionAbout } from "@/pages/landing-page/src/screens/Bisats/sections/HeroSectionByAnima";
+
+const renderAnswer = (answer: string, isMobile: boolean = false) => {
+  const parsedContent = parseText(answer, {
+    detectHeadings: true,
+    detectCodeBlocks: true,
+    detectQuotes: true,
+    detectCommaLists: true,
+    minCommaListItems: 2,
+  });
+
+  return renderParsedText(parsedContent, "", isMobile);
+};
 
 const FAQs = (): JSX.Element => {
-	const [activeQuestion, setActiveQuestion] = useState<number>(0);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [activeQuestion, setActiveQuestion] = useState<number>(0);
 
-	const renderAnswer = (answer: string, isMobile: boolean = false) => {
-		const parsedContent = parseText(answer, {
-			detectHeadings: true,
-			detectCodeBlocks: true,
-			detectQuotes: true,
-			detectCommaLists: true,
-			minCommaListItems: 2,
-		});
+  const handleQuestionClick = (index: number) => {
+    setActiveQuestion(index);
+  };
 
-		return renderParsedText(parsedContent, "", isMobile);
-	};
+  useEffect(() => {
+    const contentContainer = contentRef.current;
+    if (contentContainer) {
+      contentContainer.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+      });
+    }
+  }, [activeQuestion]);
 
-	const faqData = [
-		{
-			id: 1,
-			question: "How can I create an account?",
-			answer: `Account Creation Process
+  return (
+    <div>
+      <div className="bg-[#0A0E12]">
+        <NavBar />
+        <HeroSectionAbout
+          title="FAQs"
+          desc="Got Questions? We've Got Answers"
+          image="/landingpage/FAQs-hero-image.png"
+        />
+      </div>
+      <div
+        ref={contentRef}
+        className="w-full py-[64px] lg:py-[80px] px-[20px] bg-white lg:bg-[#F7F7F7]"
+      >
+        <MaxWidth className="max-w-[65rem] hidden lg:grid grid-cols-2 items-start gap-[38px] ">
+          <div className="space-y-3 bg-white px-6 py-8 rounded-[12px] sticky top-[15vh]">
+            {faqData.map((faq, index) => (
+              <button
+                key={faq.id}
+                onClick={() => handleQuestionClick(index)}
+                className={cn(
+                  "w-full max-w-[446px] rounded-md px-4 py-4 text-left transition-all duration-300",
+                  activeQuestion === index
+                    ? "bg-primary text-[#0A0E12] font-semibold hover:bg-primary/80"
+                    : "text-[#515B6E] font-normal bg-gray-100 hover:bg-gray-200"
+                )}
+              >
+                {faq.question}
+              </button>
+            ))}
+          </div>
 
-Click "Sign Up" or "Create Account" and follow these steps:
+          <motion.div
+            variants={slideUpSmallVariant}
+            initial="hidden"
+            animate="show"
+            className="p-[8px]"
+            key={activeQuestion}
+          >
+            <h3 className="text-3xl font-semibold text-[#2B313B] mb-[8px]">
+              {faqData[activeQuestion].question}
+            </h3>
+            <div className="text-[#606C82] font-normal  leading-relaxed">
+              {renderAnswer(faqData[activeQuestion].answer, false)}
+            </div>
+          </motion.div>
+        </MaxWidth>
 
-Required Information:
-• Full name
-• Email address or phone number
-• Password (use a strong, unique password)
+        {/* Mobile Layout */}
+        <div className="lg:hidden space-y-[24px]">
+          {faqData.map((faq, index) => (
+            <div key={faq.id} className="space-y-[24px] w-full">
+              <button
+                onClick={() =>
+                  handleQuestionClick(activeQuestion === index ? -1 : index)
+                }
+                className={`w-full text-left rounded-[8px] p-[12px] transition-all duration-200 ${
+                  activeQuestion === index
+                    ? "bg-[#F5BB00] text-[#0A0E12] font-semibold text-[18px]"
+                    : "bg-[#F9F9FB] text-[#515B6E] font-normal text-[16px]"
+                }`}
+              >
+                {faq.question}
+              </button>
 
-Verification Process:
-• You'll receive a verification code via SMS or email
-• Enter this code to confirm your identity
-
-Simply contact our support team to initiate a return, and we'll guide you through the entire process.`,
-		},
-		{
-			id: 2,
-			question: "What is KYC, and why is it required?",
-			answer: `Know Your Customer (KYC) is a verification process required by financial regulations.
-
-Why KYC is Important:
-1. Compliance with international regulations
-2. Prevention of money laundering
-3. Protection against fraud
-4. Enhanced account security
-
-Required Documents:
-Government-issued ID, proof of address, selfie verification
-
-The process typically takes 24-48 hours to complete.`,
-		},
-		{
-			id: 3,
-			question: "How can I deposit or withdraw crypto?",
-			answer: `Deposit Process:
-1. Navigate to your wallet
-2. Select the cryptocurrency
-3. Copy your deposit address
-4. Send funds from your external wallet
-
-Withdrawal Process:
-• Enter recipient address
-• Specify amount
-• Confirm transaction
-• Wait for network confirmation
-
-Important: Always double-check addresses before sending crypto. Transactions are irreversible.
-
-Supported cryptocurrencies: Bitcoin, Ethereum, USDT, BNB, and 50+ others`,
-		},
-		{
-			id: 4,
-			question: "How do I deposit and withdraw in-app tokens?",
-			answer: `In-app tokens can be managed through the following methods:
-
-Deposit Options:
-• Bank transfer (ACH, wire)
-• Credit/debit card
-• P2P trading
-• Crypto conversion
-
-Withdrawal Methods:
-Bank account, PayPal, Skrill, local payment methods
-
-Processing times: Deposits are instant, withdrawals take 1-3 business days
-
-Fees:
-Deposits: Free for bank transfers, 2.5% for cards
-Withdrawals: $2.50 flat fee for bank transfers`,
-		},
-		{
-			id: 5,
-			question: "How do I secure my account?",
-			answer: `Security Best Practices
-
-Two-Factor Authentication (2FA):
-1. Download an authenticator app
-2. Scan the QR code in your security settings
-3. Enter the verification code
-4. Save your backup codes
-
-Additional Security Measures:
-• Use a unique, strong password
-• Enable email notifications for logins
-• Set up withdrawal whitelisting
-• Regular security checkups
-
-Never share your credentials or 2FA codes with anyone.
-
-Biometric options: Fingerprint, Face ID (mobile app only)`,
-		},
-		{
-			id: 6,
-			question: "How do I trade my crypto on Bisat's P2P?",
-			answer: `P2P Trading Guide
-
-Creating a Trade Ad:
-1. Go to P2P trading section
-2. Click "Create Ad"
-3. Set your price and payment methods
-4. Add trading terms and conditions
-5. Publish your ad
-
-Making a Trade:
-• Browse available offers
-• Select preferred payment method
-• Initiate trade with seller/buyer
-• Follow escrow process
-• Confirm payment completion
-
-Supported payment methods: Bank transfer, PayPal, Wise, cash, mobile money
-
-Safety Tips:
-Trade only with verified users, use platform's escrow service, never share personal banking details outside the platform`,
-		},
-		{
-			id: 7,
-			question: "How to set up crypto ads on Bisats",
-			answer: `Ad Creation Steps:
-
-1. Choose Ad Type: Buy or Sell
-2. Select Cryptocurrency: Bitcoin, Ethereum, USDT, etc.
-3. Set Price: Fixed price or percentage margin
-4. Payment Methods: Select preferred options
-5. Trading Limits: Minimum and maximum amounts
-6. Terms & Conditions: Add specific requirements
-
-Ad Management:
-• Monitor ad performance
-• Update pricing dynamically
-• Pause/resume ads as needed
-• Respond to trade requests promptly
-
-Pro tip: Competitive pricing and fast response times lead to higher trading volumes.
-
-Example pricing formula:
-Market Price + (2-5% margin) = Your selling price
-Market Price - (1-3% margin) = Your buying price`,
-		},
-	];
-
-	const handleQuestionClick = (index: number) => {
-		setActiveQuestion(index);
-	};
-
-	return (
-		<div>
-			<div className="bg-[#0A0E12]">
-				<NavBar />
-				<HeroSectionAbout
-					title="FAQs"
-					desc="Got Questions? We've Got Answers"
-					image="/landingpage/FAQs-hero-image.png"
-				/>
-			</div>
-			<div className="w-full py-[64px] lg:py-[80px] px-[20px] bg-white lg:bg-[#F7F7F7]">
-				<div className="max-w-[835px] w-full hidden lg:flex gap-[38px] mx-auto">
-					<div className="w-1/2 space-y-[16px] bg-white p-[16px] rounded-[12px]">
-						{faqData.map((faq, index) => (
-							<button
-								key={faq.id}
-								onClick={() => handleQuestionClick(index)}
-								className={`w-full max-w-[446px] text-[18px] rounded-[8px] p-[12px] text-left transition-all duration-200 ${
-									activeQuestion === index
-										? "bg-[#F5BB00] text-[#0A0E12] font-semibold"
-										: "text-[#515B6E] font-normal bg-[#F9F9FB]"
-								}`}
-							>
-								{faq.question}
-							</button>
-						))}
-					</div>
-
-					<div className="w-1/2 p-[8px]">
-						<h3 className="text-[34px] font-medium text-[#2B313B] mb-[8px]">
-							{faqData[activeQuestion].question}
-						</h3>
-						<div className="text-[#606C82] font-normal text-[16px] leading-relaxed">
-							{renderAnswer(faqData[activeQuestion].answer, false)}
-						</div>
-					</div>
-				</div>
-
-				{/* Mobile Layout */}
-				<div className="lg:hidden space-y-[24px]">
-					{faqData.map((faq, index) => (
-						<div key={faq.id} className="space-y-[24px] w-full">
-							<button
-								onClick={() =>
-									handleQuestionClick(activeQuestion === index ? -1 : index)
-								}
-								className={`w-full text-left rounded-[8px] p-[12px] transition-all duration-200 ${
-									activeQuestion === index
-										? "bg-[#F5BB00] text-[#0A0E12] font-semibold text-[18px]"
-										: "bg-[#F9F9FB] text-[#515B6E] font-normal text-[16px]"
-								}`}
-							>
-								{faq.question}
-							</button>
-
-							{activeQuestion === index && (
-								<div className="text-[#606C82] font-normal leading-relaxed text-[16px]">
-									{renderAnswer(faq.answer, true)}
-								</div>
-							)}
-						</div>
-					))}
-				</div>
-			</div>
-		</div>
-	);
+              {activeQuestion === index && (
+                <motion.div
+                  variants={slideUpSmallVariant}
+                  initial="hidden"
+                  animate="show"
+                  key={activeQuestion}
+                  className="text-[#606C82] font-normal leading-relaxed text-[16px]"
+                  //   ref={contentRef}
+                >
+                  {renderAnswer(faq.answer, true)}
+                </motion.div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default FAQs;
