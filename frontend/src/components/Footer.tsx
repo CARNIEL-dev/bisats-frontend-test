@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/input";
 import { APP_ROUTES } from "@/constants/app_route";
 import MaxWidth from "@/components/shared/MaxWith";
+import { MOBILE_APP_INFO } from "@/utils/data";
 
 const getIcon = (name: string) => {
   const ICONS = {
@@ -80,11 +81,11 @@ export const Footer = ({
             </div>
 
             {/* SUB: Main Footer Content */}
-            <div className="flex flex-wrap justify-between lg:px-20 mb-16">
+            <div className="flex flex-wrap gap-8 justify-between mb-16">
               {/* Company Info */}
-              <div className="flex flex-col gap-4 max-w-[326px]">
+              <div className="flex flex-col gap-4 max-w-[500px]">
                 <img className="w-[132.92px] h-8" alt="Logo" src="/logo.svg" />
-                <p className="text-[#ADB5C3] font-desktop-body-4 text-[14px] leading-6">
+                <p className="text-[#ADB5C3] font-desktop-body-4 text-[14px] leading-6 md:w-10/12">
                   Exchange your crypto assets in a fast, secure and fraudproof
                   platform with our escrow system.
                 </p>
@@ -104,6 +105,27 @@ export const Footer = ({
                       </a>
                     );
                   })}
+                </div>
+
+                {/* CMT: Mobile app links */}
+                <div className="flex gap-4 md:gap-x-2 flex-col md:flex-row">
+                  {MOBILE_APP_INFO.map((app) => (
+                    <a
+                      key={app.name}
+                      href={app.link}
+                      target="_blank"
+                      className={cn(
+                        "rounded-md overflow-hidden hover:scale-105 transition-all duration-300",
+                        app.disabled && "pointer-events-none"
+                      )}
+                    >
+                      <img
+                        src={app.image}
+                        alt={app.name}
+                        className="w-[120px] md:w-[1500px] h-10 md:h-[45px] object-cover"
+                      />
+                    </a>
+                  ))}
                 </div>
               </div>
 

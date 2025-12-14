@@ -7,7 +7,7 @@ const ResourcesPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const currentTab = searchParams.get("type") || "Videos";
 
-  const isArticles = searchParams.get("type") === "articles";
+  // const isArticles = searchParams.get("type") === "articles";
   return (
     <>
       <HeroSection
