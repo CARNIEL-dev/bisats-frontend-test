@@ -1,11 +1,16 @@
 import { HeroSection } from "@/components/shared/HeroSection";
 import MaxWidth from "@/components/shared/MaxWith";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import NotFound from "@/routing/NotFound";
+import { isProduction } from "@/utils";
 import { useSearchParams } from "react-router-dom";
 
 const ResourcesPage = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const currentTab = searchParams.get("type") || "Videos";
+  if (isProduction) {
+    return NotFound();
+  }
+  // const [searchParams, setSearchParams] = useSearchParams();
+  // const currentTab = searchParams.get("type") || "Videos";
 
   // const isArticles = searchParams.get("type") === "articles";
   return (
