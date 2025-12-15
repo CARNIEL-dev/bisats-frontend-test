@@ -12,7 +12,7 @@ import { useFormik } from "formik";
 interface Props {
   close: () => void;
   func: (data?: Record<string, any>) => void;
-  mode: "TWO_FA_ONLY" | "TWO_FA_AND_PIN";
+  mode: "TWO_FA_ONLY" | "TWO_FA_AND_PIN" | "PIN";
   isManual?: boolean;
 }
 const SecurityVerification: React.FC<Props> = ({
@@ -27,18 +27,25 @@ const SecurityVerification: React.FC<Props> = ({
           pin: "",
           code: "",
         }
-      : {
+      : mode == "TWO_FA_ONLY"
+      ? {
           code: "",
+        }
+      : {
+          pin: "",
         };
 
   const validationSchema = Yup.object({
-    code: Yup.string()
-      .required("2FA code is required")
-      .length(6, "Must be 6 digits"),
+    code:
+      mode !== "PIN"
+        ? Yup.string()
+            .required("2FA code is required")
+            .length(6, "Must be 6 digits")
+        : Yup.string().notRequired(),
     pin:
-      mode === "TWO_FA_AND_PIN"
+      mode === "TWO_FA_AND_PIN" || mode === "PIN"
         ? Yup.string().required("PIN is required").length(4, "Must be 4 digits")
-        : Yup.string().notRequired(), // Explicitly mark as optional
+        : Yup.string().notRequired(),
   });
 
   const formik = useFormik({
@@ -55,7 +62,7 @@ const SecurityVerification: React.FC<Props> = ({
       if (mode === "TWO_FA_AND_PIN") {
         await TwoFactorAuth({
           pin: values.pin!,
-          code: values.code,
+          code: values.code!,
         })
           .then((res) => {
             if (res?.statusCode === 200) {
@@ -70,7 +77,7 @@ const SecurityVerification: React.FC<Props> = ({
           });
       } else {
         await VerifyTwoFactorAuth({
-          code: values.code,
+          code: values.code!,
         })
           .then((res) => {
             if (res?.status) {
@@ -97,17 +104,19 @@ const SecurityVerification: React.FC<Props> = ({
           className="mt-5 flex flex-col gap-3"
           onSubmit={formik.handleSubmit}
         >
-          <PrimaryInput
-            type="code"
-            label={"Autheticator App code"}
-            error={formik.errors.code}
-            touched={undefined}
-            value={formik.values.code}
-            name="code"
-            onChange={formik.handleChange}
-          />
+          {mode !== "PIN" && (
+            <PrimaryInput
+              type="code"
+              label={"Autheticator App code"}
+              error={formik.errors.code}
+              touched={undefined}
+              value={formik.values.code}
+              name="code"
+              onChange={formik.handleChange}
+            />
+          )}
 
-          {mode === "TWO_FA_AND_PIN" && (
+          {(mode === "TWO_FA_AND_PIN" || mode === "PIN") && (
             <PrimaryInput
               type="pin"
               label={"Wallet PIN"}

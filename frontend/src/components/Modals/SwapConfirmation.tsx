@@ -2,10 +2,12 @@ import ModalTemplate from "@/components/Modals/ModalTemplate";
 import Toast from "@/components/Toast";
 import { PrimaryButton } from "@/components/buttons/Buttons";
 import { APP_ROUTES } from "@/constants/app_route";
+import KycManager from "@/pages/kyc/KYCManager";
 import { GetWallet } from "@/redux/actions/walletActions";
 import Bisatsfetch from "@/redux/fetchWrapper";
 import { formatter } from "@/utils";
 import { formatNumber } from "@/utils/numberFormat";
+import { ACTIONS } from "@/utils/transaction_limits";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Decimal from "decimal.js";
 import { TriangleAlert } from "lucide-react";
@@ -39,6 +41,8 @@ const SwapConfirmation: React.FC<Props> = ({
   setShowConfirmation,
   adType,
 }) => {
+  const [securePin, setSecurePin] = useState("");
+
   const [error, setError] = useState<string | null>(null);
   const [fees, setFees] = useState({
     network: "",
@@ -52,6 +56,10 @@ const SwapConfirmation: React.FC<Props> = ({
   // HDR: Fetch network fee
   const fetchNetworkFee = async () => {
     if (!amount) return null;
+    if (!securePin) {
+      Toast.error("Please enter your transaction pin", "Error");
+      return null;
+    }
     setError(null);
 
     try {
@@ -59,12 +67,12 @@ const SwapConfirmation: React.FC<Props> = ({
       const amountValue = new Decimal(amountVal).toNumber();
 
       const response = await Bisatsfetch(
-        `/api/v1/user/${userId}/ads/${adsId}/networkFee`,
+        `/api/v1/user/ads/${adsId}/networkFee`,
         {
           method: "POST",
           body: JSON.stringify({
-            userId: userId,
             amount: amountValue,
+            transactionPin: securePin,
           }),
         }
       );
@@ -85,9 +93,15 @@ const SwapConfirmation: React.FC<Props> = ({
     }
   };
 
+  console.log("Secure Pin:", securePin);
+
   //   HDR: Place order
   const placeOrder = async (feeData: any) => {
     if (!amount) return;
+    if (!securePin) {
+      Toast.error("Please enter your transaction pin", "Error");
+      return;
+    }
     try {
       const amountVal = parseFloat(
         adType.toLowerCase() !== "buy" ? amount : receiveAmount
@@ -95,18 +109,16 @@ const SwapConfirmation: React.FC<Props> = ({
 
       const amountValue = new Decimal(amountVal).toNumber();
 
-      const response = await Bisatsfetch(
-        `/api/v1/user/${userId}/ads/${adsId}/order`,
-        {
-          method: "POST",
-          body: JSON.stringify({
-            userId: userId,
-            amount: amountValue,
-            networkFee: feeData.networkFee,
-            transactionFee: feeData.transactionFee,
-          }),
-        }
-      );
+      const response = await Bisatsfetch(`/api/v1/user/ads/${adsId}/order`, {
+        method: "POST",
+        body: JSON.stringify({
+          userId: userId,
+          amount: amountValue,
+          transactionPin: securePin,
+          networkFee: feeData.networkFee,
+          transactionFee: feeData.transactionFee,
+        }),
+      });
 
       if (response.status) {
         return {
@@ -250,16 +262,28 @@ const SwapConfirmation: React.FC<Props> = ({
           )}
 
           <div className="w-full">
-            <PrimaryButton
-              text={`Confirm ${isBuy ? "Buy" : "Sell"}`}
-              loading={!mutation.isError && mutation.isPending}
-              style={{ width: "100%" }}
-              onClick={() => {
+            <KycManager
+              action={ACTIONS.P2P_TRANSFER}
+              func={(secureData?: Record<string, string>) => {
+                if (secureData) {
+                  setSecurePin(secureData.pin);
+                }
+
                 if (mutation.isError) mutation.reset();
                 mutation.mutate();
               }}
-              disabled={mutation.isPending}
-            />
+              isManual
+            >
+              {(validateAndExecute) => (
+                <PrimaryButton
+                  text={`Confirm ${isBuy ? "Buy" : "Sell"}`}
+                  loading={!mutation.isError && mutation.isPending}
+                  style={{ width: "100%" }}
+                  onClick={validateAndExecute}
+                  disabled={mutation.isPending}
+                />
+              )}
+            </KycManager>
           </div>
 
           <div className="text-[#515B6E] text-xs gap-1 font-normal text-center mt-5 flex items-center justify-center">

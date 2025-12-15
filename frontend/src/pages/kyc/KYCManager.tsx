@@ -119,12 +119,18 @@ const KycManager: React.FC<TKycManager> = ({
       {modal === "kycVerification" && <KycVerification close={closeModal} />}
       {modal === "upgrade" && <KycUpgrade close={closeModal} />}
 
-      {Boolean(modal === "2fa" || modal === "2faPIN") && (
+      {Boolean(modal === "2fa" || modal === "2faPIN" || modal === "PIN") && (
         <SecurityVerification
           key={secMode}
           func={func}
           close={closeModal}
-          mode={modal === "2fa" ? "TWO_FA_ONLY" : "TWO_FA_AND_PIN"}
+          mode={
+            modal === "2fa"
+              ? "TWO_FA_ONLY"
+              : modal === "2faPIN"
+              ? "TWO_FA_AND_PIN"
+              : "PIN"
+          }
           isManual={isManual}
         />
       )}

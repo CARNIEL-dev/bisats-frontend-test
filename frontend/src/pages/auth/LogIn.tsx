@@ -63,7 +63,7 @@ const LogIn = () => {
             type: UserActionTypes.LOG_IN_PENDING,
             payload: data,
           });
-          await ReSendverificationCode({ userId: response.data.userId });
+          await ReSendverificationCode();
           navigate(APP_ROUTES.AUTH.VERIFY);
           return;
         }

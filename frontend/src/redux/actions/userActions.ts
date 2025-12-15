@@ -34,6 +34,11 @@ export const Login = async (payload: TLogin) => {
       body: JSON.stringify(payload),
     });
 
+    const data = response.data;
+    if (data) {
+      data.userId && setUserId(data.userId);
+    }
+
     return response;
   } catch (error) {
     // throw handleApiError(error);
@@ -83,15 +88,12 @@ export const GetUserInfo = async (payload: { searchParam: string }) => {
     return error;
   }
 };
-export const ReSendverificationCode = async (payload: { userId: string }) => {
+export const ReSendverificationCode = async () => {
   try {
-    const response = await Bisatsfetch(
-      `/api/v1/user/${payload.userId}/resend-verification-otp`,
-      {
-        method: "GET",
-        // body: JSON.stringify(payload),
-      }
-    );
+    const response = await Bisatsfetch(`/api/v1/user/resend-verification-otp`, {
+      method: "GET",
+      // body: JSON.stringify(payload),
+    });
     return response;
   } catch (error) {
     // throw handleApiError(error);

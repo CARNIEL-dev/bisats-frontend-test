@@ -99,6 +99,7 @@ export const ACTIONS = {
   P2P_SELL: "p2p_sell",
   TRANSFER: "transfer",
   MAKE_TRANSFER: "make_transfer",
+  P2P_TRANSFER: "p2p_transfer",
   // Add more actions
 };
 
@@ -122,6 +123,7 @@ export const KYC_RULES = {
       ACTIONS.P2P_SELL,
       ACTIONS.TRANSFER,
       ACTIONS.MAKE_TRANSFER,
+      ACTIONS.P2P_TRANSFER,
     ],
     limits: {
       transactionAmount: 1000, // $1000 max per transaction
@@ -146,6 +148,7 @@ export const KYC_RULES = {
       ACTIONS.P2P_SELL,
       ACTIONS.TRANSFER,
       ACTIONS.MAKE_TRANSFER,
+      ACTIONS.P2P_TRANSFER,
     ],
     limits: {
       transactionAmount: 10000,
@@ -170,6 +173,7 @@ export const KYC_RULES = {
       ACTIONS.P2P_SELL,
       ACTIONS.TRANSFER,
       ACTIONS.MAKE_TRANSFER,
+      ACTIONS.P2P_TRANSFER,
     ],
     limits: {
       transactionAmount: Infinity,
@@ -192,4 +196,5 @@ export const ACTIONS_REQUIRING_PIN = [
   ACTIONS.WITHDRAW_NGN,
   ACTIONS.WITHDRAW_CRYPTO,
   ACTIONS.TRANSFER,
+  ACTIONS.P2P_TRANSFER,
 ];
