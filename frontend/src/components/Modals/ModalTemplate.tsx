@@ -18,6 +18,7 @@ import {
   DialogTitle,
   Dialog as ShadcnDialog,
 } from "@/components/ui/dialog";
+import { useLenisLock } from "@/hooks/use-lenis-lock";
 
 interface ModalProps {
   children: ReactNode;
@@ -35,6 +36,7 @@ const ModalTemplate: React.FC<ModalProps> = ({
   primary = true,
   showCloseButton = true,
 }) => {
+  useLenisLock(isOpen);
   return (
     <>
       {!primary ? (
