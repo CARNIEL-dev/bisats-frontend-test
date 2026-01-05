@@ -7,12 +7,12 @@ import { MobileAppByAnima } from "@/pages/landing-page/src/screens/Bisats/sectio
 export const LandingPage = (): JSX.Element => {
   return (
     <>
-      <div className="flex flex-col gap-x-10 gap-y-2 mt-8 md:mt-0">
+      <div className="flex flex-col gap-x-10 gap-y-2 my-8 md:mt-0">
         <HeroSectionByAnima />
         <HowItWorksByAnima />
         <ChangingTheByAnima />
       </div>
-      <MobileAppByAnima />
+      {/* <MobileAppByAnima /> */}
     </>
   );
 };

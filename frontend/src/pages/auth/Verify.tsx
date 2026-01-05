@@ -55,7 +55,7 @@ const VerifyEmail = () => {
   }, []);
 
   const resendCodeHandler = async () => {
-    const res = await ReSendverificationCode({ userId: user.userId });
+    const res = await ReSendverificationCode();
 
     if (res.status) {
       Toast.success(res.message, "Success");

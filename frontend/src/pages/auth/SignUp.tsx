@@ -33,7 +33,7 @@ const SignUp = () => {
       const response = await Signup(payload);
 
       if (response?.statusCode === 200) {
-        ReSendverificationCode({ userId: response.data.userId });
+        ReSendverificationCode();
         return navigate(APP_ROUTES.AUTH.VERIFY);
       } else {
         Toast.error(response.message, "Sign Up Failed");
