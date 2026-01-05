@@ -1,4 +1,3 @@
-
 import { ChangingTheByAnima } from "@/pages/landing-page/src/screens/Bisats/sections/ChangingTheByAnima";
 import { HeroSectionByAnima } from "@/pages/landing-page/src/screens/Bisats/sections/HeroSectionByAnima";
 import { HowItWorksByAnima } from "@/pages/landing-page/src/screens/Bisats/sections/HowItWorksByAnima";
