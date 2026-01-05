@@ -1,8 +1,8 @@
-import MaxWidth from "@/components/shared/MaxWith";
+
 import { ChangingTheByAnima } from "@/pages/landing-page/src/screens/Bisats/sections/ChangingTheByAnima";
 import { HeroSectionByAnima } from "@/pages/landing-page/src/screens/Bisats/sections/HeroSectionByAnima";
 import { HowItWorksByAnima } from "@/pages/landing-page/src/screens/Bisats/sections/HowItWorksByAnima";
-import { MobileAppByAnima } from "@/pages/landing-page/src/screens/Bisats/sections/MobileAppByAnima";
+// import { MobileAppByAnima } from "@/pages/landing-page/src/screens/Bisats/sections/MobileAppByAnima";
 
 export const LandingPage = (): JSX.Element => {
   return (
