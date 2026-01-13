@@ -35,6 +35,7 @@ const Receipt = () => {
     if (orderData === undefined) {
       navigate(APP_ROUTES.P2P.HOME);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orderData]);
 
   const handleCopy = () => {

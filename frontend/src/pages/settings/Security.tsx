@@ -3,8 +3,6 @@ import TwoFactorAuthModal from "@/components/Modals/2FAModal";
 import Reset2FAModal from "@/components/Modals/Reset2FAModal";
 import ResetPasswordModal from "@/components/Modals/ResetPassword";
 import SetPinModal from "@/components/Modals/SetPinModal";
-import Toast from "@/components/Toast";
-import { rehydrateUser, ResetTwoFactorAuth } from "@/redux/actions/userActions";
 
 import { useState } from "react";
 import { useSelector } from "react-redux";

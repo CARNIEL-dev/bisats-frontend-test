@@ -2,7 +2,6 @@ import Label from "@/components/Inputs/Label";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/Button";
 import {
-  Command,
   CommandDialog,
   CommandEmpty,
   CommandGroup,
@@ -19,7 +18,7 @@ import {
 } from "@/components/ui/select";
 import { TokenData } from "@/data";
 import { cn, formatter } from "@/utils";
-import { ArrowUpDown, ChevronsUpDown, Wallet } from "lucide-react";
+import { ChevronsUpDown } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 
@@ -91,6 +90,7 @@ const TokenSelection = ({
       options = options.filter((token) => token.tokenName !== removeToken);
     }
     return options;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [removexNGN, removeToken]);
 
   const selectedToken = useMemo(() => {
@@ -108,6 +108,7 @@ const TokenSelection = ({
         }
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value, showBalance]);
 
   // Handle token selection from dialog

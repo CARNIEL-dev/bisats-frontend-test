@@ -28,6 +28,7 @@ const Level3Verification = () => {
   useEffect(() => {
     if (!user.kyc?.bvnVerified || !user.user?.hasAppliedToBecomeAMerchant)
       navigate(APP_ROUTES.KYC.BVNVERIFICATION);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user.user]);
 
   const formik = useFormik({

@@ -180,6 +180,7 @@ const WithdrawalBankAccount: React.FC<Props> = ({
     lastKeyRef.current = key;
 
     validateAccountName({ accountNumber, bankCode });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accountNumber, bankCode, isAcctNumberFocused]);
 
   useEffect(() => {
@@ -196,6 +197,7 @@ const WithdrawalBankAccount: React.FC<Props> = ({
         });
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formik.values, mode === "custom"]);
 
   return (

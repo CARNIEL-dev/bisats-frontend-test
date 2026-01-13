@@ -47,6 +47,7 @@ const DepositPage = () => {
     if (!user.user?.accountLevel) {
       navigate(APP_ROUTES.KYC.PERSONAL);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const limit =
@@ -54,6 +55,7 @@ const DepositPage = () => {
 
   const maxDeposit = useMemo(() => {
     return limit?.max_deposit_per_transaction_fiat;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.user?.accountLevel]);
 
   useEffect(() => {

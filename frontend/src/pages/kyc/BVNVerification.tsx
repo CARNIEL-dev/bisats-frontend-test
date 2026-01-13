@@ -48,6 +48,7 @@ const BVNVerification = () => {
           ? APP_ROUTES.KYC.PERSONAL
           : APP_ROUTES.KYC.IDENTITY
       );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user.user]);
 
   const formik1 = useFormik({
@@ -123,6 +124,7 @@ const BVNVerification = () => {
         limit.daily_withdrawal_limit_crypto
       )} USD in crypto assets`,
     ];
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [limit]);
 
   return (

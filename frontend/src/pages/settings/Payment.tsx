@@ -48,6 +48,7 @@ const Payment = () => {
         token: user.user?.token,
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const BankDetails = wallet?.bankAccount?.map(
