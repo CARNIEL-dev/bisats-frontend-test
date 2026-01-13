@@ -48,6 +48,7 @@ const RefreshButton = ({
     timerRef.current = setTimeout(() => {
       setCooldown(false);
     }, refreshTime || 20 * 1000); // 20 secs
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refetch]);
 
   // Cleanup the timer if the component unmounts mid-cooldown

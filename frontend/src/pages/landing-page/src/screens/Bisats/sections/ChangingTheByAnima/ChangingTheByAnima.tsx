@@ -1,15 +1,12 @@
-import { BuildingIcon, LockIcon, ShieldIcon, ZapIcon } from "lucide-react";
-
 import LogoPulse from "@/assets/icons/bisats logo.png";
-import Mobile_Features from "@/assets/landingPage/mobile_features.png";
-import { Card, CardContent } from "@/components/ui/card";
 import MaxWidth from "@/components/shared/MaxWith";
+import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/utils";
 
+import courthouse from "@/assets/landingPage/courthouse.svg";
 import lightning from "@/assets/landingPage/lightning.svg";
 import shield from "@/assets/landingPage/shield.svg";
 import vault from "@/assets/landingPage/vault.svg";
-import courthouse from "@/assets/landingPage/courthouse.svg";
 
 // Feature card data for mapping
 const featureCards = [

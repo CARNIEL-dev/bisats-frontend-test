@@ -240,7 +240,7 @@ const PrimaryInput: React.FC<TInput> = ({
     <div
       className={cn(
         "w-full flex flex-col gap-1.5 ",
-        type == "code" && className && className
+        type === "code" && className && className
       )}
     >
       <div className="">

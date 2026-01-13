@@ -3,7 +3,6 @@ import MaxWidth from "@/components/shared/MaxWith";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import NotFound from "@/routing/NotFound";
 import { isProduction } from "@/utils";
-import { useSearchParams } from "react-router-dom";
 
 const ResourcesPage = () => {
   if (isProduction) {

@@ -37,7 +37,7 @@ const MobileAppPrompt = () => {
       <div className="flex flex-col gap-4 mt-10">
         <img
           src={mobileAppImage}
-          alt="Mobile image"
+          alt="Mobile phone"
           className="w-full h-[13rem] object-cover rounded-xl"
         />
         <h2 className="text-xl font-semibold">

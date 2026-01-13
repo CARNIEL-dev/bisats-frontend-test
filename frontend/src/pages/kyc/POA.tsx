@@ -13,7 +13,7 @@ import { APIResponseType } from "../../redux/types";
 const POA = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [fileName, setFileName] = useState("");
-  const [error, setError] = useState("");
+  const [error] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const user = getUser();
   const navigate = useNavigate();
@@ -22,6 +22,7 @@ const POA = () => {
     if (user?.kyc.utilityBillVerified) {
       navigate(APP_ROUTES.KYC.IDENTITY);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const handleFileChange = (e: any) => {
@@ -74,6 +75,7 @@ const POA = () => {
               <img
                 className="file-upload-icon w-[24px] h-[24px]"
                 src={docUpload}
+                alt="Upload Icon"
               />
               <span className="file-upload-text text-[14px] text-[#424A59] leading-[24px]">
                 {fileName || "Upload"}

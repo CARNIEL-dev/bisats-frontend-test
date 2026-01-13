@@ -26,6 +26,7 @@ const App: React.FC = () => {
       GetWallet();
       // requestPermission();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userState.isAuthenticated]);
 
   return (

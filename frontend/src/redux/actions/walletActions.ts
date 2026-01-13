@@ -1,9 +1,4 @@
-import {
-  getToken,
-  getUserId,
-  setLivePrices,
-  setUserTokenData,
-} from "@/helpers";
+import { getToken, setLivePrices, setUserTokenData } from "@/helpers";
 import { formatDate } from "@/layouts/utils/Dates";
 import { ITransaction, RawTx } from "@/pages/wallet/Transaction";
 import Bisatsfetch from "@/redux/fetchWrapper";
@@ -664,7 +659,8 @@ const useUserWalletHistory = ({
   >({
     queryKey: ["userWalletHistory", reason, asset, date, type, searchWord],
     queryFn: async ({ queryKey }) => {
-      const [_key, r, a, d, t, s] = queryKey;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const [_, r, a, d, t, s] = queryKey;
       const res = await GetWalletTransactions({
         reason: r,
         asset: a,
@@ -902,6 +898,7 @@ export {
   getUserAds,
   setWalletCurrency,
   toggleShowBalance,
+  transferToken,
   updateAdStatus,
   useAssetRate,
   useCryptoRates,
@@ -911,5 +908,4 @@ export {
   useGetAdsDetails,
   useGetBankList,
   useUserWalletHistory,
-  transferToken,
 };

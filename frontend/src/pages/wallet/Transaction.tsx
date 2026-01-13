@@ -49,13 +49,11 @@ export type RawTx = {
 const Transactions: React.FC = () => {
   const user = useSelector((state: { user: UserState }) => state.user);
 
-  const userId: string = user?.user?.userId || "";
-
   const [selectedAsset, setSelectedAsset] = useState<string>("");
   const [selectedType, setSelectedType] = useState<string>("");
-  const [searchWord, setSearchWord] = useState("");
+  const [searchWord] = useState("");
 
-  const [selectedDate, setSelectedDate] = useState<string>("");
+  const [selectedDate] = useState<string>("");
   const [selectedData, setSelectedData] = useState<ITransaction | undefined>();
 
   const isKycVerified = [

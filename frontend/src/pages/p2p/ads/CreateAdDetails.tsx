@@ -115,6 +115,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
         return walletData ? Number(walletData?.[token]) : 0;
       }
     }
+    //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [adType, token, walletData]);
 
   // SUB: Handle percentage click

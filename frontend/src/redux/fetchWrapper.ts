@@ -1,9 +1,8 @@
 /** @format */
 
-import { getToken, getRefreshToken } from "@/helpers";
+import { getRefreshToken, getToken } from "@/helpers";
 import { BACKEND_URLS } from "@/utils/backendUrls";
 import { refreshAccessToken } from "./actions/userActions";
-import { decryptDataInfo, encryptDataInfo } from "@/utils/encryptor";
 
 const Bisatsfetch = async (
   url: string,
@@ -16,8 +15,6 @@ const Bisatsfetch = async (
   const contentType =
     options.headers &&
     (options.headers as Record<string, string>)["Content-Type"];
-  const isMultipart =
-    contentType && contentType.includes("multipart/form-data");
 
   let body = options.body;
 
