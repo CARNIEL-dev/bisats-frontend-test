@@ -228,7 +228,9 @@ const QuickWallet = () => {
               );
             })}
             {isFetching && (
-              <div className="p-3 text-xs text-gray-500">Updating rates…</div>
+              <div className="p-3 text-xs text-gray-500 animate-pulse text-center">
+                Updating rates…
+              </div>
             )}
           </div>
         </div>

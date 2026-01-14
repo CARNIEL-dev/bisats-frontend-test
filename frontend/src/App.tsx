@@ -32,7 +32,7 @@ const App: React.FC = () => {
   return (
     <>
       <Router>
-        <ReactLenis root />
+        {/* <ReactLenis root /> */}
         <ScrollToTop>
           <Routing />
         </ScrollToTop>

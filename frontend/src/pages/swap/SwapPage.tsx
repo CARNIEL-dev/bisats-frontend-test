@@ -30,7 +30,7 @@ import { ChangeEventHandler, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 
-const isComingSoon = true;
+const isComingSoon = false;
 const SwapPage = () => {
   const walletState: WalletState = useSelector((state: any) => state.wallet);
 
