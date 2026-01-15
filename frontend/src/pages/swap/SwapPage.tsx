@@ -20,8 +20,10 @@ import { DUMMY_HISTORY, TokenData } from "@/data";
 import { assetIndexMap } from "@/pages/p2p/components/P2PMarket";
 import Head from "@/pages/wallet/Head";
 import { useCryptoRates } from "@/redux/actions/walletActions";
-import { formatter } from "@/utils";
+// import Bisatsfetch from "@/redux/fetchWrapper";
+import { formatter, isProduction } from "@/utils";
 import { formatNumber } from "@/utils/numberFormat";
+// import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useFormik } from "formik";
 import { ArrowRight, History, SmileIcon } from "lucide-react";
@@ -30,9 +32,25 @@ import { ChangeEventHandler, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 
-const isComingSoon = true;
 const SwapPage = () => {
   const walletState: WalletState = useSelector((state: any) => state.wallet);
+
+  // const { data } = useQuery({
+  //   queryKey: ["test"],
+  //   queryFn: async () => {
+  //     const response = await Bisatsfetch(`/api/v1/user/swap/currencies`, {
+  //       method: "GET",
+  //     });
+
+  //     if (response.status === true) {
+  //       return response.data;
+  //     }
+
+  //     throw new Error(response.message || "Failed to fetch orders");
+  //   },
+  // });
+
+  // console.log("Data", data);
 
   const {
     data: currencyRates,
@@ -80,7 +98,7 @@ const SwapPage = () => {
     },
   });
 
-  if (isComingSoon) {
+  if (isProduction) {
     return (
       <div className="flex flex-col items-center gap-1 border rounded-lg px-4 py-6 shadow bg-background">
         <SmileIcon className="size-20 text-primary" />

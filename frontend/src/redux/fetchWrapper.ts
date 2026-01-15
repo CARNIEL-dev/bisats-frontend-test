@@ -44,11 +44,14 @@ const Bisatsfetch = async (
 
   try {
     // Make the initial request
-    const response = {
-      res: await fetch(`${BACKEND_URLS.BASE_URL}${url}`, config),
-    };
-    // Response interceptor: Handle 403 (Forbidden) and refresh token
-    if (response.res.status === 403) {
+    const response = await fetch(`${BACKEND_URLS.BASE_URL}${url}`, config);
+    const resData = await response.json();
+
+    // Response interceptor: Handle 401 (Unauthorized) and refresh token
+    if (
+      resData.statusCode === 401 &&
+      resData.message?.toLowerCase()?.startsWith("unauthorized")
+    ) {
       const originalRequest = { url, config };
 
       const refreshToken = getRefreshToken();
@@ -87,8 +90,7 @@ const Bisatsfetch = async (
       }
     }
 
-    const responseData = await response.res.json();
-    return responseData;
+    return resData;
   } catch (error) {
     throw error;
   }

@@ -268,6 +268,7 @@ type AdsType = {
     firstName: string;
     lastName: string;
     accountLevel: string;
+    totalOrders: string;
   };
   reason?: string;
 };
