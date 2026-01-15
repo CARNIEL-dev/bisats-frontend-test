@@ -7,7 +7,7 @@ import Routing from "@/routing/Routing";
 import ScrollToTop from "@/routing/scrollToTop";
 // import { requestPermission } from "@/utils/firebaseNotification";
 
-import { ReactLenis } from "lenis/dist/lenis-react";
+// import { ReactLenis } from "lenis/dist/lenis-react";
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { BrowserRouter as Router } from "react-router-dom";
