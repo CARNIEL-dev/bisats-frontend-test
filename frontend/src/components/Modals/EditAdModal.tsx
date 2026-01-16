@@ -92,7 +92,7 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
         if (originalValue === "" || isNaN(originalValue)) return undefined;
         return Number(originalValue);
       })
-      .when([], ([], schema) => {
+      .when([""], ([_], schema) => {
         // const nRate = Number(rate ?? 0).toFixed(2);
         const minPrice = 0.9 * Number(rate);
         const maxPrice = 1.1 * Number(rate);

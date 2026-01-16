@@ -98,6 +98,7 @@ export const Footer = ({
                         href={link.url}
                         className=" text-[#ADB5C3] text-[16px] leading-7"
                         target="_blank"
+                        rel="noreferrer"
                       >
                         {Icon && (
                           <Icon className="size-6 text-white hover:text-primary duration-300 ease-in-out transition-colors" />
@@ -114,6 +115,7 @@ export const Footer = ({
                       key={app.name}
                       href={app.link}
                       target="_blank"
+                      rel="noreferrer"
                       className={cn(
                         "rounded-md overflow-hidden hover:scale-105 transition-all duration-300",
                         app.disabled && "pointer-events-none"
@@ -158,6 +160,7 @@ export const Footer = ({
                       href={link.url}
                       className="text-[#ADB5C3] text-[16px] leading-7 hover:underline hover:text-primary underline-offset-2 transition-all duration-300 ease-in-out"
                       target="_blank"
+                      rel="noreferrer"
                     >
                       {link.name}
                     </a>

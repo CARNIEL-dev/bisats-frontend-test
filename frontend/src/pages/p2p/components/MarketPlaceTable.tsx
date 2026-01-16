@@ -180,7 +180,7 @@ const MarketPlaceTable = ({ type, ads, asset }: MarketPlaceContentProps) => {
     <div className="w-full">
       {ads.length === 0 ? (
         <div>
-          <Empty text={"No Ads Available for" + " " + asset} />
+          <Empty text={`No Ads Available for ${asset}`} />
         </div>
       ) : (
         <div className="w-full">

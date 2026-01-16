@@ -149,7 +149,7 @@ const LogIn = () => {
             {(loginAttemptRef.current >= 5 || isLocked.current) && (
               <span className="text-red-600 italic font-medium">
                 {" "}
-                - Account is temporarily locked
+                Account is temporarily locked
               </span>
             )}
           </p>

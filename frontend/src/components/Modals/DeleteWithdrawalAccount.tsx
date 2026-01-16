@@ -1,13 +1,12 @@
-import { useState } from "react";
-import { useSelector } from "react-redux";
 import { DeleteBankAccountForWithdrawal } from "@/redux/actions/walletActions";
+import { useState } from "react";
 
 import {
   PrimaryButton,
   WhiteTransparentButton,
 } from "@/components/buttons/Buttons";
-import Toast from "@/components/Toast";
 import ModalTemplate from "@/components/Modals/ModalTemplate";
+import Toast from "@/components/Toast";
 interface Props {
   close: () => void;
   bank?: {
@@ -21,8 +20,6 @@ interface Props {
 const DeleteWithdrawalAccount: React.FC<Props> = ({ close, bank }) => {
   const [isLoading, setIsLoading] = useState(false);
 
-  const userState: UserState = useSelector((state: any) => state.user);
-  const user = userState.user;
   const DeleteBankAccount = async () => {
     setIsLoading(true);
     const response = await DeleteBankAccountForWithdrawal({

@@ -27,7 +27,7 @@ const SecurityVerification: React.FC<Props> = ({
           pin: "",
           code: "",
         }
-      : mode == "TWO_FA_ONLY"
+      : mode === "TWO_FA_ONLY"
       ? {
           code: "",
         }

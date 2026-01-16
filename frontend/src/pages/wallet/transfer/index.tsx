@@ -74,6 +74,7 @@ const TransferPage = () => {
       userData.lastName,
       userData.userName,
     ];
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userData]);
 
   const formik = useFormik({

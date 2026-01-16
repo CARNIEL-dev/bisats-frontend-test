@@ -51,6 +51,7 @@ const KycUpgrade: React.FC<Props> = ({ close }) => {
         limit.daily_withdrawal_limit_crypto
       )} USD in crypto assets`,
     ];
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [limit]);
 
   return (

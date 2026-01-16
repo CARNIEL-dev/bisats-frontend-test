@@ -92,6 +92,7 @@ const PhoneVerifcation = () => {
         </>
       ),
     }));
+    //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [countryDataForPhone]);
 
   const formik1 = useFormik({

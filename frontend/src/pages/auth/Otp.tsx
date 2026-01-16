@@ -40,6 +40,7 @@ const OTP = () => {
     if (codeLink && emailLink) {
       formik.submitForm();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [codeLink, emailLink]);
   return (
     <div className="lg:w-[442px] mx-auto">

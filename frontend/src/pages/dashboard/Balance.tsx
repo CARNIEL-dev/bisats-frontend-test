@@ -112,6 +112,7 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
       },
       { balanceTotal: 0, lockedBalanceTotal: 0 }
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currencyRate, wallet, currency, userState.user?.userId]);
 
   return (

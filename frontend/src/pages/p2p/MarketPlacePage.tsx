@@ -27,7 +27,8 @@ const fetchAds = async ({
 }: {
   queryKey: [string, AdsParams, PaginationState, string];
 }) => {
-  const [, adsParam, pagination, userId] = queryKey;
+  //eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [, adsParam, pagination, _] = queryKey;
   const res = await GetSearchAds({
     ...adsParam,
     limit: `${pagination.limit}`,
@@ -70,6 +71,7 @@ const MarketPlacePage = () => {
   //SUB: Update local state
   useEffect(() => {
     setAdsParam(initialAdsParam);
+    //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
   //SUB: React Query

@@ -53,7 +53,7 @@ const Support = () => {
           Include screenshots or details about the issue to help us assist you
           faster.
         </div>
-        <a href="mailto:support@bisats.com" target="_blank">
+        <a href="mailto:support@bisats.com" target="_blank" rel="noreferrer">
           <PrimaryButton
             className="w-full"
             text={"Contact Support"}

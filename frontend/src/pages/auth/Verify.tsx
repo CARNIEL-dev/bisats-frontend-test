@@ -52,6 +52,7 @@ const VerifyEmail = () => {
     if (codeLink && userId) {
       formik.submitForm();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const resendCodeHandler = async () => {

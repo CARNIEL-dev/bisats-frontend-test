@@ -24,7 +24,6 @@ import TermsAndCondition from "@/pages/landing-page/src/screens/TermsAndConditio
 import AdDetails from "@/pages/p2p/AdDetails";
 import CreateAd from "@/pages/p2p/ads/CreateAds";
 import Buy from "@/pages/p2p/Buy";
-import Express from "@/pages/p2p/Express";
 import MyAds from "@/pages/p2p/MyAds";
 import OrderHistory from "@/pages/p2p/OrderHistory";
 import Profile from "@/pages/p2p/Profile";
@@ -102,7 +101,6 @@ const Routing = () => {
             {/* SUB: P2P PAGES */}
             <Route element={<P2PLayOut />}>
               <Route path={APP_ROUTES.P2P.HOME} element={<MarketPlacePage />} />
-              <Route path={APP_ROUTES.P2P.EXPRESS} element={<Express />} />
               <Route
                 path={APP_ROUTES.P2P.ORDER_HISTORY}
                 element={<OrderHistory />}

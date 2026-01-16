@@ -50,6 +50,7 @@ const P2PMarket = ({
 
   useEffect(() => {
     if (!adDetail) navigate(-1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   //SUB: Query function
@@ -112,6 +113,7 @@ const P2PMarket = ({
         formik.setFieldValue("amount", (otherAmt / price).toFixed(6));
       }
     }
+    //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     adDetail?.orderType,
     adDetail?.price,

@@ -1,16 +1,13 @@
+import { deleteWalletAddressHandler } from "@/redux/actions/walletActions";
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import {
-  DeleteBankAccountForWithdrawal,
-  deleteWalletAddressHandler,
-} from "@/redux/actions/walletActions";
 
 import {
   PrimaryButton,
   WhiteTransparentButton,
 } from "@/components/buttons/Buttons";
-import Toast from "@/components/Toast";
 import ModalTemplate from "@/components/Modals/ModalTemplate";
+import Toast from "@/components/Toast";
 import { GetUserDetails } from "@/redux/actions/userActions";
 interface Props {
   close: () => void;

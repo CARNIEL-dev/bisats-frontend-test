@@ -24,6 +24,7 @@ const PersonalInfo = () => {
     if (user?.kyc?.personalInformationVerified) {
       navigate(APP_ROUTES.KYC.IDENTITY);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const formik = useFormik({

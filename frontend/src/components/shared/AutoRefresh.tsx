@@ -39,6 +39,7 @@ const AutoRefreshTimer = ({
         setIsRefreshing(false);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeLeft, isRefreshing, queryClient, queryKey]);
 
   // Countdown logic

@@ -57,6 +57,7 @@ export const MultiSelectDropDown = ({
     if (!defaultLabelDisplay) {
       setSelected(String(value ?? ""));
     }
+    //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
   return (

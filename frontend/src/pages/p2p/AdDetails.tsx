@@ -56,6 +56,7 @@ const AdDetails = () => {
     if (!id) {
       navigate(-1);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   return (

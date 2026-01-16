@@ -21,6 +21,7 @@ const Dashboard = () => {
     if (unverifiedFields.some(Boolean)) {
       setKycModalOpen(true);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     user?.kyc?.identificationVerified,
     user?.kyc?.personalInformationVerified,

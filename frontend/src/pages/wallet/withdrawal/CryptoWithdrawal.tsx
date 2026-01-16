@@ -50,7 +50,7 @@ const CryptoWithdrawal = ({
   asset,
   currencyRate,
 }: PropsCrypto) => {
-  const [withdrawlLoading, setWithdrawlLoading] = useState(false);
+  const [withdrawalLoding, setWithdrawalLoding] = useState(false);
   const [withdrawalModal, setWithDrawalModal] = useState(false);
   const [showSavedAddressModal, setShowSavedAddressModal] = useState(false);
   const [withdrawalData, setWithdrawalData] = useState({
@@ -236,6 +236,7 @@ const CryptoWithdrawal = ({
     if (formik.values.amount) {
       formik.validateField("amount");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [assetUsdRate, formik.values.amount]);
 
   const isAmountReady =
@@ -282,10 +283,11 @@ const CryptoWithdrawal = ({
         walletName: "",
       },
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [asset]);
 
-  const handlCompleteWithdrawl = async () => {
-    setWithdrawlLoading(true);
+  const handleCompleteWithdrawl = async () => {
+    setWithdrawalLoding(true);
     const payLoad = {
       referenceId: withdrawalData.referenceId,
       withdrawalPin: withdrawalData.withdrawalPin,
@@ -321,7 +323,7 @@ const CryptoWithdrawal = ({
       })
       .finally(() => {
         setWithDrawalModal(false);
-        setWithdrawlLoading(false);
+        setWithdrawalLoding(false);
       });
   };
 
@@ -525,10 +527,10 @@ const CryptoWithdrawal = ({
       <WithdrawalConfirmationCrypto
         open={withdrawalModal}
         close={() => setWithDrawalModal(false)}
-        isLoading={withdrawlLoading}
+        isLoading={withdrawalLoding}
         amount={formik.values.amount}
         address={formik.values.walletAddress}
-        submit={handlCompleteWithdrawl}
+        submit={handleCompleteWithdrawl}
         asset={asset}
         network={formik.values.network}
         fee={

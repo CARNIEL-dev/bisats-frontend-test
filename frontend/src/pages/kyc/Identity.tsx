@@ -37,6 +37,7 @@ const Identity = () => {
     if (user?.user?.kyc.identificationVerified) {
       navigate(APP_ROUTES.KYC.BVNVERIFICATION);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const formik = useFormik({
@@ -131,6 +132,7 @@ const SelfieSnap = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isCapturing, setIsCapturing] = useState(false);
 
+  //eslint-disable-next-line @typescript-eslint/no-unused-vars
   function base64ToFile(base64String: string, fileName: string): File {
     // Split the base64 string into parts
     const [header, base64Data] = base64String.split(",");

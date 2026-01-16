@@ -1,12 +1,10 @@
 import coinss from "@/assets/icons/coinss.png";
-import HeroImage from "@/assets/landingPage/heroPhone copy.png";
 import HeroNotificationBadge from "@/components/shared/HeroNotificationBadge";
 import MaxWidth from "@/components/shared/MaxWith";
 import { buttonVariants } from "@/components/ui/Button";
 import { APP_ROUTES } from "@/constants/app_route";
 
 import { cn } from "@/utils";
-import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 import phoneDesktop from "@/assets/phone-desktop.svg";
@@ -16,8 +14,6 @@ import { Verified } from "lucide-react";
 
 import bisatLogo from "@/assets/logo/logo-icon-btc.svg";
 import bisatLogo2 from "@/assets/logo/logo-icon.svg";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { motion } from "motion/react";
 import {
   container,
   revealUpVariant,
@@ -25,6 +21,8 @@ import {
   slideInRight,
   slideUpVariant,
 } from "@/components/animation";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { motion } from "motion/react";
 const isAuthenticated = false; // Placeholder for authentication state
 export const HeroSectionByAnima = (): JSX.Element => {
   // const user: UserState = useSelector((state: any) => state.user);

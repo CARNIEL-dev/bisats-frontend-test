@@ -1,7 +1,7 @@
 import { tokenLogos } from "@/assets/tokens";
 import Empty from "@/components/Empty";
 import ErrorDisplay from "@/components/shared/ErrorDisplay";
-import { Button, buttonVariants } from "@/components/ui/Button";
+import { Button } from "@/components/ui/Button";
 import { DataTable } from "@/components/ui/data-table";
 import { APP_ROUTES } from "@/constants/app_route";
 import { assets } from "@/data";
@@ -11,13 +11,13 @@ import {
   useCryptoRates,
 } from "@/redux/actions/walletActions";
 import { cn, formatter, getCurrencyBalance } from "@/utils";
+import { ACTIONS } from "@/utils/transaction_limits";
 import { ColumnDef } from "@tanstack/react-table";
-import { Eye, EyeClosed, EyeOff } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import React, { useMemo } from "react";
 import { useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
-import KycManager from "../kyc/KYCManager";
-import { ACTIONS } from "@/utils/transaction_limits";
+import { useNavigate } from "react-router-dom";
+import KycManager from "@/pages/kyc/KYCManager";
 
 export enum Fields {
   Asset = "Asset",
@@ -30,11 +30,6 @@ export interface Asset {
   Balance: number;
   name: string;
   Rate: number;
-}
-
-interface TableProps {
-  data: Array<any>;
-  livePrices?: any;
 }
 
 export type PriceData = {
