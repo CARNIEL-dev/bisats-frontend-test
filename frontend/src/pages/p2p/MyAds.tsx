@@ -14,14 +14,11 @@ import { Button } from "@/components/ui/Button";
 import { APP_ROUTES } from "@/constants/app_route";
 import PreLoader from "@/layouts/PreLoader";
 import KycManager from "@/pages/kyc/KYCManager";
-import {
-  GetWallet,
-  updateAdStatus,
-  useFetchUserAds,
-} from "@/redux/actions/walletActions";
+import { updateAdStatus, useFetchUserAds } from "@/redux/actions/walletActions";
 
 import { tokenLogos } from "@/assets/tokens";
 import ModalTemplate from "@/components/Modals/ModalTemplate";
+import useGetWallet from "@/hooks/use-getWallet";
 import { ACTIONS } from "@/utils/transaction_limits";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Check } from "lucide-react";
@@ -51,6 +48,7 @@ export type UpdateAdStatusResponse = {
 const MyAds = () => {
   const userState: UserState = useSelector((state: any) => state.user);
   const queryClient = useQueryClient();
+  const { refetchWallet } = useGetWallet();
 
   const navigate = useNavigate();
 
@@ -86,7 +84,7 @@ const MyAds = () => {
     mutationFn: ({ adId, status }: UpdateAdStatusVars) =>
       updateAdStatus({ adId, newStatus: status }),
     onSuccess(_, variables) {
-      GetWallet();
+      refetchWallet();
       queryClient.invalidateQueries({
         queryKey: ["userAds"],
       });
@@ -135,7 +133,7 @@ const MyAds = () => {
           <span
             className={cn(
               "font-semibold capitalize",
-              ad.toLowerCase() === "sell" ? "text-red-500" : "text-green-600"
+              ad.toLowerCase() === "sell" ? "text-red-500" : "text-green-600",
             )}
           >
             {ad}
@@ -216,14 +214,15 @@ const MyAds = () => {
         const amount =
           item.type !== "buy"
             ? formatter({ decimal: item.asset === "USDT" ? 2 : 5 }).format(
-                item.amountFilled
+                item.amountFilled,
               )
             : formatter({ decimal: item.asset === "USDT" ? 2 : 5 }).format(
-                item.amountFilled / item.price
+                item.amountFilled / item.price,
               );
         return (
           <div className="text-gray-600 uppercase ">
-            {amount} <span className="text-gray-400 text-xs">{item.asset}</span>{" "}
+            {amount}{" "}
+            <span className="text-gray-400 text-xs">{item.asset}</span>{" "}
           </div>
         );
       },
@@ -237,14 +236,15 @@ const MyAds = () => {
         const amount =
           item.type !== "buy"
             ? formatter({ decimal: item.asset === "USDT" ? 2 : 5 }).format(
-                item.amountAvailable
+                item.amountAvailable,
               )
             : formatter({ decimal: item.asset === "USDT" ? 2 : 5 }).format(
-                item.amountAvailable / item.price
+                item.amountAvailable / item.price,
               );
         return (
           <div className="text-gray-600 uppercase ">
-            {amount} <span className="text-gray-400 text-xs">{item.asset}</span>{" "}
+            {amount}{" "}
+            <span className="text-gray-400 text-xs">{item.asset}</span>{" "}
           </div>
         );
       },
@@ -257,14 +257,15 @@ const MyAds = () => {
         const amount =
           item.type !== "buy"
             ? formatter({ decimal: item.asset === "USDT" ? 2 : 5 }).format(
-                item.amount
+                item.amount,
               )
             : formatter({ decimal: item.asset === "USDT" ? 2 : 5 }).format(
-                item.amount / item.price
+                item.amount / item.price,
               );
         return (
           <div className="text-gray-600 uppercase ">
-            {amount} <span className="text-gray-400 text-xs">{item.asset}</span>{" "}
+            {amount}{" "}
+            <span className="text-gray-400 text-xs">{item.asset}</span>{" "}
           </div>
         );
       },
@@ -300,8 +301,8 @@ const MyAds = () => {
                 status.toLowerCase() === "active"
                   ? "text-green-600"
                   : status.toLowerCase() === "closed"
-                  ? "text-red-500"
-                  : "text-gray-500"
+                    ? "text-red-500"
+                    : "text-gray-500",
               )}
             >
               {status}

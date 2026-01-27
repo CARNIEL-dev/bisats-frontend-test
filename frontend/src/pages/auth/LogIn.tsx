@@ -107,7 +107,12 @@ const LogIn = () => {
           isLocked.current = true;
         }
 
-        Toast.error(errMessage, "Login Failed");
+        if (response.statusCode.toString().startsWith("4")) {
+          Toast.error(errMessage, "Login Failed");
+          return;
+        }
+
+        Toast.error("Something went wrong", "Login Failed");
       }
     },
   });
@@ -129,7 +134,7 @@ const LogIn = () => {
           <p
             className={cn(
               "text-sm text-gray-600 mb-2 hidden",
-              (isLocked.current || loginAttemptRef.current > 0) && "block"
+              (isLocked.current || loginAttemptRef.current > 0) && "block",
             )}
           >
             {loginAttemptRef.current > 0 && (
@@ -138,7 +143,8 @@ const LogIn = () => {
                 <span
                   className={cn(
                     "text-yellow-600 font-semibold",
-                    loginAttemptRef.current >= 3 && "text-red-600 animate-pulse"
+                    loginAttemptRef.current >= 3 &&
+                      "text-red-600 animate-pulse",
                   )}
                 >
                   {" "}

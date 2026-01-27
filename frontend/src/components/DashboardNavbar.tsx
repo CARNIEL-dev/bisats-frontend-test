@@ -3,15 +3,16 @@ import MaxWidth from "@/components/shared/MaxWith";
 
 import { APP_ROUTES } from "@/constants/app_route";
 
-import { NavLink, useLocation } from "react-router-dom";
-import ProfileDropdown from "@/components/shared/ProfileDropdown";
-import { GetWallet } from "@/redux/actions/walletActions";
 import Notification from "@/components/shared/Notification";
+import ProfileDropdown from "@/components/shared/ProfileDropdown";
+import { NavLink, useLocation } from "react-router-dom";
 
+import useGetWallet from "@/hooks/use-getWallet";
 import { useEffect } from "react";
 
 const DashboardNavbar = () => {
   const location = useLocation();
+  const { refreshWallet } = useGetWallet();
 
   useEffect(() => {
     const refreshPath = [
@@ -25,8 +26,9 @@ const DashboardNavbar = () => {
     ];
 
     if (refreshPath.includes(location.pathname)) {
-      GetWallet();
+      refreshWallet();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
 
   return (

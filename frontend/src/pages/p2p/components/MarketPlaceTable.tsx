@@ -56,7 +56,7 @@ const MarketPlaceTable = ({ type, ads, asset }: MarketPlaceContentProps) => {
                   "flex items-center justify-center size-5 border rounded-full",
                   type.toLowerCase() === "sell"
                     ? "bg-red-500/10 text-red-600 border-red-300"
-                    : "bg-green-600/20 text-green-600 border-green-300"
+                    : "bg-green-600/20 text-green-600 border-green-300",
                 )}
               >
                 <p className="font-semibold">{initials}</p>
@@ -170,7 +170,7 @@ const MarketPlaceTable = ({ type, ads, asset }: MarketPlaceContentProps) => {
             }?id=${ad?.id}`}
             className={cn(
               buttonVariants(),
-              "capitalize text-sm px-6 font-normal"
+              "capitalize text-sm px-6 font-normal",
             )}
           >
             {type}

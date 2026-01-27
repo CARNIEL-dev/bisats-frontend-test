@@ -2,8 +2,8 @@ import ModalTemplate from "@/components/Modals/ModalTemplate";
 import Toast from "@/components/Toast";
 import { PrimaryButton } from "@/components/buttons/Buttons";
 import { APP_ROUTES } from "@/constants/app_route";
+import useGetWallet from "@/hooks/use-getWallet";
 import KycManager from "@/pages/kyc/KYCManager";
-import { GetWallet } from "@/redux/actions/walletActions";
 import Bisatsfetch from "@/redux/fetchWrapper";
 import { formatter } from "@/utils";
 import { formatNumber } from "@/utils/numberFormat";
@@ -50,6 +50,7 @@ const SwapConfirmation: React.FC<Props> = ({
   });
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const { refetchWallet } = useGetWallet();
 
   const isBuy = orderType.toLowerCase() === "buy";
 
@@ -74,7 +75,7 @@ const SwapConfirmation: React.FC<Props> = ({
             amount: amountValue,
             transactionPin: securePin,
           }),
-        }
+        },
       );
       if (response.status) {
         setFees({
@@ -93,8 +94,6 @@ const SwapConfirmation: React.FC<Props> = ({
     }
   };
 
-  console.log("Secure Pin:", securePin);
-
   //   HDR: Place order
   const placeOrder = async (feeData: any) => {
     if (!amount) return;
@@ -104,7 +103,7 @@ const SwapConfirmation: React.FC<Props> = ({
     }
     try {
       const amountVal = parseFloat(
-        adType.toLowerCase() !== "buy" ? amount : receiveAmount
+        adType.toLowerCase() !== "buy" ? amount : receiveAmount,
       );
 
       const amountValue = new Decimal(amountVal).toNumber();
@@ -181,7 +180,7 @@ const SwapConfirmation: React.FC<Props> = ({
         exact: false,
       });
 
-      GetWallet();
+      refetchWallet();
 
       navigate(APP_ROUTES.P2P.RECEIPT, {
         state: {
@@ -226,7 +225,7 @@ const SwapConfirmation: React.FC<Props> = ({
               <p className="text-[#424A59] font-normal">You'll receive:</p>
               <p className="text-[#606C82] font-semibold">
                 {formatter({ decimal: isBuy ? 8 : 2 }).format(
-                  Number(receiveAmount)
+                  Number(receiveAmount),
                 )}{" "}
                 {currency}
               </p>

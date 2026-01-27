@@ -7,6 +7,7 @@ import ErrorDisplay from "@/components/shared/ErrorDisplay";
 import SearchableDropdown from "@/components/shared/SearchableDropdown";
 import Toast from "@/components/Toast";
 import { getBankSchema } from "@/formSchemas";
+import useGetWallet from "@/hooks/use-getWallet";
 import PreLoader from "@/layouts/PreLoader";
 import { GetUserDetails } from "@/redux/actions/userActions";
 import {
@@ -40,7 +41,7 @@ const WithdrawalBankAccount: React.FC<Props> = ({
 }) => {
   const userState: UserState = useSelector((state: any) => state.user);
   const user = userState.user;
-
+  const { refetchWallet } = useGetWallet();
   const [loading, setLoading] = useState(false);
   const [isAcctNumberFocused, setIsAcctNumberFocused] = useState(false);
 
@@ -99,8 +100,9 @@ const WithdrawalBankAccount: React.FC<Props> = ({
         await AddBankAccountForWithdrawal({
           ...payload,
         }).then(async (res) => {
-          if (res?.status === 201 || res?.success) {
+          if (res?.status || res?.statusCode === 201) {
             await GetUserDetails({ userId: user?.userId, token: user?.token });
+            refetchWallet();
             Toast.success(res.message, "Account Added");
 
             close();
@@ -115,6 +117,7 @@ const WithdrawalBankAccount: React.FC<Props> = ({
         }).then(async (res) => {
           if (res?.status) {
             await GetUserDetails({ userId: user?.userId, token: user?.token });
+            refetchWallet();
             Toast.success(res.message, "Account Updated");
             close();
           } else {
@@ -138,6 +141,7 @@ const WithdrawalBankAccount: React.FC<Props> = ({
       bankCode,
     })
       .then((res) => {
+        // console.log("Resolve bank response ", res);
         if (res?.status) {
           formik.setFieldValue("accountName", res?.data?.account_name);
           formik.setFieldTouched("accountName", true, false);
@@ -146,6 +150,7 @@ const WithdrawalBankAccount: React.FC<Props> = ({
         }
       })
       .catch((err) => {
+        // console.log("Resolve bank error ", err);
         formik.setFieldError("accountNumber", err?.message);
       })
       .finally(() => {
@@ -206,7 +211,7 @@ const WithdrawalBankAccount: React.FC<Props> = ({
         <h4
           className={cn(
             "text-[#2B313B] text-[18px] lg:text-[22px] leading-[32px] font-semibold",
-            mode === "custom" && "hidden"
+            mode === "custom" && "hidden",
           )}
         >
           <span className="capitalize">{mode}</span> Withdrawal Bank Account
@@ -277,7 +282,7 @@ const WithdrawalBankAccount: React.FC<Props> = ({
               <div
                 className={cn(
                   "flex items-center gap-2 w-full mt-5",
-                  mode === "custom" && "hidden"
+                  mode === "custom" && "hidden",
                 )}
               >
                 <WhiteTransparentButton

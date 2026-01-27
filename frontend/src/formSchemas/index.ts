@@ -25,16 +25,27 @@ const toSafeDecimal = (value: unknown) => {
 
 //SUB: Auth
 const SignupSchema = Yup.object().shape({
-  email: Yup.string().email().required(),
+  email: Yup.string()
+    .email("Invalid email address")
+    .required("Email is required"),
   password: Yup.string()
-    .matches(lowerCaseRegex)
-    .matches(upperCaseRegex)
-    .matches(numberRegex)
-    .matches(specialCharcterRegex)
-    .matches(characterLength)
-    .required(),
+    .required("Password is required")
+    .matches(
+      lowerCaseRegex,
+      "Password must contain at least one lowercase letter",
+    )
+    .matches(
+      upperCaseRegex,
+      "Password must contain at least one uppercase letter",
+    )
+    .matches(numberRegex, "Password must contain at least one number")
+    .matches(
+      specialCharcterRegex,
+      "Password must contain at least one special character",
+    )
+    .matches(characterLength, "Password must be 8-30 characters long"),
   confirmPassword: Yup.string()
-    .oneOf([Yup.ref("password")], "Passwords must match") // Make sure null is allowed here if needed
+    .oneOf([Yup.ref("password")], "Passwords must match")
     .required("Confirm password is required"),
   agreeToTerms: Yup.bool()
     .oneOf([true], "You must agree to the terms and conditions")
@@ -129,7 +140,7 @@ const swapSchema = Yup.object().shape({
     .transform((_, originalValue) =>
       originalValue === "" || isNaN(originalValue)
         ? undefined
-        : Number(originalValue)
+        : Number(originalValue),
     )
     //? only apply these rules when we're focused on amount:
     .when("$focusedField", {
@@ -151,7 +162,7 @@ const swapSchema = Yup.object().shape({
                   ? walletState.wallet?.[asset]
                   : walletState.wallet?.xNGN;
               return typeof value === "number" ? value <= balVal : false;
-            }
+            },
           )
           .test(
             "max-ads-balance",
@@ -168,7 +179,7 @@ const swapSchema = Yup.object().shape({
               return typeof amountVal === "number"
                 ? amountVal <= Number(adsBal)
                 : false;
-            }
+            },
           ) //? Lower limit check
           .test(
             "min-lower-limit",
@@ -181,7 +192,7 @@ const swapSchema = Yup.object().shape({
                   : Number(adDetail.minimumLimit);
 
               return minLimit <= value;
-            }
+            },
           )
           //? Upper limit check
           .test(
@@ -196,7 +207,7 @@ const swapSchema = Yup.object().shape({
                   : Number(adDetail.maximumLimit);
 
               return maxLimit >= value;
-            }
+            },
           ),
       otherwise: (schema) =>
         //? no validation (and clear out the field) when not focused
@@ -208,7 +219,7 @@ const swapSchema = Yup.object().shape({
     .transform((_, originalValue) =>
       originalValue === "" || isNaN(originalValue)
         ? undefined
-        : Number(originalValue)
+        : Number(originalValue),
     )
     // only validate when the otherAmount field is focused
     .when("$focusedField", {
@@ -259,7 +270,7 @@ const swapSchema = Yup.object().shape({
               }
               return true;
               // return typeof amountVal === "number" ? amountVal < adsBal : false;
-            }
+            },
           )
           //? Lower limit check
           .test(
@@ -276,7 +287,7 @@ const swapSchema = Yup.object().shape({
               const minLimit = Number(adDetail.minimumLimit);
 
               return minLimit <= Number(val);
-            }
+            },
           )
           //? Upper limit check
           .test(
@@ -293,7 +304,7 @@ const swapSchema = Yup.object().shape({
               const maxLimit = Number(adDetail.maximumLimit);
 
               return maxLimit >= Number(val);
-            }
+            },
           ),
       otherwise: (schema) =>
         // clear/skip validation when not focused
@@ -348,16 +359,16 @@ const AdSchema = Yup.object().shape({
             //? 1. Check maximum transaction limit (for buy orders)
             if (typeLower === "buy") {
               const maxLimitDecimal = toSafeDecimal(
-                userTransactionLimits?.maximum_ad_creation_amount
+                userTransactionLimits?.maximum_ad_creation_amount,
               );
               const minLimitDecimal = toSafeDecimal(
-                userTransactionLimits?.lower_limit_buy_ad
+                userTransactionLimits?.lower_limit_buy_ad,
               );
 
               if (minLimitDecimal.gt(0) && amountDecimal.lt(minLimitDecimal)) {
                 return this.createError({
                   message: `Amount must be at least ${formatNumber(
-                    minLimitDecimal.toNumber()
+                    minLimitDecimal.toNumber(),
                   )} xNGN limit`,
                 });
               }
@@ -365,7 +376,7 @@ const AdSchema = Yup.object().shape({
               if (amountDecimal.gt(maxLimitDecimal)) {
                 return this.createError({
                   message: `Amount must not exceed ${formatNumber(
-                    maxLimitDecimal.toNumber()
+                    maxLimitDecimal.toNumber(),
                   )} xNGN limit`,
                 });
               }
@@ -388,7 +399,7 @@ const AdSchema = Yup.object().shape({
             if (amountDecimal.gt(walletBalDecimal)) {
               return this.createError({
                 message: `Amount cannot exceed your wallet balance of ${formatNumber(
-                  walletBalDecimal.toNumber()
+                  walletBalDecimal.toNumber(),
                 )} xNGN`,
               });
             }
@@ -418,7 +429,7 @@ const AdSchema = Yup.object().shape({
             const typeLower = String(type ?? "").toLowerCase();
             const amountDecimal = toSafeDecimal(value);
             const tokenRateDecimal = toSafeDecimal(
-              liveRate[asset as keyof PriceData]
+              liveRate[asset as keyof PriceData],
             );
 
             // 1. Minimum amount check
@@ -431,10 +442,10 @@ const AdSchema = Yup.object().shape({
             // 2. Maximum token limit (NGN converted to tokens)
             if (typeLower === "sell") {
               const maxNairaLimitDecimal = toSafeDecimal(
-                userTransactionLimits?.maximum_ad_creation_amount
+                userTransactionLimits?.maximum_ad_creation_amount,
               );
               const minNairaLimitDecimal = toSafeDecimal(
-                userTransactionLimits?.lower_limit_sell_ad
+                userTransactionLimits?.lower_limit_sell_ad,
               );
               const minTokenValueDecimal = tokenRateDecimal.gt(0)
                 ? minNairaLimitDecimal.div(tokenRateDecimal)
@@ -449,7 +460,7 @@ const AdSchema = Yup.object().shape({
                   message: `Token amount must be at least ${minTokenValueDecimal
                     .toDecimalPlaces(5)
                     .toString()} ${asset} (xNGN${formatNumber(
-                    minNairaLimitDecimal.toNumber()
+                    minNairaLimitDecimal.toNumber(),
                   )} limit) `,
                 });
               }
@@ -463,7 +474,7 @@ const AdSchema = Yup.object().shape({
                   message: `Amount must not exceed ${maxTokenValueDecimal
                     .toDecimalPlaces(5)
                     .toString()} ${asset} (xNGN${formatNumber(
-                    maxNairaLimitDecimal.toNumber()
+                    maxNairaLimitDecimal.toNumber(),
                   )} limit)`,
                 });
               }
@@ -502,10 +513,10 @@ const AdSchema = Yup.object().shape({
         return schema.min(
           limit,
           `Minimum must be greater than ${formatter({ decimal: 0 }).format(
-            limit
-          )} xNGN`
+            limit,
+          )} xNGN`,
         );
-      }
+      },
     )
     .required("Minimum is required"),
 
@@ -513,8 +524,8 @@ const AdSchema = Yup.object().shape({
     .when(["minimumLimit", "amount", "amountToken"], ([minimumLimit], schema) =>
       schema.min(
         Number(minimumLimit) + 1,
-        "Maximum must be greater than Minimum"
-      )
+        "Maximum must be greater than Minimum",
+      ),
     )
     .when(
       [
@@ -536,7 +547,7 @@ const AdSchema = Yup.object().shape({
           liveRate,
           userTransactionLimits,
         ],
-        schema
+        schema,
       ) => {
         const limit =
           type.toLowerCase() === "buy"
@@ -550,16 +561,16 @@ const AdSchema = Yup.object().shape({
 
         const computedMax = Math.min(
           limit || Infinity,
-          type.toLowerCase() === "sell" ? parseFloat(tokenValue) : escrowAmount
+          type.toLowerCase() === "sell" ? parseFloat(tokenValue) : escrowAmount,
         );
 
         return schema.max(
           computedMax,
           `Maximum must not exceed ₦${formatNumber(
-            computedMax
-          )} equivalent to your escrow`
+            computedMax,
+          )} equivalent to your escrow`,
         );
-      }
+      },
     )
     // .test(
     //   "max-greater-than-upper",
@@ -576,7 +587,7 @@ const AdSchema = Yup.object().shape({
     .when("price", (price, schema) => {
       return schema.max(
         Number(price) - 1,
-        "Lower price limit must be lesser than price"
+        "Lower price limit must be lesser than price",
       );
     })
     .required("Lower price is required"),
@@ -586,8 +597,8 @@ const AdSchema = Yup.object().shape({
         .min(Number(price) + 1, "Upper price limit must be greater than price")
         .max(
           Number(price) * 1.3,
-          "Upper price limit must be less than 30% of the price"
-        )
+          "Upper price limit must be less than 30% of the price",
+        ),
     )
     .required("Upper price limit is required"),
 });
@@ -619,7 +630,7 @@ const transferSchema = Yup.object().shape({
       if (Number(value) > Number(balance)) {
         return this.createError({
           message: `Amount exceeds wallet balance. Available: ${formatNumber(
-            Number(balance)
+            Number(balance),
           )} ${asset}`,
         });
       }
@@ -656,7 +667,7 @@ const levelThreeValidationSchema = Yup.object({
 const getBankSchema = (
   user?: UserDetails & {
     businessName: string;
-  }
+  },
 ) => {
   const norm = (s = "") =>
     s
@@ -709,14 +720,14 @@ const getBankSchema = (
 
           const needed = Math.min(2, userTokens.length);
           return matches.length >= needed;
-        }
+        },
       ),
   });
 };
 
 const corporateSchema = Yup.object().shape({
   cacApplicationDocument: Yup.mixed().required(
-    "CAC application document is required"
+    "CAC application document is required",
   ),
   cacDocument: Yup.mixed().required("CAC document is required"),
   mermartDocument: Yup.mixed().nullable(),

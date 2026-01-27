@@ -35,11 +35,10 @@ const fetchAds = async ({
     skip: `${pagination.skip}`,
   });
 
-  if (res.statusCode !== 200) {
-    throw new Error(res.message);
+  if (res.statusCode === 200) {
+    return res.data;
   }
-
-  return res.data;
+  throw new Error("Something went wrong, getting ads");
 };
 
 const MarketPlacePage = () => {
@@ -53,7 +52,7 @@ const MarketPlacePage = () => {
   const initialPage = parseInt(searchParams.get("page") ?? "1", 10);
   const initialLimit = parseInt(
     searchParams.get("limit") ?? DEFAULT_LIMIT.toString(),
-    10
+    10,
   );
 
   //? Derive skip from page & limit
@@ -164,7 +163,7 @@ const MarketPlacePage = () => {
                       "!w-fit  data-[state=active]:border-b-4 rounded-none  !shadow-none !bg-transparent font-semibold md:px-4 px-10 flex-none text-gray-500 text-base border-0 capitalize",
                       v === "buy"
                         ? "data-[state=active]:text-[#17A34A] data-[state=active]:border-b-[#49DE80]"
-                        : "data-[state=active]:text-[#DC2625] data-[state=active]:border-b-[#EF4444]"
+                        : "data-[state=active]:text-[#DC2625] data-[state=active]:border-b-[#EF4444]",
                     )}
                   >
                     {v}

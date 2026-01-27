@@ -10,7 +10,6 @@ import Head from "@/pages/wallet/Head";
 import {
   Complete_Withdraw_xNGN,
   GetUserBank,
-  GetWallet,
   useCryptoRates,
   Withdraw_xNGN,
 } from "@/redux/actions/walletActions";
@@ -42,6 +41,7 @@ import { useFormik } from "formik";
 
 import { APP_ROUTES } from "@/constants/app_route";
 
+import useGetWallet from "@/hooks/use-getWallet";
 import CryptoWithdrawal from "@/pages/wallet/withdrawal/CryptoWithdrawal";
 
 export type TNetwork = {
@@ -169,6 +169,7 @@ const NGNWithdrawal = ({ user, transaction_limits, userBalance }: PropsNGN) => {
   const userTransactionLimits = bisats_limit[account_level];
 
   const queryClient = useQueryClient();
+  const { refetchWallet } = useGetWallet();
 
   const {
     data: userbank,
@@ -230,24 +231,24 @@ const NGNWithdrawal = ({ user, transaction_limits, userBalance }: PropsNGN) => {
         .transform((_, originalValue) =>
           originalValue === "" || isNaN(originalValue)
             ? undefined
-            : Number(originalValue)
+            : Number(originalValue),
         )
         .moreThan(0, "Amount must be greater than 0")
         .max(
           maxWithdrawalLimit,
-          `Amount exceeds your limit per withdrawal (xNGN ${maxWithdrawalLimit.toLocaleString()})`
+          `Amount exceeds your limit per withdrawal (xNGN ${maxWithdrawalLimit.toLocaleString()})`,
         )
         .test(
           "max-balance",
           `Amount cannot exceed your balance (xNGN ${formatter({}).format(
-            userBalance
+            userBalance,
           )})`,
           (value) => {
             if (value === undefined || value === null) return true;
             const numericValue = Number(value);
             if (Number.isNaN(numericValue)) return true; // let Yup handle required/number errors
             return numericValue <= userBalance;
-          }
+          },
         )
         .required("Amount is required"),
     }),
@@ -306,7 +307,7 @@ const NGNWithdrawal = ({ user, transaction_limits, userBalance }: PropsNGN) => {
               queryKey: ["userWalletHistory"],
               exact: false,
             }),
-            GetWallet(),
+            refetchWallet(),
           ]).then(() => navigate(APP_ROUTES.WALLET.HOME));
         } else {
           Toast.error(res.message, "");
@@ -398,13 +399,13 @@ const NGNWithdrawal = ({ user, transaction_limits, userBalance }: PropsNGN) => {
                   dailyLimit={
                     formatCompactNumber(
                       parseFloat(usedUpLimit?.dailyFiatWithdrawalLimit || "0") -
-                        (usedUpLimit?.totalUsedAmountFiat || 0)
+                        (usedUpLimit?.totalUsedAmountFiat || 0),
                     ).endsWith("T")
                       ? "Unlimited"
                       : formatCompactNumber(
                           parseFloat(
-                            usedUpLimit?.dailyFiatWithdrawalLimit || "0"
-                          ) - (usedUpLimit?.totalUsedAmountFiat || 0)
+                            usedUpLimit?.dailyFiatWithdrawalLimit || "0",
+                          ) - (usedUpLimit?.totalUsedAmountFiat || 0),
                         )
                   }
                   fee={
@@ -419,13 +420,13 @@ const NGNWithdrawal = ({ user, transaction_limits, userBalance }: PropsNGN) => {
                           isNaN(parseFloat(formik.values.amount))
                             ? 0
                             : parseFloat(formik.values.amount) -
-                                userTransactionLimits?.charge_on_single_withdrawal_fiat
+                                userTransactionLimits?.charge_on_single_withdrawal_fiat,
                         )
                   }
                   total={`${formatNumber(
                     !formik.values.amount || !formik.isValid
                       ? "-"
-                      : Number(formik.values.amount ?? 0)
+                      : Number(formik.values.amount ?? 0),
                   )}`}
                 />
                 <KycManager

@@ -21,29 +21,23 @@ import dispatchWrapper from "@/utils/dispatchWrapper";
 import { useQuery } from "@tanstack/react-query";
 
 export const GetWallet = async () => {
-  try {
-    const response = await Bisatsfetch(
-      `/api/v1/user${BACKEND_URLS.WALLET.GET_WALLET}`,
-      {
-        method: "GET",
-      }
-    );
-    const data = response.data;
+  const response = await Bisatsfetch(
+    `/api/v1/user${BACKEND_URLS.WALLET.GET_WALLET}`,
+    { method: "GET" },
+  );
 
-    if (response.status) {
-      dispatchWrapper({
-        type: WalletActionTypes.GET_WALLET,
-        payload: data,
-      });
-      const asset_list = transformAssets(data?.cryptoAssests);
-      setUserTokenData(asset_list);
-      return data;
-    }
-  } catch (error) {
-    // logoutUser();
-    // throw handleApiError(error);
-    return error;
+  if (response.status) {
+    const data = response.data;
+    dispatchWrapper({
+      type: WalletActionTypes.GET_WALLET,
+      payload: data,
+    });
+    const asset_list = transformAssets(data?.cryptoAssests);
+    setUserTokenData(asset_list);
+    return data; // Still return for React Query cache
   }
+
+  throw new Error(response.data?.message || "Failed to fetch wallet");
 };
 
 export const DepositTranscBreakDown = async (payload: TTopUpNGN) => {
@@ -53,7 +47,7 @@ export const DepositTranscBreakDown = async (payload: TTopUpNGN) => {
       {
         method: "POST",
         body: JSON.stringify(payload),
-      }
+      },
     );
     const data = response;
 
@@ -84,7 +78,7 @@ export const ConfirmDeposit = async (payload: {
           userId: payload.userId,
           status: payload.status,
         }),
-      }
+      },
     );
     const data = response;
 
@@ -141,7 +135,7 @@ export const GetLivePrice = async () => {
         USDT_SOL: 0,
         TRX: 0,
         USDT_TRX: 0,
-      })
+      }),
     );
 
     return {
@@ -172,7 +166,7 @@ export const TopUpNGNBalance = async (payload: TTopUpNGN) => {
       {
         method: "POST",
         body: JSON.stringify(payload),
-      }
+      },
     );
     const data = response;
     return data;
@@ -188,7 +182,7 @@ export const GetUserBank = async () => {
       `/api/v1/user${BACKEND_URLS?.WALLET.MY_BANKS}`,
       {
         method: "GET",
-      }
+      },
     );
 
     if (response.statusCode !== 200) {
@@ -206,7 +200,7 @@ export const GetBankList = async () => {
       `/api/v1/user${BACKEND_URLS?.WALLET?.LIST_BANKS}`,
       {
         method: "GET",
-      }
+      },
     );
     const data = response.data;
 
@@ -229,11 +223,11 @@ export const ResolveBankAccoutName = async (payload: {
     {
       method: "POST",
       body: JSON.stringify(payload),
-    }
+    },
   );
 };
 export const AddBankAccountForWithdrawal = async (
-  payload: TWithdrawalBankAccount
+  payload: TWithdrawalBankAccount,
 ) => {
   try {
     const response = await Bisatsfetch(
@@ -241,7 +235,7 @@ export const AddBankAccountForWithdrawal = async (
       {
         method: "POST",
         body: JSON.stringify(payload),
-      }
+      },
     );
 
     return response;
@@ -252,7 +246,7 @@ export const AddBankAccountForWithdrawal = async (
 };
 
 export const EditBankAccountForWithdrawal = async (
-  payload: TWithdrawalBankAccount
+  payload: TWithdrawalBankAccount,
 ) => {
   try {
     const response = await Bisatsfetch(
@@ -260,7 +254,7 @@ export const EditBankAccountForWithdrawal = async (
       {
         method: "PUT",
         body: JSON.stringify(payload),
-      }
+      },
     );
 
     return response;
@@ -271,14 +265,14 @@ export const EditBankAccountForWithdrawal = async (
 };
 
 export const DeleteBankAccountForWithdrawal = async (
-  payload: TDeleteWithdrawalRequest
+  payload: TDeleteWithdrawalRequest,
 ) => {
   try {
     const response = await Bisatsfetch(
       `/api/v1/user/bank/${payload.bankAccountId}${BACKEND_URLS.WALLET.DELE_BANK_ACCOUNT}`,
       {
         method: "DELETE",
-      }
+      },
     );
     const data = response;
     return data;
@@ -295,7 +289,7 @@ export const saveWalletAddressHandler = async (payload: TWithdrawalAddress) => {
       {
         method: "POST",
         body: JSON.stringify(payload),
-      }
+      },
     );
 
     return response;
@@ -312,7 +306,7 @@ export const deleteWalletAddressHandler = async (payload: {
       `/api/v1/user${BACKEND_URLS.WALLET.WITHDRAWAL_ADDRESS}/${payload.addressId}`,
       {
         method: "DELETE",
-      }
+      },
     );
 
     return response;
@@ -328,7 +322,7 @@ export const Withdraw_xNGN = async (payload: TWithdrawalRequest) => {
       {
         method: "POST",
         body: JSON.stringify(payload),
-      }
+      },
     );
     const data = response;
 
@@ -339,7 +333,7 @@ export const Withdraw_xNGN = async (payload: TWithdrawalRequest) => {
   }
 };
 export const Complete_Withdraw_xNGN = async (
-  payload: WithdrawalCompleteType
+  payload: WithdrawalCompleteType,
 ) => {
   try {
     const response = await Bisatsfetch(
@@ -347,7 +341,7 @@ export const Complete_Withdraw_xNGN = async (
       {
         method: "POST",
         body: JSON.stringify(payload),
-      }
+      },
     );
     const data = response;
 
@@ -365,7 +359,7 @@ export const Withdraw_Crypto = async (payload: TCryptoWithdrawalRequest) => {
       {
         method: "POST",
         body: JSON.stringify(payload),
-      }
+      },
     );
     return response;
   } catch (error) {
@@ -374,7 +368,7 @@ export const Withdraw_Crypto = async (payload: TCryptoWithdrawalRequest) => {
   }
 };
 export const Complete_Withdraw_Crypto = async (
-  payload: WithdrawalCompleteType
+  payload: WithdrawalCompleteType,
 ) => {
   try {
     const response = await Bisatsfetch(
@@ -382,7 +376,7 @@ export const Complete_Withdraw_Crypto = async (
       {
         method: "POST",
         body: JSON.stringify(payload),
-      }
+      },
     );
     const data = response;
 
@@ -400,7 +394,7 @@ export const TwoFactorAuth = async (payload: T2FARequest) => {
       {
         method: "POST",
         body: JSON.stringify(payload),
-      }
+      },
     );
     const data = response;
     return data;
@@ -417,7 +411,7 @@ export const CreateAds = async (payload: TCreateAdsRequest) => {
       {
         method: "POST",
         body: JSON.stringify(payload),
-      }
+      },
     );
     const data = response;
     console.log(data);
@@ -440,7 +434,7 @@ export const GetExpressAds = async (payload: TAddSearchRequest) => {
       }&limit=1&skip=0`,
       {
         method: "GET",
-      }
+      },
     );
     const data = response.data;
     if (response.status) {
@@ -454,7 +448,7 @@ export const GetExpressAds = async (payload: TAddSearchRequest) => {
 };
 
 export const GetSearchAds = async (
-  payload: Omit<TAddSearchRequest, "amount">
+  payload: Omit<TAddSearchRequest, "amount">,
 ) => {
   try {
     const response = await Bisatsfetch(
@@ -465,7 +459,7 @@ export const GetSearchAds = async (
       }&skip=${payload?.skip}`,
       {
         method: "GET",
-      }
+      },
     );
     return response;
   } catch (error) {
@@ -478,7 +472,7 @@ const GetAdDetails = async (payload: { userId: string; adId: string }) => {
       `/api/v1/user/ads/${payload.adId}/get-user-ads-by-id`,
       {
         method: "GET",
-      }
+      },
     );
     if (!response.status) {
       throw new Error(response.message);
@@ -497,7 +491,7 @@ export const GetUserAd = async (payload: TAddSearchRequest) => {
       }&type=${payload.type === "buy" ? "sell" : "buy"}&limit=10&skip=0`,
       {
         method: "GET",
-      }
+      },
     );
     const data = response.data;
     console.log(response);
@@ -572,7 +566,7 @@ export const GetWalletTransactions = async (payload: TPayloadTransHistory) => {
       }&searchWord=${payload.searchWord ?? ""}&status=${payload.status ?? ""}`,
       {
         method: "GET",
-      }
+      },
     );
     const data = response.data;
     if (!response.status) {
@@ -654,7 +648,7 @@ const useUserWalletHistory = ({
       string, // asset
       string, // date
       string, // type
-      string // searchWord
+      string, // searchWord
     ]
   >({
     queryKey: ["userWalletHistory", reason, asset, date, type, searchWord],
@@ -695,7 +689,7 @@ const useFetchOrder = ({ isKycVerified }: { isKycVerified?: boolean }) => {
     queryFn: async () => {
       const response = await Bisatsfetch(
         `/api/v1/user${BACKEND_URLS.P2P.ADS.FETCH_ORDERS}`,
-        { method: "GET" }
+        { method: "GET" },
       );
 
       if (response.status === true && Array.isArray(response.data)) {
@@ -726,7 +720,7 @@ const getCryptoRates = async () => {
   const response = await fetch(
     `https://api.coingecko.com/api/v3/simple/price` +
       `?ids=${COIN_IDS}` +
-      `&vs_currencies=usd,ngn&include_24hr_change=true`
+      `&vs_currencies=usd,ngn&include_24hr_change=true`,
   );
 
   if (!response.ok) throw new Error("Failed to fetch crypto rates");
@@ -742,7 +736,7 @@ const getCoinRates = async ({ isNgnRate = false }: { isNgnRate?: boolean }) => {
       `&order=market_cap_desc` +
       `&per_page=4&page=1` +
       `&sparkline=false` +
-      `&price_change_percentage=24h`
+      `&price_change_percentage=24h`,
   );
 
   if (!response.ok) throw new Error("Failed to fetch crypto rates");
@@ -820,7 +814,7 @@ const useGetAdsDetail = ({
         `/api/v1/user${BACKEND_URLS?.P2P.ADS.SEARCH_ADS}?id=${adId}`,
         {
           method: "GET",
-        }
+        },
       );
       if (!response.status) throw new Error(response.message);
       return response.data;
@@ -834,8 +828,9 @@ const useGetBankList = ({ enabled }: { enabled?: boolean }) => {
   return useQuery<Banks[], Error>({
     queryKey: ["BankList"],
     queryFn: GetBankList,
+    retry: true,
     refetchOnMount: false,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: Infinity,
     enabled,
   });
 };
@@ -857,7 +852,7 @@ export const getNetworkFee = async ({
       {
         method: "POST",
         body: JSON.stringify(paylod),
-      }
+      },
     );
 
     if (response.statusCode !== 200) {
@@ -883,7 +878,7 @@ const transferToken = async (payload: {
       {
         method: "POST",
         body: JSON.stringify(payload),
-      }
+      },
     );
     return response;
   } catch (error) {
