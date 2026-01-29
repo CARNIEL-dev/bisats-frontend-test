@@ -50,8 +50,11 @@ jobs:
 
       - name: Upload to S3
         run: |
-          aws s3 sync frontend/build s3://${{ secrets.S3_BUCKET_NAME }} --delete --exclude ".DS_Store" --exclude "**/.DS_Store"
-          
+          aws s3 sync frontend/build s3://${{ secrets.S3_BUCKET_NAME }} --delete
+
+      - name: Remove .DS_Store from S3
+        run: |
+          aws s3 rm s3://${{ secrets.S3_BUCKET_NAME }} --recursive --exclude "*" --include ".DS_Store"    
 
       - name: CloudFront cache invalidation
         run: |
