@@ -50,7 +50,10 @@ jobs:
 
       - name: Upload to S3
         run: |
-          aws s3 sync frontend/build s3://${{ secrets.S3_BUCKET_NAME }} --delete
+          aws s3 sync frontend/build s3://${{ secrets.S3_BUCKET_NAME }} \
+            --delete
+            --exclude ".DS_Store" \
+            --exclude "**/.DS_Store"
 
       - name: CloudFront cache invalidation
         run: |
