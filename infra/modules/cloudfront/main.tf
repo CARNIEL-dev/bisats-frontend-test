@@ -5,6 +5,8 @@ resource "aws_cloudfront_origin_access_control" "this" {
   origin_access_control_origin_type = "s3"
   signing_behavior                  = "always"
   signing_protocol                  = "sigv4"
+
+  
 }
 
 ############################################
@@ -62,6 +64,24 @@ resource "aws_cloudfront_distribution" "this" {
 
     cache_policy_id = aws_cloudfront_cache_policy.this.id
   }
+
+    ##########################################
+  # SPA Routing Fix (React / Vue / Angular)
+  ##########################################
+  custom_error_response {
+    error_code            = 403
+    response_code         = 200
+    response_page_path    = "/index.html"
+    error_caching_min_ttl = 0
+  }
+
+  custom_error_response {
+    error_code            = 404
+    response_code         = 200
+    response_page_path    = "/index.html"
+    error_caching_min_ttl = 0
+  }
+
 
   ##########################################
   # Security & SSL
