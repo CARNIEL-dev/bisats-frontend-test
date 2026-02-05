@@ -156,22 +156,40 @@ const Receipt = () => {
                 onClick={() => navigate(APP_ROUTES.DASHBOARD)}
               />
             </div>
-
-            <div className="flex-1 ">
-              <PrimaryButton
-                text={"Go to Market"}
-                className="w-full"
-                loading={false}
-                type="button"
-                onClick={() =>
-                  navigate(
-                    `${APP_ROUTES.P2P.HOME}?type=${
-                      orderData?.type ? "buy" : "Sell"
-                    }&asset=${orderData?.asset}`
-                  )
-                }
-              />
-            </div>
+            {orderData?.type === "sell" ? (
+              <div className="flex-1 ">
+                <PrimaryButton
+                  text={"Withdraw"}
+                  className="w-full"
+                  loading={false}
+                  type="button"
+                  onClick={() =>
+                    navigate(`${APP_ROUTES.WALLET.WITHDRAW}`, {
+                      state: {
+                        asset: "xNGN",
+                        amount: orderData?.amount,
+                      },
+                    })
+                  }
+                />
+              </div>
+            ) : (
+              <div className="flex-1 ">
+                <PrimaryButton
+                  text={"Go to Market"}
+                  className="w-full"
+                  loading={false}
+                  type="button"
+                  onClick={() =>
+                    navigate(
+                      `${APP_ROUTES.P2P.HOME}?type=${
+                        orderData?.type ? "buy" : "Sell"
+                      }&asset=${orderData?.asset}`,
+                    )
+                  }
+                />
+              </div>
+            )}
           </div>
         </>
       )}

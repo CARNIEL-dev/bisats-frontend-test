@@ -111,11 +111,11 @@ const SwapConfirmation: React.FC<Props> = ({
       const response = await Bisatsfetch(`/api/v1/user/ads/${adsId}/order`, {
         method: "POST",
         body: JSON.stringify({
-          userId: userId,
+          // userId: userId,
           amount: amountValue,
           transactionPin: securePin,
-          networkFee: feeData.networkFee,
-          transactionFee: feeData.transactionFee,
+          // networkFee: feeData.networkFee,
+          // transactionFee: feeData.transactionFee,
         }),
       });
 

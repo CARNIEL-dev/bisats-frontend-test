@@ -36,7 +36,7 @@ const LogIn = () => {
       const { ...payload } = values;
       const ip = await getClientIp();
       if (!ip) {
-        Toast.error("Failed to get IP", "Login Failed");
+        Toast.error("Failed to detect your login location", "Login Failed");
         return;
       }
       const response = await Login({

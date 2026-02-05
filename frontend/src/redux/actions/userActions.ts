@@ -285,25 +285,18 @@ export const PostPOA_KYC = async (payload: TPOA) => {
 };
 
 export const PostIdentity_KYC = async (payload: TIdentity) => {
-  const formData = new FormData();
-  formData.append("image", payload.selfie);
-  formData.append("identificationType", payload.docType);
-  formData.append("identificationNumber", payload.identificationNo);
-  const token = getToken();
+  const dataInfo = {
+    image: payload.selfie,
+    identificationType: payload.docType,
+    identificationNumber: payload.identificationNo,
+  };
 
   try {
-    const response = await fetch(
-      `${BACKEND_URLS.BASE_URL}/api/v1/user/verify-identity`,
-      {
-        method: "PUT",
-        headers: {
-          // "Content-Type": "multipart/form-data",
-          Authorization: `${token}`,
-        },
-        body: formData,
-      },
-    );
-    const data = response.json();
+    const data = await Bisatsfetch("/api/v1/user/verify-identity", {
+      method: "PUT",
+
+      body: JSON.stringify(dataInfo),
+    });
 
     return data;
   } catch (error) {
@@ -312,30 +305,18 @@ export const PostIdentity_KYC = async (payload: TIdentity) => {
   }
 };
 export const PostCorporateInformation = async (payload: TCorporateInfo) => {
-  const formData = new FormData();
-  formData.append("cacApplicationDocument", payload?.cacApplicationDocument!);
-  if (payload.mermartDocument) {
-    formData.append("mermartDocument", payload?.mermartDocument!);
-  }
-  formData.append("cacDocument", payload?.cacDocument!);
-  formData.append("bankName", payload.bankName);
-  formData.append("accountNumber", payload.accountNumber);
-  formData.append("accountName", payload.accountName);
-
-  const token = getToken();
-
+  const dataInfo: TCorporateInfo = {
+    ...payload,
+    mermartDocument: payload.cacDocument,
+  };
   try {
-    const response = await fetch(
-      `${BACKEND_URLS.BASE_URL}/api/v1/user/upload-cooperate-account-documents`,
+    const data = Bisatsfetch(
+      "/api/v1/user/upload-cooperate-account-documents",
       {
         method: "POST",
-        headers: {
-          Authorization: `${token}`,
-        },
-        body: formData,
+        body: JSON.stringify(dataInfo),
       },
     );
-    const data = response.json();
 
     return data;
   } catch (error) {
@@ -547,25 +528,16 @@ export const Post_Proof_of_Wealth_KYC = async (payload: TPOA) => {
 };
 
 export const Post_Proof_of_Profile_KYC = async (payload: TPOA) => {
-  const formData = new FormData();
-  formData.append("image", payload.file);
-  const token = getToken();
-
   try {
-    const response = await fetch(
-      `${BACKEND_URLS.BASE_URL}/api/v1/user${BACKEND_URLS.KYC.POST_PROOF_PROFILE}`,
+    const data = await Bisatsfetch(
+      `/api/v1/user${BACKEND_URLS.KYC.BECOME_MERCHANT}`,
       {
         method: "PUT",
-        headers: {
-          // "Content-Type": "multipart/form-data",
-          Authorization: `${token}`,
-        },
-        body: formData,
+        body: JSON.stringify({
+          image: payload.file,
+        }),
       },
     );
-    const data = response.json();
-
-    // dispatchWrapper({ type: GeneralTypes.SUCCESS, payload: data });
 
     return data;
   } catch (error) {
@@ -574,23 +546,14 @@ export const Post_Proof_of_Profile_KYC = async (payload: TPOA) => {
   }
 };
 export const Become_Merchant_Hanlder = async (payload: TMerchant) => {
-  const formData = new FormData();
-  formData.append("document1", payload.utilityBill);
-  formData.append("document2", payload.photoIdentity);
-  const token = getToken();
-
   try {
-    const response = await fetch(
-      `${BACKEND_URLS.BASE_URL}/api/v1/user${BACKEND_URLS.KYC.BECOME_MERCHANT}`,
+    const data = await Bisatsfetch(
+      `/api/v1/user${BACKEND_URLS.KYC.BECOME_MERCHANT}`,
       {
         method: "POST",
-        headers: {
-          Authorization: `${token}`,
-        },
-        body: formData,
+        body: JSON.stringify(payload),
       },
     );
-    const data = response.json();
 
     return data;
   } catch (error) {
@@ -600,26 +563,20 @@ export const Become_Merchant_Hanlder = async (payload: TMerchant) => {
 };
 
 export const PostLevelThreeInformation = async (payload: TSuperMerchant) => {
-  const formData = new FormData();
-  formData.append("document1", payload.utilityBill);
-  formData.append("document2", payload.cacDocument);
-  if (payload.mermatDoc) {
-    formData.append("document3", payload.mermatDoc);
-  }
-  const token = getToken();
+  const dataInfo = {
+    document1: payload.utilityBill,
+    document2: payload.cacDocument,
+    document3: payload.mermatDoc ?? undefined,
+  };
 
   try {
-    const response = await fetch(
-      `${BACKEND_URLS.BASE_URL}/api/v1/user${BACKEND_URLS.KYC.BECOME_SUPER_MERCHANT}`,
+    const data = await Bisatsfetch(
+      `/api/v1/user${BACKEND_URLS.KYC.BECOME_SUPER_MERCHANT}`,
       {
         method: "POST",
-        headers: {
-          Authorization: `${token}`,
-        },
-        body: formData,
+        body: JSON.stringify(dataInfo),
       },
     );
-    const data = response.json();
 
     return data;
   } catch (error) {

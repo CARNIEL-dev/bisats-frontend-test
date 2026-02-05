@@ -9,7 +9,6 @@ import Toast from "@/components/Toast";
 import Head from "@/pages/wallet/Head";
 import {
   Complete_Withdraw_xNGN,
-  GetUserBank,
   useCryptoRates,
   Withdraw_xNGN,
 } from "@/redux/actions/walletActions";
@@ -75,6 +74,7 @@ const WithdrawalPage = () => {
 
   const location = useLocation();
   const linkedAsset = location.state?.asset;
+  const linkedAmount = location.state?.amount;
 
   const [selectedToken, setSelectedToken] = useState<string>(linkedAsset);
 
@@ -124,6 +124,7 @@ const WithdrawalPage = () => {
                 user={user}
                 transaction_limits={transaction_limits}
                 userBalance={userBalance}
+                defaultAmount={linkedAmount}
               />
             )}
             {selectedToken && selectedToken !== "xNGN" && (
@@ -150,9 +151,15 @@ type PropsNGN = {
   user: UserState["user"];
   transaction_limits: undefined | UserTransactionLimits;
   userBalance: number;
+  defaultAmount?: number;
 };
 
-const NGNWithdrawal = ({ user, transaction_limits, userBalance }: PropsNGN) => {
+const NGNWithdrawal = ({
+  user,
+  transaction_limits,
+  userBalance,
+  defaultAmount,
+}: PropsNGN) => {
   const [withdrawlLoading, setWithdrawlLoading] = useState(false);
 
   const [addBankModal, setAddBankModal] = useState(false);
@@ -171,20 +178,12 @@ const NGNWithdrawal = ({ user, transaction_limits, userBalance }: PropsNGN) => {
   const queryClient = useQueryClient();
   const { refetchWallet } = useGetWallet();
 
-  const {
-    data: userbank,
-    isError,
-    isLoading,
-    isFetching,
-  } = useQuery<UserBankListType[], Error>({
-    queryKey: ["UserBankList", user?.userId],
-    queryFn: GetUserBank,
-    refetchOnMount: false,
-    enabled: Boolean(user?.userId),
-  });
-
   // SUB: User bank list
   const userBankList = useMemo(() => {
+    const bankAccounts = user?.bankAccounts;
+    const userbank = bankAccounts?.filter(
+      (ba: any) => ba?.bankAccountType === "withdrawal",
+    );
     if (!userbank) return [];
     return userbank?.map((choice: UserBankListType) => ({
       label: (
@@ -202,7 +201,7 @@ const NGNWithdrawal = ({ user, transaction_limits, userBalance }: PropsNGN) => {
       ),
       value: choice?.id,
     }));
-  }, [userbank]);
+  }, [user?.bankAccounts]);
 
   // SUB: Used up limit
   const usedUpLimit = useMemo(() => {
@@ -215,14 +214,14 @@ const NGNWithdrawal = ({ user, transaction_limits, userBalance }: PropsNGN) => {
     userTransactionLimits?.maximum_fiat_withdrawal || Infinity;
 
   useEffect(() => {
-    if (!userbank?.length && !isLoading) {
+    if (!userBankList?.length) {
       setAddBankModal(true);
     }
-  }, [userbank, isLoading]);
+  }, [userBankList]);
 
   const formik = useFormik({
     initialValues: {
-      amount: "",
+      amount: defaultAmount?.toString() || "",
       bank: "",
     },
     validationSchema: Yup.object().shape({
@@ -335,19 +334,7 @@ const NGNWithdrawal = ({ user, transaction_limits, userBalance }: PropsNGN) => {
   return (
     <>
       <div className="mt-4">
-        {isLoading && isFetching ? (
-          <div className="h-[12rem] grid place-content-center">
-            <PreLoader primary={false} />
-          </div>
-        ) : isError ? (
-          <div className="h-[5rem] grid place-content-center">
-            <ErrorDisplay
-              message="Failed to get withdrawal account, Try again later."
-              isError={false}
-              showIcon={false}
-            />
-          </div>
-        ) : userBankList?.length > 0 ? (
+        {userBankList?.length > 0 ? (
           <>
             <div>
               <MultiSelectDropDown
@@ -377,6 +364,7 @@ const NGNWithdrawal = ({ user, transaction_limits, userBalance }: PropsNGN) => {
                       ? true
                       : false
                   }
+                  // defaultValue={defaultAmount?.toString() || ""}
                   value={formik.values.amount}
                   onChange={(e) => {
                     // let value = e.target.value.replace(/\D/g, "");

@@ -1,12 +1,17 @@
 /** @format */
 
-import { getRefreshToken, getToken } from "@/helpers";
+import {
+  getRefreshToken,
+  getToken,
+  setRefreshToken,
+  setToken,
+} from "@/helpers";
 import { BACKEND_URLS } from "@/utils/backendUrls";
 import { refreshAccessToken } from "./actions/userActions";
 
 const Bisatsfetch = async (
   url: string,
-  options: RequestInit = {}
+  options: RequestInit = {},
 ): Promise<any> => {
   // Request interceptor: Add Authorization header
   const token = getToken();
@@ -47,6 +52,8 @@ const Bisatsfetch = async (
     const response = await fetch(`${BACKEND_URLS.BASE_URL}${url}`, config);
     const resData = await response.json();
 
+    // console.log("Response from fetch wrapper", resData);
+
     // Response interceptor: Handle 401 (Unauthorized) and refresh token
     if (
       resData.statusCode === 401 &&
@@ -62,7 +69,14 @@ const Bisatsfetch = async (
           })) as TUser;
 
           // Update tokens in storage
-          const { token } = tokenObj;
+          const token = tokenObj?.token;
+
+          // console.log("REtry tk", token);
+          if (!tokenObj.token || !tokenObj.refreshToken) {
+            throw new Error("Failed to refresh access token");
+          }
+          setToken(token);
+          setRefreshToken(tokenObj.refreshToken);
 
           const retryHeaders = {
             ...headers,
@@ -75,10 +89,11 @@ const Bisatsfetch = async (
 
           const retryResponse = await fetch(
             `${BACKEND_URLS.BASE_URL}${originalRequest.url}`,
-            retryConfig
+            retryConfig,
           );
           const retryDataResponse = await retryResponse.json();
 
+          // console.log("Retry Response", retryDataResponse);
           // Decrypt retry response
           // const retryData = decryptDataInfo(retryDataResponse);
 

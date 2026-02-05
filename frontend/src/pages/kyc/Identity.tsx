@@ -45,12 +45,8 @@ const Identity = () => {
     validationSchema: IdentificationSchema,
     onSubmit: async (values) => {
       const { ...payload } = values;
-      const payloadd = {
-        ...payload,
-        userId: user?.user?.userId,
-      };
 
-      const response = await PostIdentity_KYC(payloadd);
+      const response = await PostIdentity_KYC(payload);
 
       if (response.statusCode === 200) {
         await GetUserDetails({
@@ -95,16 +91,8 @@ const Identity = () => {
         </div>
         <div className="my-4">
           <div>
-            {/* <FileInput
-              fileName={file1Name}
-              handleFileChange={handleFile1Change}
-              error={formik.errors.selfie}
-              label={"Upload the selected document"}
-              disabled={user?.kyc?.utilityBillVerified}
-            /> */}
             <FileInputField
               label="Upload the selected document"
-              autoUpload={false}
               formik={formik}
               name="selfie"
               disabled={user?.kyc?.utilityBillVerified}

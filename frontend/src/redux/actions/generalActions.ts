@@ -136,10 +136,33 @@ const Delete_All_Notifications = async () => {
   }
 };
 
+type FileUplaodType = {
+  image: string;
+  fileName: string;
+  contentType: string;
+};
+const uploadFile = async (data: FileUplaodType) => {
+  try {
+    const response = await Bisatsfetch(`/api/v1/user/upload-document`, {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+
+    if (!response.url) {
+      throw new Error("Failed to upload file");
+    }
+
+    return response.url;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export {
   useFetchUserNotifications,
   Read_Notification,
   Delete_Notification,
   Read_All_Notifications,
   Delete_All_Notifications,
+  uploadFile,
 };

@@ -30,6 +30,7 @@ interface Props {
     accountNumber: string;
     accountName: string;
     bankName: string;
+    bankCode: string;
   }) => void;
 }
 
@@ -44,6 +45,8 @@ const WithdrawalBankAccount: React.FC<Props> = ({
   const { refetchWallet } = useGetWallet();
   const [loading, setLoading] = useState(false);
   const [isAcctNumberFocused, setIsAcctNumberFocused] = useState(false);
+
+  const Container = mode === "custom" ? "div" : "form";
 
   // prevent duplicate calls for the same pair
   const lastKeyRef = useRef<string | null>(null);
@@ -199,11 +202,17 @@ const WithdrawalBankAccount: React.FC<Props> = ({
           accountNumber: formik.values.accountNumber,
           accountName: formik.values.accountName,
           bankName: formik.values.bankName,
+          bankCode: formik.values.bankCode,
         });
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formik.values, mode === "custom"]);
+
+  const wrapperProps =
+    mode === "custom"
+      ? { className: "w-full" } // Props for a <div>
+      : { className: "w-full", onSubmit: formik.handleSubmit };
 
   return (
     <>
@@ -230,8 +239,8 @@ const WithdrawalBankAccount: React.FC<Props> = ({
               />
             </div>
           ) : (
-            <form
-              onSubmit={mode === "custom" ? undefined : formik.handleSubmit}
+            <Container
+              {...(wrapperProps as React.AllHTMLAttributes<HTMLElement>)}
             >
               <div className="my-5 space-y-2">
                 <SearchableDropdown
@@ -306,7 +315,7 @@ const WithdrawalBankAccount: React.FC<Props> = ({
                   }
                 />
               </div>
-            </form>
+            </Container>
           )}
         </div>
       </div>

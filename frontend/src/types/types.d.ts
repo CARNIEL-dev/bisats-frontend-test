@@ -123,9 +123,9 @@ interface Order {
 }
 
 interface TCorporateInfo {
-  cacApplicationDocument: File | null;
-  mermartDocument?: File | null;
-  cacDocument: File | null;
+  cacApplicationDocument: string;
+  mermartDocument?: string;
+  cacDocument: string;
   bankName: string;
   accountNumber: string;
   accountName: string;

@@ -8,7 +8,6 @@ import PinForm from "@/components/shared/PinForm";
 import Toast from "@/components/Toast";
 import { Button } from "@/components/ui/Button";
 import { FORGOT_PIN } from "@/redux/actions/userActions";
-import { delay } from "@/utils";
 import { Loader2 } from "lucide-react";
 
 import { useState } from "react";

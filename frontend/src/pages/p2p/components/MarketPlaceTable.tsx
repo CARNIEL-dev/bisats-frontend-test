@@ -100,53 +100,65 @@ const MarketPlaceTable = ({ type, ads, asset }: MarketPlaceContentProps) => {
         return String(priceValue).includes(numericFilter);
       },
     },
-    {
-      id: "amountAvailable",
-      header: "Quantity",
-      accessorFn: (row: AdsType) => {
-        if (row.orderType === "buy") {
-          return row.amountAvailable;
-        }
-        return row.amountAvailable / row.price;
-      },
-      cell: ({ row }) => {
-        const value = Number(row.getValue("amountAvailable"));
-        const asset = row.original.asset;
-        const formatted = formatter({
-          decimal: asset === "USDT" ? 2 : 5,
-        }).format(value);
-        return (
-          <div className="text-gray-600 uppercase">
-            {formatted} {row.original.asset}
-          </div>
-        );
-      },
-      filterFn: (row, id, filterValue) => {
-        const value = Number(row.getValue(id));
-        const filterNum = parseFloat(filterValue.replace(/[^\d.]/g, "")) || 0;
+    // {
+    //   id: "amountAvailable",
+    //   header: "Quantity",
+    //   accessorFn: (row: AdsType) => {
+    //     if (row.orderType === "buy") {
+    //       return row.amountAvailable;
+    //     }
+    //     return row.amountAvailable / row.price;
+    //   },
+    //   cell: ({ row }) => {
+    //     const value = Number(row.getValue("amountAvailable"));
+    //     const asset = row.original.asset;
+    //     const formatted = formatter({
+    //       decimal: asset === "USDT" ? 2 : 5,
+    //     }).format(value);
+    //     return (
+    //       <div className="text-gray-600 uppercase">
+    //         {formatted} {row.original.asset}
+    //       </div>
+    //     );
+    //   },
+    //   filterFn: (row, id, filterValue) => {
+    //     const value = Number(row.getValue(id));
+    //     const filterNum = parseFloat(filterValue.replace(/[^\d.]/g, "")) || 0;
 
-        // Match either exact or partial number
-        return (
-          Math.abs(value - filterNum) < 0.00001 || // Exact match
-          String(value).includes(String(filterNum)) // Partial match
-        );
-      },
-    },
+    //     // Match either exact or partial number
+    //     return (
+    //       Math.abs(value - filterNum) < 0.00001 || // Exact match
+    //       String(value).includes(String(filterNum)) // Partial match
+    //     );
+    //   },
+    // },
     {
       id: "limits",
-      header: "Limits",
+      header: "Quantity/Limits",
       accessorFn: (row) => ({
         min: row.minimumLimit,
         max: row.maximumLimit,
       }),
       cell: ({ row }) => {
+        const amountAvailable = row.original.amountAvailable as number;
+        const orderType = row.original.orderType as string;
+        const price = row.original.price as number;
+        const asset = row.original.asset as string;
+
+        const quantity =
+          orderType === "buy" ? amountAvailable : amountAvailable / price;
         const limits = row.getValue("limits") as { min: number; max: number };
         const minLimit = formatter({}).format(limits.min);
         const maxLimit = formatter({}).format(limits.max);
 
         return (
           <div className="text-gray-600">
-            {minLimit} - {maxLimit} xNGN
+            <p className="font-semibold text-gray-600">
+              {formatter({}).format(quantity)} {asset}
+            </p>
+            <span>
+              {minLimit} - {maxLimit} xNGN
+            </span>
           </div>
         );
       },

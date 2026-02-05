@@ -24,7 +24,7 @@ interface TInput extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 const resolveValue = (
-  val: InputHTMLAttributes<HTMLInputElement>["value"]
+  val: InputHTMLAttributes<HTMLInputElement>["value"],
 ): string => {
   if (val === null || val === undefined) return "";
   if (Array.isArray(val)) {
@@ -95,7 +95,7 @@ const formatNumberDisplay = (value: string): string => {
 
 const buildSyntheticEvent = (
   event: ChangeEvent<HTMLInputElement>,
-  nextValue: string
+  nextValue: string,
 ): ChangeEvent<HTMLInputElement> => {
   const numericValue =
     nextValue === "" || nextValue === "." ? NaN : Number(nextValue);
@@ -121,7 +121,7 @@ const buildSyntheticEvent = (
   } as EventTarget & HTMLInputElement;
   Object.setPrototypeOf(
     currentTarget,
-    Object.getPrototypeOf(originalCurrentTarget)
+    Object.getPrototypeOf(originalCurrentTarget),
   );
 
   const syntheticEvent = {
@@ -168,7 +168,7 @@ const PrimaryInput: React.FC<TInput> = ({
 
   const [rawValue, setRawValue] = useState(initialRaw);
   const [formattedValue, setFormattedValue] = useState(
-    format ? formatNumberDisplay(initialRaw) : ""
+    format ? formatNumberDisplay(initialRaw) : "",
   );
 
   useEffect(() => {
@@ -177,11 +177,11 @@ const PrimaryInput: React.FC<TInput> = ({
     const nextRaw = sanitizeNumberString(resolveValue(value ?? defaultValue));
     const nextFormatted = formatNumberDisplay(nextRaw);
 
-    setRawValue((prev) => (prev === nextRaw ? prev : nextRaw));
-    setFormattedValue((prev) =>
-      prev === nextFormatted ? prev : nextFormatted
-    );
-  }, [defaultValue, format, value]);
+    // Always update to ensure sync with form values
+    setRawValue(nextRaw);
+    setFormattedValue(nextFormatted);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value, defaultValue]);
 
   const handleFormattedChange = (event: ChangeEvent<HTMLInputElement>) => {
     const rawInput = event.target.value;
@@ -240,7 +240,7 @@ const PrimaryInput: React.FC<TInput> = ({
     <div
       className={cn(
         "w-full flex flex-col gap-1.5 ",
-        type === "code" && className && className
+        type === "code" && className && className,
       )}
     >
       <div className="">
@@ -292,13 +292,13 @@ const PrimaryInput: React.FC<TInput> = ({
           <input
             {...inputProps}
             name={name}
-            type={format ? "text" : type ?? "text"}
-            inputMode={format ? inputMode ?? "decimal" : inputMode}
+            type={format ? "text" : (type ?? "text")}
+            inputMode={format ? (inputMode ?? "decimal") : inputMode}
             style={mergedStyle}
             className={cn(
               `rounded-sm placeholder:text-sm text-base font-normal border border-[#D6DAE1] outline-[none] focus:border-[#C49600] focus:shadow-[0_0_10px_#FEF8E5] w-full text-[#606C82]  p-2.5 no-spinner  px-3 `,
               error && "border-[#EF4444] outline-0 focus:border-[#EF4444] ",
-              className
+              className,
             )}
             data-raw-value={format ? rawValue : undefined}
             {...(format
@@ -313,8 +313,8 @@ const PrimaryInput: React.FC<TInput> = ({
                   ...(value !== undefined
                     ? { value }
                     : defaultValue !== undefined
-                    ? { defaultValue }
-                    : {}),
+                      ? { defaultValue }
+                      : {}),
                 })}
           />
         )}
@@ -328,7 +328,7 @@ const PrimaryInput: React.FC<TInput> = ({
       <div
         className={cn(
           "flex items-center  gap-1",
-          type === "pin" ? "justify-center" : "justify-between"
+          type === "pin" ? "justify-center" : "justify-between",
         )}
       >
         <span className="text-red-500 text-xs ">{error}</span>
@@ -381,7 +381,7 @@ const PrimaryInput: React.FC<TInput> = ({
           <small
             className={cn(
               "text-[#606C82] text-xs text-left",
-              infoSuccess && "text-green-600 font-semibold text-sm"
+              infoSuccess && "text-green-600 font-semibold text-sm",
             )}
           >
             {info}
