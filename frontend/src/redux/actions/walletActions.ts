@@ -414,7 +414,7 @@ export const CreateAds = async (payload: TCreateAdsRequest) => {
       },
     );
     const data = response;
-    console.log(data);
+
     if (data.status) {
       return data;
     }
@@ -461,6 +461,7 @@ export const GetSearchAds = async (
         method: "GET",
       },
     );
+
     return response;
   } catch (error) {
     return error;
@@ -494,7 +495,7 @@ export const GetUserAd = async (payload: TAddSearchRequest) => {
       },
     );
     const data = response.data;
-    console.log(response);
+
     if (response.status) {
       return data;
     } else {
@@ -807,16 +808,17 @@ const useGetAdsDetail = ({
   adId: string;
   enabled?: boolean;
 }) => {
-  return useQuery<AdsType[], Error>({
+  return useQuery<AdsType, Error>({
     queryKey: ["searchDetails", adId],
     queryFn: async () => {
       const response = await Bisatsfetch(
-        `/api/v1/user${BACKEND_URLS?.P2P.ADS.SEARCH_ADS}?id=${adId}`,
+        `/api/v1/user/ads/${adId}/get-user-ads-by-id`,
         {
           method: "GET",
         },
       );
       if (!response.status) throw new Error(response.message);
+
       return response.data;
     },
     refetchOnMount: false,

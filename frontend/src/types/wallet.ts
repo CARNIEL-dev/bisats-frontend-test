@@ -105,6 +105,7 @@ export type TCreateAdsRequest = {
   priceMargin: number;
   priceUpperLimit: number;
   priceLowerLimit: number;
+  transactionPin?: string;
 };
 
 export type TUpdateAdsRequest = {

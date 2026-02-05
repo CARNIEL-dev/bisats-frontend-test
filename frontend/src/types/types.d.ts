@@ -144,6 +144,7 @@ interface IAdRequest {
   maximumLimit: number | undefined;
   priceUpperLimit: number | undefined;
   priceLowerLimit: number | undefined;
+  transactionPin?: string;
   agree?: boolean;
 }
 
@@ -179,6 +180,7 @@ type AdsPayload = {
   priceMargin: number;
   priceUpperLimit: number;
   priceLowerLimit: number;
+  transactionPin?: string;
 };
 
 type UpdateAdStatusVars = {
