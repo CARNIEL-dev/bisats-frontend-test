@@ -8,6 +8,12 @@ import {
 } from "@/components/ui/input-otp";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 import PinInput from "react-pin-input";
+import {
+  buildSyntheticEvent,
+  formatNumberDisplay,
+  resolveValue,
+  sanitizeNumberString,
+} from "@/helpers";
 
 interface TInput extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
@@ -21,119 +27,8 @@ interface TInput extends InputHTMLAttributes<HTMLInputElement> {
   otpLength?: number;
   secretMode?: boolean;
   infoSuccess?: boolean;
+  loadingLeft?: boolean;
 }
-
-const resolveValue = (
-  val: InputHTMLAttributes<HTMLInputElement>["value"],
-): string => {
-  if (val === null || val === undefined) return "";
-  if (Array.isArray(val)) {
-    return val[0] ?? "";
-  }
-
-  return String(val);
-};
-
-const sanitizeNumberString = (value: string): string => {
-  if (!value) return "";
-
-  const cleaned = value.replace(/[^\d.]/g, "");
-  if (!cleaned) return "";
-
-  const firstDot = cleaned.indexOf(".");
-  const integerRaw =
-    firstDot === -1 ? cleaned : cleaned.slice(0, firstDot).replace(/[.]/g, "");
-  const decimalRaw =
-    firstDot === -1 ? "" : cleaned.slice(firstDot + 1).replace(/[.]/g, "");
-
-  let integerPart =
-    integerRaw.length > 1 ? integerRaw.replace(/^0+(?=\d)/, "") : integerRaw;
-
-  if (integerPart === "" && cleaned.startsWith("0") && decimalRaw.length > 0) {
-    integerPart = "0";
-  }
-
-  if (firstDot === 0) {
-    integerPart = "";
-  }
-
-  if (integerPart === "" && !decimalRaw && cleaned.startsWith("0")) {
-    integerPart = "0";
-  }
-
-  let normalized = integerPart;
-
-  if (decimalRaw.length > 0) {
-    normalized = integerPart
-      ? `${integerPart}.${decimalRaw}`
-      : `.${decimalRaw}`;
-  }
-
-  if (firstDot !== -1 && cleaned.endsWith(".")) {
-    normalized = integerPart ? `${integerPart}.` : ".";
-  }
-
-  return normalized;
-};
-
-const formatNumberDisplay = (value: string): string => {
-  if (!value) return "";
-
-  const [integerPart, decimalPart] = value.split(".");
-  const formattedInteger = integerPart
-    ? integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-    : "";
-
-  if (decimalPart !== undefined) {
-    return decimalPart === ""
-      ? `${formattedInteger}.`
-      : `${formattedInteger}.${decimalPart}`;
-  }
-
-  return formattedInteger;
-};
-
-const buildSyntheticEvent = (
-  event: ChangeEvent<HTMLInputElement>,
-  nextValue: string,
-): ChangeEvent<HTMLInputElement> => {
-  const numericValue =
-    nextValue === "" || nextValue === "." ? NaN : Number(nextValue);
-
-  const originalTarget = event.target as HTMLInputElement;
-  const originalCurrentTarget = event.currentTarget as HTMLInputElement;
-
-  const target = {
-    ...originalTarget,
-    value: nextValue,
-    valueAsNumber: numericValue,
-    dataset: {
-      ...originalTarget.dataset,
-      rawValue: nextValue,
-    },
-  } as EventTarget & HTMLInputElement;
-  Object.setPrototypeOf(target, Object.getPrototypeOf(originalTarget));
-
-  const currentTarget = {
-    ...originalCurrentTarget,
-    value: nextValue,
-    valueAsNumber: numericValue,
-  } as EventTarget & HTMLInputElement;
-  Object.setPrototypeOf(
-    currentTarget,
-    Object.getPrototypeOf(originalCurrentTarget),
-  );
-
-  const syntheticEvent = {
-    ...event,
-    target,
-    currentTarget,
-  };
-
-  Object.setPrototypeOf(syntheticEvent, Object.getPrototypeOf(event));
-
-  return syntheticEvent as ChangeEvent<HTMLInputElement>;
-};
 
 const PrimaryInput: React.FC<TInput> = ({
   className,
@@ -159,6 +54,7 @@ const PrimaryInput: React.FC<TInput> = ({
     inputMode,
     style,
     name,
+    loadingLeft,
     ...inputProps
   } = props;
 
@@ -319,7 +215,12 @@ const PrimaryInput: React.FC<TInput> = ({
           />
         )}
         {loading && (
-          <p className="text-sm  absolute right-5 top-1/2 -translate-y-1/2">
+          <p
+            className={cn(
+              "text-sm  absolute right-5 top-1/2 -translate-y-1/2",
+              loadingLeft && "left-5 right-auto",
+            )}
+          >
             <Loader className="animate-spin text-gray-400" />
           </p>
         )}

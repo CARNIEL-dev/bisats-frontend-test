@@ -101,7 +101,7 @@ const TokenSelection = ({
     if (showBalance) {
       if (value) {
         const defaultSelected = tokenOptions.find(
-          (option) => option.tokenName === value
+          (option) => option.tokenName === value,
         );
         if (defaultSelected) {
           setSelected(defaultSelected.id);
@@ -187,7 +187,7 @@ const TokenSelection = ({
             "w-full justify-between py-6 text-sm",
             error && "border-red-500",
             !value && "text-muted-foreground",
-            className
+            className,
           )}
           onClick={() => setOpen(true)}
           disabled={disabled}

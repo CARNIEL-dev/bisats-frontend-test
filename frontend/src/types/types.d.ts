@@ -440,3 +440,63 @@ type TWallet = {
 };
 
 type TokenTypes = "xNGN" | "SOL" | "BTC" | " USDT" | " ETH";
+
+// HDR: SWAP Types
+type FeeType = "PERCENTAGE" | "FIXED";
+type AssetType = "CRYPTO" | "STABLE" | "FIAT";
+
+interface SwapAsset {
+  id: string;
+  active: boolean;
+  name: string;
+  code: string; // e.g., "BTC", "USDT"
+  type: AssetType;
+  createdAt: string; // or Date if you parse it
+  updatedAt: string;
+
+  // Trading/Transaction Flags
+  receivable: boolean;
+  withdrawable: boolean;
+  transferrable: boolean;
+  allowUnconfirmedTrading: boolean;
+  allowUtilityPayments: boolean;
+  allowVirtualCardTransactions: boolean;
+  enableWithdrawalApproval: boolean;
+
+  // Limits and Decimals
+  maximumDecimalPlaces: number;
+  minimumDeposit: number;
+  minimumWithdrawal: number;
+  maximumWithdrawalFee: number;
+
+  // Fees
+  receiveFee: number;
+  receiveFeeType: FeeType;
+  withdrawalFee: number;
+  withdrawalFeeType: FeeType;
+
+  // Leverage / Exchange (nullable fields)
+  exchangeCode: string | null;
+  leverageBaseCurrencyCode: string | null;
+  leverageMultipler: number | null;
+  leverageType: string | null;
+}
+
+interface TradingPair {
+  id: string;
+  active: boolean;
+  isBuyable: boolean;
+  isSellable: boolean;
+  isLeverage: boolean;
+  enableP2PTrading: boolean;
+
+  // Relations
+  sourceId: string;
+  source: SwapAsset;
+  targetId: string;
+  target: SwapAsset;
+
+  // Metadata
+  createdAt: string;
+  updatedAt: string;
+}
