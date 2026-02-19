@@ -1,7 +1,6 @@
 // import Toast from "@/components/Toast";
 // import { messaging, onMessage } from "@/firebase";
 import { rehydrateUser } from "@/redux/actions/userActions";
-import { GetWallet } from "@/redux/actions/walletActions";
 
 import Routing from "@/routing/Routing";
 import ScrollToTop from "@/routing/scrollToTop";
@@ -23,7 +22,7 @@ const App: React.FC = () => {
         userId: userState.user?.userId,
         token: userState.user?.token,
       });
-      GetWallet();
+
       // requestPermission();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

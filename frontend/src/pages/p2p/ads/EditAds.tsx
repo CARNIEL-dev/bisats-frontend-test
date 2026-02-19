@@ -5,12 +5,13 @@ import ErrorDisplay from "@/components/shared/ErrorDisplay";
 import MaxWidth from "@/components/shared/MaxWith";
 import Toast from "@/components/Toast";
 import { AdSchema } from "@/formSchemas";
+import useGetWallet from "@/hooks/use-getWallet";
 import PreLoader from "@/layouts/PreLoader";
 import CreateAdDetails from "@/pages/p2p/ads/CreateAdDetails";
 import { UpdateAdStatusResponse } from "@/pages/p2p/MyAds";
 import { PriceData } from "@/pages/wallet/Assets";
 import { UpdateAd } from "@/redux/actions/adActions";
-import { GetWallet, useCryptoRates } from "@/redux/actions/walletActions";
+import { useCryptoRates } from "@/redux/actions/walletActions";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { FormikConfig, useFormik } from "formik";
 import { useMemo, useState } from "react";
@@ -31,6 +32,7 @@ const EditAds = ({
   const queryClient = useQueryClient();
   const walletState: WalletState = useSelector((state: any) => state.wallet);
   const walletData = walletState?.wallet;
+  const { refetchWallet } = useGetWallet();
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
@@ -83,7 +85,7 @@ const EditAds = ({
     mutationFn: (payload: AdsPayload) => UpdateAd(payload),
     onSuccess: async (_, variables) => {
       await Promise.all([
-        GetWallet(),
+        refetchWallet(),
         queryClient.refetchQueries({
           queryKey: ["adDetails", variables.userId, adDetail.id],
         }),
@@ -148,7 +150,7 @@ const EditAds = ({
         amount: Number(
           values.type.toLowerCase() === "buy"
             ? values.amount
-            : values?.amountToken
+            : values?.amountToken,
         ),
         minimumLimit: Number(values.minimumLimit),
         maximumLimit: Number(values.maximumLimit),

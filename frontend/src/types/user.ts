@@ -28,24 +28,23 @@ export type TPersonalInfoKYC = {
 };
 
 export type TPOA = {
-  file: File;
+  file: string;
 };
 
 export type TIdentity = {
-  userId: string;
   docType: string;
   identificationNo: string;
-  selfie: File | string;
+  selfie: string;
 };
 export type TMerchant = {
-  utilityBill: File | string;
-  photoIdentity: File | string;
+  utilityBill: string;
+  photoIdentity: string;
 };
 
 export type TSuperMerchant = {
-  utilityBill: File | string;
-  cacDocument: File | string;
-  mermatDoc?: File | string | null;
+  utilityBill: string;
+  cacDocument: string;
+  mermatDoc?: string | null;
 };
 
 export type TRequestPhone = {

@@ -7,6 +7,7 @@ import {
 } from "@/components/buttons/Buttons";
 import ModalTemplate from "@/components/Modals/ModalTemplate";
 import Toast from "@/components/Toast";
+import useGetWallet from "@/hooks/use-getWallet";
 interface Props {
   close: () => void;
   bank?: {
@@ -19,6 +20,7 @@ interface Props {
 }
 const DeleteWithdrawalAccount: React.FC<Props> = ({ close, bank }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const { refetchWallet } = useGetWallet();
 
   const DeleteBankAccount = async () => {
     setIsLoading(true);
@@ -26,7 +28,8 @@ const DeleteWithdrawalAccount: React.FC<Props> = ({ close, bank }) => {
       bankAccountId: bank?.id ?? "",
     });
     setIsLoading(false);
-    if (response?.success || response?.status === 200) {
+    if (response?.status || response?.statusCode === 200) {
+      refetchWallet();
       Toast.success(response.message, "Bank Account Deleted");
       close();
     } else {

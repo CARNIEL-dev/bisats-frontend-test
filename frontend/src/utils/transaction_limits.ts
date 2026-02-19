@@ -91,6 +91,7 @@ export const ACTIONS = {
   BUY_CRYPTO: "buy_crypto",
   SELL_CRYPTO: "sell_crypto",
   CREATE_AD: "create_ad",
+  CREATE_P2P_AD: "create_p2p_ad",
   HIGH_VALUE_TRANSACTION: "high_value_transaction",
   SET_2FA: "set_2fa",
   ADD_BANK: "add_bank",
@@ -100,6 +101,7 @@ export const ACTIONS = {
   TRANSFER: "transfer",
   MAKE_TRANSFER: "make_transfer",
   P2P_TRANSFER: "p2p_transfer",
+
   // Add more actions
 };
 
@@ -149,6 +151,7 @@ export const KYC_RULES = {
       ACTIONS.TRANSFER,
       ACTIONS.MAKE_TRANSFER,
       ACTIONS.P2P_TRANSFER,
+      ACTIONS.CREATE_P2P_AD,
     ],
     limits: {
       transactionAmount: 10000,
@@ -174,6 +177,7 @@ export const KYC_RULES = {
       ACTIONS.TRANSFER,
       ACTIONS.MAKE_TRANSFER,
       ACTIONS.P2P_TRANSFER,
+      ACTIONS.CREATE_P2P_AD,
     ],
     limits: {
       transactionAmount: Infinity,
@@ -197,4 +201,5 @@ export const ACTIONS_REQUIRING_PIN = [
   ACTIONS.WITHDRAW_CRYPTO,
   ACTIONS.TRANSFER,
   ACTIONS.P2P_TRANSFER,
+  ACTIONS.CREATE_P2P_AD,
 ];

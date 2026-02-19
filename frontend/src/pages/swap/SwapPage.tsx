@@ -20,19 +20,43 @@ import { DUMMY_HISTORY, TokenData } from "@/data";
 import { assetIndexMap } from "@/pages/p2p/components/P2PMarket";
 import Head from "@/pages/wallet/Head";
 import { useCryptoRates } from "@/redux/actions/walletActions";
-import { formatter } from "@/utils";
+import Bisatsfetch from "@/redux/fetchWrapper";
+// import Bisatsfetch from "@/redux/fetchWrapper";
+import { formatter, isProduction } from "@/utils";
 import { formatNumber } from "@/utils/numberFormat";
+import { BACKEND_URLS } from "@/utils/backendUrls";
+import Toast from "@/components/Toast";
+import { useQuery } from "@tanstack/react-query";
+// import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useFormik } from "formik";
 import { ArrowRight, History, SmileIcon } from "lucide-react";
 import { useMotionValueEvent, useScroll } from "motion/react";
-import { ChangeEventHandler, useRef, useState } from "react";
+import { ChangeEventHandler, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 
-const isComingSoon = true;
 const SwapPage = () => {
   const walletState: WalletState = useSelector((state: any) => state.wallet);
+  const [quoteAmount, setQuoteAmount] = useState<string>("");
+  const [quoteLoading, setQuoteLoading] = useState(false);
+  const debounceRef = useRef<NodeJS.Timeout | null>(null);
+
+  const { data: swapPairs } = useQuery<TradingPair[], Error>({
+    queryKey: ["swapPairs"],
+    queryFn: async () => {
+      const response = await Bisatsfetch(`/api/v1/user/swap/get-pairs`, {
+        method: "GET",
+      });
+
+      if (response.status === true) {
+        return response.data;
+      }
+
+      throw new Error(response.message || "Failed to fetch orders");
+    },
+    staleTime: 4 * 60 * 60 * 1000, // 4 hours
+  });
 
   const {
     data: currencyRates,
@@ -73,14 +97,99 @@ const SwapPage = () => {
   const formik = useFormik({
     initialValues: {
       amount: "",
-      assetFrom: "xNGN",
+      assetFrom: "",
     },
     onSubmit: (values) => {
       console.log(values);
     },
   });
 
-  if (isComingSoon) {
+  const assetBalance = formik.values?.assetFrom
+    ? walletState?.wallet?.[formik.values.assetFrom]
+    : null;
+
+  // SUB: Debounced getQuote API call
+  const fetchQuote = async (assetFrom: string, amount: string) => {
+    if (!assetFrom || !amount) {
+      setQuoteAmount("");
+      return;
+    }
+
+    setQuoteLoading(true);
+    try {
+      const response = await Bisatsfetch(BACKEND_URLS.SWAP.GET_QUOTE, {
+        method: "POST",
+        body: JSON.stringify({
+          sourceId: assetFrom,
+          targetId: "USDT",
+          side: "SELL",
+          amount: Number(amount),
+        }),
+      });
+
+      if (response.status === true && response.data?.quote) {
+        setQuoteAmount(response.data.quote);
+      } else {
+        setQuoteAmount("");
+        Toast.error(response.message || "Failed to get quote", "Swap Quote");
+      }
+    } catch (error) {
+      setQuoteAmount("");
+      Toast.error("An error occurred while fetching the quote", "Swap Quote");
+    } finally {
+      setQuoteLoading(false);
+    }
+  };
+
+  // SUB: Handle amount change with debounce
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    const isValidDecimal = /^(\d+(\.\d*)?|\.\d+)?$/.test(value);
+    if (isValidDecimal) {
+      formik.setFieldValue("amount", value);
+
+      // Clear previous debounce timer
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
+
+      // Set new debounce timer - wait 500ms after user stops typing
+      debounceRef.current = setTimeout(() => {
+        fetchQuote(formik.values.assetFrom, value);
+      }, 1000); // 1 second
+    }
+  };
+
+  // SUB: Clear debounce on unmount
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
+    };
+  }, []);
+
+  // SUB: Getting if the assest is swapable
+  useEffect(() => {
+    if (formik.values.assetFrom && swapPairs) {
+      const item = swapPairs.find(
+        (item) => item.source.code === formik.values.assetFrom,
+      )?.source.code;
+
+      if (!item) {
+        formik.setErrors({
+          assetFrom: "Asset can not be swapped",
+        });
+      } else {
+        formik.setErrors({
+          assetFrom: "",
+        });
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formik.values.assetFrom, swapPairs]);
+
+  if (isProduction) {
     return (
       <div className="flex flex-col items-center gap-1 border rounded-lg px-4 py-6 shadow bg-background">
         <SmileIcon className="size-20 text-primary" />
@@ -91,7 +200,6 @@ const SwapPage = () => {
       </div>
     );
   }
-
   return (
     <>
       <div className="grid  gap-6">
@@ -140,14 +248,8 @@ const SwapPage = () => {
                 label="Amount"
                 id="amt"
                 value={formik.values.amount}
-                error={undefined}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  const isValidDecimal = /^(\d+(\.\d*)?|\.\d+)?$/.test(value);
-                  if (isValidDecimal) {
-                    formik.setFieldValue("amount", value);
-                  }
-                }}
+                error={formik.errors.amount || formik.errors.assetFrom}
+                onChange={handleAmountChange}
                 onFocus={() => {}}
                 children={
                   <TokenSelection
@@ -155,22 +257,27 @@ const SwapPage = () => {
                     handleChange={(e) => {
                       formik.setFieldValue("assetFrom", e);
                       formik.setFieldValue("amount", "");
+                      setQuoteAmount("");
                     }}
                     error={undefined}
                     touched={undefined}
                     showBalance={false}
                     removeToken="USDT"
+                    removexNGN
+                    variant="dialog"
+                    placeholder="Select asset"
                   />
                 }
               />
-
-              <Badge variant={"success"}>
-                Balance:{" "}
-                {formatter({
-                  decimal: formik.values?.assetFrom === "xNGN" ? 2 : 6,
-                }).format(walletState?.wallet?.[formik.values.assetFrom])}{" "}
-                {formik.values?.assetFrom}
-              </Badge>
+              {assetBalance !== null && (
+                <Badge variant={"success"}>
+                  Balance:{" "}
+                  {formatter({
+                    decimal: 6,
+                  }).format(assetBalance)}{" "}
+                  {formik.values?.assetFrom}
+                </Badge>
+              )}
             </div>
 
             <InputField
@@ -180,19 +287,19 @@ const SwapPage = () => {
                 logo: TokenData[assetIndexMap?.["USDT"]].tokenLogo,
                 logoName: TokenData[assetIndexMap?.["USDT"]].tokenName,
               }}
-              value={""}
+              value={quoteLoading ? "Loading..." : quoteAmount}
               error={undefined}
-              onChange={(e) => {
-                const value = e.target.value;
-                const isValidDecimal = /^(\d+(\.\d*)?|\.\d+)?$/.test(value);
-                if (isValidDecimal) {
-                  //   formik.setFieldValue("otherAmount", value);
-                }
-              }}
-              onFocus={() => {}}
+              onChange={() => {}}
+              disabled={true}
+              loading={quoteLoading}
             />
 
-            <PrimaryButton loading={false} text="Swap" className="-mt-6" />
+            <PrimaryButton
+              loading={false}
+              text="Swap"
+              className="-mt-6"
+              disabled={quoteLoading}
+            />
           </div>
         </div>
 
@@ -315,7 +422,7 @@ type InputFieldProps = {
   onChange: ChangeEventHandler<HTMLInputElement>;
 
   maxFunc?: () => void;
-  onFocus: () => void;
+  onFocus?: () => void;
   value: string;
   error: string | boolean | undefined | null;
   tokenData?: {
@@ -323,6 +430,8 @@ type InputFieldProps = {
     logoName: string;
   };
   children?: React.ReactNode;
+  disabled?: boolean;
+  loading?: boolean;
 };
 const InputField = ({
   label,
@@ -334,6 +443,8 @@ const InputField = ({
   onFocus,
   error,
   children,
+  disabled = false,
+  loading = false,
 }: InputFieldProps) => {
   return (
     <div className="relative h-32">
@@ -349,6 +460,9 @@ const InputField = ({
         onFocus={onFocus}
         onChange={onChange}
         maxFnc={maxFunc ? maxFunc : undefined}
+        disabled={disabled}
+        loading={loading}
+        loadingLeft
       />
 
       <div className="absolute right-1 top-1/2 -translate-y-[63%] ">

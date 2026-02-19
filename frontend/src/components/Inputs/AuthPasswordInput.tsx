@@ -25,6 +25,7 @@ interface TInput extends InputHTMLAttributes<HTMLInputElement> {
   error?: string | undefined | null;
   touched?: boolean | undefined;
   handleChange: React.ChangeEventHandler<HTMLInputElement>;
+  showTip?: boolean;
 }
 
 const PasswordChecks = [
@@ -56,21 +57,27 @@ const AuthPasswordInput: React.FC<TInput> = ({
   check,
   error,
   touched,
+  showTip = true,
   ...props
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [passwordString, setPasswordString] = useState("");
 
-  // --- Start Reveal Handlers ---
+  // --- Toggle Handler (for when showTip is false) ---
+  const handleToggleClick = () => {
+    setShowPassword((prev) => !prev);
+  };
+
+  // --- Start Reveal Handlers (for when showTip is true) ---
   const handleStartReveal = (
-    e: React.MouseEvent | React.KeyboardEvent | React.TouchEvent
+    e: React.MouseEvent | React.KeyboardEvent | React.TouchEvent,
   ) => {
     // Prevent default actions like form submission when using Enter key
     e.preventDefault();
     setShowPassword(true);
   };
 
-  // --- End Reveal Handlers ---
+  // --- End Reveal Handlers (for when showTip is true) ---
   const handleEndReveal = () => {
     setShowPassword(false);
   };
@@ -102,7 +109,7 @@ const AuthPasswordInput: React.FC<TInput> = ({
             className={cn(
               "rounded-[6px] border border-[#D6DAE1] outline-[none] focus:border-[#C49600] focus:shadow-[0_0_10px_#FEF8E5] text-[#606C82] p-3 ring-0 w-full",
               className,
-              error && "border-[#EF4444] outline-0 focus:border-[#EF4444]"
+              error && "border-[#EF4444] outline-0 focus:border-[#EF4444]",
             )}
             {...props}
             onChange={(e) => {
@@ -111,22 +118,43 @@ const AuthPasswordInput: React.FC<TInput> = ({
             }}
             autoComplete="off"
           />
-          <Tooltip>
-            <TooltipTrigger
+          {showTip ? (
+            <Tooltip>
+              <TooltipTrigger
+                className={cn(
+                  buttonVariants({ variant: "ghost" }),
+                  "absolute right-3 top-1/2 -translate-y-1/2 !p-2 text-neutral-500",
+                )}
+                type="button"
+                // --- MOUSE & TOUCH HANDLERS (Click and Hold) ---
+                onMouseDown={handleStartReveal}
+                onMouseUp={handleEndReveal}
+                onMouseLeave={handleEndReveal}
+                onTouchStart={handleStartReveal}
+                onTouchEnd={handleEndReveal}
+                // --- KEYBOARD HANDLERS (Focus and Hold Enter) ---
+                onKeyDown={handleKeyDown}
+                onKeyUp={handleKeyUp}
+              >
+                {!showPassword ? (
+                  <Eye className="size-5" />
+                ) : (
+                  <EyeOff className="size-5" />
+                )}
+                <span className="sr-only">Toggle password visibility</span>
+              </TooltipTrigger>
+              <TooltipContent side="top" className="max-w-[8rem]" align="end">
+                <p>Click and hold to reveal password</p>
+              </TooltipContent>
+            </Tooltip>
+          ) : (
+            <button
               className={cn(
                 buttonVariants({ variant: "ghost" }),
-                "absolute right-3 top-1/2 -translate-y-1/2 !p-2 text-neutral-500"
+                "absolute right-3 top-1/2 -translate-y-1/2 !p-2 text-neutral-500",
               )}
               type="button"
-              // --- MOUSE & TOUCH HANDLERS (Click and Hold) ---
-              onMouseDown={handleStartReveal}
-              onMouseUp={handleEndReveal}
-              onMouseLeave={handleEndReveal}
-              onTouchStart={handleStartReveal}
-              onTouchEnd={handleEndReveal}
-              // --- KEYBOARD HANDLERS (Focus and Hold Enter) ---
-              onKeyDown={handleKeyDown}
-              onKeyUp={handleKeyUp}
+              onClick={handleToggleClick}
             >
               {!showPassword ? (
                 <Eye className="size-5" />
@@ -134,11 +162,8 @@ const AuthPasswordInput: React.FC<TInput> = ({
                 <EyeOff className="size-5" />
               )}
               <span className="sr-only">Toggle password visibility</span>
-            </TooltipTrigger>
-            <TooltipContent side="top" className="max-w-[8rem]" align="end">
-              <p>Click and hold to reveal password</p>
-            </TooltipContent>
-          </Tooltip>
+            </button>
+          )}
         </div>
 
         {error && <p className="text-red-500 text-xs mt-2">{error}</p>}
@@ -153,12 +178,12 @@ const AuthPasswordInput: React.FC<TInput> = ({
                 item?.title === "characterLength"
                   ? characterLength
                   : item?.title === "upperCaseRegex"
-                  ? upperCaseRegex
-                  : item?.title === "lowerCaseRegex"
-                  ? lowerCaseRegex
-                  : item?.title === "numberRegex"
-                  ? numberRegex
-                  : specialCharcterRegex
+                    ? upperCaseRegex
+                    : item?.title === "lowerCaseRegex"
+                      ? lowerCaseRegex
+                      : item?.title === "numberRegex"
+                        ? numberRegex
+                        : specialCharcterRegex,
               ) ? (
                 <PassCheck />
               ) : (

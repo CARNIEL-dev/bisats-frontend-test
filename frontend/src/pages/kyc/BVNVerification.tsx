@@ -32,7 +32,7 @@ const BVNVerification = () => {
   const limit = bisats_limit[userLevel as keyof typeof bisats_limit];
 
   const [verficationScreen, setVerificationScreen] = useState(
-    user.kyc?.bvnVerified
+    user.kyc?.bvnVerified,
   );
   const [isSuccess, setIsSuccess] = useState(user.kyc?.bvnVerified);
 
@@ -46,7 +46,7 @@ const BVNVerification = () => {
       navigate(
         !user?.kyc?.personalInformationVerified
           ? APP_ROUTES.KYC.PERSONAL
-          : APP_ROUTES.KYC.IDENTITY
+          : APP_ROUTES.KYC.IDENTITY,
       );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user.user]);
@@ -111,17 +111,17 @@ const BVNVerification = () => {
   const account_level_features = useMemo(() => {
     return [
       `Create sell ads (max ${formatCompactNumber(
-        limit.maximum_ad_creation_amount
+        limit.maximum_ad_creation_amount,
       )} xNGN in crypto assets)`,
       `Create buy ads (max ${formatCompactNumber(
-        limit.maximum_ad_creation_amount
+        limit.maximum_ad_creation_amount,
       )} xNGN in crypto assets)`,
       `Max daily limit for withdrawal is ${
         user?.user?.accountLevel === "level_3"
           ? "Unlimited"
           : formatCompactNumber(limit.daily_withdrawal_limit_fiat)
       } xNGN and ${formatCompactNumber(
-        limit.daily_withdrawal_limit_crypto
+        limit.daily_withdrawal_limit_crypto,
       )} USD in crypto assets`,
     ];
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -152,12 +152,12 @@ const BVNVerification = () => {
             </div>
           ) : (
             <form onSubmit={formik.handleSubmit}>
-              <p className=" mt-5  text-[14px] text-[#515B6E] w-full h-fit flex flex-col  ">
+              <p className=" mt-16  text-[14px] text-[#515B6E] w-full h-fit flex flex-col  ">
                 A verification code has been sent to your email
               </p>
 
-              <div className="w-full mt-10">
-                <div className="w-full mb-1relative">
+              <div className="w-full mt-2">
+                <div className="w-full mb-1 relative">
                   <PrimaryInput
                     className="w-full p-2.5 "
                     type="code"

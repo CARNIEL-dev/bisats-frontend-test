@@ -53,9 +53,11 @@ export const SignUp = async (payload: TSignUp) => {
       body: JSON.stringify(payload),
     });
     const data = response.data;
-    dispatchWrapper({ type: UserActionTypes.LOG_IN_PENDING, payload: data });
-    setToken(data.token);
-    setRefreshToken(data.refreshToken);
+    if (data) {
+      dispatchWrapper({ type: UserActionTypes.LOG_IN_PENDING, payload: data });
+      setToken(data.token);
+      setRefreshToken(data.refreshToken);
+    }
     return response;
   } catch (error) {
     // throw handleApiError(error);
@@ -127,7 +129,7 @@ export const VerifyForgotPassword = async (payload: {
       {
         method: "POST",
         body: JSON.stringify(payload),
-      }
+      },
     );
 
     return response;
@@ -167,7 +169,7 @@ export const UpdatePassword = async (payload: {
       {
         method: "POST",
         body: JSON.stringify(payload),
-      }
+      },
     );
     return response;
   } catch (error) {
@@ -239,7 +241,7 @@ export const GoogleAuth = async (payload: { email: string; id: string }) => {
 //KYC
 
 export const PostPersonalInformation_KYC = async (
-  payload: TPersonalInfoKYC
+  payload: TPersonalInfoKYC,
 ) => {
   try {
     const response = await Bisatsfetch(`/api/v1/user/upload-personal-info`, {
@@ -271,7 +273,7 @@ export const PostPOA_KYC = async (payload: TPOA) => {
           Authorization: `${token}`,
         },
         body: formData,
-      }
+      },
     );
     const data = response.json();
 
@@ -283,57 +285,37 @@ export const PostPOA_KYC = async (payload: TPOA) => {
 };
 
 export const PostIdentity_KYC = async (payload: TIdentity) => {
-  const formData = new FormData();
-  formData.append("image", payload.selfie);
-  formData.append("identificationType", payload.docType);
-  formData.append("identificationNumber", payload.identificationNo);
-  const token = getToken();
+  const dataInfo = {
+    imageUrl: payload.selfie,
+    identificationType: payload.docType,
+    identificationNumber: payload.identificationNo,
+  };
 
   try {
-    const response = await fetch(
-      `${BACKEND_URLS.BASE_URL}/api/v1/user/verify-identity`,
-      {
-        method: "PUT",
-        headers: {
-          // "Content-Type": "multipart/form-data",
-          Authorization: `${token}`,
-        },
-        body: formData,
-      }
-    );
-    const data = response.json();
+    const data = await Bisatsfetch("/api/v1/user/verify-identity", {
+      method: "PUT",
+
+      body: JSON.stringify(dataInfo),
+    });
 
     return data;
   } catch (error) {
-    // throw handleApiError(error);
     return error;
   }
 };
 export const PostCorporateInformation = async (payload: TCorporateInfo) => {
-  const formData = new FormData();
-  formData.append("cacApplicationDocument", payload?.cacApplicationDocument!);
-  if (payload.mermartDocument) {
-    formData.append("mermartDocument", payload?.mermartDocument!);
-  }
-  formData.append("cacDocument", payload?.cacDocument!);
-  formData.append("bankName", payload.bankName);
-  formData.append("accountNumber", payload.accountNumber);
-  formData.append("accountName", payload.accountName);
-
-  const token = getToken();
-
+  const dataInfo: TCorporateInfo = {
+    ...payload,
+    mermartDocument: payload.cacDocument,
+  };
   try {
-    const response = await fetch(
-      `${BACKEND_URLS.BASE_URL}/api/v1/user/upload-cooperate-account-documents`,
+    const data = Bisatsfetch(
+      "/api/v1/user/upload-cooperate-account-documents",
       {
         method: "POST",
-        headers: {
-          Authorization: `${token}`,
-        },
-        body: formData,
-      }
+        body: JSON.stringify(dataInfo),
+      },
     );
-    const data = response.json();
 
     return data;
   } catch (error) {
@@ -368,7 +350,11 @@ export const GetUserDetails = async ({
     const response = await Bisatsfetch(`/api/v1/user/profile`);
     const data = response.data;
 
-    if (response.statusCode === 200) {
+    if (
+      response.statusCode === 200 ||
+      response.statusCode === 201 ||
+      response.status
+    ) {
       dispatchWrapper({
         type: UserActionTypes.UPDATE_USER,
         payload: {
@@ -427,7 +413,7 @@ export const PostPhoneNumber_KYC = async (payload: TRequestPhone) => {
       {
         method: "POST",
         body: JSON.stringify(payload),
-      }
+      },
     );
 
     // dispatchWrapper({ type: GeneralTypes.SUCCESS, payload: data });
@@ -446,7 +432,7 @@ export const Verify_OTP_PhoneNumber_KYC = async (payload: TVerifyPhone) => {
       {
         method: "POST",
         body: JSON.stringify(payload),
-      }
+      },
     );
 
     // dispatchWrapper({ type: GeneralTypes.SUCCESS, payload: data });
@@ -461,10 +447,10 @@ export const Verify_OTP_PhoneNumber_KYC = async (payload: TVerifyPhone) => {
 export const Resend_OTP_PhoneNumber_KYC = async (payload: string) => {
   try {
     const response = await Bisatsfetch(
-      `/api/v1/user/${payload}${BACKEND_URLS.AUTH.RESEND_PHONE_OTP}`,
+      `/api/v1/user${BACKEND_URLS.AUTH.RESEND_PHONE_OTP}`,
       {
         method: "GET",
-      }
+      },
     );
 
     return response;
@@ -481,7 +467,7 @@ export const PostBVN_KYC = async (payload: { bvn: string }) => {
       {
         method: "PUT",
         body: JSON.stringify(payload),
-      }
+      },
     );
 
     // dispatchWrapper({ type: GeneralTypes.SUCCESS, payload: data });
@@ -500,7 +486,7 @@ export const Verify_BVN_KYC = async (payload: TVerifyPhone) => {
       {
         method: "PUT",
         body: JSON.stringify({ code: payload.code }),
-      }
+      },
     );
 
     // dispatchWrapper({ type: GeneralTypes.SUCCESS, payload: data });
@@ -527,7 +513,7 @@ export const Post_Proof_of_Wealth_KYC = async (payload: TPOA) => {
           Authorization: `${token}`,
         },
         body: formData,
-      }
+      },
     );
     const data = response.json();
 
@@ -541,25 +527,16 @@ export const Post_Proof_of_Wealth_KYC = async (payload: TPOA) => {
 };
 
 export const Post_Proof_of_Profile_KYC = async (payload: TPOA) => {
-  const formData = new FormData();
-  formData.append("image", payload.file);
-  const token = getToken();
-
   try {
-    const response = await fetch(
-      `${BACKEND_URLS.BASE_URL}/api/v1/user${BACKEND_URLS.KYC.POST_PROOF_PROFILE}`,
+    const data = await Bisatsfetch(
+      `/api/v1/user${BACKEND_URLS.KYC.BECOME_MERCHANT}`,
       {
         method: "PUT",
-        headers: {
-          // "Content-Type": "multipart/form-data",
-          Authorization: `${token}`,
-        },
-        body: formData,
-      }
+        body: JSON.stringify({
+          image: payload.file,
+        }),
+      },
     );
-    const data = response.json();
-
-    // dispatchWrapper({ type: GeneralTypes.SUCCESS, payload: data });
 
     return data;
   } catch (error) {
@@ -568,23 +545,14 @@ export const Post_Proof_of_Profile_KYC = async (payload: TPOA) => {
   }
 };
 export const Become_Merchant_Hanlder = async (payload: TMerchant) => {
-  const formData = new FormData();
-  formData.append("document1", payload.utilityBill);
-  formData.append("document2", payload.photoIdentity);
-  const token = getToken();
-
   try {
-    const response = await fetch(
-      `${BACKEND_URLS.BASE_URL}/api/v1/user${BACKEND_URLS.KYC.BECOME_MERCHANT}`,
+    const data = await Bisatsfetch(
+      `/api/v1/user${BACKEND_URLS.KYC.BECOME_MERCHANT}`,
       {
         method: "POST",
-        headers: {
-          Authorization: `${token}`,
-        },
-        body: formData,
-      }
+        body: JSON.stringify(payload),
+      },
     );
-    const data = response.json();
 
     return data;
   } catch (error) {
@@ -594,26 +562,20 @@ export const Become_Merchant_Hanlder = async (payload: TMerchant) => {
 };
 
 export const PostLevelThreeInformation = async (payload: TSuperMerchant) => {
-  const formData = new FormData();
-  formData.append("document1", payload.utilityBill);
-  formData.append("document2", payload.cacDocument);
-  if (payload.mermatDoc) {
-    formData.append("document3", payload.mermatDoc);
-  }
-  const token = getToken();
+  const dataInfo = {
+    document1: payload.utilityBill,
+    document2: payload.cacDocument,
+    document3: payload.mermatDoc ?? undefined,
+  };
 
   try {
-    const response = await fetch(
-      `${BACKEND_URLS.BASE_URL}/api/v1/user${BACKEND_URLS.KYC.BECOME_SUPER_MERCHANT}`,
+    const data = await Bisatsfetch(
+      `/api/v1/user${BACKEND_URLS.KYC.BECOME_SUPER_MERCHANT}`,
       {
         method: "POST",
-        headers: {
-          Authorization: `${token}`,
-        },
-        body: formData,
-      }
+        body: JSON.stringify(dataInfo),
+      },
     );
-    const data = response.json();
 
     return data;
   } catch (error) {
@@ -628,7 +590,7 @@ export const Set_PIN = async (payload: TPinRequest) => {
       {
         method: "POST",
         body: JSON.stringify(payload),
-      }
+      },
     );
 
     return response;
@@ -649,7 +611,27 @@ export const UPDATE_PIN = async (payload: TPinRequest) => {
           newPin: payload.pin,
           confirmPin: payload.confirmPin,
         }),
-      }
+      },
+    );
+
+    return response;
+  } catch (error) {
+    // throw handleApiError(error);
+    return error;
+  }
+};
+export const RESET_PIN = async (payload: TPinRequest) => {
+  try {
+    const response = await Bisatsfetch(
+      `/api/v1/user${BACKEND_URLS.AUTH.RESET_PIN}`,
+      {
+        method: "POST",
+        body: JSON.stringify({
+          token: payload.oldPin,
+          newPin: payload.pin,
+          confirmPin: payload.confirmPin,
+        }),
+      },
     );
 
     return response;
@@ -665,7 +647,7 @@ export const Generate2FA_QRCODE = async () => {
       `/api/v1/user${BACKEND_URLS.AUTH.GENERATE_2FA_QRCODE}`,
       {
         method: "GET",
-      }
+      },
     );
     return response;
   } catch (error) {
@@ -680,7 +662,7 @@ export const VerifyTwoFactorAuth = async (payload: TVerify2FARequest) => {
       {
         method: "POST",
         body: JSON.stringify(payload),
-      }
+      },
     );
     const data = response;
     return data;
@@ -701,7 +683,7 @@ export const UpdateTwoFactorAuth = async (payload: TUpdate2FAStatus) => {
       {
         method: "PUT",
         body: JSON.stringify({ code: payload.code }),
-      }
+      },
     );
 
     const data = response;
@@ -722,7 +704,7 @@ export const ResetTwoFactorAuth = async ({
       {
         method: "PUT",
         body: JSON.stringify({ password }),
-      }
+      },
     );
     const data = response;
     if (data.status === false) {
@@ -761,7 +743,7 @@ export const GET_ACTIVITY_SUMMARY = async () => {
       `/api/v1/user${BACKEND_URLS.AUTH.GET_ACTIVITY_SUMMARY}`,
       {
         method: "GET",
-      }
+      },
     );
     const data = response;
     if (response.status) {
@@ -780,7 +762,7 @@ export const GET_WITHDRAWAL_LIMIT = async () => {
       `/api/v1/user${BACKEND_URLS.AUTH.GET_WITHDRAWAL_LIMIT}`,
       {
         method: "GET",
-      }
+      },
     );
     if (response.statusCode !== 200) {
       throw new Error(response.message);
@@ -790,3 +772,19 @@ export const GET_WITHDRAWAL_LIMIT = async () => {
     throw error;
   }
 };
+
+const FORGOT_PIN = async () => {
+  try {
+    const response = await Bisatsfetch(
+      `/api/v1/user${BACKEND_URLS.AUTH.FORGOT_PIN}`,
+      {
+        method: "GET",
+      },
+    );
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+export { FORGOT_PIN };

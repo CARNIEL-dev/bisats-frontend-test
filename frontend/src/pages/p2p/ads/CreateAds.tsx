@@ -18,10 +18,15 @@ import { PriceData } from "@/pages/wallet/Assets";
 import Head from "@/pages/wallet/Head";
 import { CreateAds, useCryptoRates } from "@/redux/actions/walletActions";
 
-import { AccountLevel, bisats_limit } from "@/utils/transaction_limits";
+import {
+  AccountLevel,
+  ACTIONS,
+  bisats_limit,
+} from "@/utils/transaction_limits";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { UpdateAdStatusResponse } from "../MyAds";
+import KycManager from "@/pages/kyc/KYCManager";
 
 export type TNetwork = {
   label: string;
@@ -41,6 +46,7 @@ const initialAd: IAdRequest = {
   maximumLimit: undefined,
   priceUpperLimit: undefined,
   priceLowerLimit: undefined,
+  transactionPin: "",
   agree: false,
 };
 
@@ -159,7 +165,7 @@ const CreateAd = () => {
         amount: Number(
           values.type.toLowerCase() === "buy"
             ? values.amount
-            : values?.amountToken
+            : values?.amountToken,
         ),
         minimumLimit: Number(values.minimumLimit),
         maximumLimit: Number(values.maximumLimit),
@@ -168,7 +174,8 @@ const CreateAd = () => {
         priceMargin: Number(values.priceMargin ?? 0),
         priceUpperLimit: Number(values.priceUpperLimit),
         priceLowerLimit: Number(values.priceLowerLimit),
-      };
+        transactionPin: values.transactionPin ?? "",
+      } satisfies AdsPayload;
       mutation.mutate(payload);
     },
     context: { liveRate, userTransactionLimits, walletData },
@@ -211,17 +218,10 @@ const CreateAd = () => {
           ) : (
             <>
               <AdReview formik={formik} setStage={setStage} />
-              <PrimaryButton
-                className="w-full disabled"
-                type="button"
-                text="PublishAd"
-                loading={mutation.isPending || isPending}
-                disabled={
-                  !(formik.values.agree && formik.isValid) ||
-                  mutation.isPending ||
-                  isPending
-                }
-                onClick={() => {
+              <KycManager
+                action={ACTIONS.CREATE_P2P_AD}
+                func={(val) => {
+                  formik.setFieldValue("transactionPin", val?.pin);
                   const newSchema =
                     formik.values.type.toLowerCase() === "buy"
                       ? AdSchema.omit(["amountToken"])
@@ -230,7 +230,23 @@ const CreateAd = () => {
                   formik.validateForm(); // force validation with new schema
                   formik.handleSubmit();
                 }}
-              />
+                isManual
+              >
+                {(validateAndExecute) => (
+                  <PrimaryButton
+                    className="w-full"
+                    type="button"
+                    text="PublishAd"
+                    loading={mutation.isPending || isPending}
+                    onClick={() => validateAndExecute()}
+                    disabled={
+                      !(formik.values.agree && formik.isValid) ||
+                      mutation.isPending ||
+                      isPending
+                    }
+                  />
+                )}
+              </KycManager>
             </>
           )}
         </form>
