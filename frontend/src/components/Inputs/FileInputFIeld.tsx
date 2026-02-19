@@ -222,7 +222,7 @@ const FileInputField: React.FC<FileInputProps> = ({
       const fileTo64 = await fileToBase64(file);
       const data = {
         image: fileTo64,
-        fileName: file.name,
+        fileName: file.name.replace(/\s/g, ""),
         contentType: file.type,
       };
       const result: string = await uploadFile(data);

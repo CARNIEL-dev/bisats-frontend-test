@@ -57,6 +57,7 @@ const Identity = () => {
         navigate(APP_ROUTES.DASHBOARD);
       } else {
         Toast.error("Error", response.message);
+        // console.log(response);
       }
     },
   });

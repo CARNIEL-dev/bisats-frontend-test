@@ -173,7 +173,7 @@ const getSafeValue = (value: number | undefined | null): number => {
 
 function getUpgradeButtonState(
   user?: TUser | { [key: string]: any },
-  limits?: unknown
+  limits?: unknown,
 ) {
   const appliedLevel1 = !!user?.hasAppliedToBeInLevelOne;
   const hasLevel = !!user?.accountLevel;
@@ -197,9 +197,9 @@ function getUpgradeButtonState(
     label = "Pending Super Merchant Approval";
   } else if (!hasLevel || !limits) {
     label = "Verify";
-  } else if (!appliedMerchant && bvnOk) {
+  } else if (!appliedMerchant && bvnOk && isLevel1) {
     label = "Become a Merchant";
-  } else if (appliedMerchant && bvnOk) {
+  } else if (appliedMerchant && bvnOk && isLevel2) {
     label = "Become a Super Merchant";
   }
 
@@ -217,7 +217,7 @@ const resizeFile = (file: File) =>
       0,
       (uri) => {
         resolve(uri);
-      }
+      },
       // "base64"
     );
   });

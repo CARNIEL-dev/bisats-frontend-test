@@ -12,7 +12,7 @@ const DEFAULT_TITLE =
 const DEFAULT_DESCRIPTION =
   "Bisats makes crypto trading simple in Nigeria. Enjoy fast, secure, and seamless peer-to-peer Bitcoin and crypto transactions powered by blockchain automation.";
 const DEFAULT_KEYWORDS =
-  "best peer-to-peer crypto exchange Nigeria, how to buy bitcoin instantly in Nigeria, best crypto exchange Nigeria, bitcoin to naira, crypto trading platform Nigeria, buy bitcoin Nigeria, sell bitcoin Nigeria, fast crypto trading, secure crypto platform, crypto exchange Nigeria, cryptocurrency, blockchain, peer-to-peer trading, Nigeria crypto exchange, bitcoin, Bisats, Bisats Nigeria";
+  "best peer-to-peer crypto exchange Nigeria, how to buy bitcoin instantly in Nigeria, best crypto exchange Nigeria, bitcoin to naira, crypto trading platform Nigeria, buy bitcoin Nigeria, sell bitcoin Nigeria, fast crypto trading, secure crypto platform, crypto exchange Nigeria, cryptocurrency, blockchain, peer-to-peer trading, Nigeria crypto exchange, bitcoin, Bisats, Bisats Nigeria, Automated P2P, trusted P2P in Nigeria, Bybit, Binance";
 
 const SEO: React.FC<SEOProps> = ({
   title,

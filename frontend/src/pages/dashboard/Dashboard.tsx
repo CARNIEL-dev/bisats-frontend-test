@@ -27,6 +27,8 @@ const Dashboard = () => {
     user?.kyc?.personalInformationVerified,
   ]);
 
+  console.log("user", userState);
+
   return (
     <>
       <MaxWidth

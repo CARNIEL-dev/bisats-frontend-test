@@ -286,7 +286,7 @@ export const PostPOA_KYC = async (payload: TPOA) => {
 
 export const PostIdentity_KYC = async (payload: TIdentity) => {
   const dataInfo = {
-    image: payload.selfie,
+    imageUrl: payload.selfie,
     identificationType: payload.docType,
     identificationNumber: payload.identificationNo,
   };
@@ -300,7 +300,6 @@ export const PostIdentity_KYC = async (payload: TIdentity) => {
 
     return data;
   } catch (error) {
-    // throw handleApiError(error);
     return error;
   }
 };
