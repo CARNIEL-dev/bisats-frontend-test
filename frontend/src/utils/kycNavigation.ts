@@ -16,7 +16,7 @@ import { APP_ROUTES } from "@/constants/app_route";
  * 8) Fallback to dashboard
  */
 export function getNextKycRoute(
-  userState: UserState | null | undefined
+  userState: UserState | null | undefined,
 ): string {
   const user = userState?.user ?? null;
   const kyc = (user as any)?.kyc ?? userState?.kyc ?? null;
@@ -64,9 +64,9 @@ export function getNextKycRoute(
       }
 
       // Re apply for bvn.. because bvn is okay only for level 2
-      if (!hasAppliedToBeInLevelOne && bvnOk) {
-        return APP_ROUTES.KYC.BVNVERIFICATION;
-      }
+      // if (!hasAppliedToBeInLevelOne && bvnOk) {
+      //   return APP_ROUTES.KYC.BVNVERIFICATION;
+      // }
 
       // HDR: MERCHANT LOGIC
 
