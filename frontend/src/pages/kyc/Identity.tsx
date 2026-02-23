@@ -97,6 +97,7 @@ const Identity = () => {
               formik={formik}
               name="selfie"
               disabled={user?.kyc?.utilityBillVerified}
+              maxSizeMB={2}
             />
           </div>
         </div>
