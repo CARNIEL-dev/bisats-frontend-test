@@ -98,7 +98,7 @@ const MarketPlacePage = () => {
     queryFn: fetchAds,
     retry: false,
     refetchOnMount: false,
-    enabled: Boolean(userId && isKycVerified),
+    enabled: Boolean(userId),
   });
 
   //SUB: Tab change Handlers

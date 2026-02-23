@@ -374,7 +374,7 @@ const MyAds = () => {
       </div>
 
       <div>
-        {!isKycVerified ? (
+        {!isKycVerified && !userState.user?.hasAppliedToBeInLevelOne ? (
           <KycBanner />
         ) : userState?.user?.hasAppliedToBeInLevelOne &&
           !userState.user.accountLevel ? (
