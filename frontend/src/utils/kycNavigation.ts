@@ -145,6 +145,6 @@ export function getNextKycRoute(
  */
 export function goToNextKycRoute(userState: UserState | null | undefined) {
   const route = getNextKycRoute(userState);
-  console.log("Route", route);
-  // window.location.href = route;
+  // console.log("Route", route);
+  window.location.href = route;
 }
