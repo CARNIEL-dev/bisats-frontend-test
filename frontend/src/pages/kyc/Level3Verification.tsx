@@ -23,7 +23,7 @@ const Level3Verification = () => {
 
   const navigate = useNavigate();
   const [responsePending, setResponsePending] = useState(
-    user.user?.hasAppliedToBecomeASuperMerchant
+    user.user?.hasAppliedToBecomeASuperMerchant,
   );
   useEffect(() => {
     if (!user.kyc?.bvnVerified || !user.user?.hasAppliedToBecomeAMerchant)
@@ -33,9 +33,9 @@ const Level3Verification = () => {
 
   const formik = useFormik({
     initialValues: {
-      utilityBill: null as File | null,
-      cacDocument: null as File | null,
-      mermatDoc: null as File | null,
+      utilityBill: "",
+      cacDocument: "",
+      mermatDoc: null,
     },
     validationSchema: levelThreeValidationSchema,
     onSubmit: async (values, { setSubmitting, resetForm }) => {
@@ -44,14 +44,8 @@ const Level3Verification = () => {
           Toast.error("Missing user ID", "");
           return;
         }
-        const payload = {
-          userId: user.user.userId,
-          utilityBill: values.utilityBill as File,
-          cacDocument: values.cacDocument as File,
-          mermatDoc: values.mermatDoc as File | null,
-        };
 
-        const res = await PostLevelThreeInformation(payload);
+        const res = await PostLevelThreeInformation(values);
         if (res?.status) {
           setResponsePending(true);
           Toast.success("Submitted", "Level 3 documents submitted.");
@@ -74,13 +68,13 @@ const Level3Verification = () => {
   const account_level_features = useMemo(() => {
     return [
       `Create sell ads (max ${formatCompactNumber(
-        limit.maximum_ad_creation_amount
+        limit.maximum_ad_creation_amount,
       )} xNGN in crypto assets)`,
       `Create buy ads (max ${formatCompactNumber(
-        limit.maximum_ad_creation_amount
+        limit.maximum_ad_creation_amount,
       )} xNGN in crypto assets)`,
       `Max daily limit for withdrawal is Unlimited xNGN and ${formatCompactNumber(
-        limit.daily_withdrawal_limit_crypto
+        limit.daily_withdrawal_limit_crypto,
       )} USD in crypto assets`,
     ];
   }, [limit]);
@@ -138,8 +132,6 @@ const Level3Verification = () => {
                       label="Upload a recent utility bill (Not later than 4months ago)"
                       name="utilityBill"
                       info=""
-                      autoUpload={false}
-                      valueMapper={(value) => value}
                       formik={formik}
                     />
 
@@ -147,17 +139,13 @@ const Level3Verification = () => {
                     <FileInputField
                       label={"Certificate of corporation"}
                       name="cacDocument"
-                      autoUpload={false}
-                      valueMapper={(value) => value}
                       formik={formik}
                     />
 
                     {/* SUB: Mermat */}
                     <FileInputField
                       label={"Mermat (optional)"}
-                      autoUpload={false}
                       name="mermatDoc"
-                      valueMapper={(value) => value}
                       formik={formik}
                       className="mt-2"
                     />

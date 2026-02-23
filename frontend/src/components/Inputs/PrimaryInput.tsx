@@ -8,6 +8,12 @@ import {
 } from "@/components/ui/input-otp";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 import PinInput from "react-pin-input";
+import {
+  buildSyntheticEvent,
+  formatNumberDisplay,
+  resolveValue,
+  sanitizeNumberString,
+} from "@/helpers";
 
 interface TInput extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
@@ -21,119 +27,8 @@ interface TInput extends InputHTMLAttributes<HTMLInputElement> {
   otpLength?: number;
   secretMode?: boolean;
   infoSuccess?: boolean;
+  loadingLeft?: boolean;
 }
-
-const resolveValue = (
-  val: InputHTMLAttributes<HTMLInputElement>["value"]
-): string => {
-  if (val === null || val === undefined) return "";
-  if (Array.isArray(val)) {
-    return val[0] ?? "";
-  }
-
-  return String(val);
-};
-
-const sanitizeNumberString = (value: string): string => {
-  if (!value) return "";
-
-  const cleaned = value.replace(/[^\d.]/g, "");
-  if (!cleaned) return "";
-
-  const firstDot = cleaned.indexOf(".");
-  const integerRaw =
-    firstDot === -1 ? cleaned : cleaned.slice(0, firstDot).replace(/[.]/g, "");
-  const decimalRaw =
-    firstDot === -1 ? "" : cleaned.slice(firstDot + 1).replace(/[.]/g, "");
-
-  let integerPart =
-    integerRaw.length > 1 ? integerRaw.replace(/^0+(?=\d)/, "") : integerRaw;
-
-  if (integerPart === "" && cleaned.startsWith("0") && decimalRaw.length > 0) {
-    integerPart = "0";
-  }
-
-  if (firstDot === 0) {
-    integerPart = "";
-  }
-
-  if (integerPart === "" && !decimalRaw && cleaned.startsWith("0")) {
-    integerPart = "0";
-  }
-
-  let normalized = integerPart;
-
-  if (decimalRaw.length > 0) {
-    normalized = integerPart
-      ? `${integerPart}.${decimalRaw}`
-      : `.${decimalRaw}`;
-  }
-
-  if (firstDot !== -1 && cleaned.endsWith(".")) {
-    normalized = integerPart ? `${integerPart}.` : ".";
-  }
-
-  return normalized;
-};
-
-const formatNumberDisplay = (value: string): string => {
-  if (!value) return "";
-
-  const [integerPart, decimalPart] = value.split(".");
-  const formattedInteger = integerPart
-    ? integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-    : "";
-
-  if (decimalPart !== undefined) {
-    return decimalPart === ""
-      ? `${formattedInteger}.`
-      : `${formattedInteger}.${decimalPart}`;
-  }
-
-  return formattedInteger;
-};
-
-const buildSyntheticEvent = (
-  event: ChangeEvent<HTMLInputElement>,
-  nextValue: string
-): ChangeEvent<HTMLInputElement> => {
-  const numericValue =
-    nextValue === "" || nextValue === "." ? NaN : Number(nextValue);
-
-  const originalTarget = event.target as HTMLInputElement;
-  const originalCurrentTarget = event.currentTarget as HTMLInputElement;
-
-  const target = {
-    ...originalTarget,
-    value: nextValue,
-    valueAsNumber: numericValue,
-    dataset: {
-      ...originalTarget.dataset,
-      rawValue: nextValue,
-    },
-  } as EventTarget & HTMLInputElement;
-  Object.setPrototypeOf(target, Object.getPrototypeOf(originalTarget));
-
-  const currentTarget = {
-    ...originalCurrentTarget,
-    value: nextValue,
-    valueAsNumber: numericValue,
-  } as EventTarget & HTMLInputElement;
-  Object.setPrototypeOf(
-    currentTarget,
-    Object.getPrototypeOf(originalCurrentTarget)
-  );
-
-  const syntheticEvent = {
-    ...event,
-    target,
-    currentTarget,
-  };
-
-  Object.setPrototypeOf(syntheticEvent, Object.getPrototypeOf(event));
-
-  return syntheticEvent as ChangeEvent<HTMLInputElement>;
-};
 
 const PrimaryInput: React.FC<TInput> = ({
   className,
@@ -159,6 +54,7 @@ const PrimaryInput: React.FC<TInput> = ({
     inputMode,
     style,
     name,
+    loadingLeft,
     ...inputProps
   } = props;
 
@@ -168,7 +64,7 @@ const PrimaryInput: React.FC<TInput> = ({
 
   const [rawValue, setRawValue] = useState(initialRaw);
   const [formattedValue, setFormattedValue] = useState(
-    format ? formatNumberDisplay(initialRaw) : ""
+    format ? formatNumberDisplay(initialRaw) : "",
   );
 
   useEffect(() => {
@@ -177,11 +73,11 @@ const PrimaryInput: React.FC<TInput> = ({
     const nextRaw = sanitizeNumberString(resolveValue(value ?? defaultValue));
     const nextFormatted = formatNumberDisplay(nextRaw);
 
-    setRawValue((prev) => (prev === nextRaw ? prev : nextRaw));
-    setFormattedValue((prev) =>
-      prev === nextFormatted ? prev : nextFormatted
-    );
-  }, [defaultValue, format, value]);
+    // Always update to ensure sync with form values
+    setRawValue(nextRaw);
+    setFormattedValue(nextFormatted);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value, defaultValue]);
 
   const handleFormattedChange = (event: ChangeEvent<HTMLInputElement>) => {
     const rawInput = event.target.value;
@@ -240,7 +136,7 @@ const PrimaryInput: React.FC<TInput> = ({
     <div
       className={cn(
         "w-full flex flex-col gap-1.5 ",
-        type === "code" && className && className
+        type === "code" && className && className,
       )}
     >
       <div className="">
@@ -292,13 +188,13 @@ const PrimaryInput: React.FC<TInput> = ({
           <input
             {...inputProps}
             name={name}
-            type={format ? "text" : type ?? "text"}
-            inputMode={format ? inputMode ?? "decimal" : inputMode}
+            type={format ? "text" : (type ?? "text")}
+            inputMode={format ? (inputMode ?? "decimal") : inputMode}
             style={mergedStyle}
             className={cn(
               `rounded-sm placeholder:text-sm text-base font-normal border border-[#D6DAE1] outline-[none] focus:border-[#C49600] focus:shadow-[0_0_10px_#FEF8E5] w-full text-[#606C82]  p-2.5 no-spinner  px-3 `,
               error && "border-[#EF4444] outline-0 focus:border-[#EF4444] ",
-              className
+              className,
             )}
             data-raw-value={format ? rawValue : undefined}
             {...(format
@@ -313,13 +209,18 @@ const PrimaryInput: React.FC<TInput> = ({
                   ...(value !== undefined
                     ? { value }
                     : defaultValue !== undefined
-                    ? { defaultValue }
-                    : {}),
+                      ? { defaultValue }
+                      : {}),
                 })}
           />
         )}
         {loading && (
-          <p className="text-sm  absolute right-5 top-1/2 -translate-y-1/2">
+          <p
+            className={cn(
+              "text-sm  absolute right-5 top-1/2 -translate-y-1/2",
+              loadingLeft && "left-5 right-auto",
+            )}
+          >
             <Loader className="animate-spin text-gray-400" />
           </p>
         )}
@@ -328,7 +229,7 @@ const PrimaryInput: React.FC<TInput> = ({
       <div
         className={cn(
           "flex items-center  gap-1",
-          type === "pin" ? "justify-center" : "justify-between"
+          type === "pin" ? "justify-center" : "justify-between",
         )}
       >
         <span className="text-red-500 text-xs ">{error}</span>
@@ -381,7 +282,7 @@ const PrimaryInput: React.FC<TInput> = ({
           <small
             className={cn(
               "text-[#606C82] text-xs text-left",
-              infoSuccess && "text-green-600 font-semibold text-sm"
+              infoSuccess && "text-green-600 font-semibold text-sm",
             )}
           >
             {info}

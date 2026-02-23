@@ -81,7 +81,7 @@ const VerifyEmail = () => {
               type="code"
               name="code"
               label="Code"
-              className="w-full h-[48px] px-3 outline-hidden "
+              className="w-full px-3 outline-hidden "
               error={formik.errors.code}
               touched={formik.touched.code}
               value={formik.values.code}

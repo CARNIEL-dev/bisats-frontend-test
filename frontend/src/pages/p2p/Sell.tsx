@@ -5,21 +5,21 @@ import PreLoader from "@/layouts/PreLoader";
 import P2PMarket from "@/pages/p2p/components/P2PMarket";
 import { useGetAdsDetail } from "@/redux/actions/walletActions";
 
-import { useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 
 const Sell = () => {
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id") || "";
 
-  const { data, isLoading, isError, error } = useGetAdsDetail({
+  const {
+    data: adData,
+    isLoading,
+    isError,
+    error,
+  } = useGetAdsDetail({
     adId: id,
     enabled: Boolean(id),
   });
-
-  const adData = useMemo(() => {
-    return data?.find((item) => item.id === id);
-  }, [id, data]);
 
   return (
     <div className="space-y-4">

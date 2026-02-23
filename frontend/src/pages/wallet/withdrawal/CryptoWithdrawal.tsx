@@ -10,7 +10,6 @@ import { GetUserDetails } from "@/redux/actions/userActions";
 import {
   Complete_Withdraw_Crypto,
   getNetworkFee,
-  GetWallet,
   saveWalletAddressHandler,
   Withdraw_Crypto,
 } from "@/redux/actions/walletActions";
@@ -29,6 +28,7 @@ import KycManager from "@/pages/kyc/KYCManager";
 import { TNetwork } from "@/pages/wallet/withdrawal";
 import { ACTIONS } from "@/utils/transaction_limits";
 
+import useGetWallet from "@/hooks/use-getWallet";
 // @ts-expect-error no types
 import WAValidator from "multicoin-address-validator";
 import * as Yup from "yup";
@@ -62,16 +62,17 @@ const CryptoWithdrawal = ({
   const navigate = useNavigate();
 
   const queryClient = useQueryClient();
+  const { refetchWallet } = useGetWallet();
 
   const savedAddress = useMemo(() => {
     if (!user?.withdrawalAddresses || !asset) return [];
     return user.withdrawalAddresses.filter(
-      (item: TUserWalletAddress) => item.asset === asset
+      (item: TUserWalletAddress) => item.asset === asset,
     );
   }, [user?.withdrawalAddresses, asset]);
 
   const [showSavedAddressOptions, setShowSavedAddressOptions] = useState(
-    savedAddress.length > 0
+    savedAddress.length > 0,
   );
 
   useEffect(() => {
@@ -92,7 +93,7 @@ const CryptoWithdrawal = ({
     const token = getUserTokenData();
 
     const networks = token?.find(
-      (item: any) => item.tokenName === asset
+      (item: any) => item.tokenName === asset,
     )?.networks;
 
     return networks || [];
@@ -139,7 +140,7 @@ const CryptoWithdrawal = ({
           const { network } = this.parent;
           const isValid = WAValidator.validate(
             value,
-            network === "BSC" ? "0x" : network
+            network === "BSC" ? "0x" : network,
           );
 
           if (!isValid) {
@@ -154,12 +155,12 @@ const CryptoWithdrawal = ({
         .transform((_, originalValue) =>
           originalValue === "" || isNaN(originalValue)
             ? undefined
-            : Number(originalValue)
+            : Number(originalValue),
         )
         .moreThan(0, "Amount must be greater than 0")
         .max(
           userBalance,
-          `Amount cannot exceed your balance (${userBalance.toLocaleString()} ${asset})`
+          `Amount cannot exceed your balance (${userBalance.toLocaleString()} ${asset})`,
         )
         .test(
           "min-usd-equivalent",
@@ -171,7 +172,7 @@ const CryptoWithdrawal = ({
             if (!assetUsdRate) return true;
             const usdEquivalent = numericValue * assetUsdRate;
             return usdEquivalent >= MIN_CRYPTO_WITHDRAWAL_USD;
-          }
+          },
         )
         .required("Amount is required"),
     }),
@@ -302,7 +303,7 @@ const CryptoWithdrawal = ({
               queryKey: ["userWalletHistory"],
               exact: false,
             }),
-            GetWallet(),
+            refetchWallet(),
           ]).then(() => navigate(APP_ROUTES.WALLET.HOME));
         } else {
           Toast.error(res.message, "");
@@ -461,12 +462,12 @@ const CryptoWithdrawal = ({
           dailyLimit={
             formatCompactNumber(
               parseFloat(usedUpLimit?.dailyCryptoWithdrawalLimit || "0") -
-                (usedUpLimit?.totalUsedAmountCrypto || 0)
+                (usedUpLimit?.totalUsedAmountCrypto || 0),
             ).endsWith("T")
               ? "Unlimited"
               : formatCompactNumber(
                   parseFloat(usedUpLimit?.dailyCryptoWithdrawalLimit || "0") -
-                    (usedUpLimit?.totalUsedAmountCrypto || 0)
+                    (usedUpLimit?.totalUsedAmountCrypto || 0),
                 ) + " USD"
           }
           fee={
@@ -480,7 +481,8 @@ const CryptoWithdrawal = ({
               : formatter({ decimal: asset === "USDT" ? 2 : 5 }).format(
                   isNaN(parseFloat(formik.values.amount))
                     ? 0
-                    : parseFloat(formik.values.amount) - (data?.networkFee ?? 0)
+                    : parseFloat(formik.values.amount) -
+                        (data?.networkFee ?? 0),
                 )
           }
           total={
@@ -489,7 +491,7 @@ const CryptoWithdrawal = ({
               : `${formatter({ decimal: asset === "USDT" ? 2 : 5 }).format(
                   !formik.values.amount
                     ? 0
-                    : parseFloat(formik.values.amount ?? 0)
+                    : parseFloat(formik.values.amount ?? 0),
                 )}`
           }
         />
@@ -562,7 +564,7 @@ const CryptoWithdrawal = ({
                 className={cn(
                   "bg-gray-50 p-3 relative shadow rounded-md border cursor-pointer hover:border-green-500",
                   formik.values.walletAddress === item.address &&
-                    "border-green-500"
+                    "border-green-500",
                 )}
               >
                 {formik.values.walletAddress === item.address && (

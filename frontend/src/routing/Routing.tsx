@@ -13,7 +13,7 @@ import {
   VerifyEmail,
 } from "@/pages/auth";
 import Dashboard from "@/pages/dashboard/Dashboard";
-import { Identity, PersonalInformation, POA } from "@/pages/kyc";
+import { Identity, PersonalInformation } from "@/pages/kyc";
 import BVNVerification from "@/pages/kyc/BVNVerification";
 import Level3Verification from "@/pages/kyc/Level3Verification";
 import PhoneVerifcation from "@/pages/kyc/PhoneVerification";
@@ -41,18 +41,18 @@ import ProtectedRoute from "@/utils/protectedRoutes";
 
 import DashboardLayout from "@/layouts/DashboardLayout";
 import Layout from "@/layouts/Layout";
+import SwapLayout from "@/layouts/SwapLayout";
 import Verify2FA from "@/pages/auth/Verify2FA";
 import BecomeMerchant from "@/pages/kyc/BecomeMerchant";
 import { LandingPage } from "@/pages/landing-page/src/screens/Bisats/LandingPage";
+import ResourcesPage from "@/pages/landing-page/src/screens/ResourcesPage";
 import NotificationsPage from "@/pages/notifcations/NotificationsPage";
 import MarketPlacePage from "@/pages/p2p/MarketPlacePage";
 import Corporate from "@/pages/settings/Corporate";
 import SwapPage from "@/pages/swap/SwapPage";
+import TransferPage from "@/pages/wallet/transfer";
 import NotFound from "@/routing/NotFound";
 import { Route, Routes } from "react-router-dom";
-import SwapLayout from "@/layouts/SwapLayout";
-import TransferPage from "@/pages/wallet/transfer";
-import ResourcesPage from "@/pages/landing-page/src/screens/ResourcesPage";
 
 const Routing = () => {
   return (
@@ -167,7 +167,7 @@ const Routing = () => {
                 path={APP_ROUTES?.KYC.PERSONAL}
                 Component={PersonalInformation}
               />
-              <Route path={APP_ROUTES?.KYC.POA} Component={POA} />
+
               <Route path={APP_ROUTES?.KYC.IDENTITY} Component={Identity} />
             </Route>
           </Route>

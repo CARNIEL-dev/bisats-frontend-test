@@ -79,6 +79,7 @@ const SignUp = () => {
               text="Password"
               value={formik.values.password}
               onBlur={formik.handleBlur}
+              showTip={false}
             />
           </div>
           <div className="w-full mb-2">
@@ -93,6 +94,7 @@ const SignUp = () => {
               value={formik.values.confirmPassword}
               handleChange={formik.handleChange}
               onBlur={formik.handleBlur}
+              showTip={false}
             />
           </div>
           <div>

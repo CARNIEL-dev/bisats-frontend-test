@@ -9,8 +9,6 @@ import Toast from "@/components/Toast";
 import Head from "@/pages/wallet/Head";
 import {
   Complete_Withdraw_xNGN,
-  GetUserBank,
-  GetWallet,
   useCryptoRates,
   Withdraw_xNGN,
 } from "@/redux/actions/walletActions";
@@ -42,6 +40,7 @@ import { useFormik } from "formik";
 
 import { APP_ROUTES } from "@/constants/app_route";
 
+import useGetWallet from "@/hooks/use-getWallet";
 import CryptoWithdrawal from "@/pages/wallet/withdrawal/CryptoWithdrawal";
 
 export type TNetwork = {
@@ -75,6 +74,7 @@ const WithdrawalPage = () => {
 
   const location = useLocation();
   const linkedAsset = location.state?.asset;
+  const linkedAmount = location.state?.amount;
 
   const [selectedToken, setSelectedToken] = useState<string>(linkedAsset);
 
@@ -124,6 +124,7 @@ const WithdrawalPage = () => {
                 user={user}
                 transaction_limits={transaction_limits}
                 userBalance={userBalance}
+                defaultAmount={linkedAmount}
               />
             )}
             {selectedToken && selectedToken !== "xNGN" && (
@@ -150,9 +151,15 @@ type PropsNGN = {
   user: UserState["user"];
   transaction_limits: undefined | UserTransactionLimits;
   userBalance: number;
+  defaultAmount?: number;
 };
 
-const NGNWithdrawal = ({ user, transaction_limits, userBalance }: PropsNGN) => {
+const NGNWithdrawal = ({
+  user,
+  transaction_limits,
+  userBalance,
+  defaultAmount,
+}: PropsNGN) => {
   const [withdrawlLoading, setWithdrawlLoading] = useState(false);
 
   const [addBankModal, setAddBankModal] = useState(false);
@@ -169,21 +176,14 @@ const NGNWithdrawal = ({ user, transaction_limits, userBalance }: PropsNGN) => {
   const userTransactionLimits = bisats_limit[account_level];
 
   const queryClient = useQueryClient();
-
-  const {
-    data: userbank,
-    isError,
-    isLoading,
-    isFetching,
-  } = useQuery<UserBankListType[], Error>({
-    queryKey: ["UserBankList", user?.userId],
-    queryFn: GetUserBank,
-    refetchOnMount: false,
-    enabled: Boolean(user?.userId),
-  });
+  const { refetchWallet } = useGetWallet();
 
   // SUB: User bank list
   const userBankList = useMemo(() => {
+    const bankAccounts = user?.bankAccounts;
+    const userbank = bankAccounts?.filter(
+      (ba: any) => ba?.bankAccountType === "withdrawal",
+    );
     if (!userbank) return [];
     return userbank?.map((choice: UserBankListType) => ({
       label: (
@@ -201,7 +201,7 @@ const NGNWithdrawal = ({ user, transaction_limits, userBalance }: PropsNGN) => {
       ),
       value: choice?.id,
     }));
-  }, [userbank]);
+  }, [user?.bankAccounts]);
 
   // SUB: Used up limit
   const usedUpLimit = useMemo(() => {
@@ -214,14 +214,14 @@ const NGNWithdrawal = ({ user, transaction_limits, userBalance }: PropsNGN) => {
     userTransactionLimits?.maximum_fiat_withdrawal || Infinity;
 
   useEffect(() => {
-    if (!userbank?.length && !isLoading) {
+    if (!userBankList?.length) {
       setAddBankModal(true);
     }
-  }, [userbank, isLoading]);
+  }, [userBankList]);
 
   const formik = useFormik({
     initialValues: {
-      amount: "",
+      amount: defaultAmount?.toString() || "",
       bank: "",
     },
     validationSchema: Yup.object().shape({
@@ -230,24 +230,24 @@ const NGNWithdrawal = ({ user, transaction_limits, userBalance }: PropsNGN) => {
         .transform((_, originalValue) =>
           originalValue === "" || isNaN(originalValue)
             ? undefined
-            : Number(originalValue)
+            : Number(originalValue),
         )
         .moreThan(0, "Amount must be greater than 0")
         .max(
           maxWithdrawalLimit,
-          `Amount exceeds your limit per withdrawal (xNGN ${maxWithdrawalLimit.toLocaleString()})`
+          `Amount exceeds your limit per withdrawal (xNGN ${maxWithdrawalLimit.toLocaleString()})`,
         )
         .test(
           "max-balance",
           `Amount cannot exceed your balance (xNGN ${formatter({}).format(
-            userBalance
+            userBalance,
           )})`,
           (value) => {
             if (value === undefined || value === null) return true;
             const numericValue = Number(value);
             if (Number.isNaN(numericValue)) return true; // let Yup handle required/number errors
             return numericValue <= userBalance;
-          }
+          },
         )
         .required("Amount is required"),
     }),
@@ -306,7 +306,7 @@ const NGNWithdrawal = ({ user, transaction_limits, userBalance }: PropsNGN) => {
               queryKey: ["userWalletHistory"],
               exact: false,
             }),
-            GetWallet(),
+            refetchWallet(),
           ]).then(() => navigate(APP_ROUTES.WALLET.HOME));
         } else {
           Toast.error(res.message, "");
@@ -334,19 +334,7 @@ const NGNWithdrawal = ({ user, transaction_limits, userBalance }: PropsNGN) => {
   return (
     <>
       <div className="mt-4">
-        {isLoading && isFetching ? (
-          <div className="h-[12rem] grid place-content-center">
-            <PreLoader primary={false} />
-          </div>
-        ) : isError ? (
-          <div className="h-[5rem] grid place-content-center">
-            <ErrorDisplay
-              message="Failed to get withdrawal account, Try again later."
-              isError={false}
-              showIcon={false}
-            />
-          </div>
-        ) : userBankList?.length > 0 ? (
+        {userBankList?.length > 0 ? (
           <>
             <div>
               <MultiSelectDropDown
@@ -376,6 +364,7 @@ const NGNWithdrawal = ({ user, transaction_limits, userBalance }: PropsNGN) => {
                       ? true
                       : false
                   }
+                  // defaultValue={defaultAmount?.toString() || ""}
                   value={formik.values.amount}
                   onChange={(e) => {
                     // let value = e.target.value.replace(/\D/g, "");
@@ -398,13 +387,13 @@ const NGNWithdrawal = ({ user, transaction_limits, userBalance }: PropsNGN) => {
                   dailyLimit={
                     formatCompactNumber(
                       parseFloat(usedUpLimit?.dailyFiatWithdrawalLimit || "0") -
-                        (usedUpLimit?.totalUsedAmountFiat || 0)
+                        (usedUpLimit?.totalUsedAmountFiat || 0),
                     ).endsWith("T")
                       ? "Unlimited"
                       : formatCompactNumber(
                           parseFloat(
-                            usedUpLimit?.dailyFiatWithdrawalLimit || "0"
-                          ) - (usedUpLimit?.totalUsedAmountFiat || 0)
+                            usedUpLimit?.dailyFiatWithdrawalLimit || "0",
+                          ) - (usedUpLimit?.totalUsedAmountFiat || 0),
                         )
                   }
                   fee={
@@ -419,13 +408,13 @@ const NGNWithdrawal = ({ user, transaction_limits, userBalance }: PropsNGN) => {
                           isNaN(parseFloat(formik.values.amount))
                             ? 0
                             : parseFloat(formik.values.amount) -
-                                userTransactionLimits?.charge_on_single_withdrawal_fiat
+                                userTransactionLimits?.charge_on_single_withdrawal_fiat,
                         )
                   }
                   total={`${formatNumber(
                     !formik.values.amount || !formik.isValid
                       ? "-"
-                      : Number(formik.values.amount ?? 0)
+                      : Number(formik.values.amount ?? 0),
                   )}`}
                 />
                 <KycManager

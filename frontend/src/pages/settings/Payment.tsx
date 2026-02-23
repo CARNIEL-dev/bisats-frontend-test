@@ -10,7 +10,6 @@ import StatusBadge from "@/components/shared/StatusBadge";
 import { APP_ROUTES } from "@/constants/app_route";
 import KycManager from "@/pages/kyc/KYCManager";
 import { rehydrateUser } from "@/redux/actions/userActions";
-import { GetWallet } from "@/redux/actions/walletActions";
 import { ACTIONS } from "@/utils/transaction_limits";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -38,10 +37,6 @@ const Payment = () => {
   });
 
   useEffect(() => {
-    GetWallet();
-  }, [openModal.add, openModal.edit, openModal.delete]);
-
-  useEffect(() => {
     if (isCorporatePending) {
       rehydrateUser({
         userId: user.user?.userId,
@@ -64,7 +59,7 @@ const Payment = () => {
       accountName: bank?.accountName,
       bankName: bank?.bankName,
       bankCode: bank?.bankCode,
-    })
+    }),
   );
 
   const WalletAddress = user.user?.withdrawalAddresses?.map(
@@ -76,7 +71,7 @@ const Payment = () => {
         name: item?.name,
         asset: item?.asset,
       };
-    }
+    },
   );
 
   return (

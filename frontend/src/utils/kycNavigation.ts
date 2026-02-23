@@ -1,5 +1,6 @@
 /** @format */
 
+import Toast from "@/components/Toast";
 import { APP_ROUTES } from "@/constants/app_route";
 
 /**
@@ -16,7 +17,7 @@ import { APP_ROUTES } from "@/constants/app_route";
  * 8) Fallback to dashboard
  */
 export function getNextKycRoute(
-  userState: UserState | null | undefined
+  userState: UserState | null | undefined,
 ): string {
   const user = userState?.user ?? null;
   const kyc = (user as any)?.kyc ?? userState?.kyc ?? null;
@@ -47,26 +48,22 @@ export function getNextKycRoute(
   switch (isLevel1) {
     case true:
       // Can only has this set to true when this true to be in level 1
-      if (!hasAppliedToBeInLevelOne || !kyc?.identificationVerified) {
+      if (!kyc?.identificationVerified) {
         return APP_ROUTES.KYC.IDENTITY;
       }
       // Can only has this set to true when this true to be in level 1
-      if (!hasAppliedToBeInLevelOne || !kyc?.personalInformationVerified) {
+      if (!kyc?.personalInformationVerified) {
         return APP_ROUTES.KYC.PERSONAL;
       }
       // Only way to go level 2
-      if (hasAppliedToBeInLevelOne && !bvnOk && !hasAppliedToBecomeAMerchant) {
-        return APP_ROUTES.KYC.BVNVERIFICATION;
-      }
-      // Can move to bvn before getting to applying for merchant
       if (hasAppliedToBeInLevelOne && !bvnOk) {
         return APP_ROUTES.KYC.BVNVERIFICATION;
       }
 
       // Re apply for bvn.. because bvn is okay only for level 2
-      if (!hasAppliedToBeInLevelOne && bvnOk) {
-        return APP_ROUTES.KYC.BVNVERIFICATION;
-      }
+      // if (!hasAppliedToBeInLevelOne && bvnOk) {
+      //   return APP_ROUTES.KYC.BVNVERIFICATION;
+      // }
 
       // HDR: MERCHANT LOGIC
 
@@ -148,5 +145,6 @@ export function getNextKycRoute(
  */
 export function goToNextKycRoute(userState: UserState | null | undefined) {
   const route = getNextKycRoute(userState);
+  // console.log("Route", route);
   window.location.href = route;
 }

@@ -21,11 +21,14 @@ import { useNavigate } from "react-router-dom";
 // assets = isDev ? TestAssets : LiveAssets
 
 export const assetIndexMap: Record<string, number> = Object.values(
-  assets
-).reduce((acc, asset, index) => {
-  acc[asset] = index;
-  return acc;
-}, {} as Record<string, number>);
+  assets,
+).reduce(
+  (acc, asset, index) => {
+    acc[asset] = index;
+    return acc;
+  },
+  {} as Record<string, number>,
+);
 
 export enum typeofSwam {
   "Buy",

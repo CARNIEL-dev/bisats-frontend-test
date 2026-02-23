@@ -11,18 +11,27 @@ import { cn } from "@/utils";
 import { Bell, ChevronRight, Loader2, X } from "lucide-react";
 import { useSelector } from "react-redux";
 
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 
 import { slideInLeft } from "@/components/animation";
 import NotificationItem from "@/components/shared/NotificationItem";
 import { buttonVariants } from "@/components/ui/Button";
 import { APP_ROUTES } from "@/constants/app_route";
 import { AnimatePresence, motion } from "motion/react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
+
+const refreshPaths = [
+  APP_ROUTES.P2P.MARKETPLACE,
+  APP_ROUTES.DASHBOARD,
+  APP_ROUTES.WALLET.HOME,
+];
 
 const Notification = () => {
   const userState: UserState = useSelector((state: any) => state.user);
   const userId: string = userState?.user?.userId || "";
+  const pathName = useLocation().pathname;
+  const queryClient = useQueryClient();
 
   const isKycVerified = [
     userState?.kyc?.identificationVerified,
@@ -43,6 +52,16 @@ const Notification = () => {
     userId,
     isKycVerified,
   });
+
+  useEffect(() => {
+    if (refreshPaths.includes(pathName)) {
+      queryClient.invalidateQueries({
+        queryKey: ["userNotifications", userId],
+        stale: true,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathName]);
 
   const notificationData = useMemo(() => {
     const notifications = notificationState?.notifications || [];
@@ -91,7 +110,7 @@ const Notification = () => {
           <Link
             className={cn(
               buttonVariants({ variant: "link" }),
-              "text-[#C49600] text-sm"
+              "text-[#C49600] text-sm",
             )}
             to={APP_ROUTES.NOTIFICATION}
           >
@@ -123,7 +142,7 @@ const Notification = () => {
                         <NotificationItem notification={notification} />
                       </motion.div>
                     );
-                  }
+                  },
                 )
               ) : (
                 <motion.div
@@ -151,7 +170,7 @@ const NotificationBellState = ({ loading = true }: { loading?: boolean }) => {
       <div
         className={cn(
           "absolute -right-2 -top-3 bg-priYellow grid place-content-center w-5 h-5 text-xs font-medium rounded-full ",
-          !loading && "bg-red-500"
+          !loading && "bg-red-500",
         )}
       >
         {loading ? (

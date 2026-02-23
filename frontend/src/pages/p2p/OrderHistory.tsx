@@ -35,7 +35,7 @@ const OrderHistory = () => {
     isError,
   } = useFetchOrder({ isKycVerified });
 
-  if (!isKycVerified) {
+  if (!isKycVerified && !userState.user?.hasAppliedToBeInLevelOne) {
     return <KycBanner />;
   } else if (
     userState.user?.hasAppliedToBeInLevelOne &&
@@ -75,7 +75,7 @@ const OrderHistory = () => {
         <div className="h-[40dvh] grid place-content-center">
           <PreLoader />
         </div>
-      ) : isError ? (
+      ) : isError && !error.message.startsWith("column") ? (
         <div className="h-[40dvh] grid place-content-center">
           <ErrorDisplay
             message={error?.message || "Failed to load orders"}
@@ -83,7 +83,7 @@ const OrderHistory = () => {
             showIcon={false}
           />
         </div>
-      ) : orders?.length === 0 ? (
+      ) : !orders || orders?.length === 0 ? (
         <Empty text="No orders found" />
       ) : (
         <>
@@ -134,8 +134,8 @@ const OrderHistoryDetails = ({
         ? "sold"
         : "bought"
       : buyer === "buyer"
-      ? "bought"
-      : "sold";
+        ? "bought"
+        : "sold";
 
   return (
     <ModalTemplate onClose={close}>
@@ -155,7 +155,7 @@ const OrderHistoryDetails = ({
             <p
               className={cn(
                 "capitalize font-semibold",
-                type === "bought" ? "text-green-600" : "text-red-600"
+                type === "bought" ? "text-green-600" : "text-red-600",
               )}
             >
               {type}
@@ -180,7 +180,7 @@ const OrderHistoryDetails = ({
             <p className="">
               <span className="font-semibold text-xl">
                 {formatter({ decimal: 2 }).format(
-                  details.price * details.quantity
+                  details.price * details.quantity,
                 )}{" "}
               </span>
               xNGN
@@ -197,12 +197,12 @@ const OrderHistoryDetails = ({
                     details.asset === "xNGN"
                       ? 0
                       : details.asset === "USDT"
-                      ? 2
-                      : 6,
+                        ? 2
+                        : 6,
                 }).format(
                   buyer === "buyer"
                     ? details.quantity
-                    : details?.amountToReceive ?? details.quantity
+                    : (details?.amountToReceive ?? details.quantity),
                 )}{" "}
               </span>
               {details.asset}
@@ -239,7 +239,7 @@ const OrderHistoryDetails = ({
                 "text-xs capitalize px-2.5 py-0.5 rounded-full border",
                 details.status === "completed"
                   ? "text-green-600 bg-green-300/10 border-green-600"
-                  : "text-red-600 border-red-600 bg-red-300/10"
+                  : "text-red-600 border-red-600 bg-red-300/10",
               )}
             >
               {details.status}
@@ -264,7 +264,7 @@ const OrderHistoryDetails = ({
 // HDR: COLUMNS
 const tableColumns = (
   userId: string,
-  setSelectedData: (data: OrderHistory) => void
+  setSelectedData: (data: OrderHistory) => void,
 ) => {
   const columns: ColumnDef<OrderHistory>[] = [
     {
@@ -277,8 +277,8 @@ const tableColumns = (
             ? "sold"
             : "bought"
           : buyer === "buyer"
-          ? "bought"
-          : "sold";
+            ? "bought"
+            : "sold";
       },
       cell: ({ row }) => {
         const type = row.getValue("transactionType") as string;
@@ -286,7 +286,7 @@ const tableColumns = (
           <p
             className={cn(
               "capitalize font-semibold",
-              type === "sold" ? "text-red-600" : "text-green-600"
+              type === "sold" ? "text-red-600" : "text-green-600",
             )}
           >
             {type}
@@ -402,7 +402,7 @@ const tableColumns = (
         // Type assertion for row.original
         const original = row.original as OrderHistory;
         const formattedDate = String(
-          row.getValue("formattedDate")
+          row.getValue("formattedDate"),
         ).toLowerCase();
         const rawDate = original.createdAt
           ? dayjs(original.createdAt).format("DDMMYYYY")

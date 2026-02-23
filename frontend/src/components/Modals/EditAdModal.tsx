@@ -17,9 +17,10 @@ import * as Yup from "yup";
 
 import ErrorDisplay from "@/components/shared/ErrorDisplay";
 import { Badge } from "@/components/ui/badge";
+import useGetWallet from "@/hooks/use-getWallet";
 import PreLoader from "@/layouts/PreLoader";
 import { UpdateAdStatusResponse } from "@/pages/p2p/MyAds";
-import { GetWallet, useCryptoRates } from "@/redux/actions/walletActions";
+import { useCryptoRates } from "@/redux/actions/walletActions";
 import { cn, formatter } from "@/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Check } from "lucide-react";
@@ -39,6 +40,7 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
   const walletState: WalletState = useSelector((state: any) => state.wallet);
   const userState: UserState = useSelector((state: any) => state.user);
   const user = userState.user;
+  const { refetchWallet } = useGetWallet();
 
   const account_level = user?.accountLevel as AccountLevel;
   const userTransactionLimits = bisats_limit[account_level];
@@ -70,7 +72,7 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
   const calculateDisplayWalletBallance: number = useMemo(() => {
     if (ad?.type.toLowerCase() === "buy") {
       const amountAval = (Number(walletData?.xNGN) + amountAvailable).toFixed(
-        2
+        2,
       );
       return Number(amountAval) || 0;
     } else {
@@ -114,7 +116,7 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
           if (value && value > maxAmount) {
             return this.createError({
               message: `Amount must not exceed ${formatNumber(
-                maxAmount
+                maxAmount,
               )} xNGN ${typeof maxAmount}`,
             });
           }
@@ -126,7 +128,7 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
           if (Number(rate) * prevAmout > maxAmount) {
             return this.createError({
               message: `Amount must not exceed  ${formatNumber(
-                maxAmount
+                maxAmount,
               )} xNGN Limit`,
             });
           }
@@ -140,7 +142,7 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
         function (value) {
           if (!value) return true;
           return Number(value) <= calculateDisplayWalletBallance;
-        }
+        },
       ),
     // .required("Amount is required"),
   });
@@ -154,7 +156,7 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
     mutationFn: (payload: Partial<AdsPayload>) => UpdateAd(payload),
     onSuccess: async (info, variables) => {
       await Promise.all([
-        GetWallet(),
+        refetchWallet(),
         queryClient.refetchQueries({
           queryKey: ["userAds", variables.userId],
         }),
@@ -222,7 +224,7 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
                 "h-fit border  border-[#F3F4F6] bg-[#F9F9FB] rounded-md py-2 px-3 my-2 text-xs flex flex-col gap-1.5 w-full ",
                 ad?.type.toLowerCase() === "buy"
                   ? "bg-green-600/10 text-green-700"
-                  : "bg-red-600/10 text-red-700"
+                  : "bg-red-600/10 text-red-700",
               )}
             >
               <div className="flex justify-between items-start  text-wrap w-full">
@@ -291,7 +293,7 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
                   if (isValidDecimal) {
                     formik.setFieldValue(
                       "amount",
-                      value === "" ? undefined : Number(value)
+                      value === "" ? undefined : Number(value),
                     );
                   }
                 }}

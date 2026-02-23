@@ -2,11 +2,13 @@ import DashboardNavbar from "@/components/DashboardNavbar";
 import { Footer } from "@/components/Footer";
 import MobileAppPrompt from "@/components/shared/MobileAppPrompt";
 import SEO from "@/components/shared/SEO";
+import useGetWallet from "@/hooks/use-getWallet";
 import ChatWidget from "@/layouts/ChatWidget";
 import React from "react";
 import { Outlet } from "react-router-dom";
 
 const DashboardLayout: React.FC = () => {
+  useGetWallet();
   return (
     <>
       <ChatWidget />

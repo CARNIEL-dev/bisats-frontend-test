@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import Bisatsfetch from "../fetchWrapper";
 
 export const handleCopy = async (
-  text: string
+  text: string,
 ): Promise<{ status: boolean; message: string }> => {
   try {
     await navigator.clipboard.writeText(text);
@@ -22,7 +22,7 @@ export const GetNotification = async () => {
       `/api/v1/user/notification/get-notifications`,
       {
         method: "GET",
-      }
+      },
     );
 
     if (response.statusCode !== 200) {
@@ -41,7 +41,7 @@ export const GetNotificationById = async (notificationId: string) => {
       `/api/v1/user/notification/${notificationId}/get-notification-by-id`,
       {
         method: "GET",
-      }
+      },
     );
 
     if (response.statusCode !== 200) {
@@ -68,14 +68,15 @@ const useFetchUserNotifications = ({
     retry: false,
     staleTime: 5 * 60 * 1000, // 5 minutes
     enabled: Boolean(userId && isKycVerified),
-    refetchInterval: 2 * 60 * 1000, // 2 minutes
+    refetchOnMount: false,
+    // refetchInterval: 2 * 60 * 1000, // 2 minutes
   });
 };
 
 const Read_Notification = async (payload: { notificationId: string }) => {
   const res = await Bisatsfetch(
     `/api/v1/user/notification/${payload.notificationId}${BACKEND_URLS.READ_NOTIFICATION}`,
-    { method: "GET" }
+    { method: "GET" },
   );
   if (!res?.status) {
     throw new Error(res?.message || "Failed to mark notification as read");
@@ -89,7 +90,7 @@ const Delete_Notification = async (payload: { notificationId: string }) => {
       `/api/v1/user/notification/${payload.notificationId}${BACKEND_URLS.DELETE_NOTIFICATION}`,
       {
         method: "DELETE",
-      }
+      },
     );
     if (!response.status) {
       throw new Error(response.message);
@@ -106,7 +107,7 @@ const Read_All_Notifications = async () => {
       `/api/v1/user/notification${BACKEND_URLS.READ_ALL_NOTIFICATION}`,
       {
         method: "GET",
-      }
+      },
     );
     if (!response.status) {
       throw new Error(response.message);
@@ -123,7 +124,7 @@ const Delete_All_Notifications = async () => {
       `/api/v1/user/notification${BACKEND_URLS.DELETE_ALL_NOTIFICATION}`,
       {
         method: "DELETE",
-      }
+      },
     );
     if (!response.status) {
       throw new Error(response.message);
@@ -135,10 +136,33 @@ const Delete_All_Notifications = async () => {
   }
 };
 
+type FileUplaodType = {
+  image: string;
+  fileName: string;
+  contentType: string;
+};
+const uploadFile = async (data: FileUplaodType) => {
+  try {
+    const response = await Bisatsfetch(`/api/v1/user/upload-document`, {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+
+    if (!response.url) {
+      throw new Error("Failed to upload file");
+    }
+
+    return response.url;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export {
   useFetchUserNotifications,
   Read_Notification,
   Delete_Notification,
   Read_All_Notifications,
   Delete_All_Notifications,
+  uploadFile,
 };

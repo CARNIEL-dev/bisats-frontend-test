@@ -93,4 +93,9 @@ export const BACKEND_URLS = {
   ADD_PUSH_NOTIFICATION: "/v1/notification/add-push-token",
   SUPPORT_CHANNEL: "/v1/support",
   SUPPORT_SOCKET_CHAT: "/withdraw",
+
+  SWAP: {
+    GET_QUOTE: "/api/v1/user/swap/create-quote",
+    GET_PAIRS: "/api/v1/user/swap/get-pairs",
+  },
 };

@@ -38,9 +38,8 @@ const BecomeMerchant = () => {
 
   const formik = useFormik({
     initialValues: {
-      userId,
-      utilityBill: null,
-      photoIdentity: null,
+      utilityBill: "",
+      photoIdentity: "",
     },
     validationSchema: merchantSchema,
     onSubmit: async (payload) => {
@@ -51,7 +50,6 @@ const BecomeMerchant = () => {
       const dataInfo = {
         utilityBill: payload.utilityBill,
         photoIdentity: payload.photoIdentity,
-        userId: payload.userId,
       };
       await Become_Merchant_Hanlder(dataInfo).then(async (res) => {
         if (res.status) {
@@ -60,7 +58,7 @@ const BecomeMerchant = () => {
             () => {
               setShowModal(true);
               formik.resetForm();
-            }
+            },
           );
         } else {
           Toast.error(res.message, "");
@@ -90,9 +88,7 @@ const BecomeMerchant = () => {
               <FileInputField
                 label="Upload a recent utility bill (Not later than 4months ago)"
                 name="utilityBill"
-                autoUpload={false}
                 maxSizeMB={2}
-                valueMapper={(value) => value}
                 formik={formik}
               />
 
@@ -101,9 +97,7 @@ const BecomeMerchant = () => {
                 label={"Photo Identity"}
                 name="photoIdentity"
                 info="Photo holding your identity card or passport close to your face"
-                valueMapper={(value) => value}
                 formik={formik}
-                autoUpload={false}
                 maxSizeMB={2}
               />
             </div>
@@ -136,7 +130,7 @@ const BecomeMerchant = () => {
             <Link
               className={cn(
                 buttonVariants({ variant: "default" }),
-                "mt-4 text-sm rounded-full"
+                "mt-4 text-sm rounded-full",
               )}
               to={APP_ROUTES.DASHBOARD}
               replace

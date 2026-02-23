@@ -1,3 +1,5 @@
+import envelope from "@/assets/icons/envelope.svg";
+import verifyBadge from "@/assets/icons/verification-badge.svg";
 import { PrimaryButton } from "@/components/buttons/Buttons";
 import Label from "@/components/Inputs/Label";
 import PrimaryInput from "@/components/Inputs/PrimaryInput";
@@ -9,7 +11,7 @@ import { transferSchema } from "@/formSchemas";
 import KycManager from "@/pages/kyc/KYCManager";
 import Head from "@/pages/wallet/Head";
 import { GetUserInfo } from "@/redux/actions/userActions";
-import { GetWallet, transferToken } from "@/redux/actions/walletActions";
+import { transferToken } from "@/redux/actions/walletActions";
 import { cn, formatter } from "@/utils";
 import { ACTIONS } from "@/utils/transaction_limits";
 import { FormikConfig, useFormik } from "formik";
@@ -22,11 +24,10 @@ import {
   useNavigate,
   useSearchParams,
 } from "react-router-dom";
-import verifyBadge from "@/assets/icons/verification-badge.svg";
-import envelope from "@/assets/icons/envelope.svg";
 
-import { APP_ROUTES } from "@/constants/app_route";
 import { buttonVariants } from "@/components/ui/Button";
+import { APP_ROUTES } from "@/constants/app_route";
+import useGetWallet from "@/hooks/use-getWallet";
 import { useQueryClient } from "@tanstack/react-query";
 
 type TransferFormValues = {
@@ -61,6 +62,7 @@ const TransferPage = () => {
   const walletData = walletState.wallet;
 
   const queryClient = useQueryClient();
+  const { refetchWallet } = useGetWallet();
 
   const isTransferSuccess = useMemo(() => {
     return searchParam.get("success") === "true";
@@ -148,7 +150,6 @@ const TransferPage = () => {
       setIsTransferring(true);
       const res = await transferToken(combinedValues);
 
-      console.log("Responses from sending", res);
       if (res.statusCode === 200) {
         const dataInfo = { ...res.data, recipient: userInfo?.data || "" };
         await Promise.all([
@@ -160,7 +161,7 @@ const TransferPage = () => {
             queryKey: ["userNotifications"],
             exact: false,
           }),
-          GetWallet(),
+          refetchWallet(),
         ]).then(() => {
           Toast.success(res.message, "Success");
           navigate(`${APP_ROUTES.WALLET.TRANSFER}?success=true`, {
@@ -176,7 +177,9 @@ const TransferPage = () => {
       setIsTransferring(false);
     },
     context: { walletBal: walletData },
-  } as FormikConfig<TransferFormValues> & { context: { walletBal: typeof walletData } });
+  } as FormikConfig<TransferFormValues> & {
+    context: { walletBal: typeof walletData };
+  });
 
   // SUB: Determine wallet balance
   const walletBalance = useMemo(() => {
@@ -221,7 +224,7 @@ const TransferPage = () => {
         formik.submitForm();
       }
     },
-    [userInfo, showMoreDetails, formik]
+    [userInfo, showMoreDetails, formik],
   );
 
   return (
@@ -272,7 +275,7 @@ const TransferPage = () => {
               to={APP_ROUTES.WALLET.HOME}
               className={cn(
                 buttonVariants({ size: "lg" }),
-                "mt-6 text-sm w-[50%]"
+                "mt-6 text-sm w-[50%]",
               )}
             >
               Back to Wallet
@@ -338,7 +341,7 @@ const TransferPage = () => {
                           }
                           formik.setFieldValue(
                             "amount",
-                            walletBalance.toString()
+                            walletBalance.toString(),
                           );
                         }
                       }}

@@ -6,15 +6,12 @@ import { MultiSelectDropDown } from "@/components/Inputs/MultiSelectInput";
 import Toast from "@/components/Toast";
 import { APP_ROUTES } from "@/constants/app_route";
 import { getDepositBreakDown } from "@/helpers";
-import {
-  ConfirmDeposit,
-  GetWallet,
-  TopUpNGNBalance,
-} from "@/redux/actions/walletActions";
+import { ConfirmDeposit, TopUpNGNBalance } from "@/redux/actions/walletActions";
 
 import ModalTemplate from "@/components/Modals/ModalTemplate";
 import SecurityBanner from "@/components/shared/SecurityBanner";
 import { buttonVariants } from "@/components/ui/Button";
+import useGetWallet from "@/hooks/use-getWallet";
 import Head from "@/pages/wallet/Head";
 import { cn } from "@/utils";
 import { formatNumber } from "@/utils/numberFormat";
@@ -43,6 +40,7 @@ const TransactionBreakdown = () => {
   const [showPendindModal, setShowPendindModal] = useState(false);
 
   const queryClient = useQueryClient();
+  const { refetchWallet } = useGetWallet();
 
   const paymentID = searchParams.get("paymentId") || "";
 
@@ -102,7 +100,7 @@ const TransactionBreakdown = () => {
           queryKey: ["userWalletHistory"],
           exact: false,
         }),
-        GetWallet(),
+        refetchWallet(),
       ]);
       return;
     }
@@ -256,7 +254,7 @@ const TransactionBreakdown = () => {
             replace
             className={cn(
               buttonVariants({ variant: "default" }),
-              "rounded-full mt-6"
+              "rounded-full mt-6",
             )}
           >
             Back to wallet
