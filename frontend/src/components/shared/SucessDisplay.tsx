@@ -2,7 +2,7 @@ import { Check } from "lucide-react";
 import { PrimaryButton } from "@/components/buttons/Buttons";
 import { Link } from "react-router-dom";
 import { APP_ROUTES } from "@/constants/app_route";
-import { cn } from "@/utils";
+import { cn, formatAccountLevel } from "@/utils";
 import { buttonVariants } from "@/components/ui/Button";
 
 const SucessDisplay = ({
@@ -16,11 +16,10 @@ const SucessDisplay = ({
   onClick: () => void;
   user: TUser | { [key: string]: any };
 }) => {
+  const { level } = formatAccountLevel(user?.accountLevel);
   const isPending =
-    (user.accountLevel === "level_1" && user.kyc.bvnVerified) ||
-    (user.accountLevel === "level_2" &&
-      user.kyc.bvnVerified &&
-      !user.hasAppliedToBecomeAMerchant);
+    (level === 1 && user.kyc.bvnVerified) ||
+    (level === 2 && user.kyc.bvnVerified && !user.hasAppliedToBecomeAMerchant);
 
   return (
     <div className="flex items-center text-center flex-col gap-4 w-full">

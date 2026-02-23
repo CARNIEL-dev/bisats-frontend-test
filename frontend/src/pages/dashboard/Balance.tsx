@@ -19,7 +19,7 @@ import {
   toggleShowBalance,
   useCryptoRates,
 } from "@/redux/actions/walletActions";
-import { cn, formatter, getCurrencyBalance } from "@/utils";
+import { cn, formatAccountLevel, formatter, getCurrencyBalance } from "@/utils";
 import { ACTIONS } from "@/utils/transaction_limits";
 import { ChevronDown, Eye, EyeOff } from "lucide-react";
 import { ThreeDot } from "react-loading-indicators";
@@ -81,7 +81,7 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
         lockedBalance: Number(wallet?.xNGNLocked) ?? 0,
       },
     ],
-    [currencyRate, wallet]
+    [currencyRate, wallet],
   );
 
   const userBalance = useMemo<UserBalanceType>(() => {
@@ -110,10 +110,12 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
           lockedBalanceTotal: totals.lockedBalanceTotal + lockedBalance,
         };
       },
-      { balanceTotal: 0, lockedBalanceTotal: 0 }
+      { balanceTotal: 0, lockedBalanceTotal: 0 },
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currencyRate, wallet, currency, userState.user?.userId]);
+
+  const { isNA } = formatAccountLevel(userState?.user?.accountLevel);
 
   return (
     <div className="border  flex flex-col gap-2 p-6 rounded-2xl">
@@ -212,10 +214,9 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
               onClick={() => {
                 validateAndExecute();
               }}
-              disabled={!userState?.user?.accountLevel}
+              disabled={isNA}
             >
-              {!userState?.user?.accountLevel &&
-              userState?.user?.hasAppliedToBeInLevelOne
+              {isNA && userState?.user?.hasAppliedToBeInLevelOne
                 ? !showWithdraw
                   ? "Pending verification"
                   : "Pending"
@@ -234,10 +235,9 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
               onClick={() => {
                 validateAndExecute();
               }}
-              disabled={!userState?.user?.accountLevel}
+              disabled={isNA}
             >
-              {!userState?.user?.accountLevel &&
-              userState?.user?.hasAppliedToBeInLevelOne
+              {isNA && userState?.user?.hasAppliedToBeInLevelOne
                 ? !showWithdraw
                   ? "Pending verification"
                   : "Pending"
@@ -258,10 +258,9 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
                 onClick={() => {
                   validateAndExecute();
                 }}
-                disabled={!userState?.user?.accountLevel}
+                disabled={isNA}
               >
-                {userState?.user?.hasAppliedToBeInLevelOne &&
-                !userState.user.accountLevel
+                {userState?.user?.hasAppliedToBeInLevelOne && isNA
                   ? "Pending"
                   : "Withdraw"}
               </Button>

@@ -2,7 +2,11 @@ import StudentCard from "@/assets/student-card.svg";
 
 import { useSelector } from "react-redux";
 
-import { formatCompactNumber, getUpgradeButtonState } from "@/utils";
+import {
+  formatAccountLevel,
+  formatCompactNumber,
+  getUpgradeButtonState,
+} from "@/utils";
 import { goToNextKycRoute } from "@/utils/kycNavigation";
 import { bisats_limit } from "@/utils/transaction_limits";
 import { useMemo } from "react";
@@ -15,16 +19,16 @@ import ModalTemplate from "@/components/Modals/ModalTemplate";
 interface Props {
   close: () => void;
 }
+
 const KycUpgrade: React.FC<Props> = ({ close }) => {
   const userState: UserState = useSelector((state: any) => state.user);
   const user = userState;
 
-  const userLevel =
-    user?.user?.accountLevel === "level_1" || !user?.user?.accountLevel
-      ? "level_2"
-      : "level_3";
+  const { level, isNA } = formatAccountLevel(user?.user?.accountLevel);
 
-  const limit = bisats_limit[userLevel as keyof typeof bisats_limit];
+  // If no level or level_0 → targeting level_2, otherwise targeting level_3
+  const targetLevel = !isNA && level === 1 ? "level_2" : "level_3";
+  const limit = bisats_limit[targetLevel as keyof typeof bisats_limit];
 
   const clickHandler = () => {
     goToNextKycRoute(userState);
@@ -32,27 +36,27 @@ const KycUpgrade: React.FC<Props> = ({ close }) => {
 
   const { disabled, label } = useMemo(
     () => getUpgradeButtonState(user.user!, limit),
-    [user, limit]
+    [user, limit],
   );
 
   const account_level_features = useMemo(() => {
     return [
       `Create sell ads (max ${formatCompactNumber(
-        limit.maximum_ad_creation_amount
+        limit.maximum_ad_creation_amount,
       )} xNGN in crypto assets)`,
       `Create buy ads (max ${formatCompactNumber(
-        limit.maximum_ad_creation_amount
+        limit.maximum_ad_creation_amount,
       )} xNGN in crypto assets)`,
       `Max daily limit for withdrawal is ${
-        user?.user?.accountLevel === "level_3"
+        level === 3
           ? "Unlimited"
           : formatCompactNumber(limit.daily_withdrawal_limit_fiat)
       } xNGN and ${formatCompactNumber(
-        limit.daily_withdrawal_limit_crypto
+        limit.daily_withdrawal_limit_crypto,
       )} USD in crypto assets`,
     ];
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [limit]);
+  }, [limit, level]);
 
   return (
     <ModalTemplate onClose={close}>
@@ -62,23 +66,21 @@ const KycUpgrade: React.FC<Props> = ({ close }) => {
           alt="student-card"
           className="w-[80px] h-[60px] mx-auto mt-7"
         />
-        <h1 className="text-[#0A0E12] text-[18px] leading-[32px] lg:text-[18px] lg:leading-[32px] font-semibold ">
+        <h1 className="text-[#0A0E12] text-[18px] leading-[32px] lg:text-[18px] lg:leading-[32px] font-semibold">
           Account Upgrade Required
         </h1>
         <p className="text-[#606C82] text-[14px] leading-[24px] lg:text-[14px] lg:leading-[24px] font-normal my-3">
           To proceed with this action, we need you to upgrade your account to a{" "}
           <span className="text-[#17A34A] font-bold">
-            {user?.user?.accountLevel === "level_1"
-              ? "Merchant"
-              : "Super Merchant"}
+            {level === 1 ? "Merchant" : "Super Merchant"}
           </span>
           . Completing this upgrade will give you access to the following
-          features :
+          features:
         </p>
-        <div className="bg-[#F9F9FB] p-2 my-5 w-fit text-left border border-[#F9F9FB] rounded-[8px] text-[12px] text-[#515B6E]  h-fit flex flex-col space-y-2 ">
+        <div className="bg-[#F9F9FB] p-2 my-5 w-fit text-left border border-[#F9F9FB] rounded-[8px] text-[12px] text-[#515B6E] h-fit flex flex-col space-y-2">
           {account_level_features.map((feat, idx) => (
             <p className="flex items-center" key={idx}>
-              <span className="w-[4px] bg-[#C2C7D2] rounded-[50%]  mr-1.5 h-[4px]"></span>
+              <span className="w-[4px] bg-[#C2C7D2] rounded-[50%] mr-1.5 h-[4px]"></span>
               <span>{feat}</span>
             </p>
           ))}

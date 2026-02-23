@@ -175,10 +175,12 @@ function getUpgradeButtonState(
   user?: TUser | { [key: string]: any },
   limits?: unknown,
 ) {
+  const { level, isNA } = formatAccountLevel(user?.accountLevel);
+
   const appliedLevel1 = !!user?.hasAppliedToBeInLevelOne;
-  const hasLevel = !!user?.accountLevel;
-  const isLevel1 = user?.accountLevel === "level_1";
-  const isLevel2 = user?.accountLevel === "level_2";
+  const hasLevel = !isNA; // has a valid level if not N/A
+  const isLevel1 = level === 1;
+  const isLevel2 = level === 2;
   const appliedMerchant = !!user?.hasAppliedToBecomeAMerchant;
   const appliedSuperMerchant = !!user?.hasAppliedToBecomeASuperMerchant;
   const bvnOk = !!user?.kyc?.bvnVerified;
@@ -233,6 +235,41 @@ const getClientIp = async (): Promise<string | null> => {
   }
 };
 
+const formatAccountLevel = (
+  accountLevel?: string | number | null,
+): {
+  display: string;
+  level: number | null;
+  isNA: boolean;
+} => {
+  if (accountLevel === undefined || accountLevel === null) {
+    return { display: "N/A", level: null, isNA: true };
+  }
+
+  // Normalize to a number
+  let levelNumber: number;
+
+  if (typeof accountLevel === "number") {
+    levelNumber = accountLevel;
+  } else if (typeof accountLevel === "string") {
+    // handles "level_1", "level_0", "1", "0"
+    const match = accountLevel.match(/(\d+)/);
+    levelNumber = match ? parseInt(match[1], 10) : -1;
+  } else {
+    return { display: "N/A", level: null, isNA: true };
+  }
+
+  if (levelNumber <= 0) {
+    return { display: "N/A", level: levelNumber, isNA: true };
+  }
+
+  return {
+    display: `Level ${levelNumber}`,
+    level: levelNumber,
+    isNA: false,
+  };
+};
+
 export {
   formatter,
   formatTime,
@@ -247,4 +284,5 @@ export {
   getUpgradeButtonState,
   resizeFile,
   getClientIp,
+  formatAccountLevel,
 };

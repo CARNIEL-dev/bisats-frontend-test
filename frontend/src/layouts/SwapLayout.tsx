@@ -1,6 +1,7 @@
 import KycBanner from "@/components/KycBanner";
 import RateBanner from "@/components/RateBanner";
 import MaxWidth from "@/components/shared/MaxWith";
+import { formatAccountLevel } from "@/utils";
 import { useSelector } from "react-redux";
 import { Outlet } from "react-router-dom";
 
@@ -12,6 +13,8 @@ const SwapLayout = () => {
     // userState.user?.phoneNumberVerified,
   ].every(Boolean);
 
+  const { isNA } = formatAccountLevel(userState?.user?.accountLevel);
+
   return (
     <div className=" mb-10">
       <div className="bg-primary-light h-[48px] md:overflow-hidden overflow-scroll w-screen fixed inset-x-0 md:top-[5rem] top-[4rem] z-10 flex items-center ">
@@ -22,8 +25,7 @@ const SwapLayout = () => {
         <MaxWidth className="mt-16 md:mt-24 md:min-h-[75dvh] min-h-[95dvh] max-w-[60rem]">
           <KycBanner />
         </MaxWidth>
-      ) : userState?.user?.hasAppliedToBeInLevelOne &&
-        !userState.user.accountLevel ? (
+      ) : userState?.user?.hasAppliedToBeInLevelOne && isNA ? (
         <div className="mt-16 md:mt-24 md:min-h-[65dvh] min-h-[85dvh]">
           <div className="flex flex-col  items-center gap-2  border w-fit p-6 mx-auto rounded-md">
             <h4 className="font-semibold text-lg">

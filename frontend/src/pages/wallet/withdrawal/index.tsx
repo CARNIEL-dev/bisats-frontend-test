@@ -32,7 +32,7 @@ import TokenSelection from "@/components/shared/TokenSelection";
 import PreLoader from "@/layouts/PreLoader";
 import KycManager from "@/pages/kyc/KYCManager";
 import { GET_WITHDRAWAL_LIMIT } from "@/redux/actions/userActions";
-import { formatCompactNumber, formatter } from "@/utils";
+import { formatAccountLevel, formatCompactNumber, formatter } from "@/utils";
 import { formatNumber } from "@/utils/numberFormat";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -172,8 +172,13 @@ const NGNWithdrawal = ({
 
   const navigate = useNavigate();
 
-  const account_level = user?.accountLevel as AccountLevel;
-  const userTransactionLimits = bisats_limit[account_level];
+  const { level, isNA } = formatAccountLevel(user?.accountLevel);
+
+  // Map level number → bisats_limit key, fallback to level_1 if none
+  const accountLevelKey =
+    !isNA && level ? (`level_${level}` as AccountLevel) : "level_1";
+
+  const userTransactionLimits = bisats_limit[accountLevelKey];
 
   const queryClient = useQueryClient();
   const { refetchWallet } = useGetWallet();

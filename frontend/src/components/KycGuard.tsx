@@ -1,9 +1,10 @@
 // KycRouteGuard.tsx
 
+import { formatAccountLevel } from "@/utils";
+import { KYC_LEVELS, KYC_RULES } from "@/utils/transaction_limits";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { KYC_RULES } from "@/utils/transaction_limits";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 interface KycRouteGuardProps {
   requiredAction: string;
@@ -18,16 +19,9 @@ const KycRouteGuard: React.FC<KycRouteGuardProps> = ({
 }) => {
   const navigate = useNavigate();
   const user: UserState = useSelector((state: any) => state.user);
-  const userKycLevel =
-    user.user?.accountLevel === null
-      ? 0
-      : user.user?.accountLevel === "level_1"
-      ? 1
-      : user.user?.accountLevel === "level_2"
-      ? 2
-      : user.user?.accountLevel === "level_3"
-      ? 3
-      : 10;
+
+  const { level, isNA } = formatAccountLevel(user.user?.accountLevel);
+  const userKycLevel = isNA ? KYC_LEVELS.NONE : (level ?? KYC_LEVELS.NONE);
 
   useEffect(() => {
     const rules = KYC_RULES[userKycLevel];

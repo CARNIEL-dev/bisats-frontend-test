@@ -6,7 +6,7 @@ import { buttonVariants } from "@/components/ui/Button";
 import { APP_ROUTES } from "@/constants/app_route";
 import Head from "@/pages/wallet/Head";
 
-import { cn } from "@/utils";
+import { cn, formatAccountLevel } from "@/utils";
 import {
   ACTIONS_REQUIRING_2FA,
   ACTIONS_REQUIRING_PIN,
@@ -44,23 +44,13 @@ const KycManager: React.FC<TKycManager> = ({
   const [modal, setModal] = useState<ModalType>(null);
   const user: UserState = useSelector((state: any) => state.user);
 
-  const userKycLevel =
-    user.user?.accountLevel === null
-      ? 0
-      : user.user?.accountLevel === "level_1"
-      ? 1
-      : user.user?.accountLevel === "level_2"
-      ? 2
-      : user.user?.accountLevel === "level_3"
-      ? 3
-      : 10;
+  const { level, isNA } = formatAccountLevel(user.user?.accountLevel);
+  const userKycLevel = isNA ? 0 : (level ?? 0);
 
   const validateAndExecute = () => {
-    const level = Number(userKycLevel);
+    const rules = KYC_RULES[userKycLevel];
 
-    const rules = KYC_RULES[level];
-
-    if (level === 0) {
+    if (userKycLevel === 0) {
       setModal("kycVerification");
       return;
     }
@@ -103,6 +93,7 @@ const KycManager: React.FC<TKycManager> = ({
 
     func();
   };
+
   const is2fa = modal === "2fa";
   const is2faPIN = modal === "2faPIN";
   const closeModal = () => setModal(null);
@@ -110,8 +101,8 @@ const KycManager: React.FC<TKycManager> = ({
   const secMode = is2fa
     ? "TWO_FA_ONLY"
     : is2faPIN
-    ? "TWO_FA_AND_PIN"
-    : undefined;
+      ? "TWO_FA_AND_PIN"
+      : undefined;
 
   return (
     <>
@@ -128,8 +119,8 @@ const KycManager: React.FC<TKycManager> = ({
             modal === "2fa"
               ? "TWO_FA_ONLY"
               : modal === "2faPIN"
-              ? "TWO_FA_AND_PIN"
-              : "PIN"
+                ? "TWO_FA_AND_PIN"
+                : "PIN"
           }
           isManual={isManual}
         />
@@ -150,22 +141,22 @@ const KycManager: React.FC<TKycManager> = ({
               modal === "requiredPin"
                 ? "Enable PIN"
                 : modal === "required2fa"
-                ? "Enable 2FA"
-                : ""
+                  ? "Enable 2FA"
+                  : ""
             }
             subHeader={
               modal === "requiredPin"
                 ? "Enable PIN to continue"
                 : modal === "required2fa"
-                ? "Enable two factor authentication to continue"
-                : ""
+                  ? "Enable two factor authentication to continue"
+                  : ""
             }
           />
           <Link
             to={APP_ROUTES.SETTINGS.SECURITY}
             className={cn(
               buttonVariants({ variant: "default" }),
-              "w-fit py-2 px-6 h-fit text-sm mt-6"
+              "w-fit py-2 px-6 h-fit text-sm mt-6",
             )}
           >
             Go to settings

@@ -10,7 +10,7 @@ import {
   toggleShowBalance,
   useCryptoRates,
 } from "@/redux/actions/walletActions";
-import { cn, formatter, getCurrencyBalance } from "@/utils";
+import { cn, formatAccountLevel, formatter, getCurrencyBalance } from "@/utils";
 import { ACTIONS } from "@/utils/transaction_limits";
 import { ColumnDef } from "@tanstack/react-table";
 import { Eye, EyeOff } from "lucide-react";
@@ -63,6 +63,8 @@ const Assets: React.FC = () => {
     isFetching,
   } = useCryptoRates({ isEnabled: Boolean(wallet) });
 
+  const { isNA } = formatAccountLevel(userState?.user?.accountLevel);
+
   const defaultAssetsData = useMemo(
     () => [
       {
@@ -106,7 +108,7 @@ const Assets: React.FC = () => {
         logo: tokenLogos.xNGN,
       },
     ],
-    [currencyRate, wallet]
+    [currencyRate, wallet],
   );
 
   //   HDR: columns
@@ -142,7 +144,7 @@ const Assets: React.FC = () => {
               variant="default"
               disabled={isFetching}
               className={cn(
-                "p-0! h-[1.5rem] w-fit bg-primary/20  hidden lg:flex"
+                "p-0! h-[1.5rem] w-fit bg-primary/20  hidden lg:flex",
               )}
               onClick={toggleShowBalance}
             >
@@ -167,7 +169,7 @@ const Assets: React.FC = () => {
               <span className="font-mono text-xl md:text-base">
                 {walletState.showBalance
                   ? formatter({ decimal: isXNGN ? 2 : isUSDT ? 2 : 6 }).format(
-                      Number(item.Balance) || 0
+                      Number(item.Balance) || 0,
                     )
                   : "***"}
               </span>{" "}
@@ -186,7 +188,7 @@ const Assets: React.FC = () => {
                     defaultCurrency: walletState.defaultCurrency,
                     item,
                     isXNGN,
-                  })
+                  }),
                 )}
               </p>
             )}
@@ -222,8 +224,7 @@ const Assets: React.FC = () => {
                   }}
                   disabled={!userState?.user?.accountLevel}
                 >
-                  {userState?.user?.hasAppliedToBeInLevelOne &&
-                  !userState.user.accountLevel
+                  {userState?.user?.hasAppliedToBeInLevelOne && isNA
                     ? "Pending"
                     : "Deposit"}
                 </Button>
@@ -242,15 +243,14 @@ const Assets: React.FC = () => {
                 <Button
                   variant={"outline"}
                   className={cn(
-                    "bg-transparent text-gray-600 !border-primary text-xs"
+                    "bg-transparent text-gray-600 !border-primary text-xs",
                   )}
                   onClick={() => {
                     validateAndExecute();
                   }}
                   disabled={!userState?.user?.accountLevel}
                 >
-                  {userState?.user?.hasAppliedToBeInLevelOne &&
-                  !userState.user.accountLevel
+                  {userState?.user?.hasAppliedToBeInLevelOne && isNA
                     ? "Pending"
                     : "Withdraw"}
                 </Button>

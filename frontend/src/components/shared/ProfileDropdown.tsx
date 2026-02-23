@@ -16,7 +16,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { APP_ROUTES } from "@/constants/app_route";
-import { cn } from "@/utils";
+import { cn, formatAccountLevel } from "@/utils";
 import { BadgeCheck, ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { useSelector } from "react-redux";
@@ -89,6 +89,8 @@ const ProfileDropdown = () => {
   const location = useLocation();
   const pathname = location.pathname;
 
+  const { display, level, isNA } = formatAccountLevel(user?.accountLevel);
+
   return (
     <>
       <DropdownMenu open={open} onOpenChange={setOpen}>
@@ -115,12 +117,8 @@ const ProfileDropdown = () => {
               </h2>
 
               <p className="flex items-center gap-1">
-                {user?.accountLevel && user.accountLevel !== "level_0"
-                  ? user.accountLevel.replace("_", " ")
-                  : "N/A"}
-
-                {user?.accountLevel === "level_3" ? (
-                  // <Medal fill="#FFD700" size={16} />
+                {display}
+                {!isNA && level === 3 ? (
                   <BadgeCheck fill="#F5BB00" stroke="#fff" size={20} />
                 ) : (
                   <BadgeCheck fill="#22C55D" stroke="#fff" size={16} />

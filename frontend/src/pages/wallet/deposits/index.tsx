@@ -16,7 +16,7 @@ import CopyDisplay from "@/components/shared/CopyDisplay";
 import TokenSelection from "@/components/shared/TokenSelection";
 import { Button } from "@/components/ui/Button";
 import KycManager from "@/pages/kyc/KYCManager";
-import { formatter, getUpgradeButtonState } from "@/utils";
+import { formatAccountLevel, formatter, getUpgradeButtonState } from "@/utils";
 import { goToNextKycRoute } from "@/utils/kycNavigation";
 import { ACTIONS, bisats_limit } from "@/utils/transaction_limits";
 import * as Yup from "yup";
@@ -43,20 +43,26 @@ const DepositPage = () => {
   const navigate = useNavigate();
   const user: UserState = useSelector((state: any) => state.user);
 
+  const { level, isNA } = formatAccountLevel(user?.user?.accountLevel);
+
   useEffect(() => {
-    if (!user.user?.accountLevel) {
+    if (isNA) {
       navigate(APP_ROUTES.KYC.PERSONAL);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const limit =
-    bisats_limit[user?.user?.accountLevel as keyof typeof bisats_limit];
+  const accountLevelKey =
+    !isNA && level
+      ? (`level_${level}` as keyof typeof bisats_limit)
+      : "level_1";
+
+  const limit = bisats_limit[accountLevelKey];
 
   const maxDeposit = useMemo(() => {
     return limit?.max_deposit_per_transaction_fiat;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.user?.accountLevel]);
+  }, [level]);
 
   useEffect(() => {
     const tokenList = getUserTokenData();
@@ -85,7 +91,7 @@ const DepositPage = () => {
           if (!value) return true;
           const numericValue = Number(value);
           return numericValue <= maxDeposit;
-        }
+        },
       ),
   });
 
@@ -95,7 +101,7 @@ const DepositPage = () => {
 
   const { disabled, label } = useMemo(
     () => getUpgradeButtonState(user.user!, limit),
-    [user, limit]
+    [user, limit],
   );
 
   //   HDR: FORMIK
@@ -152,13 +158,13 @@ const DepositPage = () => {
           placeholder="Select an asset"
         />
         {selectedToken === "xNGN" && (
+          // in JSX:
           <div className="space-y-4 mt-2">
-            {user?.user?.accountLevel === "level_1" ? (
+            {level === 1 ? (
               <div className="flex flex-col gap-2 mt-10 items-center">
                 <p className="text-sm animate-pulse rounded-full px-4 py-1 border bg-red-500/10 font-medium text-red-500">
                   Become a Merchant or Super Merchant to deposit xNGN.
                 </p>
-
                 <Button
                   onClick={clickHandler}
                   className="w-fit rounded-full px-4 py-2 text-sm"
@@ -167,13 +173,11 @@ const DepositPage = () => {
                   {label || "Upgrade"}
                 </Button>
               </div>
-            ) : user?.user?.accountLevel === "level_2" &&
-              !user?.user?.hasAppliedToBecomeAMerchant ? (
+            ) : level === 2 && !user?.user?.hasAppliedToBecomeAMerchant ? (
               <div className="flex flex-col gap-2 mt-10 items-center">
                 <p className="text-sm animate-pulse rounded-full px-4 py-1 border bg-red-500/10 font-medium text-red-500">
                   Become a Merchant to deposit xNGN.
                 </p>
-
                 <Button
                   onClick={clickHandler}
                   className="w-fit rounded-full px-4 py-2"

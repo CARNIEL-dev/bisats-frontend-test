@@ -9,7 +9,12 @@ import {
   GetUserDetails,
 } from "@/redux/actions/userActions";
 
-import { formatCompactNumber, formatter, getUpgradeButtonState } from "@/utils";
+import {
+  formatAccountLevel,
+  formatCompactNumber,
+  formatter,
+  getUpgradeButtonState,
+} from "@/utils";
 import { goToNextKycRoute } from "@/utils/kycNavigation";
 import { AccountLevel, bisats_limit } from "@/utils/transaction_limits";
 import { useQuery } from "@tanstack/react-query";
@@ -190,6 +195,8 @@ const Profile = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const { display } = formatAccountLevel(user?.accountLevel);
+
   return (
     <>
       <MaxWidth
@@ -213,12 +220,7 @@ const Profile = () => {
         <div className="border border-[#F3F4F6] p-3 lg:p-5 rounded-[12px] bg-gradient-to-r from-[#FFFFFF] to-[#F6F7F8] w-full mx-3">
           <div className="flex items-center text-[18px]  leading-[32px] font-semibold mb-3">
             <h1 className="text-[#515B6E] ">Account Tier:</h1>
-            <h1 className="text-[#17A34A] mx-2">
-              Level{" "}
-              {!user?.accountLevel || user?.accountLevel === "level_0"
-                ? "N/A"
-                : user?.accountLevel.split("_")[1]}
-            </h1>
+            <h1 className="text-[#17A34A] mx-2">{display}</h1>
             {(!user?.accountLevel || user?.accountLevel !== "level_3") && (
               <Button
                 type="submit"

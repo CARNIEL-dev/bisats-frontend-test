@@ -1,6 +1,7 @@
 /** @format */
 
 import { APP_ROUTES } from "@/constants/app_route";
+import { formatAccountLevel } from "@/utils";
 
 /**
  * Decide the next KYC navigation route based on the current user state.
@@ -36,10 +37,11 @@ export function getNextKycRoute(
   if (!kyc?.identificationVerified) return APP_ROUTES.KYC.IDENTITY;
 
   // 5) BVN: only when prior steps done, user has a level_1 and has applied to be in level one
-  const accountLevel = user?.accountLevel ?? null;
-  const isLevel1 = accountLevel === "level_1";
-  const isLevel2 = accountLevel === "level_2";
-  const isLevel3 = accountLevel === "level_3";
+  // After
+  const { level } = formatAccountLevel(user?.accountLevel);
+  const isLevel1 = level === 1;
+  const isLevel2 = level === 2;
+  const isLevel3 = level === 3;
   const bvnOk = !!kyc?.bvnVerified;
   const hasAppliedToBeInLevelOne = !!user?.hasAppliedToBeInLevelOne;
   const hasAppliedToBecomeAMerchant = !!user?.hasAppliedToBecomeAMerchant;

@@ -3,7 +3,7 @@ import Switch from "@/components/Switch";
 import Toast from "@/components/Toast";
 import { DataTable } from "@/components/ui/data-table";
 import Header from "@/pages/p2p/components/Header";
-import { cn, formatter } from "@/utils";
+import { cn, formatAccountLevel, formatter } from "@/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
 import { useSelector } from "react-redux";
@@ -52,9 +52,11 @@ const MyAds = () => {
 
   const navigate = useNavigate();
 
+  const { isNA } = formatAccountLevel(userState?.user?.accountLevel);
+
   const isKycVerified = [
     userState?.kyc?.personalInformationVerified,
-    userState?.kyc?.identificationVerified && userState?.user?.accountLevel,
+    userState?.kyc?.identificationVerified && !isNA,
   ].every(Boolean);
 
   const {
@@ -362,10 +364,9 @@ const MyAds = () => {
               onClick={() => {
                 validateAndExecute();
               }}
-              disabled={!userState?.user?.accountLevel}
+              disabled={isNA}
             >
-              {userState?.user?.hasAppliedToBeInLevelOne &&
-              !userState.user.accountLevel
+              {userState?.user?.hasAppliedToBeInLevelOne && isNA
                 ? "Pending Verification"
                 : "Create Ad"}
             </Button>
@@ -376,8 +377,7 @@ const MyAds = () => {
       <div>
         {!isKycVerified && !userState.user?.hasAppliedToBeInLevelOne ? (
           <KycBanner />
-        ) : userState?.user?.hasAppliedToBeInLevelOne &&
-          !userState.user.accountLevel ? (
+        ) : userState?.user?.hasAppliedToBeInLevelOne && isNA ? (
           <div className="flex flex-col items-center gap-2  border w-fit p-6 mx-auto rounded-md">
             <h4 className="font-semibold text-lg">
               Your Account is being reviewed

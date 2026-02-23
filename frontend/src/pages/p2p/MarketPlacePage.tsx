@@ -11,7 +11,7 @@ import Header from "@/pages/p2p/components/Header";
 import MarketPlaceTable from "@/pages/p2p/components/MarketPlaceTable";
 import { GetSearchAds } from "@/redux/actions/walletActions";
 
-import { cn } from "@/utils";
+import { cn, formatAccountLevel } from "@/utils";
 import { useQuery } from "@tanstack/react-query";
 import { RotateCw, X } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -77,9 +77,11 @@ const MarketPlacePage = () => {
   const userState: UserState = useSelector((state: any) => state.user);
   const userId: string = userState?.user?.userId || "";
 
+  const { isNA } = formatAccountLevel(userState?.user?.accountLevel);
+
   const isKycVerified = [
     userState?.kyc?.personalInformationVerified,
-    userState?.kyc?.identificationVerified && userState?.user?.accountLevel,
+    userState?.kyc?.identificationVerified && !isNA,
   ].every(Boolean);
 
   const {

@@ -10,7 +10,7 @@ import { DataTable } from "@/components/ui/data-table";
 import PreLoader from "@/layouts/PreLoader";
 import { useFetchOrder } from "@/redux/actions/walletActions";
 
-import { cn, formatter } from "@/utils";
+import { cn, formatAccountLevel, formatter } from "@/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
 import { Check, Copy } from "lucide-react";
@@ -22,9 +22,11 @@ const OrderHistory = () => {
   const userId: string = userState?.user?.userId || "";
   const [selectedData, setSelectedData] = useState<OrderHistory | undefined>();
 
+  const { isNA } = formatAccountLevel(userState?.user?.accountLevel);
+
   const isKycVerified = [
     userState?.kyc?.personalInformationVerified,
-    userState?.kyc?.identificationVerified && userState?.user?.accountLevel,
+    userState?.kyc?.identificationVerified && !isNA,
   ].every(Boolean);
 
   const {
@@ -37,10 +39,7 @@ const OrderHistory = () => {
 
   if (!isKycVerified && !userState.user?.hasAppliedToBeInLevelOne) {
     return <KycBanner />;
-  } else if (
-    userState.user?.hasAppliedToBeInLevelOne &&
-    !userState.user.accountLevel
-  ) {
+  } else if (userState.user?.hasAppliedToBeInLevelOne && isNA) {
     return (
       <div className="flex flex-col items-center gap-2  border w-fit p-6 mx-auto rounded-md">
         <h4 className="font-semibold text-lg">
