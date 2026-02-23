@@ -5,6 +5,7 @@ import { APP_ROUTES } from "@/constants/app_route";
 /**
  * Decide the next KYC navigation route based on the current user state.
  *
+ *
  * Priority order (short-circuits as soon as one matches):
  * 1) Email verification (if not verified)
  * 2) Phone verification (if not verified)
