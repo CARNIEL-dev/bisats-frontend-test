@@ -1,6 +1,5 @@
 /** @format */
 
-import Toast from "@/components/Toast";
 import { APP_ROUTES } from "@/constants/app_route";
 
 /**
