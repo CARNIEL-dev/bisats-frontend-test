@@ -215,13 +215,9 @@ const Profile = () => {
             <h1 className="text-[#515B6E] ">Account Tier:</h1>
             <h1 className="text-[#17A34A] mx-2">
               Level{" "}
-              {!user?.accountLevel
+              {!user?.accountLevel || user?.accountLevel === "level_0"
                 ? "N/A"
-                : user?.accountLevel === "level_1"
-                  ? 1
-                  : user?.accountLevel === "level_2"
-                    ? 2
-                    : 3}
+                : user?.accountLevel.split("_")[1]}
             </h1>
             {(!user?.accountLevel || user?.accountLevel !== "level_3") && (
               <Button
