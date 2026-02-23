@@ -1,5 +1,6 @@
 /** @format */
 
+import Toast from "@/components/Toast";
 import { APP_ROUTES } from "@/constants/app_route";
 
 /**
@@ -47,18 +48,14 @@ export function getNextKycRoute(
   switch (isLevel1) {
     case true:
       // Can only has this set to true when this true to be in level 1
-      if (!hasAppliedToBeInLevelOne || !kyc?.identificationVerified) {
+      if (!kyc?.identificationVerified) {
         return APP_ROUTES.KYC.IDENTITY;
       }
       // Can only has this set to true when this true to be in level 1
-      if (!hasAppliedToBeInLevelOne || !kyc?.personalInformationVerified) {
+      if (!kyc?.personalInformationVerified) {
         return APP_ROUTES.KYC.PERSONAL;
       }
       // Only way to go level 2
-      if (hasAppliedToBeInLevelOne && !bvnOk && !hasAppliedToBecomeAMerchant) {
-        return APP_ROUTES.KYC.BVNVERIFICATION;
-      }
-      // Can move to bvn before getting to applying for merchant
       if (hasAppliedToBeInLevelOne && !bvnOk) {
         return APP_ROUTES.KYC.BVNVERIFICATION;
       }
@@ -148,5 +145,6 @@ export function getNextKycRoute(
  */
 export function goToNextKycRoute(userState: UserState | null | undefined) {
   const route = getNextKycRoute(userState);
-  window.location.href = route;
+  console.log("Route", route);
+  // window.location.href = route;
 }

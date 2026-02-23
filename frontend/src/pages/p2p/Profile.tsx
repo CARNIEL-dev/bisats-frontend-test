@@ -74,7 +74,7 @@ const Profile = () => {
           limit: "Daily Fiat Withdrawal Limit",
           amount: `${
             formatCompactNumber(limits?.daily_withdrawal_limit_fiat).endsWith(
-              "T"
+              "T",
             )
               ? "Unlimited"
               : formatCompactNumber(limits?.daily_withdrawal_limit_fiat)
@@ -83,19 +83,19 @@ const Profile = () => {
         {
           limit: "Daily Crypto Withdrawal Limit",
           amount: `${formatCompactNumber(
-            limits?.daily_withdrawal_limit_crypto
+            limits?.daily_withdrawal_limit_crypto,
           )} USD`,
         },
         {
           limit: "Sell Ad Limit",
           amount: `${formatCompactNumber(
-            limits.maximum_ad_creation_amount
+            limits.maximum_ad_creation_amount,
           )} NGN`,
         },
         {
           limit: "Buy Ad limit",
           amount: `${formatCompactNumber(
-            limits.maximum_ad_creation_amount
+            limits.maximum_ad_creation_amount,
           )} NGN`,
         },
       ]
@@ -120,50 +120,50 @@ const Profile = () => {
       {
         type: "Volume Traded (30d)",
         value: `${formatter({ decimal: 2 }).format(
-          activitySummary?.totalOrderVolumeIn30d ?? 0
+          activitySummary?.totalOrderVolumeIn30d ?? 0,
         )} xNGN`,
       },
       {
         type: "Ads Created (30d) ",
         value: `${formatter({ decimal: 0 }).format(
-          activitySummary?.totalAdsCreatedIn30d ?? 0
+          activitySummary?.totalAdsCreatedIn30d ?? 0,
         )} `,
       },
       {
         type: "Completed Orders (30d)",
         value: `${formatter({ decimal: 0 }).format(
-          activitySummary?.totalOrderCompletedIn30d ?? 0
+          activitySummary?.totalOrderCompletedIn30d ?? 0,
         )} `,
       },
 
       {
         type: "Current Running Ads",
         value: `${formatter({ decimal: 0 }).format(
-          activitySummary?.currentActiveAds ?? 0
+          activitySummary?.currentActiveAds ?? 0,
         )} `,
       },
       {
         type: "Total Volume Traded",
         value: `${formatter({ decimal: 2 }).format(
-          activitySummary?.totalOrderVolume ?? 0
+          activitySummary?.totalOrderVolume ?? 0,
         )} xNGN`,
       },
       {
         type: "Total Ads Created",
         value: `${formatter({ decimal: 0 }).format(
-          activitySummary?.totalAdsCreated ?? 0
+          activitySummary?.totalAdsCreated ?? 0,
         )} `,
       },
       {
         type: "Total Completed Orders",
         value: `${formatter({ decimal: 0 }).format(
-          activitySummary?.totalOrderCompleted ?? 0
+          activitySummary?.totalOrderCompleted ?? 0,
         )} `,
       },
       {
         type: "Total Ads Created",
         value: `${formatter({ decimal: 0 }).format(
-          activitySummary?.totalAdsCreated ?? 0
+          activitySummary?.totalAdsCreated ?? 0,
         )} `,
       },
     ];
@@ -175,7 +175,7 @@ const Profile = () => {
 
   const { disabled, label } = useMemo(
     () => getUpgradeButtonState(user!, limits),
-    [user, limits]
+    [user, limits],
   );
 
   useEffect(() => {
@@ -218,10 +218,10 @@ const Profile = () => {
               {!user?.accountLevel
                 ? "N/A"
                 : user?.accountLevel === "level_1"
-                ? 1
-                : user?.accountLevel === "level_2"
-                ? 2
-                : 3}
+                  ? 1
+                  : user?.accountLevel === "level_2"
+                    ? 2
+                    : 3}
             </h1>
             {(!user?.accountLevel || user?.accountLevel !== "level_3") && (
               <Button
