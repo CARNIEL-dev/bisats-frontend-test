@@ -1,5 +1,27 @@
+############################################
+# React App S3 Bucket (Private)
+############################################
+
 resource "aws_s3_bucket" "this" {
-  bucket = var.bucket_name
+  bucket        = var.bucket_name
+  force_destroy = false   # 🔐 Prevent accidental delete
+
+  tags = {
+    Project     = "BISATS"
+    Environment = var.environment
+  }
+}
+
+############################################
+# Ownership Controls
+############################################
+
+resource "aws_s3_bucket_ownership_controls" "this" {
+  bucket = aws_s3_bucket.this.id
+
+  rule {
+    object_ownership = "BucketOwnerEnforced"
+  }
 }
 
 resource "aws_s3_bucket_versioning" "this" {
@@ -20,6 +42,10 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "this" {
   }
 }
 
+############################################
+# Block ALL Public Access
+############################################
+
 resource "aws_s3_bucket_public_access_block" "this" {
   bucket = aws_s3_bucket.this.id
 
@@ -27,4 +53,36 @@ resource "aws_s3_bucket_public_access_block" "this" {
   block_public_policy     = true
   ignore_public_acls      = true
   restrict_public_buckets = true
+}
+
+############################################
+# Allow ONLY CloudFront (OAC) To Access
+############################################
+
+data "aws_iam_policy_document" "cloudfront_access" {
+  statement {
+    sid = "AllowCloudFrontRead"
+
+    principals {
+      type        = "Service"
+      identifiers = ["cloudfront.amazonaws.com"]
+    }
+
+    actions = ["s3:GetObject"]
+
+    resources = [
+      "${aws_s3_bucket.this.arn}/*"
+    ]
+
+    condition {
+      test     = "StringEquals"
+      variable = "AWS:SourceArn"
+      values   = [var.cloudfront_arn]
+    }
+  }
+}
+
+resource "aws_s3_bucket_policy" "this" {
+  bucket = aws_s3_bucket.this.id
+  policy = data.aws_iam_policy_document.cloudfront_access.json
 }
