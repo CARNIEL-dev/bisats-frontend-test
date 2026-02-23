@@ -115,7 +115,9 @@ const ProfileDropdown = () => {
               </h2>
 
               <p className="flex items-center gap-1">
-                {user?.accountLevel?.replace("_", " ") || "N/A"}
+                {user?.accountLevel && user.accountLevel !== "level_0"
+                  ? user.accountLevel.replace("_", " ")
+                  : "N/A"}
 
                 {user?.accountLevel === "level_3" ? (
                   // <Medal fill="#FFD700" size={16} />
@@ -135,7 +137,7 @@ const ProfileDropdown = () => {
                         to={item.link}
                         className={cn(
                           "group flex items-center gap-2 py-2.5  font-normal cursor-pointer text-slate-700 text-sm  hover:bg-[#F5FEF8] px-3 hover:font-medium hover:text-green-600 ",
-                          pathname.includes(item.link) && "active"
+                          pathname.includes(item.link) && "active",
                         )}
                         onClick={() => setOpen(false)}
                       >
@@ -149,7 +151,7 @@ const ProfileDropdown = () => {
                             key={subIndex}
                             className={cn(
                               "block py-2.5 text-sm text-slate-600 hover:text-green-500",
-                              pathname.includes(subItem.link) && "active"
+                              pathname.includes(subItem.link) && "active",
                             )}
                             onClick={() => setOpen(false)}
                           >
@@ -165,7 +167,7 @@ const ProfileDropdown = () => {
                     to={item.link}
                     key={index}
                     className={cn(
-                      "group flex items-center gap-2 py-2.5 hover:text-green-500 font-normal cursor-pointer text-slate-700 text-sm  hover:bg-[#F5FEF8] px-3 border-b "
+                      "group flex items-center gap-2 py-2.5 hover:text-green-500 font-normal cursor-pointer text-slate-700 text-sm  hover:bg-[#F5FEF8] px-3 border-b ",
                     )}
                     onClick={() => setOpen(false)}
                   >
@@ -183,7 +185,7 @@ const ProfileDropdown = () => {
                 key={index}
                 onClick={() => setOpen(false)}
                 className={cn(
-                  " flex items-center gap-2 py-2  font-normal cursor-pointer text-slate-700 text-sm  hover:bg-[#F5FEF8] px-3  hover:font-medium hover:text-green-600"
+                  " flex items-center gap-2 py-2  font-normal cursor-pointer text-slate-700 text-sm  hover:bg-[#F5FEF8] px-3  hover:font-medium hover:text-green-600",
                 )}
               >
                 <item.icon />
@@ -195,7 +197,7 @@ const ProfileDropdown = () => {
                 variant="ghost"
                 onClick={() => setShowLogOutModal(true)}
                 className={cn(
-                  "w-full text-sm px-3 text-slate-700 font-normal justify-start hover:bg-red-500/5 hover:text-red-500 hover:font-medium"
+                  "w-full text-sm px-3 text-slate-700 font-normal justify-start hover:bg-red-500/5 hover:text-red-500 hover:font-medium",
                 )}
               >
                 <SignOut />
