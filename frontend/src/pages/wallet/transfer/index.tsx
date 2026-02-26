@@ -70,12 +70,7 @@ const TransferPage = () => {
 
   const selfData = useMemo(() => {
     if (!userData || !walletData) return null;
-    return [
-      userData.email,
-      userData.firstName,
-      userData.lastName,
-      userData.userName,
-    ];
+    return [userData.email, userData.userName, userData.userId];
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userData]);
 
@@ -115,10 +110,7 @@ const TransferPage = () => {
         const res = await GetUserInfo({ searchParam: values.recipient });
 
         if (res.status && res.data) {
-          if (
-            (selfData && selfData.includes(res.data.lastName || "")) ||
-            selfData?.includes(res.data.firstName || "")
-          ) {
+          if (selfData && selfData.includes(res.data.userId || "")) {
             Toast.error("You cannot transfer to yourself", "Error");
             return;
           }

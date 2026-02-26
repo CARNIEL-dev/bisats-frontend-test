@@ -101,8 +101,6 @@ export const ACTIONS = {
   TRANSFER: "transfer",
   MAKE_TRANSFER: "make_transfer",
   P2P_TRANSFER: "p2p_transfer",
-
-  // Add more actions
 };
 
 export const KYC_RULES = {
@@ -154,7 +152,7 @@ export const KYC_RULES = {
       ACTIONS.CREATE_P2P_AD,
     ],
     limits: {
-      transactionAmount: 10000,
+      transactionAmount: 10000, // $10,000 max per transaction
     },
   },
   [KYC_LEVELS.LEVEL_3]: {

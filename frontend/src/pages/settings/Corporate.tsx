@@ -142,6 +142,7 @@ const Corporate = () => {
                     bankName: val.bankName,
                     accountNumber: val.accountNumber,
                     accountName: val.accountName,
+                    bankCode: val.bankCode,
                   })
                 }
               />

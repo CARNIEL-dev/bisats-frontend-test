@@ -6,6 +6,7 @@ import TokenSelection from "@/components/shared/TokenSelection";
 import { Button } from "@/components/ui/Button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DEFAULT_LIMIT } from "@/constants";
+import useUserStatus from "@/hooks/use-user-status";
 import PreLoader from "@/layouts/PreLoader";
 import Header from "@/pages/p2p/components/Header";
 import MarketPlaceTable from "@/pages/p2p/components/MarketPlaceTable";
@@ -78,6 +79,7 @@ const MarketPlacePage = () => {
   const userId: string = userState?.user?.userId || "";
 
   const { isNA } = formatAccountLevel(userState?.user?.accountLevel);
+  const { isSuspended } = useUserStatus();
 
   const isKycVerified = [
     userState?.kyc?.personalInformationVerified,
@@ -236,6 +238,7 @@ const MarketPlacePage = () => {
                   ads={searchAds || []}
                   pagination={pagination}
                   setPagination={setPagination}
+                  isSuspended={isSuspended}
                 />
               </TabsContent>
             )}

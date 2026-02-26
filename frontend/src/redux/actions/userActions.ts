@@ -308,6 +308,7 @@ export const PostCorporateInformation = async (payload: TCorporateInfo) => {
     ...payload,
     mermartDocument: payload.cacDocument,
   };
+
   try {
     const data = Bisatsfetch(
       "/api/v1/user/upload-cooperate-account-documents",
@@ -545,12 +546,17 @@ export const Post_Proof_of_Profile_KYC = async (payload: TPOA) => {
   }
 };
 export const Become_Merchant_Hanlder = async (payload: TMerchant) => {
+  const dataInfo = {
+    document1: payload.utilityBill,
+    document2: payload.photoIdentity,
+  };
+
   try {
     const data = await Bisatsfetch(
       `/api/v1/user${BACKEND_URLS.KYC.BECOME_MERCHANT}`,
       {
         method: "POST",
-        body: JSON.stringify(payload),
+        body: JSON.stringify(dataInfo),
       },
     );
 

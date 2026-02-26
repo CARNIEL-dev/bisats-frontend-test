@@ -14,6 +14,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { APP_ROUTES } from "@/constants/app_route";
+import useUserStatus from "@/hooks/use-user-status";
+import KycManager from "@/pages/kyc/KYCManager";
 import {
   setWalletCurrency,
   toggleShowBalance,
@@ -23,7 +25,6 @@ import { cn, formatAccountLevel, formatter, getCurrencyBalance } from "@/utils";
 import { ACTIONS } from "@/utils/transaction_limits";
 import { ChevronDown, Eye, EyeOff } from "lucide-react";
 import { ThreeDot } from "react-loading-indicators";
-import KycManager from "@/pages/kyc/KYCManager";
 
 const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
   const navigate = useNavigate();
@@ -34,6 +35,7 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
     wallet,
   } = useSelector((state: { wallet: WalletState }) => state.wallet);
   const [isLoading, setIsLoading] = useState(true);
+  const { isSuspended } = useUserStatus();
 
   //SUB: Query function
 
@@ -214,7 +216,7 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
               onClick={() => {
                 validateAndExecute();
               }}
-              disabled={isNA}
+              disabled={isNA || isSuspended}
             >
               {isNA && userState?.user?.hasAppliedToBeInLevelOne
                 ? !showWithdraw
@@ -235,7 +237,7 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
               onClick={() => {
                 validateAndExecute();
               }}
-              disabled={isNA}
+              disabled={isNA || isSuspended}
             >
               {isNA && userState?.user?.hasAppliedToBeInLevelOne
                 ? !showWithdraw
@@ -258,7 +260,7 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
                 onClick={() => {
                   validateAndExecute();
                 }}
-                disabled={isNA}
+                disabled={isNA || isSuspended}
               >
                 {userState?.user?.hasAppliedToBeInLevelOne && isNA
                   ? "Pending"

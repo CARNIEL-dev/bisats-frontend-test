@@ -32,9 +32,15 @@ interface MarketPlaceContentProps {
   ads: AdsType[];
   pagination: PaginationProps;
   setPagination: React.Dispatch<React.SetStateAction<PaginationProps>>;
+  isSuspended: boolean;
 }
 
-const MarketPlaceTable = ({ type, ads, asset }: MarketPlaceContentProps) => {
+const MarketPlaceTable = ({
+  type,
+  ads,
+  asset,
+  isSuspended,
+}: MarketPlaceContentProps) => {
   //   HDR: Columns
   const column: ColumnDef<AdsType>[] = [
     {
@@ -177,12 +183,20 @@ const MarketPlaceTable = ({ type, ads, asset }: MarketPlaceContentProps) => {
 
         return (
           <Link
-            to={`${
-              ad?.orderType === "buy" ? APP_ROUTES.P2P.BUY : APP_ROUTES.P2P.SELL
-            }?id=${ad?.id}`}
+            to={
+              isSuspended
+                ? "#"
+                : `${
+                    ad?.orderType === "buy"
+                      ? APP_ROUTES.P2P.BUY
+                      : APP_ROUTES.P2P.SELL
+                  }?id=${ad?.id}`
+            }
             className={cn(
               buttonVariants(),
               "capitalize text-sm px-6 font-normal",
+              isSuspended &&
+                "cursor-not-allowed pointer-events-none opacity-50",
             )}
           >
             {type}
