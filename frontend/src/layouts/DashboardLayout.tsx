@@ -14,6 +14,7 @@ const DashboardLayout: React.FC = () => {
       <ChatWidget />
       <div className="grid md:grid-rows-[80px_1fr] grid-rows-[62px_1fr]">
         <MobileAppPrompt />
+
         <DashboardNavbar />
         <div className="row-start-2 row-end-3">
           <main className="min-h-[60dvh]">

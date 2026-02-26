@@ -20,6 +20,7 @@ import { formatAccountLevel, formatter, getUpgradeButtonState } from "@/utils";
 import { goToNextKycRoute } from "@/utils/kycNavigation";
 import { ACTIONS, bisats_limit } from "@/utils/transaction_limits";
 import * as Yup from "yup";
+import useUserStatus from "@/hooks/use-user-status";
 
 export type TNetwork = {
   label: string;
@@ -42,6 +43,7 @@ const DepositPage = () => {
 
   const navigate = useNavigate();
   const user: UserState = useSelector((state: any) => state.user);
+  const { isSuspended } = useUserStatus();
 
   const { level, isNA } = formatAccountLevel(user?.user?.accountLevel);
 
@@ -51,6 +53,16 @@ const DepositPage = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (isSuspended) {
+      Toast.error(
+        "Your account is currently suspended. Please contact support for assistance.",
+        "Account Suspended",
+      );
+      navigate(APP_ROUTES.DASHBOARD);
+    }
+  }, [isSuspended]);
 
   const accountLevelKey =
     !isNA && level

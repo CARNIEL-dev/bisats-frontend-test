@@ -24,6 +24,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Check } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import useUserStatus from "@/hooks/use-user-status";
 
 export interface Ad {
   id: string;
@@ -53,6 +54,7 @@ const MyAds = () => {
   const navigate = useNavigate();
 
   const { isNA } = formatAccountLevel(userState?.user?.accountLevel);
+  const { isSuspended } = useUserStatus();
 
   const isKycVerified = [
     userState?.kyc?.personalInformationVerified,
@@ -364,7 +366,7 @@ const MyAds = () => {
               onClick={() => {
                 validateAndExecute();
               }}
-              disabled={isNA}
+              disabled={isNA || isSuspended}
             >
               {userState?.user?.hasAppliedToBeInLevelOne && isNA
                 ? "Pending Verification"

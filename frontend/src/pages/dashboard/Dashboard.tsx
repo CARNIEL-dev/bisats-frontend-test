@@ -3,6 +3,7 @@ import MaxWidth from "@/components/shared/MaxWith";
 import OrdersChart from "@/components/shared/OrdersChart";
 import Balance from "@/pages/dashboard/Balance";
 import MarketRate from "@/pages/dashboard/MarketRate";
+import SuspensionBanner from "@/components/SuspensionBanner";
 
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
@@ -33,6 +34,7 @@ const Dashboard = () => {
         as="section"
         className="space-y-8 min-h-[75dvh] max-w-6xl lg:pb-5 mb-10 mt-6"
       >
+        <SuspensionBanner />
         {openKycModal && <KycBanner />}
 
         <div className="">

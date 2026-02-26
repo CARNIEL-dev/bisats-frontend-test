@@ -1,21 +1,18 @@
-import { useState } from "react";
-import PrimaryInput from "@/components/Inputs/PrimaryInput";
-import AuthPasswordInput from "@/components/Inputs/AuthPasswordInput";
-import { PrimaryButton } from "@/components/buttons/Buttons";
-import { InputCheck } from "@/components/Inputs/CheckBox";
-import OtherSide from "@/layouts/auth/OtherSide";
-import {
-  ReSendverificationCode,
-  SignUp as Signup,
-} from "@/redux/actions/userActions";
-import GoogleButton from "@/components/buttons/GoogleButton";
-import { SignupSchema } from "@/formSchemas";
-import { useFormik } from "formik";
-import { useNavigate } from "react-router-dom";
-import { APP_ROUTES } from "@/constants/app_route";
-import Toast from "@/components/Toast";
-import { motion } from "motion/react";
 import { slideInLeft } from "@/components/animation";
+import { PrimaryButton } from "@/components/buttons/Buttons";
+import GoogleButton from "@/components/buttons/GoogleButton";
+import AuthPasswordInput from "@/components/Inputs/AuthPasswordInput";
+import { InputCheck } from "@/components/Inputs/CheckBox";
+import PrimaryInput from "@/components/Inputs/PrimaryInput";
+import Toast from "@/components/Toast";
+import { APP_ROUTES } from "@/constants/app_route";
+import { SignupSchema } from "@/formSchemas";
+import OtherSide from "@/layouts/auth/OtherSide";
+import { SignUp as Signup } from "@/redux/actions/userActions";
+import { useFormik } from "formik";
+import { motion } from "motion/react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -33,7 +30,7 @@ const SignUp = () => {
       const response = await Signup(payload);
 
       if (response?.statusCode === 200) {
-        ReSendverificationCode();
+        // ReSendverificationCode();
         return navigate(APP_ROUTES.AUTH.VERIFY);
       } else {
         Toast.error(response.message, "Sign Up Failed");

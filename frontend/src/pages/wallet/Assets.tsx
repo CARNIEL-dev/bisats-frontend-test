@@ -18,6 +18,7 @@ import React, { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import KycManager from "@/pages/kyc/KYCManager";
+import useUserStatus from "@/hooks/use-user-status";
 
 export enum Fields {
   Asset = "Asset",
@@ -64,6 +65,7 @@ const Assets: React.FC = () => {
   } = useCryptoRates({ isEnabled: Boolean(wallet) });
 
   const { isNA } = formatAccountLevel(userState?.user?.accountLevel);
+  const { isSuspended } = useUserStatus();
 
   const defaultAssetsData = useMemo(
     () => [
@@ -222,7 +224,7 @@ const Assets: React.FC = () => {
                   onClick={() => {
                     validateAndExecute();
                   }}
-                  disabled={!userState?.user?.accountLevel}
+                  disabled={isNA || isSuspended}
                 >
                   {userState?.user?.hasAppliedToBeInLevelOne && isNA
                     ? "Pending"
@@ -248,7 +250,7 @@ const Assets: React.FC = () => {
                   onClick={() => {
                     validateAndExecute();
                   }}
-                  disabled={!userState?.user?.accountLevel}
+                  disabled={isNA || isSuspended}
                 >
                   {userState?.user?.hasAppliedToBeInLevelOne && isNA
                     ? "Pending"

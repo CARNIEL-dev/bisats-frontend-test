@@ -35,6 +35,7 @@ type TActivitySummary = {
 // pull this out of the component if you want to reuse it
 
 const getKycStatus = (userState: UserState) => {
+  const { level } = formatAccountLevel(userState?.user?.accountLevel);
   const kycStatus = [
     {
       type: "Email",
@@ -55,13 +56,12 @@ const getKycStatus = (userState: UserState) => {
     {
       type: "Is Merchant",
       verified:
-        (userState?.user?.hasAppliedToBecomeAMerchant ||
-          Number(userState?.user?.accountLevel?.split("_")[1] > 2)) &&
-        Number(userState?.user?.accountLevel?.split("_")[1]) >= 2,
+        (userState?.user?.hasAppliedToBecomeAMerchant || (level || 0) > 2) &&
+        (level || 0) >= 2,
     },
     {
       type: "Is Super Merchant",
-      verified: userState?.user?.accountLevel === "level_3",
+      verified: level === 3,
     },
   ];
   return kycStatus;
@@ -196,6 +196,8 @@ const Profile = () => {
   }, []);
 
   const { display } = formatAccountLevel(user?.accountLevel);
+
+  // console.log("user", user);
 
   return (
     <>

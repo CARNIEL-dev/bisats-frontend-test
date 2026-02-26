@@ -42,6 +42,7 @@ import { APP_ROUTES } from "@/constants/app_route";
 
 import useGetWallet from "@/hooks/use-getWallet";
 import CryptoWithdrawal from "@/pages/wallet/withdrawal/CryptoWithdrawal";
+import useUserStatus from "@/hooks/use-user-status";
 
 export type TNetwork = {
   label: string;
@@ -71,10 +72,12 @@ const WithdrawalPage = () => {
   const walletState: WalletState = useSelector((state: any) => state.wallet);
   const wallet: WalletState["wallet"] = walletState?.wallet;
   const user = userState.user;
+  const { isSuspended } = useUserStatus();
 
   const location = useLocation();
   const linkedAsset = location.state?.asset;
   const linkedAmount = location.state?.amount;
+  const navigate = useNavigate();
 
   const [selectedToken, setSelectedToken] = useState<string>(linkedAsset);
 
@@ -97,6 +100,16 @@ const WithdrawalPage = () => {
   });
 
   const userBalance: number = wallet?.[selectedToken] || 0;
+
+  useEffect(() => {
+    if (isSuspended) {
+      Toast.error(
+        "Your account is currently suspended. Please contact support for assistance.",
+        "Account Suspended",
+      );
+      navigate(APP_ROUTES.DASHBOARD);
+    }
+  }, [isSuspended]);
 
   return (
     <div className="mb-20">
