@@ -426,7 +426,7 @@ type InputFieldProps = {
   value: string;
   error: string | boolean | undefined | null;
   tokenData?: {
-    logo: JSX.Element;
+    logo: React.ReactElement;
     logoName: string;
   };
   children?: React.ReactNode;

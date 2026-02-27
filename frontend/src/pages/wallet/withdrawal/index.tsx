@@ -109,6 +109,7 @@ const WithdrawalPage = () => {
       );
       navigate(APP_ROUTES.DASHBOARD);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSuspended]);
 
   return (

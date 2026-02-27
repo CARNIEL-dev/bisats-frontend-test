@@ -108,7 +108,7 @@ export const OrderVolumeChart = ({
   // Filter orders from last 30 days
   const thirtyDaysAgo = subDays(new Date(), 30);
   const recentOrders = orders.filter(
-    (order) => new Date(order.createdAt) >= thirtyDaysAgo
+    (order) => new Date(order.createdAt) >= thirtyDaysAgo,
   );
 
   // All assets we want to display
@@ -132,8 +132,8 @@ export const OrderVolumeChart = ({
             ? "sell"
             : "buy"
           : buyer === "buyer"
-          ? "buy"
-          : "sell";
+            ? "buy"
+            : "sell";
 
       if (allAssets.includes(order.asset)) {
         assetMap[order.asset][type] += order.amount;
@@ -179,7 +179,7 @@ export const OrderVolumeChart = ({
           <Tooltip
             formatter={(value, name) => [
               `${Number(value).toFixed(4)} ${
-                name.toString().toLocaleLowerCase() === "buy"
+                name?.toString().toLocaleLowerCase() === "buy"
                   ? "Bought"
                   : "Sold"
               }`,

@@ -24,7 +24,7 @@ import {
 import { useIsMobile } from "@/hooks/use-mobile";
 import { motion } from "motion/react";
 const isAuthenticated = false; // Placeholder for authentication state
-export const HeroSectionByAnima = (): JSX.Element => {
+export const HeroSectionByAnima = (): React.ReactElement => {
   // const user: UserState = useSelector((state: any) => state.user);
   // const isAuthenticated = user.isAuthenticated;
 

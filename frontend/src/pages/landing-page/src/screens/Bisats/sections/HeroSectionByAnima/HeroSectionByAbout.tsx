@@ -8,7 +8,7 @@ export const HeroSectionAbout = ({
 	title,
 	desc,
 	image,
-}: HeroSectionAboutProps): JSX.Element => {
+}: HeroSectionAboutProps): React.ReactElement => {
 	const titleAlignment = desc ? "text-left" : "text-center lg:text-left";
 	const descAlignment = desc ? "text-left" : "";
 

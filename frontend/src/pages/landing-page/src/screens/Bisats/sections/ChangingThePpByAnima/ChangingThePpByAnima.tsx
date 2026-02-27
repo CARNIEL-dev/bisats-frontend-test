@@ -2,7 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import Customer from "../../../../../../../assets/customer.png";
 import Merchant from "../../../../../../../assets/merchant.png";
 
-export const ChangingThePpByAnima = (): JSX.Element => {
+export const ChangingThePpByAnima = (): React.ReactElement => {
   const cards = [
     {
       title: "Bisats for Merchants",

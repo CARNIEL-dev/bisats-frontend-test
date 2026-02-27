@@ -7,7 +7,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 
 //? Mobile Images
 
-export const HowItWorksByAnima = (): JSX.Element => {
+export const HowItWorksByAnima = (): React.ReactElement => {
   const isMobile = useIsMobile();
   const steps = [
     {

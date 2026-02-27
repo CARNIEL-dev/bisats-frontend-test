@@ -7,7 +7,7 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
-import PinInput from "react-pin-input";
+import { PinInput } from "react-input-pin-code";
 import {
   buildSyntheticEvent,
   formatNumberDisplay,
@@ -41,7 +41,7 @@ const PrimaryInput: React.FC<TInput> = ({
   maxText,
   format,
   otpLength = 6,
-  secretMode,
+  secretMode = true,
   infoSuccess,
   ...props
 }) => {
@@ -132,6 +132,17 @@ const PrimaryInput: React.FC<TInput> = ({
 
   const mergedStyle = { outline: "none", ...style };
 
+  // Helper function to get values array from value or defaultValue
+  const getPinValues = () => {
+    const val = resolveValue(value ?? defaultValue);
+    if (!val) return Array(otpLength).fill("");
+
+    const strVal = String(val);
+    // Ensure we have exactly otpLength items, padding with empty strings if needed
+    const arr = strVal.split("");
+    return Array.from({ length: otpLength }, (_, i) => arr[i] || "");
+  };
+
   return (
     <div
       className={cn(
@@ -168,19 +179,23 @@ const PrimaryInput: React.FC<TInput> = ({
         ) : type === "pin" ? (
           <>
             <PinInput
-              length={otpLength}
-              initialValue={resolveValue(value ?? defaultValue)}
-              onChange={handleOtpChange}
-              secret={secretMode}
-              secretDelay={500}
+              values={getPinValues()}
+              onChange={(value, index, values) =>
+                handleOtpChange(values.join(""))
+              }
+              onBlur={handleOtpBlur}
+              mask={secretMode}
+              type="number"
               inputMode="numeric"
+              size="lg"
+              placeholder=""
               inputStyle={{
-                border: "1px solid #D6DAE1", // Customize the border color
+                border: "1px solid #D6DAE1",
                 borderColor: error ? "#EF4444" : "#D6DAE1",
-                borderRadius: "100%", // Adjust border radius
-                padding: "10px", // Add some padding
-                margin: "2px", // Adjust margin
-                fontSize: "22px", // Adjust font size
+                borderRadius: "100%",
+                padding: "10px",
+                margin: "2px",
+                fontSize: "22px",
               }}
             />
           </>

@@ -197,7 +197,7 @@ const Profile = () => {
 
   const { display } = formatAccountLevel(user?.accountLevel);
 
-  // console.log("user", user);
+  console.log("user", user, limits);
 
   return (
     <>

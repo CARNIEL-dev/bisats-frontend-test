@@ -416,7 +416,7 @@ type InputFieldProps = {
   label: string;
   id: string;
   onChange: ChangeEventHandler<HTMLInputElement>;
-  logo: JSX.Element;
+  logo: React.ReactElement;
   logoName: string;
   maxFunc?: () => void;
   onFocus: () => void;

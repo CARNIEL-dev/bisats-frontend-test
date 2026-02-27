@@ -36,7 +36,7 @@ const footerData = {
   },
 };
 
-export const FooterByAnima = (): JSX.Element => {
+export const FooterByAnima = (): React.ReactElement => {
   return (
     <footer className="w-full bg-accent-black py-20">
       {/* Newsletter Section */}
