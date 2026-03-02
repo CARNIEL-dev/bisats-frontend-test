@@ -73,7 +73,7 @@ const FileInputField: React.FC<FileInputProps> = ({
   valueMapper = defaultValueMapper,
   accept = ".pdf, .jpg, .jpeg, .png, image/*",
   allowedTypes = DEFAULT_ALLOWED,
-  maxSizeMB = 0.7,
+  maxSizeMB = 2,
   placeholder = "Upload (png, jpeg, jpg, pdf only)",
   className,
   cropAspect,
@@ -220,11 +220,19 @@ const FileInputField: React.FC<FileInputProps> = ({
       setLoading(true);
       clearFiedError();
       const fileTo64 = await fileToBase64(file);
+
+      // Strip the Data URL prefix (e.g., "data:image/jpeg;base64," or "data:application/pdf;base64,")
+      // so the backend receives only the pure base64 string.
+      const base64Data = fileTo64.includes("base64,")
+        ? fileTo64.split("base64,")[1]
+        : fileTo64;
+
       const data = {
-        image: fileTo64,
+        image: base64Data,
         fileName: file.name.replace(/\s/g, ""),
         contentType: file.type,
       };
+
       const result: string = await uploadFile(data);
       // const value = valueMapper(file, result);
       setFieldOk(result);
