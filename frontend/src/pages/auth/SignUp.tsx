@@ -11,16 +11,30 @@ import OtherSide from "@/layouts/auth/OtherSide";
 import { SignUp as Signup } from "@/redux/actions/userActions";
 import { useFormik } from "formik";
 import { motion } from "motion/react";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const SignUp = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  const urlRefCode = searchParams.get("ref");
+  const storedRefCode = sessionStorage.getItem("p2p_referral_code");
+
   const [signupBody] = useState({
     email: "",
     password: "",
     confirmPassword: "",
+    referralCode: urlRefCode || storedRefCode || "",
   });
+
+  useEffect(() => {
+    if (urlRefCode) {
+      sessionStorage.setItem("p2p_referral_code", urlRefCode);
+    }
+  }, [urlRefCode]);
+
+  const isReferralCodeAutoFilled = !!urlRefCode || !!storedRefCode;
 
   const formik = useFormik({
     initialValues: { ...signupBody, agreeToTerms: false },
@@ -30,6 +44,7 @@ const SignUp = () => {
       const response = await Signup(payload);
 
       if (response?.statusCode === 200) {
+        sessionStorage.removeItem("p2p_referral_code");
         // ReSendverificationCode();
         return navigate(APP_ROUTES.AUTH.VERIFY);
       } else {
@@ -52,7 +67,7 @@ const SignUp = () => {
       />
       <div className="w-full mt-10">
         <form onSubmit={formik.handleSubmit}>
-          <div className="w-full mb-2">
+          <div className="w-full">
             <PrimaryInput
               type="email"
               name="email"
@@ -65,7 +80,7 @@ const SignUp = () => {
               onBlur={formik.handleBlur}
             />
           </div>
-          <div className="w-full mb-2">
+          <div className="w-full">
             <AuthPasswordInput
               className="w-full h-[48px] px-3 outline-hidden"
               handleChange={formik.handleChange}
@@ -79,10 +94,9 @@ const SignUp = () => {
               showTip={false}
             />
           </div>
-          <div className="w-full mb-2">
+          <div className="w-full">
             <AuthPasswordInput
               className="w-full h-[48px] px-3 outline-hidden "
-              // handleChange={(e) => setSignUpBody({ ...signupBody, confirmPassword: e })}
               check={false}
               text="Repeat password"
               name="confirmPassword"
@@ -92,6 +106,21 @@ const SignUp = () => {
               handleChange={formik.handleChange}
               onBlur={formik.handleBlur}
               showTip={false}
+            />
+          </div>
+          <div className="w-full">
+            <PrimaryInput
+              type="text"
+              name="referralCode"
+              label="Referral Code (Optional)"
+              className="w-full h-[48px] px-3 outline-hidden "
+              error={formik.errors.referralCode}
+              touched={formik.touched.referralCode}
+              value={formik.values.referralCode}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              readOnly={isReferralCodeAutoFilled}
+              disabled={isReferralCodeAutoFilled}
             />
           </div>
           <div>

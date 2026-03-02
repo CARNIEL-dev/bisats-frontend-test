@@ -22,14 +22,14 @@ import { TriangleAlert, Wallet } from "lucide-react";
 import React, { Activity, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import MaxWidth from "../shared/MaxWith";
+import MaxWidth from "@/components/shared/MaxWith";
 import {
   Sheet,
   SheetContent,
   SheetDescription,
   SheetHeader,
   SheetTitle,
-} from "../ui/sheet";
+} from "@/components/ui/sheet";
 
 interface Props {
   close: () => void;
@@ -45,7 +45,7 @@ interface Props {
   adType: string;
 }
 
-const SwapConfirmation: React.FC<Props> = ({
+const P2PConfirmation: React.FC<Props> = ({
   close,
   orderType,
   amount,
@@ -210,17 +210,15 @@ const SwapConfirmation: React.FC<Props> = ({
 
       const amountValue = new Decimal(amountVal).toNumber();
 
-      const response = await Bisatsfetch(
-        `/api/v1/user/ads/${adsId}/sell-with-payout`,
-        {
-          method: "POST",
-          body: JSON.stringify({
-            amount: amountValue,
-            transactionPin: securePin,
-            bankAccountId: selectedBankId,
-          }),
-        },
-      );
+      const response = await Bisatsfetch(`/api/v1/user/ads/sell-with-payout`, {
+        method: "POST",
+        body: JSON.stringify({
+          amount: amountValue,
+          transactionPin: securePin,
+          bankAccountId: selectedBankId,
+          adsId,
+        }),
+      });
 
       if (response.status) {
         return {
@@ -296,6 +294,7 @@ const SwapConfirmation: React.FC<Props> = ({
       navigate(APP_ROUTES.P2P.RECEIPT, {
         state: {
           ...response.data,
+          sendToBank,
         },
       });
 
@@ -523,4 +522,4 @@ const SwapConfirmation: React.FC<Props> = ({
   );
 };
 
-export default SwapConfirmation;
+export default P2PConfirmation;

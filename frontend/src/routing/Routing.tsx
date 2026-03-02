@@ -37,7 +37,8 @@ import DepositPage from "@/pages/wallet/deposits";
 import TransactionBreakdown from "@/pages/wallet/deposits/TransactionBreakdown";
 import Wallet from "@/pages/wallet/Wallet";
 import WithdrawalPage from "@/pages/wallet/withdrawal";
-import ProtectedRoute from "@/utils/protectedRoutes";
+import AuthGuard from "@/routing/guards/AuthGuard";
+import GuestGuard from "@/routing/guards/GuestGuard";
 
 import DashboardLayout from "@/layouts/DashboardLayout";
 import Layout from "@/layouts/Layout";
@@ -59,24 +60,29 @@ const Routing = () => {
     <>
       <Routes>
         {/* SUB: AUTH PAGES */}
-        <Route element={<AuthLayout />}>
-          <Route path={APP_ROUTES?.AUTH.SIGNUP} Component={SignUp} />
-          <Route path={APP_ROUTES.AUTH.LOGIN} Component={LogIn} />
-          <Route
-            path={APP_ROUTES?.AUTH.FORGOT_PASSWORD}
-            Component={ForgotPassword}
-          />
+        <Route element={<GuestGuard />}>
+          <Route element={<AuthLayout />}>
+            <Route path={APP_ROUTES?.AUTH.SIGNUP} Component={SignUp} />
+            <Route path={APP_ROUTES.AUTH.LOGIN} Component={LogIn} />
+            <Route
+              path={APP_ROUTES?.AUTH.FORGOT_PASSWORD}
+              Component={ForgotPassword}
+            />
 
-          <Route path={`${APP_ROUTES?.AUTH.VERIFY}`} Component={VerifyEmail} />
-          <Route path={APP_ROUTES.AUTH.OTP} Component={OTP} />
-          <Route
-            path={APP_ROUTES?.AUTH.RESET_PASSWORD}
-            Component={ResetPassword}
-          />
-          <Route path={APP_ROUTES.AUTH.VERIFY_2FA} Component={Verify2FA} />
+            <Route
+              path={`${APP_ROUTES?.AUTH.VERIFY}`}
+              Component={VerifyEmail}
+            />
+            <Route path={APP_ROUTES.AUTH.OTP} Component={OTP} />
+            <Route
+              path={APP_ROUTES?.AUTH.RESET_PASSWORD}
+              Component={ResetPassword}
+            />
+            <Route path={APP_ROUTES.AUTH.VERIFY_2FA} Component={Verify2FA} />
+          </Route>
         </Route>
         {/* SUB: PROTECTED || DASHBOARD  PAGES */}
-        <Route element={<ProtectedRoute />}>
+        <Route element={<AuthGuard />}>
           <Route element={<DashboardLayout />}>
             {/* SUB: Transaction PAGES */}
             <Route element={<TranscLayOut />}>

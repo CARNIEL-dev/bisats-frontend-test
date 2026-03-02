@@ -1,3 +1,4 @@
+import ReferralSystem from "@/components/ReferralSystem";
 import BackButton from "@/components/shared/BackButton";
 import ErrorDisplay from "@/components/shared/ErrorDisplay";
 import MaxWidth from "@/components/shared/MaxWith";
@@ -197,12 +198,12 @@ const Profile = () => {
 
   const { display } = formatAccountLevel(user?.accountLevel);
 
-  console.log("user", user, limits);
+  console.log("profile user", user);
 
   return (
     <>
       <MaxWidth
-        className="flex flex-col gap-4 min-h-[80dvh] max-w-6xl mt-6"
+        className="flex flex-col gap-4 min-h-[80dvh] max-w-6xl mt-6 mb-10"
         as="section"
       >
         <BackButton />
@@ -219,7 +220,7 @@ const Profile = () => {
           )}
         </div>
 
-        <div className="border border-[#F3F4F6] p-3 lg:p-5 rounded-[12px] bg-gradient-to-r from-[#FFFFFF] to-[#F6F7F8] w-full mx-3">
+        <div className="border border-[#F3F4F6] p-3 lg:p-5 rounded-[12px] bg-gradient-to-r from-[#FFFFFF] to-[#F6F7F8]  mx-3">
           <div className="flex items-center text-[18px]  leading-[32px] font-semibold mb-3">
             <h1 className="text-[#515B6E] ">Account Tier:</h1>
             <h1 className="text-[#17A34A] mx-2">{display}</h1>
@@ -283,9 +284,10 @@ const Profile = () => {
             )}
           </div>
         </div>
+        <ReferralSystem />
 
         {/* SUB: Activity section */}
-        <section className="border border-[#F3F4F6] rounded-[12px] p-3 lg:p-5 bg-gradient-to-r from-[#FFFFFF] to-[#F6F7F8] w-full mx-3">
+        <section className="border border-[#F3F4F6] rounded-[12px] p-3 lg:p-5 bg-gradient-to-r from-[#FFFFFF] to-[#F6F7F8]  mx-3">
           <div className="flex items-center text-[18px]  leading-[32px] font-semibold ">
             <h1 className="text-[#515B6E] ">Activity Summary</h1>
           </div>

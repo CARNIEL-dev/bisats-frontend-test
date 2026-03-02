@@ -7,6 +7,7 @@ import SuspensionBanner from "@/components/SuspensionBanner";
 
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import MockApp from "@/components/shared/MockApp";
 
 const Dashboard = () => {
   const [openKycModal, setKycModalOpen] = useState(false);
@@ -51,6 +52,7 @@ const Dashboard = () => {
           </div>
           {!openKycModal && <OrdersChart />}
         </div>
+        <MockApp />
       </MaxWidth>
     </>
   );

@@ -82,6 +82,7 @@ type TUser = {
   hasAppliedToBecomeAMerchant: boolean;
   hasAppliedToBecomeASuperMerchant: boolean;
   hasAppliedToBeInLevelOne: boolean;
+  referralCode?: string;
   bankAccounts: {
     [key: string]: any;
   }[];
@@ -102,6 +103,7 @@ interface UserState {
   wallet: {
     pinSet: boolean;
   } | null;
+  loading?: boolean;
 }
 
 interface RootState {

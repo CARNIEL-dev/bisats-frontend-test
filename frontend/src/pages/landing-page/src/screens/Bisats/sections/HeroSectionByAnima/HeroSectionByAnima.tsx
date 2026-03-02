@@ -23,15 +23,16 @@ import {
 } from "@/components/animation";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { motion } from "motion/react";
-const isAuthenticated = false; // Placeholder for authentication state
+import { useSelector } from "react-redux";
+// const isAuthenticated = false; // Placeholder for authentication state
 export const HeroSectionByAnima = (): React.ReactElement => {
-  // const user: UserState = useSelector((state: any) => state.user);
-  // const isAuthenticated = user.isAuthenticated;
+  const user: UserState = useSelector((state: any) => state.user);
+  const isAuthenticated = user.isAuthenticated;
 
   const isMobile = useIsMobile();
 
   return (
-    <div className="w-full relative min-h-[85vh] md:min-h-fit">
+    <div className="w-full relative min-h-[85vh] md:min-h-fit overflow-x-hidden">
       <MaxWidth as="section" className=" max-w-[78rem] 2xl:max-w-[90rem] mb-16">
         <motion.div
           variants={container}
@@ -56,7 +57,7 @@ export const HeroSectionByAnima = (): React.ReactElement => {
             />
             <motion.h1
               variants={slideInRight}
-              className="text-[42px] leading-[56px] w-full  lg:text-6xl font-semibold text-[#0A0E12]  lg:leading-[65px]"
+              className="text-3xl xs:text-[42px] sm:leading-[56px] w-full  lg:text-6xl font-semibold text-[#0A0E12]  lg:leading-[65px]"
             >
               Trade, Rest, and <br /> Stay Happy
             </motion.h1>
@@ -77,7 +78,7 @@ export const HeroSectionByAnima = (): React.ReactElement => {
                   href={APP_ROUTES.DASHBOARD}
                   className={cn(
                     buttonVariants(),
-                    "px-8 lg:w-1/2 w-full md:w-fit  h-fit py-3 text-sm"
+                    "px-8 lg:w-1/2 w-full md:w-fit  h-fit py-3 text-sm",
                   )}
                 >
                   Go to Dashboard
@@ -87,7 +88,7 @@ export const HeroSectionByAnima = (): React.ReactElement => {
                   <Link
                     className={cn(
                       buttonVariants(),
-                      "px-8 lg:w-1/2 w-full md:w-fit   h-fit py-3 text-sm"
+                      "px-8 lg:w-1/2 w-full md:w-fit   h-fit py-3 text-sm",
                     )}
                     to={APP_ROUTES.AUTH.SIGNUP}
                   >
@@ -96,7 +97,7 @@ export const HeroSectionByAnima = (): React.ReactElement => {
                   <Link
                     className={cn(
                       buttonVariants({ variant: "secondary" }),
-                      "px-8 lg:w-1/2 w-full md:w-fit    h-fit py-3 text-sm"
+                      "px-8 lg:w-1/2 w-full md:w-fit    h-fit py-3 text-sm",
                     )}
                     to={APP_ROUTES.AUTH.LOGIN}
                   >
@@ -119,7 +120,7 @@ export const HeroSectionByAnima = (): React.ReactElement => {
               <motion.img
                 alt="hero-phone-image"
                 src={isMobile ? phoneMobile : phoneDesktop}
-                className="w-auto h-full mx-auto "
+                className="sm:w-auto  h-full mx-auto "
                 loading="eager"
                 variants={slideUpVariant}
               />
@@ -138,7 +139,7 @@ export const HeroSectionByAnima = (): React.ReactElement => {
                     </h3>
                   </div>
                 }
-                className="absolute top-[27%] lg:right-[-1.5rem] right-[-6rem] "
+                className="absolute top-[27%] lg:right-[-1.5rem] xs:right-[-6rem] right-[-3.5rem]"
                 subText=" You have a purchased 500 USDT"
                 logo={bisatLogo2}
                 variant={slideInLeft}

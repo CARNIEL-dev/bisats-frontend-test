@@ -50,6 +50,7 @@ const SignupSchema = Yup.object().shape({
   agreeToTerms: Yup.bool()
     .oneOf([true], "You must agree to the terms and conditions")
     .required("You must agree to the terms and conditions"),
+  referralCode: Yup.string().optional(),
 });
 
 const ResetPasswordSchema = Yup.object().shape({

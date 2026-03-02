@@ -4,6 +4,9 @@ module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
+      screens: {
+        xs: "475px", // or whatever pixel value you need
+      },
       colors: {
         // Brand / Static Colors
         priYellow: "#F5BB00",

@@ -20,13 +20,14 @@ const Receipt = () => {
 
   const navigate = useNavigate();
 
-  const orderData: OrderHistory | undefined = useMemo(() => {
-    if (state) {
-      return state;
-    } else {
-      return undefined;
-    }
-  }, [state]);
+  const orderData: (OrderHistory & { sendToBank: boolean }) | undefined =
+    useMemo(() => {
+      if (state) {
+        return state;
+      } else {
+        return undefined;
+      }
+    }, [state]);
 
   useEffect(() => {
     if (orderData) {
@@ -156,7 +157,7 @@ const Receipt = () => {
                 onClick={() => navigate(APP_ROUTES.DASHBOARD)}
               />
             </div>
-            {orderData?.type === "sell" ? (
+            {orderData?.type === "sell" && !orderData?.sendToBank ? (
               <div className="flex-1 ">
                 <PrimaryButton
                   text={"Withdraw"}
