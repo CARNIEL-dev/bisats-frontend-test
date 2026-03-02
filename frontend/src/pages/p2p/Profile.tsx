@@ -198,8 +198,6 @@ const Profile = () => {
 
   const { display } = formatAccountLevel(user?.accountLevel);
 
-  console.log("profile user", user);
-
   return (
     <>
       <MaxWidth

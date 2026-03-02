@@ -8,7 +8,6 @@ import { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
 import { useSelector } from "react-redux";
 
-import KycBanner from "@/components/KycBanner";
 import ErrorDisplay from "@/components/shared/ErrorDisplay";
 import { Button } from "@/components/ui/Button";
 import { APP_ROUTES } from "@/constants/app_route";
@@ -19,12 +18,12 @@ import { updateAdStatus, useFetchUserAds } from "@/redux/actions/walletActions";
 import { tokenLogos } from "@/assets/tokens";
 import ModalTemplate from "@/components/Modals/ModalTemplate";
 import useGetWallet from "@/hooks/use-getWallet";
+import useUserStatus from "@/hooks/use-user-status";
 import { ACTIONS } from "@/utils/transaction_limits";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Check } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import useUserStatus from "@/hooks/use-user-status";
 
 export interface Ad {
   id: string;
@@ -56,10 +55,10 @@ const MyAds = () => {
   const { isNA } = formatAccountLevel(userState?.user?.accountLevel);
   const { isSuspended } = useUserStatus();
 
-  const isKycVerified = [
-    userState?.kyc?.personalInformationVerified,
-    userState?.kyc?.identificationVerified && !isNA,
-  ].every(Boolean);
+  // const isKycVerified = [
+  //   userState?.kyc?.personalInformationVerified,
+  //   userState?.kyc?.identificationVerified && !isNA,
+  // ].every(Boolean);
 
   const {
     data: userAds = [],
@@ -67,7 +66,7 @@ const MyAds = () => {
     error,
     isLoading,
   } = useFetchUserAds({
-    isKycVerified: isKycVerified || !userState.user?.hasAppliedToBeInLevelOne,
+    isKycVerified: !userState.user?.hasAppliedToBeInLevelOne,
   });
 
   const adsData = useMemo(() => {
@@ -377,9 +376,7 @@ const MyAds = () => {
       </div>
 
       <div>
-        {!isKycVerified && !userState.user?.hasAppliedToBeInLevelOne ? (
-          <KycBanner />
-        ) : userState?.user?.hasAppliedToBeInLevelOne && isNA ? (
+        {userState?.user?.hasAppliedToBeInLevelOne && isNA ? (
           <div className="flex flex-col items-center gap-2  border w-fit p-6 mx-auto rounded-md">
             <h4 className="font-semibold text-lg">
               Your Account is being reviewed
