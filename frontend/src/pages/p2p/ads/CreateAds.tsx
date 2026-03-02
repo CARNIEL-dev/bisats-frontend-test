@@ -112,7 +112,7 @@ const CreateAd = () => {
         queryClient
           .invalidateQueries({
             queryKey: ["userAds", variables.userId],
-            exact: true,
+            exact: false,
             refetchType: "all",
           })
           .then(() => {

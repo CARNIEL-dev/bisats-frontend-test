@@ -7,22 +7,9 @@ import { cn } from "@/utils";
 import { Link, Outlet, useLocation } from "react-router-dom";
 
 const PageData = [
-  {
-    tab: "Market",
-    link: APP_ROUTES.P2P.HOME,
-  },
-  // {
-  //   tab: "Express",
-  //   link: APP_ROUTES.P2P.EXPRESS,
-  // },
-  {
-    tab: "My ads",
-    link: APP_ROUTES.P2P.MY_ADS,
-  },
-  {
-    tab: "Order history",
-    link: APP_ROUTES.P2P.ORDER_HISTORY,
-  },
+  { tab: "Market", link: APP_ROUTES.P2P.HOME },
+  { tab: "My ads", link: APP_ROUTES.P2P.MY_ADS },
+  { tab: "Order history", link: APP_ROUTES.P2P.ORDER_HISTORY },
 ];
 
 const P2PLayOut = () => {
@@ -49,7 +36,7 @@ const P2PLayOut = () => {
                     "active",
                   page.link !== APP_ROUTES.P2P.HOME &&
                     pathname.includes(page.link) &&
-                    "active"
+                    "active",
                 )}
               >
                 {page.tab}

@@ -18,8 +18,24 @@ const ChatWidget = () => {
 
     // Cleanup on unmount
     return () => {
-      document.body.removeChild(inlineScript);
-      document.body.removeChild(zohoScript);
+      if (document.body.contains(inlineScript)) {
+        document.body.removeChild(inlineScript);
+      }
+      if (document.body.contains(zohoScript)) {
+        document.body.removeChild(zohoScript);
+      }
+
+      // Zoho injects several containers into the body.
+      // We must remove them so the chat widget disappears when navigating away from the dashboard.
+      const zohoElements = document.querySelectorAll(
+        "#zsiq_float, #zsiq_maintitle, #zsiq_byline, #zsiqwrap, [id^='zsiq']",
+      );
+      zohoElements.forEach((el) => el.remove());
+
+      // Attempt to clear the $zoho window object to allow a fresh load next time
+      if ((window as any).$zoho) {
+        delete (window as any).$zoho;
+      }
     };
   }, []);
   return null;
