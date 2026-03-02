@@ -6,7 +6,7 @@ type Prop = {
       tokenName: string,
       currentBalance: string,
       networks?: TNetwork[],
-      tokenLogo: JSX.Element
+      tokenLogo: React.ReactElement
 }
 const SingleToken = ({ prop }: { prop: Prop })=> {
   return (

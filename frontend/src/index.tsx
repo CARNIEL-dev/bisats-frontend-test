@@ -5,7 +5,8 @@ import App from "./App";
 import "./index.css";
 import store from "./redux/store";
 // import reportWebVitals from "./reportWebVitals";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+// import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { StrictMode } from "react";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -22,12 +23,15 @@ const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement,
 );
 root.render(
-  <QueryClientProvider client={queryClient}>
-    <Provider store={store}>
-      <App />
-    </Provider>
-    <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />
-  </QueryClientProvider>,
+  <StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <Provider store={store}>
+        <App />
+      </Provider>
+      {/* <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" /> */}
+    </QueryClientProvider>
+    ,
+  </StrictMode>,
 );
 
 // reportWebVitals();

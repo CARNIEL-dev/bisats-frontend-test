@@ -148,7 +148,7 @@ const Profile = () => {
             variant={"ghost"}
             size="sm"
             className={cn(
-              "text-gray-500 text-sm hover:bg-primary/20 rounded-full"
+              "text-gray-500 text-sm hover:bg-primary/20 rounded-full",
             )}
             onClick={() => setIsEditing(true)}
             // disabled={!user?.accountLevel}
@@ -253,7 +253,7 @@ const Profile = () => {
                   <p
                     className={cn(
                       "flex items-center gap-2",
-                      data.label === "Full Name" && "capitalize"
+                      data.label === "Full Name" && "capitalize",
                     )}
                   >
                     {data.value}
@@ -273,7 +273,7 @@ const Profile = () => {
                 <div
                   className={cn(
                     "flex items-center gap-2 text-sm font-semibold",
-                    user?.accountLevel ? "text-[#17A34A]" : "text-gray-500"
+                    user?.accountLevel ? "text-[#17A34A]" : "text-gray-500",
                   )}
                 >
                   {user?.accountLevel ? "Verified" : "Unverified"}{" "}
@@ -289,7 +289,7 @@ const Profile = () => {
                       size={"sm"}
                       variant="link"
                       className={cn(
-                        "text-sm px-0 text-green-500 underline font-semibold"
+                        "text-sm px-0 text-green-500 underline font-semibold",
                       )}
                       type="button"
                       onClick={clickHandler}

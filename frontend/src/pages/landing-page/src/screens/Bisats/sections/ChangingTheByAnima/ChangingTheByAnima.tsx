@@ -36,7 +36,7 @@ const featureCards = [
   },
 ];
 
-export const ChangingTheByAnima = (): JSX.Element => {
+export const ChangingTheByAnima = (): React.ReactElement => {
   return (
     <MaxWidth className=" max-w-[78rem] 2xl:max-w-[90rem] md:mt-16 mt-8">
       <div className="">

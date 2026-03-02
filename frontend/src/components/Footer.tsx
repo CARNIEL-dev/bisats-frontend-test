@@ -1,6 +1,7 @@
 import { footerData, LoggedInLinks } from "@/data/navlinks";
 import { cn } from "@/utils";
 import { FacebookIcon, InstagramIcon, TwitterIcon } from "lucide-react";
+import React from "react";
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 
@@ -25,7 +26,7 @@ export const Footer = ({
   isDashboard,
 }: {
   isDashboard?: boolean;
-}): JSX.Element => {
+}): React.ReactElement => {
   const user = useSelector((state: { user: UserState }) => state.user);
   const isAuth = user?.isAuthenticated;
 
@@ -71,7 +72,7 @@ export const Footer = ({
                 <Input
                   placeholder="Email Address"
                   className={cn(
-                    "w-full lg:h-full h-[50px] border border-primary text-slate-600"
+                    "w-full lg:h-full h-[50px] border border-primary text-slate-600",
                   )}
                 />
                 <Button className={cn("px-5 py-3 w-full lg:w-[30%] h-full")}>
@@ -118,7 +119,7 @@ export const Footer = ({
                       rel="noreferrer"
                       className={cn(
                         "rounded-md overflow-hidden hover:scale-105 transition-all duration-300",
-                        app.disabled && "pointer-events-none"
+                        app.disabled && "pointer-events-none",
                       )}
                     >
                       <img

@@ -1,12 +1,14 @@
 import KycBanner from "@/components/KycBanner";
 import MaxWidth from "@/components/shared/MaxWith";
 import OrdersChart from "@/components/shared/OrdersChart";
+import { TextAnimate } from "@/components/ui/text-animate";
 import Balance from "@/pages/dashboard/Balance";
 import MarketRate from "@/pages/dashboard/MarketRate";
 import SuspensionBanner from "@/components/SuspensionBanner";
 
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import MockApp from "@/components/shared/MockApp";
 
 const Dashboard = () => {
   const [openKycModal, setKycModalOpen] = useState(false);
@@ -41,9 +43,16 @@ const Dashboard = () => {
           <div className="grid md:grid-cols-2 gap-4 my-4 ">
             <div className="space-y-4">
               <div className="border-0 rounded-2xl px-5 py-2 border-priYellow bg-priYellow/10 md:mt-4">
-                <h2 className="text-base font-medium capitalize ">
-                  Hello 👋, {user?.userName || user?.firstName || "User"}
-                </h2>
+                <TextAnimate
+                  as="h2"
+                  className="text-base font-medium capitalize"
+                  animation="fadeIn"
+                  by="word"
+                  startOnView
+                  once
+                >
+                  {`Hello 👋, ${user?.userName || user?.firstName || "User"}`}
+                </TextAnimate>
               </div>
               <Balance />
             </div>
@@ -51,6 +60,7 @@ const Dashboard = () => {
           </div>
           {!openKycModal && <OrdersChart />}
         </div>
+        {/* <MockApp /> */}
       </MaxWidth>
     </>
   );

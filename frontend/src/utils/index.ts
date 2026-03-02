@@ -197,7 +197,7 @@ function getUpgradeButtonState(
     label = "Pending Merchant Approval";
   } else if (appliedSuperMerchant && isLevel2) {
     label = "Pending Super Merchant Approval";
-  } else if (!hasLevel || !limits) {
+  } else if (!hasLevel && !limits) {
     label = "Verify";
   } else if (!appliedMerchant && bvnOk && isLevel1) {
     label = "Become a Merchant";

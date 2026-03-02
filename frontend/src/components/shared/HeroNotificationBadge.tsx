@@ -7,7 +7,7 @@ import { motion } from "motion/react";
 type Props = {
   className?: string;
   subText?: string;
-  text: string | JSX.Element;
+  text: string | React.ReactElement;
   logo?: string;
   style?: React.CSSProperties;
   variant?: Variants;

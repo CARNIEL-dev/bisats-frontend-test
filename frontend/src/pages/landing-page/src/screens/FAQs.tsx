@@ -20,7 +20,7 @@ const renderAnswer = (answer: string, isMobile: boolean = false) => {
   return renderParsedText(parsedContent, "", isMobile);
 };
 
-const FAQs = (): JSX.Element => {
+const FAQs = (): React.ReactElement => {
   const contentRef = useRef<HTMLDivElement>(null);
   const [activeQuestion, setActiveQuestion] = useState<number>(0);
 

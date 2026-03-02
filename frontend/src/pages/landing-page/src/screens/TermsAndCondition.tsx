@@ -4,7 +4,7 @@ import NavBar from "../../../../components/NavBar";
 import PlatformTerms from "./Bisats/sections/TermsAndConditions/PlatformTerms";
 import MerchantTerms from "./Bisats/sections/TermsAndConditions/MerchantTerms";
 
-const TermsAndCondition = (): JSX.Element => {
+const TermsAndCondition = (): React.ReactElement => {
 	const [activeTab, setActiveTab] = useState<"platform" | "merchant">(
 		"platform"
 	);

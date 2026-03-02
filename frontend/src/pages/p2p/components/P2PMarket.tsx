@@ -1,5 +1,5 @@
 import PrimaryInput from "@/components/Inputs/PrimaryInput";
-import SwapConfirmation from "@/components/Modals/SwapConfirmation";
+import P2PConfirmation from "@/components/Modals/P2PConfirmation";
 import Toast from "@/components/Toast";
 import { PrimaryButton } from "@/components/buttons/Buttons";
 import AutoRefreshTimer from "@/components/shared/AutoRefresh";
@@ -220,7 +220,7 @@ const P2PMarket = ({
       </KycManager>
 
       {showConfirmation && (
-        <SwapConfirmation
+        <P2PConfirmation
           close={() => setShowConfirmation(false)}
           orderType={adDetail?.orderType as "string"}
           amount={formik.values.amount}
@@ -416,7 +416,7 @@ type InputFieldProps = {
   label: string;
   id: string;
   onChange: ChangeEventHandler<HTMLInputElement>;
-  logo: JSX.Element;
+  logo: React.ReactElement;
   logoName: string;
   maxFunc?: () => void;
   onFocus: () => void;

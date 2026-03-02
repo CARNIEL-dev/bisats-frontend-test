@@ -1,7 +1,8 @@
+import React from "react";
 import SEO from "@/components/shared/SEO";
 import { HeroSectionAbout } from "@/pages/landing-page/src/screens/Bisats/sections/HeroSectionByAnima";
 
-const About = (): JSX.Element => {
+const About = (): React.ReactElement => {
   return (
     <>
       <div>

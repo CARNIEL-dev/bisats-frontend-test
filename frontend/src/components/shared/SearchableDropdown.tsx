@@ -21,7 +21,7 @@ import Label from "../Inputs/Label";
 
 export interface SearchableDropdownItem {
   value: string;
-  label: string | JSX.Element;
+  label: string | React.ReactElement;
 }
 
 export interface SearchableDropdownProps {

@@ -37,7 +37,7 @@ const RefreshButton = ({
   className,
 }: Props) => {
   const [cooldown, setCooldown] = useState(false);
-  const timerRef = useRef<ReturnType<typeof setTimeout>>();
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Handler for the click
   const handleRefresh = useCallback(() => {
@@ -45,9 +45,12 @@ const RefreshButton = ({
 
     // start 3-minute cooldown
     setCooldown(true);
-    timerRef.current = setTimeout(() => {
-      setCooldown(false);
-    }, refreshTime || 20 * 1000); // 20 secs
+    timerRef.current = setTimeout(
+      () => {
+        setCooldown(false);
+      },
+      refreshTime || 20 * 1000,
+    ); // 20 secs
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refetch]);
 

@@ -5,7 +5,7 @@ import { MOBILE_APP_INFO } from "@/utils/data";
 import { motion } from "motion/react";
 import { useRef } from "react";
 
-export const MobileAppByAnima = (): JSX.Element => {
+export const MobileAppByAnima = (): React.ReactElement => {
   const scrollRef = useRef(null);
 
   return (

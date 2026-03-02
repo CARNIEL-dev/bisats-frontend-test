@@ -1,6 +1,6 @@
 import { HeroSectionAbout } from "./Bisats/sections/HeroSectionByAnima";
 
-const Policy = (): JSX.Element => {
+const Policy = (): React.ReactElement => {
   return (
     <div>
       <HeroSectionAbout

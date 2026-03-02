@@ -25,13 +25,13 @@ import Bisatsfetch from "@/redux/fetchWrapper";
 import { formatter, isProduction } from "@/utils";
 import { formatNumber } from "@/utils/numberFormat";
 import { BACKEND_URLS } from "@/utils/backendUrls";
+import { ProgressiveBlur } from "@/components/ui/progressive-blur";
 import Toast from "@/components/Toast";
 import { useQuery } from "@tanstack/react-query";
 // import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useFormik } from "formik";
 import { ArrowRight, History, SmileIcon } from "lucide-react";
-import { useMotionValueEvent, useScroll } from "motion/react";
 import { ChangeEventHandler, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
@@ -342,25 +342,9 @@ type SwapHistoryProps = {
   }[];
 };
 const SwapHistory = ({ history }: SwapHistoryProps) => {
-  const [hide, setHide] = useState(false);
-
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ container: containerRef });
-
-  useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    if (latest > 0.98) {
-      setHide(true);
-    } else {
-      setHide(false);
-    }
-  });
-
   return (
-    <>
-      <div
-        ref={containerRef}
-        className="flex flex-col gap-8 px-6 h-[68dvh] overflow-auto no-scrollbar"
-      >
+    <div className="relative h-[68dvh]">
+      <div className="flex flex-col gap-8 px-6 h-full overflow-auto no-scrollbar pb-16">
         {history.length > 0 ? (
           history.map((item) => {
             return (
@@ -406,12 +390,14 @@ const SwapHistory = ({ history }: SwapHistoryProps) => {
           <p className="text-center text-gray-500 text-sm">No swap history</p>
         )}
       </div>
-      {history.length > 6 && !hide && (
-        <p className="text-xs text-center text-gray-500 animate-bounce">
-          Scroll Down
-        </p>
+      {history.length > 6 && (
+        <ProgressiveBlur
+          position="bottom"
+          height="15%"
+          className="rounded-b-md"
+        />
       )}
-    </>
+    </div>
   );
 };
 
@@ -426,7 +412,7 @@ type InputFieldProps = {
   value: string;
   error: string | boolean | undefined | null;
   tokenData?: {
-    logo: JSX.Element;
+    logo: React.ReactElement;
     logoName: string;
   };
   children?: React.ReactNode;
