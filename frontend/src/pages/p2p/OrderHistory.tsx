@@ -24,10 +24,10 @@ const OrderHistory = () => {
 
   const { isNA } = formatAccountLevel(userState?.user?.accountLevel);
 
-  const isKycVerified = [
-    userState?.kyc?.personalInformationVerified,
-    userState?.kyc?.identificationVerified && !isNA,
-  ].every(Boolean);
+  // const isKycVerified = [
+  //   userState?.kyc?.personalInformationVerified,
+  //   userState?.kyc?.identificationVerified && !isNA,
+  // ].every(Boolean);
 
   const {
     data: orders = [],
@@ -35,11 +35,9 @@ const OrderHistory = () => {
     refetch,
     isFetching,
     isError,
-  } = useFetchOrder({ isKycVerified });
+  } = useFetchOrder({ isKycVerified: true });
 
-  if (!isKycVerified && !userState.user?.hasAppliedToBeInLevelOne) {
-    return <KycBanner />;
-  } else if (userState.user?.hasAppliedToBeInLevelOne && isNA) {
+  if (userState.user?.hasAppliedToBeInLevelOne && isNA) {
     return (
       <div className="flex flex-col items-center gap-2  border w-fit p-6 mx-auto rounded-md">
         <h4 className="font-semibold text-lg">
