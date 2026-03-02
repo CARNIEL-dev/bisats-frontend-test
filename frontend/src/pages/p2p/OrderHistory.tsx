@@ -1,6 +1,5 @@
 import { tokenLogos } from "@/assets/tokens";
 import Empty from "@/components/Empty";
-import KycBanner from "@/components/KycBanner";
 import ModalTemplate from "@/components/Modals/ModalTemplate";
 import RefreshButton from "@/components/RefreshButton";
 import ErrorDisplay from "@/components/shared/ErrorDisplay";
