@@ -35,6 +35,8 @@ type IAProps = {
   className?: string;
   defaultValue?: string;
   removeToken?: string;
+  removeTokens?: string[];
+  onlyShowTokens?: string[];
   // New variant prop
   variant?: "primary" | "dialog";
   // New dialog props
@@ -54,6 +56,8 @@ const TokenSelection = ({
   placeholder,
   className,
   removeToken,
+  removeTokens,
+  onlyShowTokens,
   // New props
   variant = "primary",
   dialogTitle = "Select Asset",
@@ -89,9 +93,19 @@ const TokenSelection = ({
     if (removeToken) {
       options = options.filter((token) => token.tokenName !== removeToken);
     }
+    if (removeTokens && removeTokens.length > 0) {
+      options = options.filter(
+        (token) => !removeTokens.includes(token.tokenName),
+      );
+    }
+    if (onlyShowTokens) {
+      options = options.filter((token) =>
+        onlyShowTokens.includes(token.tokenName),
+      );
+    }
     return options;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [removexNGN, removeToken]);
+  }, [removexNGN, removeToken, removeTokens, onlyShowTokens]);
 
   const selectedToken = useMemo(() => {
     return tokenOptions.find((token) => token.id === value);

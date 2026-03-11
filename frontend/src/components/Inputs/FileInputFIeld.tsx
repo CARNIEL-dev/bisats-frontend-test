@@ -338,12 +338,12 @@ const FileInputField: React.FC<FileInputProps> = ({
   return (
     <>
       <div className={cn(className)}>
-        <Label text={label} className="" />
-        <div className="file-upload-container py-2">
+        <Label text={label} className="block mb-2" />
+        <div className="file-upload-container h-5/6">
           <label
             htmlFor={inputId}
             className={cn(
-              "file-upload-box",
+              "file-upload-box py-8",
               boxStateClasses,
               (loading || disabled) &&
                 "opacity-50 !pointer-events-none !bg-[#f1f1f1]",

@@ -5,7 +5,7 @@ import App from "./App";
 import "./index.css";
 import store from "./redux/store";
 // import reportWebVitals from "./reportWebVitals";
-// import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { StrictMode } from "react";
 
 const queryClient = new QueryClient({
@@ -28,7 +28,7 @@ root.render(
       <Provider store={store}>
         <App />
       </Provider>
-      {/* <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" /> */}
+      <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />
     </QueryClientProvider>
     ,
   </StrictMode>,

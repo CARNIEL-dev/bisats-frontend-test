@@ -95,7 +95,11 @@ export const BACKEND_URLS = {
   SUPPORT_SOCKET_CHAT: "/withdraw",
 
   SWAP: {
-    GET_QUOTE: "/api/v1/user/swap/create-quote",
-    GET_PAIRS: "/api/v1/user/swap/get-pairs",
+    GET_PAIRS: "/api/v1/user/swap/pairs",
+    GET_CURRENCIES: "/api/v1/user/swap/currencies",
+    GET_RATE: "/api/v1/user/swap/rate",
+    EXECUTE: "/api/v1/user/swap/execute",
+    HISTORY: "/api/v1/user/swap/history",
+    GET_BY_REFERENCE: "/api/v1/user/swap",
   },
 };

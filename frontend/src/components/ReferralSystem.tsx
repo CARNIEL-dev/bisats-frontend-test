@@ -5,13 +5,14 @@ import { APP_ROUTES } from "@/constants/app_route";
 import { GetUserDetails } from "@/redux/actions/userActions";
 import Bisatsfetch from "@/redux/fetchWrapper";
 import { cn } from "@/utils";
-import { CheckCircle, Copy, Loader2, Sparkles, Users } from "lucide-react"; // Added CheckCircle
+import { CheckCircle, Copy, Loader2, Sparkles, Users } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import CopyButton from "./shared/CopyButton";
-import ShareButton from "./shared/ShareButton";
-import { Confetti, ConfettiRef } from "./ui/confetti";
+import CopyButton from "@/components/shared/CopyButton";
+import ShareButton from "@/components/shared/ShareButton";
+import { Confetti, ConfettiRef } from "@/components/ui/confetti";
+import { Separator } from "@/components/ui/separator";
 
 const triggerSideCannons = (instance: ConfettiRef) => {
   if (!instance) return;
@@ -118,28 +119,27 @@ const ReferralSystem = () => {
         className="fixed inset-0 pointer-events-none z-[100] w-full h-full"
       />
 
-      <div className="flex flex-col gap-6 p-6 border rounded-2xl bg-white shadow-sm relative overflow-hidden mx-3">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="flex flex-col gap-6 p-6 pb-10 border rounded-2xl bg-slate-800 text-white  relative overflow-hidden">
+        <div className="flex flex-col gap-8">
           <div>
-            <h3 className="text-lg font-semibold text-[#515B6E] flex items-center gap-2">
+            <h3 className="text-lg font-semibold  flex items-center gap-2">
               <div className="rounded-full w-fit p-2 bg-green-500/20">
                 <Users className="size-5 text-green-600" />
               </div>
               Referral Program
             </h3>
-            <p className="text-sm text-gray-500 mt-1 max-w-md">
+            <p className="text-sm text-gray-300 mt-2 max-w-md">
               Invite your friends to the platform and earn rewards for every
               successful registration and trade!
             </p>
           </div>
           {!isJoined && (
             <Button
-              className="bg-green-600 hover:bg-green-700 text-white rounded-full shadow-md transition-all"
+              className="text-sm py-3 h-fit"
               onClick={() => {
                 setIsSuccessView(false); // Ensure we start on the info screen
                 setIsModalOpen(true);
               }}
-              size={"sm"}
             >
               Join Referral Programme
             </Button>
@@ -148,14 +148,12 @@ const ReferralSystem = () => {
 
         {isJoined && (
           <div className={cn("grid gap-6 transition-all duration-700")}>
-            <div className="h-px w-full bg-gray-100" />
+            <Separator />
 
-            <div className="grid md:grid-cols-2 gap-8 md:gap-6">
+            <div className="grid gap-8 md:gap-6">
               {/* Referral Link */}
-              <div className="space-y-3">
-                <label className="text-sm font-semibold text-gray-700">
-                  Your Referral Link
-                </label>
+              <div className="space-y-1">
+                <label className="text-sm font-semibold">Referral Link</label>
                 <div className="flex bg-gray-50 border rounded-xl focus-within:ring-2 focus-within:ring-green-500/20 p-1.5 items-center transition-all">
                   <input
                     type="text"
@@ -179,19 +177,13 @@ const ReferralSystem = () => {
                     />
                   </div>
                 </div>
-                <p className="text-xs text-gray-500">
-                  Share this link directly with your friends. The code is
-                  already included!
-                </p>
               </div>
 
               {/* Referral Code */}
-              <div className="space-y-3">
-                <label className="text-sm font-semibold text-gray-700">
-                  Referral Code
-                </label>
-                <div className="flex gap-3 items-center justify-between p-2.5 border rounded-xl bg-green-50/50 transition-all duration-500 ring-0 border-green-200">
-                  <span className="font-mono text-xl font-bold text-green-700 tracking-widest pl-3 select-all">
+              <div className="space-y-1">
+                <label className="text-sm font-semibold ">Referral Code</label>
+                <div className="flex gap-3 items-center justify-between p-1 border rounded-xl bg-gray-50 transition-all duration-500 ring-0 border-green-200">
+                  <span className="font-mono text-xl font-bold text-green-700 tracking-widest pl-2 select-all">
                     {referralCode}
                   </span>
                   <CopyButton
@@ -202,13 +194,9 @@ const ReferralSystem = () => {
                     className="bg-white hover:bg-gray-50 text-gray-700 border shadow-sm h-9 px-4 rounded-lg"
                     showText={true}
                   >
-                    <Copy className="size-4 mr-2" /> Copy Code
+                    <Copy className="size-4 mr-1" /> Copy Code
                   </CopyButton>
                 </div>
-                <p className="text-xs text-gray-500">
-                  Your friends can also enter this code manually during
-                  registration.
-                </p>
               </div>
             </div>
           </div>

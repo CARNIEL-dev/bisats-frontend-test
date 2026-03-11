@@ -502,3 +502,84 @@ interface TradingPair {
   createdAt: string;
   updatedAt: string;
 }
+
+// HDR: Swap Rate & Execute Types
+interface SwapPairEntry {
+  id: string;
+  source: { code: string; name: string; id: string };
+  target: { code: string; name: string; id: string };
+  /** Opaque UUID — use this as `sourceId` in rate & execute calls */
+  sourceId: string;
+  /** Opaque UUID — use this as `targetId` in rate & execute calls */
+  targetId: string;
+  rate: number;
+  minAmount: number;
+  maxAmount: number;
+}
+
+interface SwapCurrency {
+  code: string;
+  name: string;
+  minSwapAmount: number;
+}
+
+interface SwapRateResponse {
+  sourceId: string;
+  targetId: string;
+  amount: number;
+  rate: number;
+  estimatedTargetAmount: number;
+  pair?: Record<string, any>;
+}
+
+interface SwapExecutePayload {
+  sourceId: string;
+  targetId: string;
+  amount: number;
+  side: "sell" | "buy";
+  withdrawalPin: string;
+  twoFactorCode: string;
+}
+
+interface SwapExecuteResponse {
+  reference: string;
+  sourceId: string;
+  targetId: string;
+  sourceAmount: number;
+  targetAmount: number;
+  tradeId: string;
+}
+
+interface SwapHistoryTransaction {
+  id: string;
+  reference: string;
+  type: "swap_debit" | "swap_credit";
+  reason: string;
+  asset: string;
+  amount: number;
+  status: "success" | "failed" | "pending";
+  description: string;
+  partnerReference: string;
+  partnerResponse?: Record<string, any>;
+  createdAt: string;
+}
+
+interface SwapHistoryPagination {
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+}
+
+interface SwapHistoryResponse {
+  transactions: SwapHistoryTransaction[];
+  pagination: SwapHistoryPagination;
+}
+
+interface GroupedSwap {
+  reference: string;
+  debit: SwapHistoryTransaction;
+  credit?: SwapHistoryTransaction;
+  status: "success" | "failed" | "pending";
+  createdAt: string;
+}

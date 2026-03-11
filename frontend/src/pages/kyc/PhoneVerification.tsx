@@ -3,7 +3,7 @@ import Toast from "@/components/Toast";
 import { PrimaryButton } from "@/components/buttons/Buttons";
 import ResendCodeButton from "@/components/shared/ResendCodeButton";
 import { APP_ROUTES } from "@/constants/app_route";
-import { PhoneSchema, VerificationSchema } from "@/formSchemas";
+import { getPhoneSchema, VerificationSchema } from "@/formSchemas";
 import OtherSide from "@/layouts/auth/OtherSide";
 import {
   GetUserDetails,
@@ -11,6 +11,7 @@ import {
   Resend_OTP_PhoneNumber_KYC,
   Verify_OTP_PhoneNumber_KYC,
 } from "@/redux/actions/userActions";
+import { countryDataForPhone } from "@/utils/data";
 import { useFormik } from "formik";
 import { useMemo, useState } from "react";
 import { useSelector } from "react-redux";
@@ -18,7 +19,6 @@ import { useNavigate } from "react-router-dom";
 import Flag from "react-world-flags";
 
 import { SelectDropDown } from "@/components/Inputs/MultiSelectInput";
-import { countryDataForPhone } from "@/utils/data";
 
 const verficationScreen = false;
 
@@ -32,45 +32,25 @@ const PhoneVerifcation = () => {
   // const [verficationScreen, setVerificationScreen] = useState(false);
   const navigate = useNavigate();
 
+  // Dial code for the selected country
   const countryCode = useMemo(() => {
     const country = countryDataForPhone.find((c) => c.code === selectedCountry);
-    const countryDialCode = country?.dialCode || "234";
-
-    return countryDialCode;
+    return country?.dialCode || "234";
   }, [selectedCountry]);
 
-  const normalizePhoneNumber = (input: string) => {
-    // const country = countryDataForPhone.find(
-    //   (c) => c.code === selectedCountryCode
-    // );
-    const countryDialCode = countryCode;
+  // Max national subscriber digits for the selected country (for HTML maxLength)
+  const maxNationalLength = useMemo(() => {
+    return (
+      countryDataForPhone.find((c) => c.code === selectedCountry)
+        ?.maxNationalLength ?? 15
+    );
+  }, [selectedCountry]);
 
-    if (!input) return "";
-
-    let phone = input.replace(/\D/g, "");
-
-    if (phone.startsWith("0")) {
-      phone = phone.substring(1);
-    }
-
-    if (phone.startsWith(countryDialCode)) {
-      return phone;
-    }
-
-    if (phone.length === 10) {
-      return countryDialCode + phone;
-    }
-
-    if (
-      countryDialCode === "1" &&
-      phone.length === 11 &&
-      phone.startsWith("1")
-    ) {
-      return phone;
-    }
-
-    return countryDialCode + phone;
-  };
+  // Country-aware validation schema — re-built whenever the country changes
+  const phoneSchema = useMemo(
+    () => getPhoneSchema(selectedCountry),
+    [selectedCountry],
+  );
 
   const listOptions = useMemo(() => {
     return countryDataForPhone.slice(0, 4).map((country) => ({
@@ -120,11 +100,13 @@ const PhoneVerifcation = () => {
 
   const formik = useFormik({
     initialValues: { phone: "" },
-    validationSchema: PhoneSchema,
+    validationSchema: phoneSchema,
     onSubmit: async (values) => {
+      // Assemble E.164 format: +<dialCode><nationalNumber>
+      const nationalDigits = values.phone.replace(/\D/g, "");
       const payload = {
         userId: user.user?.userId ?? "",
-        phoneNumber: values.phone ? "+" + values.phone : "",
+        phoneNumber: `+${countryCode}${nationalDigits}`,
         countryCode,
       };
       const response = await PostPhoneNumber_KYC(payload);
@@ -207,7 +189,9 @@ const PhoneVerifcation = () => {
                 <SelectDropDown
                   onChange={(val) => {
                     setSelectedCountry(val);
+                    // Clear the phone field whenever the country changes
                     formik.setFieldValue("phone", "", false);
+                    formik.setFieldTouched("phone", false, false);
                   }}
                   options={listOptions}
                   defaultValue={selectedCountry}
@@ -219,17 +203,21 @@ const PhoneVerifcation = () => {
                   label="Phone Number"
                   placeholder="Enter phone number"
                   type="tel"
+                  inputMode="numeric"
+                  maxLength={maxNationalLength}
                   value={formik.values.phone}
                   onChange={(e) => {
-                    const rawInput = e.target.value;
-                    const normalized = normalizePhoneNumber(rawInput);
-                    formik.setFieldValue("phone", normalized);
+                    // Strip all non-digit characters — no dial code, no leading zeros needed
+                    const digits = e.target.value.replace(/\D/g, "");
+                    formik.setFieldValue("phone", digits);
                   }}
-                  error={undefined}
-                  touched={undefined}
+                  onBlur={formik.handleBlur}
+                  name="phone"
+                  error={formik.errors.phone}
+                  touched={formik.touched.phone}
                 />
               </div>
-              {formik.errors.phone && (
+              {formik.errors.phone && formik.touched.phone && (
                 <span className="error-text">{formik.errors.phone}</span>
               )}
               <div className="w-full mb-3 mt-4">

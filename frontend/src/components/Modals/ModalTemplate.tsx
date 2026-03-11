@@ -9,7 +9,6 @@ import {
   TransitionChild,
 } from "@headlessui/react";
 import { X } from "lucide-react";
-import { Fragment } from "react";
 
 import {
   DialogContent,
@@ -40,11 +39,11 @@ const ModalTemplate: React.FC<ModalProps> = ({
   return (
     <>
       {!primary ? (
-        <Transition show={isOpen} as={Fragment}>
+        <Transition show={isOpen} as={"div"}>
           <Dialog onClose={onClose} className="relative z-50">
             {/* Overlay fade */}
             <TransitionChild
-              as={Fragment}
+              as={"div"}
               enter="ease-out duration-200 animate-in fade-in-0"
               enterFrom="opacity-0"
               enterTo="opacity-100"
@@ -60,7 +59,7 @@ const ModalTemplate: React.FC<ModalProps> = ({
             {/* Panel scale + fade */}
             <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
               <TransitionChild
-                as={Fragment}
+                as={"div"}
                 enter="ease-out duration-200 zoom-in-95 fade-in-0"
                 enterFrom="opacity-0 scale-95"
                 enterTo="opacity-100 scale-100"
@@ -72,7 +71,7 @@ const ModalTemplate: React.FC<ModalProps> = ({
                   className={cn(
                     "bg-background fixed top-[50%] left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 rounded-lg border p-6 shadow-lg duration-200 sm:max-w-lg",
 
-                    className
+                    className,
                   )}
                 >
                   {showCloseButton && (

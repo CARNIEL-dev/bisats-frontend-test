@@ -170,9 +170,21 @@ const PrimaryInput: React.FC<TInput> = ({
             name={name}
             pattern={REGEXP_ONLY_DIGITS}
           >
-            <InputOTPGroup>
+            <InputOTPGroup className="flex gap-2">
               {Array.from({ length: otpLength }).map((_, index) => (
-                <InputOTPSlot key={index} index={index} />
+                <InputOTPSlot
+                  key={index}
+                  index={index}
+                  className={cn(
+                    "size-12 text-xl transition-all",
+                    // Base Styles: 1px border and the specific #606C82 inset shadow
+                    "border-[#D6DAE1] rounded-[8px] border",
+                    "shadow-[inset_0px_2px_4px_rgba(96,108,130,0.2)]",
+                    // Focus Styles: Kill the default ring, use primary color
+                    "focus-visible:ring-0 focus-visible:ring-offset-0",
+                    "aria-selected:border-primary aria-selected:ring-1 aria-selected:ring-primary",
+                  )}
+                />
               ))}
             </InputOTPGroup>
           </InputOTP>
@@ -180,22 +192,23 @@ const PrimaryInput: React.FC<TInput> = ({
           <>
             <PinInput
               values={getPinValues()}
-              onChange={(value, index, values) =>
-                handleOtpChange(values.join(""))
-              }
+              onChange={(_, __, values) => handleOtpChange(values.join(""))}
               onBlur={handleOtpBlur}
               mask={secretMode}
               type="number"
               inputMode="numeric"
               size="lg"
               placeholder=""
+              containerClassName="flex items-center justify-center"
               inputStyle={{
-                border: "1px solid #D6DAE1",
+                border: "1px solid transparent",
                 borderColor: error ? "#EF4444" : "#D6DAE1",
-                borderRadius: "100%",
+                borderRadius: "30%",
                 padding: "10px",
-                margin: "2px",
                 fontSize: "22px",
+                outline: "0px solid transparent",
+                boxShadow: "inset 0px 2px 8px rgba(96, 108, 130, 0.2)",
+                transition: "all 0.2s ease-in-out",
               }}
             />
           </>

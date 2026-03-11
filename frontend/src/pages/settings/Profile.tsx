@@ -1,4 +1,3 @@
-import { WhiteTransparentButton } from "@/components/buttons/Buttons";
 import PrimaryInput from "@/components/Inputs/PrimaryInput";
 import Divider from "@/components/shared/Divider";
 import TextBox from "@/components/shared/TextBox";
@@ -12,7 +11,17 @@ import { goToNextKycRoute } from "@/utils/kycNavigation";
 import dayjs from "dayjs";
 
 import { useFormik } from "formik";
-import { Edit, X } from "lucide-react";
+import {
+  Calendar,
+  CircleUserRound,
+  IdCard,
+  Loader2,
+  Mail,
+  Pencil,
+  Phone,
+  ShieldCheck,
+  X,
+} from "lucide-react";
 import { useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 const Profile = () => {
@@ -24,12 +33,14 @@ const Profile = () => {
     {
       label: "Display Name",
       value: `${user?.userName ?? "- - -"}`,
+      icon: IdCard,
     },
     {
       label: "Full Name",
       value: `${user?.firstName ?? "-"} ${user?.middleName ?? "-"} ${
         user?.lastName ?? "-"
       }`,
+      icon: CircleUserRound,
     },
 
     {
@@ -38,12 +49,7 @@ const Profile = () => {
         email: user?.email,
         maxChar: 4,
       }),
-    },
-    {
-      label: "Date of Birth",
-      value: user?.dateOfBirth
-        ? dayjs(user?.dateOfBirth).format("MMMM D, YYYY")
-        : "- - -",
+      icon: Mail,
     },
 
     {
@@ -55,6 +61,14 @@ const Profile = () => {
             ellipsis: "***",
           })
         : `Unverified`,
+      icon: Phone,
+    },
+    {
+      label: "Date of Birth",
+      value: user?.dateOfBirth
+        ? dayjs(user?.dateOfBirth).format("MMMM D, YYYY")
+        : "- - -",
+      icon: Calendar,
     },
   ];
 
@@ -116,23 +130,13 @@ const Profile = () => {
 
   return (
     <>
-      <div className="flex justify-between">
+      <div className="flex justify-between mb-6">
         <h3 className="text-[22px] lg:text-[22px] leading-[32px] font-semibold text-[#2B313B]">
-          Profile
+          {isEditing ? "Edit Profile" : "Profile"}
         </h3>
 
         {isEditing ? (
           <div className="flex items-center gap-2">
-            <WhiteTransparentButton
-              text={"Save"}
-              loading={formik.isSubmitting}
-              className="px-7"
-              size="sm"
-              disabled={
-                formik.isSubmitting || (!canEditDisplayName && isBvnVerified)
-              }
-              onClick={() => formik.handleSubmit()}
-            />
             <Button
               variant={"secondary"}
               size="sm"
@@ -142,23 +146,33 @@ const Profile = () => {
               <X />
               <span>Cancel</span>
             </Button>
+            <Button
+              className="px-7"
+              size="sm"
+              disabled={
+                formik.isSubmitting || (!canEditDisplayName && isBvnVerified)
+              }
+              onClick={() => formik.handleSubmit()}
+            >
+              {formik.isSubmitting ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                "Save Changes"
+              )}
+            </Button>
           </div>
         ) : (
           <Button
-            variant={"ghost"}
             size="sm"
-            className={cn(
-              "text-gray-500 text-sm hover:bg-primary/20 rounded-full",
-            )}
             onClick={() => setIsEditing(true)}
             // disabled={!user?.accountLevel}
           >
-            <Edit />
-            <span>Edit</span>
+            <Pencil />
+            <span>Edit Profile</span>
           </Button>
         )}
       </div>
-      <div className="my-6">
+      <div className="my-6 border rounded-xl p-6 ">
         <div className="flex flex-col gap-6">
           {isEditing ? (
             <div className="flex flex-col gap-4">
@@ -245,62 +259,84 @@ const Profile = () => {
               />
             </div>
           ) : (
-            UserData.map((data, idx) => (
-              <TextBox
-                key={idx}
-                label={data.label}
-                value={
-                  <p
-                    className={cn(
-                      "flex items-center gap-2",
-                      data.label === "Full Name" && "capitalize",
-                    )}
-                  >
-                    {data.value}
-                  </p>
-                }
-                labelClass="text-gray-500"
-              />
-            ))
-          )}
-
-          <TextBox
-            labelClass="text-gray-500"
-            label="KYC Status"
-            showIndicator={false}
-            value={
-              <>
-                <div
-                  className={cn(
-                    "flex items-center gap-2 text-sm font-semibold",
-                    user?.accountLevel ? "text-[#17A34A]" : "text-gray-500",
-                  )}
-                >
-                  {user?.accountLevel ? "Verified" : "Unverified"}{" "}
-                  <span
-                    className={cn("size-[4px] rounded-full  bg-[#BBF7D0]")}
-                  />
-                  {user?.accountLevel ? (
-                    <span className="capitalize">
-                      {user?.accountLevel?.replace("_", " ")}
-                    </span>
-                  ) : (
-                    <Button
-                      size={"sm"}
-                      variant="link"
-                      className={cn(
-                        "text-sm px-0 text-green-500 underline font-semibold",
-                      )}
-                      type="button"
-                      onClick={clickHandler}
-                    >
-                      Verify Now
-                    </Button>
-                  )}
+            <>
+              <div className="flex items-center gap-4 ">
+                <div className="bg-primary/10 text-primary p-2 rounded-md border border-primary/20">
+                  <ShieldCheck />
                 </div>
-              </>
-            }
-          />
+                <TextBox
+                  label="KYC Verification Status"
+                  labelClass="text-gray-400 text-xs uppercase"
+                  direction="column"
+                  containerClassName="gap-0.5"
+                  value={
+                    <>
+                      <div
+                        className={cn(
+                          "flex items-center gap-2 text-sm font-semibold",
+                          user?.accountLevel
+                            ? "text-[#17A34A]"
+                            : "text-gray-500",
+                        )}
+                      >
+                        {user?.accountLevel ? "Verified" : "Unverified"}{" "}
+                        <span
+                          className={cn(
+                            "size-[4px] rounded-full  bg-[#BBF7D0]",
+                          )}
+                        />
+                        {user?.accountLevel ? (
+                          <span className="capitalize">
+                            {user?.accountLevel?.replace("_", " ")}
+                          </span>
+                        ) : (
+                          <Button
+                            size={"sm"}
+                            variant="link"
+                            className={cn(
+                              "text-sm px-0 text-green-500 underline font-semibold",
+                            )}
+                            type="button"
+                            onClick={clickHandler}
+                          >
+                            Verify Now
+                          </Button>
+                        )}
+                      </div>
+                    </>
+                  }
+                />
+              </div>
+              {UserData.map((data, idx) => {
+                const Icon = data.icon;
+                return (
+                  <div className="flex items-center gap-4" key={idx}>
+                    {Icon && (
+                      <div className="bg-slate-100 p-2 rounded-md text-slate-500">
+                        <Icon className="size-6" />
+                      </div>
+                    )}
+                    <TextBox
+                      label={data.label}
+                      value={
+                        <p
+                          className={cn(
+                            "flex items-center gap-2 font-medium text-base",
+                            data.label === "Full Name" && "capitalize",
+                          )}
+                        >
+                          {data.value}
+                        </p>
+                      }
+                      labelClass="text-gray-400 text-xs uppercase"
+                      direction="column"
+                      containerClassName="gap-0.5"
+                    />
+                  </div>
+                );
+              })}
+            </>
+          )}
         </div>
       </div>
     </>
