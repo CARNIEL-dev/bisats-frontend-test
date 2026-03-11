@@ -8,7 +8,9 @@ import {
   specialCharcterRegex,
   upperCaseRegex,
 } from "@/utils/passwordChecks";
+import { isValidPhoneNumber } from "libphonenumber-js";
 import * as Yup from "yup";
+import { countryDataForPhone } from "@/utils/data";
 
 import Decimal from "decimal.js";
 
@@ -116,9 +118,35 @@ const EmailSchema = Yup.object().shape({
   email: Yup.string().email().required("Email is required"),
 });
 
-const PhoneSchema = Yup.object().shape({
-  phone: Yup.string().required("Phone number is required"),
-});
+/**
+ * Country-aware phone validation using libphonenumber-js (Google libphonenumber).
+ * Accepts the national number only (no leading 0, no dial code).
+ * Factory pattern — same approach as setPinSchema / getBankSchema in this file.
+ */
+const getPhoneSchema = (countryCode: string) =>
+  Yup.object().shape({
+    phone: Yup.string()
+      .required("Phone number is required")
+      .test(
+        "valid-phone",
+        "Enter a valid phone number for the selected country",
+        (value) => {
+          if (!value) return false;
+          const country = countryDataForPhone.find(
+            (c) => c.code === countryCode,
+          );
+          if (!country) return false;
+          const nationalDigits = value.replace(/\D/g, "");
+          if (!nationalDigits) return false;
+          const fullE164 = `+${country.dialCode}${nationalDigits}`;
+          try {
+            return isValidPhoneNumber(fullE164, countryCode as any);
+          } catch {
+            return false;
+          }
+        },
+      ),
+  });
 const BVNSchema = Yup.object().shape({
   bvn: Yup.string()
     .required("BVN is required")
@@ -748,12 +776,12 @@ export {
   corporateSchema,
   EmailSchema,
   getBankSchema,
+  getPhoneSchema,
   IdentificationSchema,
   levelThreeValidationSchema,
   LogInSchema,
   merchantSchema,
   PersonalInformationSchema,
-  PhoneSchema,
   ResetPasswordSchema,
   SignupSchema,
   swapSchema,

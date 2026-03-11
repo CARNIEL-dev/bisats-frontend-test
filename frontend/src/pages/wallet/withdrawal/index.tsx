@@ -18,7 +18,7 @@ import {
   ACTIONS,
   bisats_limit,
 } from "@/utils/transaction_limits";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
@@ -175,6 +175,10 @@ const NGNWithdrawal = ({
   defaultAmount,
 }: PropsNGN) => {
   const [withdrawlLoading, setWithdrawlLoading] = useState(false);
+  // Tracks whether Withdraw_xNGN succeeded so onClick can gate validateAndExecute().
+  // We use a ref (not state) because it must be readable synchronously after
+  // `await formik.submitForm()` settles — state updates are batched and async.
+  const withdrawSubmitSuccessRef = useRef(false);
 
   const [addBankModal, setAddBankModal] = useState(false);
   const [withdrawalModal, setWithDrawalModal] = useState(false);
@@ -271,6 +275,9 @@ const NGNWithdrawal = ({
         .required("Amount is required"),
     }),
     onSubmit: async (values) => {
+      // Reset on every new submission attempt
+      withdrawSubmitSuccessRef.current = false;
+
       const payLoad = {
         amount: Number(values.amount),
         bankAccountId: values.bank,
@@ -280,11 +287,13 @@ const NGNWithdrawal = ({
         .then(async (res) => {
           if (res?.status === true && res?.statusCode === 200) {
             setWithdrawalData({
-              referenceId: res.data,
+              referenceId: res.data.reference,
               withdrawalPin: "",
               twoFactorCode: "",
             });
-            return true;
+            Toast.success(res.message, "Withdrawal Request");
+            // Signal success so onClick can open the KYC / security modal
+            withdrawSubmitSuccessRef.current = true;
           } else {
             Toast.error(res.message, "");
             setWithdrawalData({
@@ -292,8 +301,7 @@ const NGNWithdrawal = ({
               withdrawalPin: "",
               twoFactorCode: "",
             });
-
-            return false;
+            withdrawSubmitSuccessRef.current = false;
           }
         })
         .catch((err) => {
@@ -303,7 +311,7 @@ const NGNWithdrawal = ({
             withdrawalPin: "",
             twoFactorCode: "",
           });
-          return false;
+          withdrawSubmitSuccessRef.current = false;
         });
     },
   });
@@ -454,9 +462,12 @@ const NGNWithdrawal = ({
                       text={"Withdraw"}
                       loading={formik.isSubmitting}
                       onClick={async () => {
-                        const success = await formik.submitForm();
-                        if (success) {
-                          validateAndExecute(); // Proceeds immediately on success
+                        // formik.submitForm() always resolves to undefined because
+                        // Formik's onSubmit is void-typed. We read the ref that
+                        // onSubmit populates synchronously to know if the API succeeded.
+                        await formik.submitForm();
+                        if (withdrawSubmitSuccessRef.current) {
+                          validateAndExecute();
                         }
                       }}
                       disabled={!formik.isValid || !formik.dirty}

@@ -25,22 +25,22 @@ const SettingsLayOut = () => {
 
   return (
     <div>
-      <div className="md:top-[5rem] top-[4rem] space-y-4 fixed pt-4 pb-4 bg-neutral-50 border-b inset-x-0 z-10">
-        <MaxWidth className="space-y-4 max-w-[65rem] ">
+      <div className="md:top-[5rem] top-[4rem] space-y-4 fixed pt-4  bg-neutral-50 border-b inset-x-0 z-10">
+        <MaxWidth className="space-y-4 ">
           <div className=" flex items-center gap-4">
             <BackButton />
             <h1 className="text-[28px] lg:text-[34px] font-semibold">
               Settings
             </h1>
           </div>
-          <div className=" ">
-            <div className="w-fit md:px-8 px-6 mx-auto flex justify-center md:gap-10 gap-4  items-center flex-nowrap text-[#515B6E] dashboard-navbar border border-primary  py-3 rounded-full">
+          <>
+            <div className=" flex mx-6  gap-6  items-center flex-nowrap text-[#515B6E] dashboard-navbar   py-3">
               {PageData.map((page) => {
-                const isProfile =
+                const isProfileActive =
                   page.link === APP_ROUTES.SETTINGS.PROFILE &&
                   pathname === APP_ROUTES.SETTINGS.PROFILE;
 
-                const isOtherTab =
+                const isOtherTabActive =
                   page.link !== APP_ROUTES.SETTINGS.PROFILE &&
                   pathname.startsWith(page.link);
 
@@ -49,9 +49,9 @@ const SettingsLayOut = () => {
                     to={page.link}
                     key={page.link}
                     className={cn(
-                      "font-semibold text-sm",
-                      isProfile && "active",
-                      isOtherTab && "active"
+                      "font-medium text-sm px-6",
+                      isProfileActive && "active",
+                      isOtherTabActive && "active",
                     )}
                   >
                     {page.tab}
@@ -59,10 +59,10 @@ const SettingsLayOut = () => {
                 );
               })}
             </div>
-          </div>
+          </>
         </MaxWidth>
       </div>
-      <MaxWidth className=" mt-40  max-w-[45rem]  md:min-h-[55dvh] mb-10 min-h-[65dvh] w-[90%]">
+      <MaxWidth className=" mt-40  max-w-[60rem]  md:min-h-[55dvh] mb-20 border border-transparent min-h-[65dvh] w-[90%]">
         <Outlet />
       </MaxWidth>
     </div>

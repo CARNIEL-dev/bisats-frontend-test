@@ -68,7 +68,7 @@ const PinForm: React.FC<Props> = ({ close, type, token }) => {
   return (
     <form
       onSubmit={formik.handleSubmit}
-      className="flex flex-col gap-1.5 my-4 "
+      className="flex flex-col gap-1.5 my-4 text-center"
     >
       {type === "change" && (
         <PrimaryInput
@@ -105,7 +105,7 @@ const PinForm: React.FC<Props> = ({ close, type, token }) => {
       />
 
       <PrimaryButton
-        className={"w-full mt-4"}
+        className={"w-10/12 mx-auto mt-4"}
         text={"Confirm"}
         loading={formik.isSubmitting}
         disabled={formik.isSubmitting}

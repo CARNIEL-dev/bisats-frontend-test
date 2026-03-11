@@ -3,7 +3,11 @@ import BackButton from "@/components/shared/BackButton";
 import ErrorDisplay from "@/components/shared/ErrorDisplay";
 import MaxWidth from "@/components/shared/MaxWith";
 import SEO from "@/components/shared/SEO";
+import StatusBadge from "@/components/shared/StatusBadge";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import PreLoader from "@/layouts/PreLoader";
 import {
   GET_ACTIVITY_SUMMARY,
@@ -11,6 +15,7 @@ import {
 } from "@/redux/actions/userActions";
 
 import {
+  cn,
   formatAccountLevel,
   formatCompactNumber,
   formatter,
@@ -19,7 +24,13 @@ import {
 import { goToNextKycRoute } from "@/utils/kycNavigation";
 import { AccountLevel, bisats_limit } from "@/utils/transaction_limits";
 import { useQuery } from "@tanstack/react-query";
-import { BadgeCheck, Info } from "lucide-react";
+import {
+  BadgeCheck,
+  ChartNoAxesCombined,
+  Check,
+  Info,
+  User2,
+} from "lucide-react";
 import { useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
 
@@ -55,13 +66,13 @@ const getKycStatus = (userState: UserState) => {
       verified: userState?.kyc?.bvnVerified,
     },
     {
-      type: "Is Merchant",
+      type: "Merchant",
       verified:
         (userState?.user?.hasAppliedToBecomeAMerchant || (level || 0) > 2) &&
         (level || 0) >= 2,
     },
     {
-      type: "Is Super Merchant",
+      type: "Super Merchant",
       verified: level === 3,
     },
   ];
@@ -128,6 +139,7 @@ const Profile = () => {
         value: `${formatter({ decimal: 2 }).format(
           activitySummary?.totalOrderVolumeIn30d ?? 0,
         )} xNGN`,
+        isColoured: true,
       },
       {
         type: "Ads Created (30d) ",
@@ -153,6 +165,7 @@ const Profile = () => {
         value: `${formatter({ decimal: 2 }).format(
           activitySummary?.totalOrderVolume ?? 0,
         )} xNGN`,
+        isColoured: true,
       },
       {
         type: "Total Ads Created",
@@ -196,80 +209,96 @@ const Profile = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const { display } = formatAccountLevel(user?.accountLevel);
+  const { display, isNA, level } = formatAccountLevel(user?.accountLevel);
 
   return (
     <>
       <MaxWidth
-        className="flex flex-col gap-4 min-h-[80dvh] max-w-6xl mt-6 mb-10"
+        className="flex flex-col gap-4 min-h-[80dvh] max-w-6xl mt-6 mb-20"
         as="section"
       >
         <BackButton />
-        <div className="flex items-center gap-2 mx-3">
-          <p className="text-[28px] md:text-[34px] leading-[40px] font-semibold text-[#0A0E12]">
+        <Card className="bg-[#f9f9f9]  gap-3 items-center md:items-start px-6">
+          <h3 className="text-[28px] md:text-[34px] leading-[40px] font-semibold text-[#0A0E12] flex items-center gap-2">
             {user?.userName || "Hello, User"}
-          </p>
+            {level === 3 ? (
+              // <Medal fill="#FFD700" />
+              <BadgeCheck fill="#F5BB00" stroke="#fff" size={30} />
+            ) : (
+              <BadgeCheck fill="#22C55D" stroke="#fff" />
+            )}
+          </h3>
+          <div className="flex items-center gap-2">
+            <Badge className="uppercase font-semibold text-foreground bg-primary/20 px-4 py-0.5">
+              {isNA ? "Unverified" : `Verified ${display}`}
+            </Badge>
 
-          {user?.accountLevel === "level_3" ? (
-            // <Medal fill="#FFD700" />
-            <BadgeCheck fill="#F5BB00" stroke="#fff" size={30} />
-          ) : (
-            <BadgeCheck fill="#22C55D" stroke="#fff" />
-          )}
-        </div>
-
-        <div className="border border-[#F3F4F6] p-3 lg:p-5 rounded-[12px] bg-gradient-to-r from-[#FFFFFF] to-[#F6F7F8]  mx-3">
-          <div className="flex items-center text-[18px]  leading-[32px] font-semibold mb-3">
-            <h1 className="text-[#515B6E] ">Account Tier:</h1>
-            <h1 className="text-[#17A34A] mx-2">{display}</h1>
-            {(!user?.accountLevel || user?.accountLevel !== "level_3") && (
-              <Button
-                type="submit"
-                className={`h-[24px]  px-3 rounded-[6px] bg-[#F5BB00] text-[#0A0E12] text-[12px] leading-[24px] font-semibold text-center  shadow-[0_0_0.8px_#000] `}
-                onClick={clickHandler}
-                disabled={disabled}
-              >
-                {label}
-              </Button>
+            <StatusBadge status={user?.accountStatus} />
+          </div>
+        </Card>
+        <Card className="bg-primary/10 border-primary/20 md:flex-row   gap-3 items-center md:items-start px-6 justify-between">
+          <div className=" flex flex-col gap-0.5 items-center md:items-start">
+            <h3 className="text-base md:text-lg  font-semibold text-gray-800 flex items-center gap-2 w-fit">
+              <span className=" ">Account Tier:</span>
+              <span className="">{display}</span>
+            </h3>
+            {label.includes("Pending") && (
+              <p className="text-sm text-gray-500">
+                Your account is pending verification
+              </p>
             )}
           </div>
+          {(isNA || level !== 3) && (
+            <Button
+              type="submit"
+              className={` px-4 rounded-[6px] bg-[#F5BB00] text-[#0A0E12] text-sm font-semibold text-center `}
+              onClick={clickHandler}
+              disabled={disabled}
+            >
+              {label}
+            </Button>
+          )}
+        </Card>
 
-          <div className="flex flex-wrap  items-center">
+        <Card className="bg-[#f9f9f9]  gap-8   px-6 ">
+          <div className="grid  md:grid-cols-[repeat(auto-fit,minmax(250px,1fr))] grid-cols-2 gap-4">
+            <div className="flex items-center gap-2 col-span-full mb-3">
+              <User2 className="text-primary size-6" />
+              <h4 className="font-semibold text-base">Personal Information</h4>
+            </div>
             {getKycStatus(userState)?.map((item, idx) => (
-              <div className="flex  items-center mr-3 my-1" key={idx}>
-                <svg
-                  width="10"
-                  height="10"
-                  viewBox="0 0 10 10"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M5 0.125C4.03582 0.125 3.09329 0.410914 2.2916 0.946586C1.48991 1.48226 0.865067 2.24363 0.496089 3.13442C0.127112 4.02521 0.030571 5.00541 0.218674 5.95107C0.406777 6.89672 0.871076 7.76536 1.55286 8.44715C2.23464 9.12893 3.10328 9.59323 4.04894 9.78133C4.99459 9.96943 5.97479 9.87289 6.86558 9.50391C7.75637 9.13494 8.51775 8.51009 9.05342 7.7084C9.58909 6.90671 9.875 5.96418 9.875 5C9.87252 3.70783 9.35811 2.46929 8.44441 1.55559C7.53071 0.641888 6.29217 0.127478 5 0.125ZM7.32031 4.14688L4.57344 6.77188C4.50243 6.83868 4.40843 6.8756 4.31094 6.875C4.26329 6.87568 4.21597 6.86692 4.17172 6.84922C4.12747 6.83152 4.08716 6.80523 4.05313 6.77188L2.67969 5.45938C2.6416 5.42614 2.61061 5.38554 2.58861 5.34003C2.5666 5.29452 2.55403 5.24502 2.55164 5.19452C2.54925 5.14403 2.5571 5.09357 2.57471 5.04618C2.59232 4.99879 2.61933 4.95545 2.65411 4.91877C2.6889 4.88208 2.73074 4.85281 2.77713 4.83271C2.82352 4.81261 2.87349 4.8021 2.92404 4.80181C2.9746 4.80152 3.02469 4.81145 3.07131 4.83101C3.11792 4.85056 3.1601 4.87935 3.19531 4.91562L4.31094 5.97969L6.80469 3.60312C6.8776 3.53951 6.97229 3.50654 7.06894 3.51112C7.1656 3.51569 7.25675 3.55745 7.32333 3.62766C7.38991 3.69788 7.42678 3.79111 7.42621 3.88788C7.42565 3.98464 7.38771 4.07744 7.32031 4.14688Z"
-                    fill={item.verified ? "#22C55D" : "#606C82"}
-                  />
-                </svg>
-                <p className="text-[12px]  leading-[16px] font-normal text-[#606C82] ml-1">
+              <div className="space-y-2" key={idx}>
+                <p className="text-sm font-medium text-[#606C82]">
                   {item.type}
                 </p>
+
+                {item.verified ? (
+                  <div className="size-6 rounded-full bg-primary text-white flex items-center justify-center">
+                    <Check className="size-4" strokeWidth={3} />
+                  </div>
+                ) : (
+                  <span className="text-sm text-gray-500 font-medium">No</span>
+                )}
               </div>
             ))}
           </div>
+          <Separator />
 
-          <div className="flex flex-wrap items-center justify-between mt-5 ">
+          <div className="grid  grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4">
+            <div className="flex items-center gap-2 col-span-full mb-3">
+              <User2 className="text-primary size-6" />
+              <h4 className="font-semibold text-base">Limits</h4>
+            </div>
+
             {userLimits.length > 0 ? (
               userLimits?.map((item, idx) => (
-                <div
-                  key={idx}
-                  className="my-3 lg:my-0 text-left w-1/2 lg:w-fit"
-                >
-                  <p className="text-[12px]  leading-[16px] font-normal text-[#707D96] mb-2">
-                    {" "}
+                <div key={idx} className="space-y-2">
+                  <p className="text-xs font-normal text-[#707D96]">
                     {item.limit}
                   </p>
-                  <h1 className="text-[14px]  leading-[24px] font-semibold text-[#515B6E]">
+                  <p className="text-sm  font-semibold text-[#515B6E]">
                     {item.amount}
-                  </h1>
+                  </p>
                 </div>
               ))
             ) : (
@@ -281,64 +310,53 @@ const Profile = () => {
               </div>
             )}
           </div>
-        </div>
-        <ReferralSystem />
+        </Card>
 
         {/* SUB: Activity section */}
-        <section className="border border-[#F3F4F6] rounded-[12px] p-3 lg:p-5 bg-gradient-to-r from-[#FFFFFF] to-[#F6F7F8]  mx-3">
-          <div className="flex items-center text-[18px]  leading-[32px] font-semibold ">
-            <h1 className="text-[#515B6E] ">Activity Summary</h1>
+        <section className="grid md:grid-cols-3 gap-4 mt-4 items-start">
+          <div className="md:col-span-2 space-y-4">
+            <h1 className="flex items-center gap-2 ">
+              <ChartNoAxesCombined className="text-primary" />
+              <span className="font-semibold text-2xl">Activity Summary</span>
+            </h1>
+            <div>
+              {isFetching ? (
+                <div className="h-[8rem] flex items-center justify-center">
+                  <PreLoader primary={false} />
+                </div>
+              ) : isError ? (
+                <div className="h-[8rem] text-sm flex items-center justify-center">
+                  <ErrorDisplay
+                    showIcon={false}
+                    isError={false}
+                    message={error?.message || "Failed to get summary"}
+                  />
+                </div>
+              ) : (
+                <>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    {ActivitySummary?.map((item, idx) => (
+                      <Card key={idx} className="px-4 gap-2 bg-[#f9f9f9]">
+                        <p className="text-[12px]  leading-[16px] font-normal text-[#707D96]">
+                          {" "}
+                          {item.type}
+                        </p>
+                        <h5
+                          className={cn(
+                            "text-xl font-semibold text-[#515B6E]",
+                            item?.isColoured && "text-primary",
+                          )}
+                        >
+                          {item.value}
+                        </h5>
+                      </Card>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
           </div>
-
-          {isFetching ? (
-            <div className="h-[8rem] flex items-center justify-center">
-              <PreLoader primary={false} />
-            </div>
-          ) : isError ? (
-            <div className="h-[8rem] text-sm flex items-center justify-center">
-              <ErrorDisplay
-                showIcon={false}
-                isError={false}
-                message={error?.message || "Failed to get summary"}
-              />
-            </div>
-          ) : (
-            <>
-              <div className="flex  flex-wrap items-center justify-between mt-0 lg:my-5">
-                {ActivitySummary.slice(0, 4)?.map((item, idx) => (
-                  <div
-                    key={idx}
-                    className="my-3 lg:my-0 text-left w-1/2 lg:w-fit"
-                  >
-                    <p className="text-[12px]  leading-[16px] font-normal text-[#707D96] mb-2">
-                      {" "}
-                      {item.type}
-                    </p>
-                    <h1 className="text-[14px]  leading-[24px] font-semibold text-[#515B6E]">
-                      {item.value}
-                    </h1>
-                  </div>
-                ))}
-              </div>
-
-              <div className="flex flex-wrap items-center justify-between mt-0 lg:mt-3">
-                {ActivitySummary.slice(4)?.map((item, idx) => (
-                  <div
-                    key={idx}
-                    className="my-2 lg:my-0 text-left w-1/2 lg:w-fit"
-                  >
-                    <p className="text-[12px]  leading-[16px] font-normal text-[#707D96] mb-2">
-                      {" "}
-                      {item.type}
-                    </p>
-                    <h1 className="text-[14px]  leading-[24px] font-semibold text-[#515B6E]">
-                      {item.value}
-                    </h1>
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
+          <ReferralSystem />
         </section>
       </MaxWidth>
 

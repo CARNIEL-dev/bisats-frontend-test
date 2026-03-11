@@ -26,12 +26,48 @@ export const countries = [
 ];
 
 export const countryDataForPhone = [
-  { code: "NG", dialCode: "234", name: "Nigeria", flag: "🇳🇬" },
-  { code: "GB", dialCode: "44", name: "United Kingdom", flag: "🇬🇧" },
-  { code: "GH", dialCode: "233", name: "Ghana", flag: "🇬🇭" },
-  { code: "KE", dialCode: "254", name: "Kenya", flag: "🇰🇪" },
-  { code: "US", dialCode: "1", name: "United States", flag: "🇺🇸" },
-  { code: "CA", dialCode: "1", name: "Canada", flag: "🇨🇦" },
+  {
+    code: "NG",
+    dialCode: "234",
+    name: "Nigeria",
+    flag: "🇳🇬",
+    maxNationalLength: 10,
+  },
+  {
+    code: "GB",
+    dialCode: "44",
+    name: "United Kingdom",
+    flag: "🇬🇧",
+    maxNationalLength: 11,
+  },
+  {
+    code: "GH",
+    dialCode: "233",
+    name: "Ghana",
+    flag: "🇬🇭",
+    maxNationalLength: 9,
+  },
+  {
+    code: "KE",
+    dialCode: "254",
+    name: "Kenya",
+    flag: "🇰🇪",
+    maxNationalLength: 9,
+  },
+  {
+    code: "US",
+    dialCode: "1",
+    name: "United States",
+    flag: "🇺🇸",
+    maxNationalLength: 10,
+  },
+  {
+    code: "CA",
+    dialCode: "1",
+    name: "Canada",
+    flag: "🇨🇦",
+    maxNationalLength: 10,
+  },
 ];
 
 export const toke_100_ngn = {

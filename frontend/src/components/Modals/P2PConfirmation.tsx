@@ -18,7 +18,7 @@ import { formatNumber } from "@/utils/numberFormat";
 import { ACTIONS } from "@/utils/transaction_limits";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Decimal from "decimal.js";
-import { TriangleAlert, Wallet } from "lucide-react";
+import { Landmark, TriangleAlert, Wallet } from "lucide-react";
 import React, { Activity, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -379,13 +379,18 @@ const P2PConfirmation: React.FC<Props> = ({
             {!isBuy && (
               <div className="mt-4 mb-6">
                 <div className="flex items-center justify-between p-4 border border-[#E5E7EB] rounded-lg">
-                  <div>
-                    <p className="text-sm font-medium text-[#1F2937]">
-                      Send directly to bank
-                    </p>
-                    <p className="text-xs text-[#6B7280]">
-                      Receive payment directly in your bank account
-                    </p>
+                  <div className="flex items-center gap-2">
+                    <div className="p-2 bg-primary/10 text-primary rounded-md">
+                      <Landmark />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-[#1F2937]">
+                        Direct Bank Transfer
+                      </p>
+                      <p className="text-xs text-[#6B7280]">
+                        Send funds directly to your bank
+                      </p>
+                    </div>
                   </div>
                   <Switch
                     checked={sendToBank}
