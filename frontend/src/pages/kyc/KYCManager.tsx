@@ -23,6 +23,7 @@ interface TKycManager {
   func: (data?: Record<string, any>) => void;
   children: (trigger: () => void) => React.ReactNode;
   isManual?: boolean;
+  preAction?: () => Promise<boolean>;
 }
 
 type ModalType =
@@ -40,6 +41,7 @@ const KycManager: React.FC<TKycManager> = ({
   func,
   children,
   isManual,
+  preAction,
 }) => {
   const [modal, setModal] = useState<ModalType>(null);
   const user: UserState = useSelector((state: any) => state.user);
@@ -47,7 +49,7 @@ const KycManager: React.FC<TKycManager> = ({
   const { level, isNA } = formatAccountLevel(user.user?.accountLevel);
   const userKycLevel = isNA ? 0 : (level ?? 0);
 
-  const validateAndExecute = () => {
+  const validateAndExecute = async () => {
     const rules = KYC_RULES[userKycLevel];
 
     if (userKycLevel === 0) {
@@ -60,37 +62,53 @@ const KycManager: React.FC<TKycManager> = ({
       return;
     }
 
-    if (ACTIONS_REQUIRING_2FA.includes(action)) {
-      if (ACTIONS_REQUIRING_PIN.includes(action)) {
-        if (!user?.user?.wallet?.pinSet) {
-          setModal("requiredPin");
-          return;
-        }
-      }
+    const requires2FA = ACTIONS_REQUIRING_2FA.includes(action);
+    const requiresPIN = ACTIONS_REQUIRING_PIN.includes(action);
+    const has2FA = !!user?.user?.twoFactorAuthEnabled;
+    const hasPIN = !!user?.user?.wallet?.pinSet;
 
-      if (user?.user?.twoFactorAuthEnabled && user?.user?.wallet?.pinSet) {
+    // 1. Initial Missing Requirement Checks (Stops flow BEFORE any API call)
+    if (requires2FA) {
+      if (requiresPIN && !hasPIN) {
+        setModal("requiredPin");
+        return;
+      }
+      if (!has2FA) {
+        setModal("required2fa");
+        return;
+      }
+    } else if (requiresPIN) {
+      if (!hasPIN) {
+        setModal("requiredPin");
+        return;
+      }
+    }
+
+    // 2. Execute Pre-Action (e.g. form submission API call) ONLY if all requirements are met
+    if (preAction) {
+      const success = await preAction();
+      if (!success) return; // Stop if the preAction fails
+    }
+
+    // 3. Requirements met AND preAction succeeded. Now open the Security Input Modal.
+    if (requires2FA) {
+      if (has2FA && hasPIN) {
         setModal("2faPIN");
         return;
       }
-      if (user?.user?.twoFactorAuthEnabled && !user?.user?.wallet?.pinSet) {
+      if (has2FA && !hasPIN) {
         setModal("2fa");
-        return;
-      }
-      if (!user?.user?.twoFactorAuthEnabled) {
-        setModal("required2fa");
         return;
       }
       return;
     }
-    if (ACTIONS_REQUIRING_PIN.includes(action)) {
-      if (!user?.user?.wallet?.pinSet) {
-        setModal("requiredPin");
-        return;
-      }
+
+    if (requiresPIN) {
       setModal("PIN");
       return;
     }
 
+    // 4. No security needed, just execute the final function
     func();
   };
 

@@ -524,15 +524,18 @@ interface SwapCurrency {
 }
 
 interface SwapRateResponse {
+  quoteId: string;
   sourceId: string;
   targetId: string;
-  amount: number;
+  sourceAmount: number;
+  targetAmount: number;
   rate: number;
-  estimatedTargetAmount: number;
-  pair?: Record<string, any>;
+  expiresAt: string;
+  expiresIn: number;
 }
 
 interface SwapExecutePayload {
+  quoteId: string;
   sourceId: string;
   targetId: string;
   amount: number;
