@@ -113,9 +113,9 @@ export default function MockApp() {
   // Helper to draw a tapping finger indicator
   const FingerTap = ({ isTapping }: { isTapping: boolean }) => (
     <div
-      className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-white/40 rounded-full pointer-events-none z-[100] transition-all duration-300 ${isTapping ? "scale-100 opacity-100" : "scale-150 opacity-0"}`}
+      className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-background/40 rounded-full pointer-events-none z-[100] transition-all duration-300 ${isTapping ? "scale-100 opacity-100" : "scale-150 opacity-0"}`}
     >
-      <div className="absolute inset-0 bg-white/30 rounded-full animate-ping"></div>
+      <div className="absolute inset-0 bg-background/30 rounded-full animate-ping"></div>
     </div>
   );
 
@@ -212,7 +212,7 @@ export default function MockApp() {
 
         <button
           onClick={playFullSequence}
-          className="group relative inline-flex items-center justify-center gap-3 px-6 py-3 lg:px-8 lg:py-4 bg-white text-black font-bold rounded-full hover:scale-105 transition-transform active:scale-95 shadow-[0_0_40px_rgba(255,255,255,0.2)] mt-2"
+          className="group relative inline-flex items-center justify-center gap-3 px-6 py-3 lg:px-8 lg:py-4 bg-background text-foreground font-bold rounded-full hover:scale-105 transition-transform active:scale-95 shadow-[0_0_40px_rgba(255,255,255,0.2)] mt-2"
         >
           {phase === "0_idle" ? (
             <>
@@ -283,25 +283,25 @@ export default function MockApp() {
                   {dummyApps.slice(0, 19)}
                 </div>
               </div>
-              <div className="absolute bottom-4 left-4 right-4 h-[84px] bg-white/20 backdrop-blur-xl rounded-[30px] z-10 flex items-center justify-around px-2">
+              <div className="absolute bottom-4 left-4 right-4 h-[84px] bg-background/20 backdrop-blur-xl rounded-[30px] z-10 flex items-center justify-around px-2">
                 {dummyApps.slice(20, 24)}
               </div>
             </div>
 
             {/* --- LAYER 2: SAFARI BROWSER (Fades out when going to home screen) --- */}
             <div
-              className={`absolute inset-0 bg-white z-20 transition-all duration-700 ${parseInt(phase.split("_")[0]) >= 6 ? "opacity-0 scale-110 pointer-events-none" : "opacity-100 scale-100"}`}
+              className={`absolute inset-0 bg-background z-20 transition-all duration-700 ${parseInt(phase.split("_")[0]) >= 6 ? "opacity-0 scale-110 pointer-events-none" : "opacity-100 scale-100"}`}
             >
               {/* Fake Safari Top Address Bar */}
-              <div className="absolute top-0 w-full pt-14 pb-2 px-4 bg-[#f8f8f8] border-b border-gray-200 z-30 flex items-center justify-center">
-                <div className="bg-white border border-gray-300 rounded-xl px-4 py-2 w-full flex items-center justify-between shadow-sm">
-                  <span className="text-xs text-gray-500 font-medium">AA</span>
+              <div className="absolute top-0 w-full pt-14 pb-2 px-4 bg-[#f8f8f8] border-b border-border z-30 flex items-center justify-center">
+                <div className="bg-background border border-border rounded-xl px-4 py-2 w-full flex items-center justify-between shadow-sm">
+                  <span className="text-xs text-muted-foreground font-medium">AA</span>
                   <div className="flex items-center gap-1">
-                    <span className="text-black text-sm font-semibold">
+                    <span className="text-foreground text-sm font-semibold">
                       www.bisats.com
                     </span>
                   </div>
-                  <RotateCcw size={14} className="text-gray-500" />
+                  <RotateCcw size={14} className="text-muted-foreground" />
                 </div>
               </div>
 
@@ -318,7 +318,7 @@ export default function MockApp() {
               </div>
 
               {/* Fake Safari Bottom Navigation Bar */}
-              <div className="absolute bottom-0 w-full h-20 bg-[#f8f8f8]/95 backdrop-blur-md border-t border-gray-200 z-30 flex items-start justify-between px-6 pt-3 text-blue-500">
+              <div className="absolute bottom-0 w-full h-20 bg-[#f8f8f8]/95 backdrop-blur-md border-t border-border z-30 flex items-start justify-between px-6 pt-3 text-blue-500">
                 <ChevronLeft size={24} className="opacity-50" />
                 <ChevronRight size={24} className="opacity-50" />
 
@@ -344,43 +344,43 @@ export default function MockApp() {
                   className={`absolute bottom-4 left-4 right-4 bg-[#f2f2f6] rounded-2xl flex flex-col gap-1 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${parseInt(phase.split("_")[0]) >= 2 && parseInt(phase.split("_")[0]) < 4 ? "translate-y-0" : "translate-y-[120%]"}`}
                 >
                   {/* Share Preview Header */}
-                  <div className="flex items-center gap-3 p-4 border-b border-gray-300">
+                  <div className="flex items-center gap-3 p-4 border-b border-border">
                     <div className="w-10 h-10 rounded-md bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center shrink-0">
                       <span className="text-white font-bold text-sm italic">
                         B
                       </span>
                     </div>
                     <div>
-                      <h4 className="text-black text-sm font-bold m-0 leading-tight">
+                      <h4 className="text-foreground text-sm font-bold m-0 leading-tight">
                         Bisats
                       </h4>
-                      <p className="text-gray-500 text-xs m-0">bisats.com</p>
+                      <p className="text-muted-foreground text-xs m-0">bisats.com</p>
                     </div>
                   </div>
 
                   {/* Menu Options */}
                   <div className="p-2 flex flex-col gap-1">
-                    <div className="flex items-center justify-between p-3 bg-white rounded-xl text-black border border-gray-100 opacity-60">
+                    <div className="flex items-center justify-between p-3 bg-background rounded-xl text-foreground border border-gray-100 opacity-60">
                       <span className="text-sm font-medium">Copy Link</span>
-                      <Copy size={18} className="text-gray-400" />
+                      <Copy size={18} className="text-muted-foreground" />
                     </div>
 
                     {/* Target Row: Add to Home Screen */}
                     <div className="relative">
                       <div
-                        className={`flex items-center justify-between p-3 bg-white rounded-xl text-black border border-gray-100 transition-colors duration-200 ${phase === "3_tap_add_to_home" ? "bg-gray-200" : ""}`}
+                        className={`flex items-center justify-between p-3 bg-background rounded-xl text-foreground border border-gray-100 transition-colors duration-200 ${phase === "3_tap_add_to_home" ? "bg-gray-200" : ""}`}
                       >
                         <span className="text-sm font-medium">
                           Add to Home Screen
                         </span>
-                        <PlusSquare size={18} className="text-gray-500" />
+                        <PlusSquare size={18} className="text-muted-foreground" />
                       </div>
                       <FingerTap isTapping={phase === "3_tap_add_to_home"} />
                     </div>
 
-                    <div className="flex items-center justify-between p-3 bg-white rounded-xl text-black border border-gray-100 opacity-60">
+                    <div className="flex items-center justify-between p-3 bg-background rounded-xl text-foreground border border-gray-100 opacity-60">
                       <span className="text-sm font-medium">Find on Page</span>
-                      <BookOpen size={18} className="text-gray-400" />
+                      <BookOpen size={18} className="text-muted-foreground" />
                     </div>
                   </div>
                 </div>
@@ -391,11 +391,11 @@ export default function MockApp() {
                 className={`absolute inset-0 bg-[#f2f2f6] z-50 flex flex-col transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${parseInt(phase.split("_")[0]) >= 4 && parseInt(phase.split("_")[0]) < 6 ? "translate-y-0" : "translate-y-[100%]"}`}
               >
                 {/* Modal Header */}
-                <div className="flex items-center justify-between p-4 pt-14 bg-[#f8f8f8] border-b border-gray-300">
+                <div className="flex items-center justify-between p-4 pt-14 bg-[#f8f8f8] border-b border-border">
                   <span className="text-blue-500 text-sm font-medium">
                     Cancel
                   </span>
-                  <span className="text-black text-sm font-bold">
+                  <span className="text-foreground text-sm font-bold">
                     Add to Home Screen
                   </span>
 
@@ -412,20 +412,20 @@ export default function MockApp() {
 
                 {/* Modal Content */}
                 <div className="p-4 pt-8">
-                  <div className="flex items-center gap-4 bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+                  <div className="flex items-center gap-4 bg-background p-4 rounded-xl shadow-sm border border-border">
                     <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center shrink-0 shadow-inner">
                       <span className="text-white font-bold text-2xl italic">
                         B
                       </span>
                     </div>
                     <div className="flex flex-col flex-1 gap-1 border-b border-gray-100 pb-2">
-                      <span className="text-black text-sm font-semibold">
+                      <span className="text-foreground text-sm font-semibold">
                         Bisats
                       </span>
                     </div>
                   </div>
-                  <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-200 mt-[-10px] pt-4">
-                    <span className="text-gray-500 text-xs">
+                  <div className="bg-background p-4 rounded-xl shadow-sm border border-border mt-[-10px] pt-4">
+                    <span className="text-muted-foreground text-xs">
                       https://www.bisats.com/
                     </span>
                   </div>
@@ -460,7 +460,7 @@ export default function MockApp() {
                 {parseInt(phase.split("_")[0]) >= 8 && (
                   <iframe
                     src={APP_URL}
-                    className="w-full h-full border-none bg-white rounded-b-[40px] pointer-events-none"
+                    className="w-full h-full border-none bg-background rounded-b-[40px] pointer-events-none"
                     title="Bisats Native App View"
                     sandbox="allow-scripts allow-same-origin allow-forms"
                     loading="lazy"
@@ -469,7 +469,7 @@ export default function MockApp() {
                 )}
 
                 {/* Home Indicator (iOS bottom bar for apps) */}
-                <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-[120px] h-[5px] bg-white/50 backdrop-blur-md rounded-full z-50"></div>
+                <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-[120px] h-[5px] bg-background/50 backdrop-blur-md rounded-full z-50"></div>
               </div>
             </div>
           </div>

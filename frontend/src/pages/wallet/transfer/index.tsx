@@ -232,7 +232,7 @@ const TransferPage = () => {
               textColor="#32cd32"
             />
 
-            <p className="text-center text-gray-600 text-sm mt-4">
+            <p className="text-center text-muted-foreground text-sm mt-4">
               Your transfer is being processed. Please wait a moment.
             </p>
           </div>
@@ -250,10 +250,10 @@ const TransferPage = () => {
                 className="absolute bottom-2 -right-1"
               />
             </div>
-            <h1 className="font-semibold text-lg md:text-2xl text-gray-800">
+            <h1 className="font-semibold text-lg md:text-2xl text-foreground">
               Transfer Completed
             </h1>
-            <p className="text-center text-gray-600 text-sm ">
+            <p className="text-center text-muted-foreground text-sm ">
               You have successfully sent{" "}
               {formatter({
                 decimal:
@@ -338,8 +338,8 @@ const TransferPage = () => {
                         }
                       }}
                     />
-                    <p className="text-sm font-semibold text-gray-600 mt-2  hidden">
-                      <span className="font-normal text-gray-500">
+                    <p className="text-sm font-semibold text-muted-foreground mt-2  hidden">
+                      <span className="font-normal text-muted-foreground">
                         Available :
                       </span>{" "}
                       {walletBalance !== null

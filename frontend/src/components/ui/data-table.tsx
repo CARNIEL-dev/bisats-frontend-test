@@ -110,13 +110,13 @@ export function DataTable<TData, TValue>({
       ─────────────────────────────────────── */}
       <div className="hidden lg:block rounded-md overflow-hidden">
         <Table>
-          <TableHeader className="bg-gray-100 ">
+          <TableHeader className="bg-muted ">
             {table.getHeaderGroups().map((hg) => (
               <TableRow key={hg.id}>
                 {hg.headers.map((header) => (
                   <TableHead
                     key={header.id}
-                    className="text-gray-600 font-medium"
+                    className="text-muted-foreground font-medium"
                   >
                     {header.isPlaceholder
                       ? null
@@ -134,10 +134,10 @@ export function DataTable<TData, TValue>({
               table.getRowModel().rows.map((row, i) => (
                 <TableRow
                   key={row.id}
-                  className={i % 2 === 1 ? "bg-gray-50" : ""}
+                  className={i % 2 === 1 ? "bg-muted" : ""}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="p-4 text-gray-600">
+                    <TableCell key={cell.id} className="p-4 text-muted-foreground">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -167,14 +167,14 @@ export function DataTable<TData, TValue>({
         {table.getRowModel().rows.map((row) => (
           <div
             key={row.id}
-            className="bg-white p-4 rounded-lg shadow-sm border"
+            className="bg-background p-4 rounded-lg shadow-sm border"
           >
             {row.getVisibleCells().map((cell) => {
               const header = topHeaders.find((h) => h.id === cell.column.id);
 
               return (
                 <div key={cell.id} className="flex justify-between py-1">
-                  <span className="text-sm font-medium text-gray-500">
+                  <span className="text-sm font-medium text-muted-foreground">
                     {header
                       ? flexRender(
                           header.column.columnDef.header,
@@ -182,7 +182,7 @@ export function DataTable<TData, TValue>({
                         )
                       : cell.column.id}
                   </span>
-                  <span className="text-sm text-gray-800">
+                  <span className="text-sm text-foreground">
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </span>
                 </div>

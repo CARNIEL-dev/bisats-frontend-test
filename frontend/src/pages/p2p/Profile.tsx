@@ -238,12 +238,12 @@ const Profile = () => {
         </Card>
         <Card className="bg-primary/10 border-primary/20 md:flex-row   gap-3 items-center md:items-start px-6 justify-between">
           <div className=" flex flex-col gap-0.5 items-center md:items-start">
-            <h3 className="text-base md:text-lg  font-semibold text-gray-800 flex items-center gap-2 w-fit">
+            <h3 className="text-base md:text-lg  font-semibold text-foreground flex items-center gap-2 w-fit">
               <span className=" ">Account Tier:</span>
               <span className="">{display}</span>
             </h3>
             {label.includes("Pending") && (
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-muted-foreground">
                 Your account is pending verification
               </p>
             )}
@@ -277,7 +277,9 @@ const Profile = () => {
                     <Check className="size-4" strokeWidth={3} />
                   </div>
                 ) : (
-                  <span className="text-sm text-gray-500 font-medium">No</span>
+                  <span className="text-sm text-muted-foreground font-medium">
+                    No
+                  </span>
                 )}
               </div>
             ))}
@@ -302,7 +304,7 @@ const Profile = () => {
                 </div>
               ))
             ) : (
-              <div className="my-3 flex items-center gap-1 text-gray-600 border border-[#F3F4F6] rounded-[8px] py-2 px-3 bg-priYellow/10">
+              <div className="my-3 flex items-center gap-1 text-muted-foreground border border-border rounded-[8px] py-2 px-3 bg-priYellow/10">
                 <Info className="size-5" />
                 <p className="text-sm text-center ">
                   Verify your account to get your limits

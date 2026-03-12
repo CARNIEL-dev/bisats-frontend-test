@@ -70,7 +70,7 @@ const RefreshButton = ({
       size="icon"
       onClick={handleRefresh}
       disabled={disabled}
-      className={cn("bg-gray-100 hover:bg-gray-200", className)}
+      className={cn("bg-muted hover:bg-secondary", className)}
     >
       {/*
         Priority for which icon to show:
@@ -81,7 +81,7 @@ const RefreshButton = ({
       {isFetching ? (
         <RotateCw className="animate-spin" />
       ) : cooldown ? (
-        <Lock className="text-gray-400" />
+        <Lock className="text-muted-foreground" />
       ) : (
         <RotateCw />
       )}

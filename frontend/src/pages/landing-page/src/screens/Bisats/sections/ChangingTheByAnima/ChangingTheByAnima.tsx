@@ -40,24 +40,24 @@ export const ChangingTheByAnima = (): React.ReactElement => {
   return (
     <MaxWidth className=" max-w-[78rem] 2xl:max-w-[90rem] md:mt-16 mt-8">
       <div className="">
-        <h2 className="mb-8 lg:mb-16 text-[#2B313B] font-medium text-[26px] lg:text-[42px] text-center lg:text-start 2xl:text-center leading-[40px] lg:leading-[56px]">
+        <h2 className="mb-8 lg:mb-16 text-foreground font-medium text-[26px] lg:text-[42px] text-center lg:text-start 2xl:text-center leading-[40px] lg:leading-[56px]">
           <span className="">
             Bettering the peer-to-peer experience-
             <br />
           </span>
-          <span className=" text-[#f5bb00]">How Bisats Dominate Others </span>
+          <span className=" text-primary">How Bisats Dominate Others </span>
         </h2>
 
         <div className="relative mx-auto max-w-[75rem] ">
           {/* Vector connecting lines */}
           <div className="absolute inset-0 hidden lg:flex items-center justify-center pointer-events-none">
             <img
-              className="w-[121px] h-[293px] relative -left-[80px]"
+              className="w-[121px] h-[293px] relative -left-[80px] dark:invert dark:opacity-20"
               alt="Vector"
               src="/vector-1.svg"
             />
             <img
-              className="w-[121px] h-[293px] relative left-[80px]"
+              className="w-[121px] h-[293px] relative left-[80px] dark:invert dark:opacity-20"
               alt="Vector"
               src="/vector-2.svg"
             />
@@ -83,16 +83,16 @@ export const ChangingTheByAnima = (): React.ReactElement => {
               <Card
                 key={index}
                 className={cn(
-                  "lg:w-[356px] rounded-xl border border-[#f3f3f6] [background:linear-gradient(135deg,rgba(255,255,255,1)_0%,rgba(246,247,248,1)_100%)]",
-                  index % 2 === 0 && "justify-self-start"
+                  "lg:w-[356px] rounded-xl bg-secondary",
+                  index % 2 === 0 && "justify-self-start",
                 )}
               >
                 <CardContent className="flex flex-col gap-2 h-full relative isolate">
                   <h3 className="font-semibold  text-[22px]">{card.title}</h3>
-                  <p className="font-normal text-gray-600 text-[13px] leading-[24px]">
+                  <p className="font-normal text-muted-foreground text-[13px] leading-[24px]">
                     {card.description}
                   </p>
-                  <div className="absolute bottom-0 right-5 -z-[5]">
+                  <div className="absolute bottom-0 right-5 -z-[5] dark:invert">
                     <img
                       src={card.icon}
                       alt={card.title}

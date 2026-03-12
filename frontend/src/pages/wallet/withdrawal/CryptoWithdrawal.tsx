@@ -336,7 +336,7 @@ const CryptoWithdrawal = ({
             <div className="grid grid-cols-[1fr_auto] gap-2">
               <Button
                 variant={"outline"}
-                className="py-3 justify-start h-fit bg-gray-50 text-sm text-gray-500 hover:text-gray-500/90"
+                className="py-3 justify-start h-fit bg-muted text-sm text-muted-foreground hover:text-muted-foreground/90"
                 type="button"
                 onClick={() => setShowSavedAddressModal(true)}
               >
@@ -344,7 +344,7 @@ const CryptoWithdrawal = ({
               </Button>
               <Button
                 variant={"outline"}
-                className="!py-3 h-fit text-sm text-gray-500 hover:text-gray-500/90"
+                className="!py-3 h-fit text-sm text-muted-foreground hover:text-muted-foreground/90"
                 type="button"
                 onClick={() => {
                   setShowSavedAddressOptions(false);
@@ -364,26 +364,26 @@ const CryptoWithdrawal = ({
             {formik.values.walletName && (
               <div
                 role="button"
-                className={cn("bg-gray-50 p-3 relative  rounded-md mt-2 ")}
+                className={cn("bg-muted p-3 relative  rounded-md mt-2 ")}
               >
                 {formik.values.walletName && (
                   <span className="absolute top-2 right-2 text-green-600 font-semibold text-sm">
                     Selected
                   </span>
                 )}
-                <div className="flex flex-col gap-1  text-sm text-gray-500">
-                  <h4 className="text-medium text-gray-800">
+                <div className="flex flex-col gap-1  text-sm text-muted-foreground">
+                  <h4 className="text-medium text-foreground">
                     {formik.values.walletName}
                   </h4>
                   <div>
                     <p>Network</p>
-                    <p className="font-medium text-gray-600">
+                    <p className="font-medium text-muted-foreground">
                       {formik.values.network}
                     </p>
                   </div>
                   <div>
                     <p>Wallet</p>
-                    <p className="font-medium text-gray-600 text-xs">
+                    <p className="font-medium text-muted-foreground text-xs">
                       {formik.values.walletAddress}
                     </p>
                   </div>
@@ -562,7 +562,7 @@ const CryptoWithdrawal = ({
                 }}
                 role="button"
                 className={cn(
-                  "bg-gray-50 p-3 relative shadow rounded-md border cursor-pointer hover:border-green-500",
+                  "bg-muted p-3 relative shadow rounded-md border cursor-pointer hover:border-green-500",
                   formik.values.walletAddress === item.address &&
                     "border-green-500",
                 )}
@@ -572,17 +572,17 @@ const CryptoWithdrawal = ({
                     Selected
                   </span>
                 )}
-                <div className="flex flex-col gap-1  text-sm text-gray-500">
-                  <h4 className="text-medium text-gray-800 text-lg">
+                <div className="flex flex-col gap-1  text-sm text-muted-foreground">
+                  <h4 className="text-medium text-foreground text-lg">
                     {item.name}
                   </h4>
                   <div>
                     <p>Network</p>
-                    <p className="font-medium text-gray-600">{item.network}</p>
+                    <p className="font-medium text-muted-foreground">{item.network}</p>
                   </div>
                   <div>
                     <p>Wallet</p>
-                    <p className="font-medium text-gray-600 text-xs">
+                    <p className="font-medium text-muted-foreground text-xs">
                       {item.address}
                     </p>
                   </div>
@@ -663,7 +663,7 @@ const SaveWalletAddress = ({
         <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4">
           <div>
             <h4 className="font-semibold text-lg">Save Wallet Address</h4>
-            <p className="text-gray-500 text-xs">
+            <p className="text-muted-foreground text-xs">
               Save your wallet address for faster withdrawal
             </p>
           </div>
@@ -678,7 +678,7 @@ const SaveWalletAddress = ({
             touched={undefined}
             info="Nickname to remember your wallet address"
           />
-          <div className="text-gray-500 text-xs bg-gray-100 p-2 rounded-md flex flex-col gap-1">
+          <div className="text-muted-foreground text-xs bg-muted p-2 rounded-md flex flex-col gap-1">
             <p>Address: {data?.walletAddress}</p>
             <p>Network: {data?.network}</p>
             <p>Asset: {data?.asset}</p>

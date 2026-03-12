@@ -60,7 +60,7 @@ const SwapInputField = ({
       <div className="absolute right-1 top-1/2 -translate-y-[63%]">
         {tokenData && (
           <button
-            className="text-gray-600 p-2.5 px-4 border cursor-default h-[48px] rounded-md items-center bg-neutral-100 flex justify-center gap-2 font-semibold text-sm"
+            className="text-muted-foreground p-2.5 px-4 border cursor-default h-[48px] rounded-md items-center bg-neutral-100 flex justify-center gap-2 font-semibold text-sm"
             type="button"
           >
             <span className="shrink-0">{tokenData.logo}</span>

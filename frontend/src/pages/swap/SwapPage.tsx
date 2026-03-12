@@ -6,8 +6,6 @@
  * /hooks directories.
  */
 
-import RefreshButton from "@/components/RefreshButton";
-import AutoRefreshTimer from "@/components/shared/AutoRefresh";
 import {
   Sheet,
   SheetContent,
@@ -21,21 +19,12 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import Head from "@/pages/wallet/Head";
-import { useCryptoRates } from "@/redux/actions/walletActions";
-import { formatNumber } from "@/utils/numberFormat";
 import { History } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 import SwapForm from "./components/SwapForm";
 import SwapHistory from "./components/SwapHistory";
 
 const SwapPage = () => {
-  const {
-    data: currencyRates,
-    isFetching,
-    isError,
-    refetch,
-  } = useCryptoRates({ isEnabled: true });
-
   const [searchParams, setSearchParams] = useSearchParams();
   const swapHistory = searchParams.get("history");
 
@@ -51,10 +40,6 @@ const SwapPage = () => {
     });
   };
 
-  const handleRefresh = async () => {
-    await refetch().catch(() => {});
-  };
-
   return (
     <>
       <div className="grid gap-6">
@@ -62,27 +47,13 @@ const SwapPage = () => {
           {/* SUB: Header */}
           <Head header="Swap" />
 
-          {/* SUB: Rate bar */}
-          <div className="text-gray-500 w-full text-sm flex items-center gap-1 font-normal">
-            <p>1 USDT</p>≈
-            {isError ? (
-              <p className="text-red-500">Error</p>
-            ) : (
-              <p>{formatNumber(Number(currencyRates?.tether?.ngn))} xNGN</p>
-            )}
-            <AutoRefreshTimer defaultTime={120} />
-            <RefreshButton
-              isFetching={isFetching}
-              refetch={handleRefresh}
-              className="bg-transparent text-green-600"
-              refreshTime={60 * 1000}
-            />
+          <div className="w-full flex items-center justify-end">
             <Tooltip>
               <TooltipTrigger
-                className="ml-auto flex items-center justify-center hover:bg-primary-light"
+                className="flex items-center justify-center hover:bg-primary-light rounded-md p-1"
                 onClick={handleSwapHistory}
               >
-                <History className="!size-6 text-gray-500" strokeWidth={1.5} />
+                <History className="!size-6 text-muted-foreground" strokeWidth={1.5} />
                 <span className="sr-only">Swap history</span>
               </TooltipTrigger>
               <TooltipContent>
@@ -102,7 +73,7 @@ const SwapPage = () => {
               <SheetTitle className="text-2xl font-semibold">
                 History
               </SheetTitle>
-              <SheetDescription className="text-xs text-gray-500">
+              <SheetDescription className="text-xs text-muted-foreground">
                 View your past swap transactions
               </SheetDescription>
             </SheetHeader>

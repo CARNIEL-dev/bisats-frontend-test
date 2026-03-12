@@ -16,7 +16,7 @@ const HeaderTabs = ({
   setStage: React.Dispatch<React.SetStateAction<"details" | "review">>;
 }) => {
   return (
-    <div className=" flex justify-between w-full items-center mx-auto flex-nowrap text-gray-600 ">
+    <div className=" flex justify-between w-full items-center mx-auto flex-nowrap text-muted-foreground ">
       {PageData.map((page, idx) => (
         <button
           key={idx}

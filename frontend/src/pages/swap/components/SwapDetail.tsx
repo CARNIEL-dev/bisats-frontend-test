@@ -74,12 +74,12 @@ const SwapDetail = ({ reference, onClose }: Props) => {
     }).format(amount);
 
   return (
-    <div className="absolute inset-0 bg-white z-10 flex flex-col">
+    <div className="absolute inset-0 bg-background z-10 flex flex-col">
       <div className="flex items-center justify-between p-4 border-b">
         <h3 className="font-semibold text-lg">Swap Detail</h3>
         <button
           onClick={onClose}
-          className="text-gray-500 hover:text-gray-800 text-sm font-medium"
+          className="text-muted-foreground hover:text-foreground text-sm font-medium"
         >
           Close
         </button>
@@ -87,20 +87,20 @@ const SwapDetail = ({ reference, onClose }: Props) => {
 
       {loading ? (
         <div className="flex justify-center py-12">
-          <Loader2 className="animate-spin text-gray-400" />
+          <Loader2 className="animate-spin text-muted-foreground" />
         </div>
       ) : (
         <div className="p-4 space-y-4 overflow-auto">
           {/* Reference */}
           <div className="border rounded-lg p-4 space-y-1">
-            <p className="text-xs text-gray-500">Reference</p>
+            <p className="text-xs text-muted-foreground">Reference</p>
             <p className="font-mono text-sm font-semibold">{reference}</p>
           </div>
 
           {/* Debit (sold) */}
           {debit && (
             <div className="border rounded-lg p-4 space-y-2">
-              <p className="text-xs text-gray-500">Sold</p>
+              <p className="text-xs text-muted-foreground">Sold</p>
               <p className="font-semibold text-sm">
                 {formatAmount(debit.amount, debit.asset)} {debit.asset}
               </p>
@@ -121,7 +121,7 @@ const SwapDetail = ({ reference, onClose }: Props) => {
           {/* Credit (received) */}
           {credit && (
             <div className="border rounded-lg p-4 space-y-2">
-              <p className="text-xs text-gray-500">Received</p>
+              <p className="text-xs text-muted-foreground">Received</p>
               <p className="font-semibold text-sm">
                 {formatAmount(credit.amount, credit.asset)} {credit.asset}
               </p>
@@ -139,7 +139,7 @@ const SwapDetail = ({ reference, onClose }: Props) => {
 
           {/* Metadata */}
           {debit && (
-            <div className="text-xs text-gray-400 space-y-1">
+            <div className="text-xs text-muted-foreground space-y-1">
               {debit.partnerReference && (
                 <p>Partner Ref: {debit.partnerReference}</p>
               )}

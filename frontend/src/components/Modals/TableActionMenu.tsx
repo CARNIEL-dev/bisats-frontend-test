@@ -56,7 +56,7 @@ const TableActionMenu = ({ adDetail, onCloseAd }: TableActionMenuProps) => {
         <DropdownMenuTrigger>
           <MoreVertical size={16} />
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="text-gray-500">
+        <DropdownMenuContent align="end" className="text-muted-foreground">
           <DropdownMenuItem asChild>
             <Link
               to={`${APP_ROUTES.P2P.AD_DETAILS}?adId=${adDetail.id}`}

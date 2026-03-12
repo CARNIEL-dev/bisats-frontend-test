@@ -120,9 +120,9 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
   const { isNA } = formatAccountLevel(userState?.user?.accountLevel);
 
   return (
-    <div className="border  flex flex-col gap-2 p-6 rounded-2xl">
+    <div className="border border-border flex flex-col gap-2 p-6 rounded-2xl">
       <div className="flex items-center gap-1">
-        <p className="font-semibold text-neutral-800">Balance</p>
+        <p className="font-semibold text-foreground/60">Balance</p>
         <Button
           variant="default"
           disabled={isFetching}

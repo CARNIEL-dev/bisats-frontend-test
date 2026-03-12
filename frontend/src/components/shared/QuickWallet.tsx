@@ -197,16 +197,16 @@ const QuickWallet = () => {
                       className="size-7"
                     />
                     <div className="flex flex-col">
-                      <span className="text-sm font-semibold text-gray-800">
+                      <span className="text-sm font-semibold text-foreground">
                         {item.name}
                       </span>
-                      <span className="text-[11px] text-gray-500">
+                      <span className="text-[11px] text-muted-foreground">
                         {item.asset}
                       </span>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-bold text-gray-700">
+                    <p className="text-sm font-bold text-foreground">
                       {showBalance
                         ? `${formatter({
                             decimal: isXNGN || isUSDT ? 2 : 6,
@@ -214,7 +214,7 @@ const QuickWallet = () => {
                         : "***"}
                     </p>
                     {showBalance && (
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-muted-foreground">
                         ~
                         {formatter({
                           decimal: 0,
@@ -228,7 +228,7 @@ const QuickWallet = () => {
               );
             })}
             {isFetching && (
-              <div className="p-3 text-xs text-gray-500 animate-pulse text-center">
+              <div className="p-3 text-xs text-muted-foreground animate-pulse text-center">
                 Updating rates…
               </div>
             )}

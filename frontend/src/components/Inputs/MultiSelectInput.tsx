@@ -78,7 +78,7 @@ export const MultiSelectDropDown = ({
               "border-[#EF4444] outline-0 focus:border-[#EF4444]":
                 error && touched,
             },
-            selected ? "text-black" : "text-muted-foreground",
+            selected ? "text-foreground" : "text-muted-foreground",
             className
           )}
           type="button"
@@ -95,7 +95,7 @@ export const MultiSelectDropDown = ({
           id={parentId}
           className={cn(
             `absolute mt-1 z-10 transition-all duration-150 ease
-         bg-white rounded-md w-full shadow-md border `,
+         bg-background rounded-md w-full shadow-md border `,
             visible
               ? "visible animate-in fade-in-0  slide-in-from-top-4 opacity-100"
               : "invisible animate-out fade-in-0 slide-out-to-top-0"
@@ -115,7 +115,7 @@ export const MultiSelectDropDown = ({
                     role="button"
                     key={data.value || index}
                     className={cn(
-                      "flex items-center text-sm px-2 py-2 cursor-pointer text-gray-700  hover:bg-neutral-100 rounded-md transition-colors duration-150 capitalize",
+                      "flex items-center text-sm px-2 py-2 cursor-pointer text-foreground  hover:bg-neutral-100 rounded-md transition-colors duration-150 capitalize",
                       selected === (data.labelDisplay ?? data.label) &&
                         "bg-neutral-200/40"
                     )}
@@ -132,7 +132,7 @@ export const MultiSelectDropDown = ({
                   </li>
                 ))
               ) : (
-                <li className="text-center text-xs text-wrap text-gray-500 py-4 px-2">
+                <li className="text-center text-xs text-wrap text-muted-foreground py-4 px-2">
                   No options available
                 </li>
               )}

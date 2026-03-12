@@ -89,7 +89,7 @@ const SwapHistory = () => {
   if (isLoading && page === 1) {
     return (
       <div className="flex justify-center py-12">
-        <Loader2 className="animate-spin text-gray-400" />
+        <Loader2 className="animate-spin text-muted-foreground" />
       </div>
     );
   }
@@ -105,7 +105,7 @@ const SwapHistory = () => {
   return (
     <div className="relative h-[68dvh]">
       {data?.pagination && (
-        <p className="text-gray-500 text-sm px-4 pb-4 border-b">
+        <p className="text-muted-foreground text-sm px-4 pb-4 border-b">
           Total: {data.pagination.total}
         </p>
       )}
@@ -116,7 +116,7 @@ const SwapHistory = () => {
             {groupedSwaps.map((swap) => (
               <button
                 key={swap.reference}
-                className="border-b pb-3 flex flex-col gap-3 text-left w-full hover:bg-gray-50 rounded-md -mx-2 px-2 py-2 transition-colors"
+                className="border-b pb-3 flex flex-col gap-3 text-left w-full hover:bg-muted rounded-md -mx-2 px-2 py-2 transition-colors"
                 onClick={() => setDetailRef(swap.reference)}
               >
                 {/* SUB: Token pair row */}
@@ -135,7 +135,7 @@ const SwapHistory = () => {
                   </div>
 
                   <ArrowRight
-                    className="text-gray-400 shrink-0"
+                    className="text-muted-foreground shrink-0"
                     strokeWidth={1.5}
                     size={16}
                   />
@@ -170,10 +170,10 @@ const SwapHistory = () => {
 
                 {/* SUB: Reference + date */}
                 <div className="flex items-center justify-between">
-                  <p className="text-xs text-gray-400 truncate max-w-[50%]">
+                  <p className="text-xs text-muted-foreground truncate max-w-[50%]">
                     {swap.reference}
                   </p>
-                  <p className="text-xs text-gray-400">
+                  <p className="text-xs text-muted-foreground">
                     {dayjs(swap.createdAt).format("MMM D, YYYY · h:mm A")}
                   </p>
                 </div>
@@ -191,7 +191,7 @@ const SwapHistory = () => {
             )}
           </>
         ) : (
-          <p className="text-center text-gray-500 text-sm py-8">
+          <p className="text-center text-muted-foreground text-sm py-8">
             No swap history
           </p>
         )}

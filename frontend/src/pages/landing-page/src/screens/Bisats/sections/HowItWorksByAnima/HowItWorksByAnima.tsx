@@ -46,13 +46,13 @@ export const HowItWorksByAnima = (): React.ReactElement => {
   ];
 
   return (
-    <MaxWidth as="section" className=" 2xl:max-w-[100rem] bg-[#FDFDFC]">
+    <MaxWidth as="section" className=" 2xl:max-w-[100rem] bg-background">
       <div className="">
         <div className="flex flex-col items-center gap-1 mb-12">
-          <h2 className="text-[28px] font-medium text-[#0A0E12] lg:text-[42px] text-center leading-[40px] lg:leading-[56px] lg:w-3/5">
+          <h2 className="text-[28px] font-medium text-foreground lg:text-[42px] text-center leading-[40px] lg:leading-[56px] lg:w-3/5">
             At Bisats, you start and end every transactions with peace of mind.
           </h2>
-          <p className="font-normal text-[#606C82] text-[16px] text-center leading-[28px]">
+          <p className="font-normal text-muted-foreground text-[16px] text-center leading-[28px]">
             Transact in 3 Simple Steps:
           </p>
         </div>
@@ -61,7 +61,8 @@ export const HowItWorksByAnima = (): React.ReactElement => {
           {steps.map((step) => (
             <Card
               key={step.id}
-              className="w-full md:w-[280px] lg:w-[356px] h-[464px] lg:h-auto rounded-xl border [background:linear-gradient(135deg,rgba(255,255,255,1)_0%,rgba(246,247,248,1)_100%)] relative overflow-hidden md:last:mx-auto lg:last:mx-0 p-0 pb-2"
+              className="w-full md:w-[280px] lg:w-[356px] h-[464px] lg:h-auto rounded-xl border bg-card relative overflow-hidden md:last:mx-auto lg:last:mx-0 p-0 pb-2"
+              // className="w-full md:w-[280px] lg:w-[356px] h-[464px] lg:h-auto rounded-xl border [background:linear-gradient(135deg,rgba(255,255,255,1)_0%,rgba(246,247,248,1)_100%)] relative overflow-hidden md:last:mx-auto lg:last:mx-0 p-0 pb-2"
             >
               <CardContent className="flex flex-col h-full items-start  lg:gap-2 p-3">
                 <img
@@ -82,11 +83,11 @@ ${step.mobileImage} 480w,
                   loading="lazy"
                 />
 
-                <h3 className="font-desktop-header6 text-greysgrey-10 text-[22px] leading-[32px] font-semibold">
+                <h3 className="text-foreground text-[22px] leading-[32px] font-semibold">
                   {step.title}
                 </h3>
 
-                <p className=" text-[#606C82] text-[14px] leading-[24px]">
+                <p className=" text-muted-foreground text-[14px] leading-[24px]">
                   {step.description}
                 </p>
               </CardContent>

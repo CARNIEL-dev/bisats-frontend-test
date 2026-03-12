@@ -107,9 +107,9 @@ const AuthPasswordInput: React.FC<TInput> = ({
             style={{ outline: "none" }}
             type={showPassword ? "text" : "password"}
             className={cn(
-              "rounded-[6px] border border-[#D6DAE1] outline-[none] focus:border-[#C49600] focus:shadow-[0_0_10px_#FEF8E5] text-[#606C82] p-3 ring-0 w-full",
+              "rounded-[6px] border border-border outline-[none] focus:border-primary focus:ring-1 focus:ring-primary text-foreground bg-background p-3 ring-0 w-full",
               className,
-              error && "border-[#EF4444] outline-0 focus:border-[#EF4444]",
+              error && "border-destructive outline-0 focus:border-destructive",
             )}
             {...props}
             onChange={(e) => {
@@ -144,7 +144,7 @@ const AuthPasswordInput: React.FC<TInput> = ({
                 <span className="sr-only">Toggle password visibility</span>
               </TooltipTrigger>
               <TooltipContent side="top" className="max-w-[8rem]" align="end">
-                <p>Click and hold to reveal password</p>
+                <span>Click and hold to reveal password</span>
               </TooltipContent>
             </Tooltip>
           ) : (
@@ -166,11 +166,11 @@ const AuthPasswordInput: React.FC<TInput> = ({
           )}
         </div>
 
-        {error && <p className="text-red-500 text-xs mt-2">{error}</p>}
+        {error && <p className="text-destructive text-xs mt-2">{error}</p>}
       </div>
 
       {check && passwordString && (
-        <div className="text-[#515B6E] text-[12px] leading-[16px] font-normal flex justify-between flex-wrap mt-5">
+        <div className="text-muted-foreground text-[12px] leading-[16px] font-normal flex justify-between flex-wrap mt-5">
           {PasswordChecks.map((item, idx) => (
             <div className="flex items-center w-full lg:w-1/2 my-1" key={idx}>
               {CheckRegex(

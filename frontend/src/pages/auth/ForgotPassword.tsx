@@ -37,7 +37,7 @@ const ForgotPassword = () => {
           <>
             {" "}
             <button
-              className="text-[14px] text-[#707D96] leading-[24px] font-semibold text-left flex items-center cursor-pointer mb-2"
+              className="text-[14px] text-muted-foreground leading-[24px] font-semibold text-left flex items-center cursor-pointer mb-2"
               onClick={() => navigate(APP_ROUTES.AUTH.LOGIN)}
             >
               {" "}
@@ -73,7 +73,7 @@ const ForgotPassword = () => {
               disabled={formik.isSubmitting || !formik.isValid}
             />
           </div>
-          <div className="text-[14px] text-[#515B6E] leading-[24px] font-semibold text-left">
+          <div className="text-[14px] text-muted-foreground leading-[24px] font-semibold text-left">
             Need help?
             <button className="text-[#C49600] pl-2 cursor-pointer">
               Contact Support

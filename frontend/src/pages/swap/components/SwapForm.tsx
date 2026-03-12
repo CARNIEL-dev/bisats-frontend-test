@@ -1,17 +1,7 @@
-/**
- * SwapForm
- *
- * The main swap form. Handles:
- * - Source asset selection (only assets with at least one tradeable pair)
- * - Target asset selection (only assets that pair with the selected source)
- * - Debounced rate fetching (500ms) via GET /swap/rate
- * - KycManager-wrapped execution via POST /swap/execute
- * - Full error handling: PIN, 2FA, lockout, duplicate (60s), suspension, 5xx
- * - Wallet balance refresh on success
- */
-
 import { PrimaryButton } from "@/components/buttons/Buttons";
 import Toast from "@/components/Toast";
+import RefreshButton from "@/components/RefreshButton";
+import TokenSelection from "@/components/shared/TokenSelection";
 import { Badge } from "@/components/ui/badge";
 import useGetWallet from "@/hooks/use-getWallet";
 import KycManager from "@/pages/kyc/KYCManager";
@@ -23,17 +13,10 @@ import { ACTIONS } from "@/utils/transaction_limits";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import useSwapPairs from "../hooks/useSwapPairs";
+import { useSwapRate } from "../hooks/useSwapRate";
 import SwapInputField from "./SwapInputField";
 
-import TokenSelection from "@/components/shared/TokenSelection";
-
-// ---------------------------------------------------------------------------
-// SwapForm
-// ---------------------------------------------------------------------------
-
 type SwapFormProps = {
-  /** Triggered after a successful swap so the parent can refresh the rate banner etc. */
   onSuccess?: () => void;
 };
 
@@ -42,15 +25,41 @@ const SwapForm = ({ onSuccess }: SwapFormProps) => {
   const queryClient = useQueryClient();
   const { refetchWallet } = useGetWallet();
 
-  // SUB: Form state
-  const [sourceAsset, setSourceAsset] = useState("");
-  const [targetAsset, setTargetAsset] = useState("");
-  const [amount, setAmount] = useState("");
+  // SUB: Rate, Form State, and Timer hook handles URL sync + API
+  const {
+    sourceAsset,
+    targetAsset,
+    amount,
+    setSourceAsset,
+    setTargetAsset,
+    setAmount,
+    rateData,
+    rateLoading,
+    timer,
+    pairsLoading,
+    pairsError,
+    validSourceAssets,
+    validTargetAssets,
+    isPairSupported,
+    getPairIds,
+    clearRate,
+    refreshRate,
+  } = useSwapRate();
 
-  // SUB: Rate state
-  const [rateData, setRateData] = useState<SwapRateResponse | null>(null);
-  const [rateLoading, setRateLoading] = useState(false);
-  const debounceRef = useRef<NodeJS.Timeout | null>(null);
+  // SUB: Wallet balance for source asset
+  const assetBalance = sourceAsset ? walletState?.wallet?.[sourceAsset] : null;
+
+  const isInsufficientBalance =
+    assetBalance !== null &&
+    amount !== "" &&
+    Number(amount) > Number(assetBalance);
+
+  // We enforce skipping fetches via an effect returning earlier than the hook, since we can't cleanly pass down local state inside itself
+  useEffect(() => {
+    if (isInsufficientBalance) {
+      clearRate();
+    }
+  }, [isInsufficientBalance, clearRate]);
 
   // SUB: Execution state
   const [executing, setExecuting] = useState(false);
@@ -60,94 +69,12 @@ const SwapForm = ({ onSuccess }: SwapFormProps) => {
   const [duplicateLockout, setDuplicateLockout] = useState(0);
   const lockoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // SUB: Pairs hook — provides valid source and target asset lists
-  const {
-    pairsLoading,
-    pairsError,
-    validSourceAssets,
-    validTargetAssets,
-    isPairSupported,
-    getPairIds,
-  } = useSwapPairs(sourceAsset);
-
-  // SUB: Auto-select target if only one valid option
-  useEffect(() => {
-    if (validTargetAssets.length === 1) {
-      setTargetAsset(validTargetAssets[0]);
-    } else if (
-      validTargetAssets.length > 0 &&
-      !validTargetAssets.includes(targetAsset)
-    ) {
-      // Selected target is no longer valid for the new source → reset
-      setTargetAsset("");
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [validTargetAssets]);
-
   // SUB: Cleanup on unmount
   useEffect(() => {
     return () => {
-      if (debounceRef.current) clearTimeout(debounceRef.current);
       if (lockoutRef.current) clearInterval(lockoutRef.current);
     };
   }, []);
-
-  // SUB: Wallet balance for source asset
-  const assetBalance = sourceAsset ? walletState?.wallet?.[sourceAsset] : null;
-
-  // ---------------------------------------------------------------------------
-  // Rate fetching — debounced 500ms
-  // ---------------------------------------------------------------------------
-
-  const fetchRate = useCallback(
-    async (src: string, tgt: string, amt: string) => {
-      if (!src || !tgt || !amt || Number(amt) <= 0) {
-        setRateData(null);
-        return;
-      }
-      // Resolve opaque UUIDs from the pairs cache before calling the API
-      const ids = getPairIds(src, tgt);
-      if (!ids) {
-        setRateData(null);
-        return;
-      }
-      setRateLoading(true);
-      try {
-        const params = new URLSearchParams({
-          sourceId: ids.sourceId,
-          targetId: ids.targetId,
-          amount: amt,
-        });
-        const response = await Bisatsfetch(
-          `${BACKEND_URLS.SWAP.GET_RATE}?${params.toString()}`,
-          { method: "GET" },
-        );
-
-        if (response.status === true && response.data) {
-          setRateData(response.data);
-        } else {
-          setRateData(null);
-          if (response.message) {
-            Toast.error(response.message || "Pair not available", "Swap Rate");
-          }
-        }
-      } catch {
-        setRateData(null);
-        Toast.error("Failed to fetch rate", "Swap Rate");
-      } finally {
-        setRateLoading(false);
-      }
-    },
-    [getPairIds],
-  );
-
-  const debouncedFetchRate = useCallback(
-    (src: string, tgt: string, amt: string) => {
-      if (debounceRef.current) clearTimeout(debounceRef.current);
-      debounceRef.current = setTimeout(() => fetchRate(src, tgt, amt), 500);
-    },
-    [fetchRate],
-  );
 
   // ---------------------------------------------------------------------------
   // Event handlers
@@ -158,24 +85,16 @@ const SwapForm = ({ onSuccess }: SwapFormProps) => {
     if (/^(\d+(\.\d*)?|\.\d+)?$/.test(value)) {
       setAmount(value);
       setSwapResult(null);
-      debouncedFetchRate(sourceAsset, targetAsset, value);
     }
   };
 
   const handleSourceChange = (val: string) => {
     setSourceAsset(val);
-    setAmount("");
-    setRateData(null);
     setSwapResult(null);
-    // Target will be reset via the useEffect above when validTargetAssets updates
   };
 
   const handleTargetChange = (val: string) => {
     setTargetAsset(val);
-    setRateData(null);
-    if (amount && sourceAsset) {
-      debouncedFetchRate(sourceAsset, val, amount);
-    }
   };
 
   // ---------------------------------------------------------------------------
@@ -246,7 +165,7 @@ const SwapForm = ({ onSuccess }: SwapFormProps) => {
 
   const handleExecuteSwap = useCallback(
     async (secureData?: Record<string, any>) => {
-      if (!sourceAsset || !targetAsset || !amount) return;
+      if (!sourceAsset || !targetAsset || !amount || !rateData?.quoteId) return;
 
       // Resolve opaque UUIDs — the API requires IDs, not asset codes
       const ids = getPairIds(sourceAsset, targetAsset);
@@ -256,6 +175,7 @@ const SwapForm = ({ onSuccess }: SwapFormProps) => {
       }
 
       const payload: SwapExecutePayload = {
+        quoteId: rateData.quoteId,
         sourceId: ids.sourceId,
         targetId: ids.targetId,
         amount: Number(amount),
@@ -280,7 +200,7 @@ const SwapForm = ({ onSuccess }: SwapFormProps) => {
             "Swap Successful",
           );
           setAmount("");
-          setRateData(null);
+          clearRate();
 
           // Refresh balances + history
           await Promise.all([
@@ -301,11 +221,14 @@ const SwapForm = ({ onSuccess }: SwapFormProps) => {
         setExecuting(false);
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       sourceAsset,
       targetAsset,
       amount,
+      rateData,
       getPairIds,
+      clearRate,
       refetchWallet,
       queryClient,
       handleSwapError,
@@ -318,12 +241,27 @@ const SwapForm = ({ onSuccess }: SwapFormProps) => {
   // ---------------------------------------------------------------------------
 
   const pairError = useMemo(() => {
+    if (isInsufficientBalance)
+      return `Insufficient balance. Available: ${
+        assetBalance !== null
+          ? formatter({
+              decimal: sourceAsset === "xNGN" || sourceAsset === "USDT" ? 2 : 6,
+            }).format(assetBalance)
+          : "0"
+      } ${sourceAsset}`;
     if (pairsError) return "Failed to load swap pairs";
     if (!sourceAsset || !targetAsset) return undefined;
     if (!isPairSupported(sourceAsset, targetAsset))
       return "This pair is not supported";
     return undefined;
-  }, [sourceAsset, targetAsset, isPairSupported, pairsError]);
+  }, [
+    sourceAsset,
+    targetAsset,
+    isPairSupported,
+    pairsError,
+    isInsufficientBalance,
+    assetBalance,
+  ]);
 
   const canSwap =
     !!sourceAsset &&
@@ -334,6 +272,8 @@ const SwapForm = ({ onSuccess }: SwapFormProps) => {
     rateData !== null &&
     !executing &&
     duplicateLockout === 0 &&
+    timer !== 0 && // Disable swap if the quote expired
+    !isInsufficientBalance &&
     !pairError;
 
   // ---------------------------------------------------------------------------
@@ -380,10 +320,10 @@ const SwapForm = ({ onSuccess }: SwapFormProps) => {
         label="You'll receive (estimated)"
         id="receiveAmount"
         value={
-          rateLoading
-            ? "Loading…"
-            : rateData
-              ? formatter({ decimal: 6 }).format(rateData.estimatedTargetAmount)
+          rateData
+            ? formatter({ decimal: 6 }).format(rateData.targetAmount)
+            : rateLoading
+              ? "Loading…"
               : ""
         }
         error={undefined}
@@ -404,12 +344,37 @@ const SwapForm = ({ onSuccess }: SwapFormProps) => {
         />
       </SwapInputField>
 
-      {/* SUB: Indicative rate */}
+      {/* SUB: Indicative rate + Timer */}
       {rateData && sourceAsset && targetAsset && (
-        <p className="text-xs text-gray-500 -mt-6">
-          Indicative rate: 1 {sourceAsset} ≈ {formatNumber(rateData.rate)}{" "}
-          {targetAsset}
-        </p>
+        <div className="flex items-center justify-between -mt-6 mb-2">
+          <p className="text-xs text-muted-foreground">
+            Indicative rate: 1 {sourceAsset} ≈ {formatNumber(rateData.rate)}{" "}
+            {targetAsset}
+          </p>
+          <div className="flex gap-2 items-center">
+            {timer !== null && (
+              <div className="flex gap-1 items-center text-xs font-semibold px-2 py-0.5 rounded-md bg-muted">
+                {timer > 0 ? (
+                  <span
+                    className={
+                      timer <= 10 ? "text-red-500" : "text-muted-foreground"
+                    }
+                  >
+                    {timer}s
+                  </span>
+                ) : (
+                  <span className="text-red-500 font-bold">Expired</span>
+                )}
+              </div>
+            )}
+            <RefreshButton
+              isFetching={rateLoading}
+              refetch={refreshRate}
+              className="bg-transparent hover:bg-muted text-green-600 h-6 w-6 p-1"
+              refreshTime={2000}
+            />
+          </div>
+        </div>
       )}
 
       {/* SUB: Swap button wrapped with KycManager */}
@@ -438,7 +403,7 @@ const SwapForm = ({ onSuccess }: SwapFormProps) => {
             Sold {swapResult.sourceAmount} {sourceAsset} → Received{" "}
             {swapResult.targetAmount} {targetAsset}
           </p>
-          <p className="text-gray-500 text-xs">
+          <p className="text-muted-foreground text-xs">
             Reference: {swapResult.reference}
           </p>
         </div>

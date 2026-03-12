@@ -15,7 +15,7 @@ export const MobileAppByAnima = (): React.ReactElement => {
           <h3 className="font-medium text-2xl md:text-4xl">
             Bisats Mobile App
           </h3>
-          <p className="md:w-11/12 leading-7 text-gray-400">
+          <p className="md:w-11/12 leading-7 text-muted-foreground">
             The Bisats Mobile App is coming soon to Google Play and the Apple
             App Store! Our mission is to deliver an unmatched peer-to-peer
             experience, putting our users at the heart of everything we do.

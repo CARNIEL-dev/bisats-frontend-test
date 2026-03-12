@@ -14,14 +14,14 @@ const Wallet = () => {
           </div>
 
           <div className="sm:border md:space-y-4 space-y-2 rounded-2xl  sm:p-6">
-            <p className="font-semibold md:text-lg text-gray-700">
+            <p className="font-semibold md:text-lg text-foreground">
               Your assets
             </p>
             <Assets />
           </div>
 
           <div className="sm:border md:space-y-4 space-y-2 rounded-2xl  sm:p-6">
-            <p className="font-semibold md:text-lg text-gray-700">
+            <p className="font-semibold md:text-lg text-foreground">
               Wallet History
             </p>
             <Transactions />

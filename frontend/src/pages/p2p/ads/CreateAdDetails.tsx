@@ -416,7 +416,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
 
         {/* SUB: Percentage Buttons */}
         <div className="flex gap-1 mb-2 items-center">
-          <p className="text-gray-500 text-xs">Or Percentage difference :</p>
+          <p className="text-muted-foreground text-xs">Or Percentage difference :</p>
           {PERCENTAGES.map((percent) => (
             <Badge
               role="button"

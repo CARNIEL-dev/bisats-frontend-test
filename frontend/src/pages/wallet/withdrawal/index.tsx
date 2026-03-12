@@ -446,6 +446,13 @@ const NGNWithdrawal = ({
                 />
                 <KycManager
                   action={ACTIONS.WITHDRAW_NGN}
+                  preAction={async () => {
+                    // formik.submitForm() always resolves to undefined because
+                    // Formik's onSubmit is void-typed. We read the ref that
+                    // onSubmit populates synchronously to know if the API succeeded.
+                    await formik.submitForm();
+                    return withdrawSubmitSuccessRef.current;
+                  }}
                   func={(val) => {
                     setWithDrawalModal(true);
                     setWithdrawalData((prev) => ({
@@ -458,17 +465,12 @@ const NGNWithdrawal = ({
                 >
                   {(validateAndExecute) => (
                     <PrimaryButton
+                      type="button"
                       className="w-full"
                       text={"Withdraw"}
                       loading={formik.isSubmitting}
-                      onClick={async () => {
-                        // formik.submitForm() always resolves to undefined because
-                        // Formik's onSubmit is void-typed. We read the ref that
-                        // onSubmit populates synchronously to know if the API succeeded.
-                        await formik.submitForm();
-                        if (withdrawSubmitSuccessRef.current) {
-                          validateAndExecute();
-                        }
+                      onClick={() => {
+                        validateAndExecute();
                       }}
                       disabled={!formik.isValid || !formik.dirty}
                     />

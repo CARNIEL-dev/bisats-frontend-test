@@ -67,14 +67,14 @@ const MarketPlaceTable = ({
               >
                 <p className="font-semibold">{initials}</p>
               </div>
-              <p className="text-gray-600 font-medium">{userName}</p>
+              <p className="text-muted-foreground font-medium">{userName}</p>
               <div className="md:-ml-2">
                 {user?.accountLevel === "level_3" && (
                   <BadgeCheck fill="#F5BB00" stroke="#fff" size={20} />
                 )}
               </div>
             </div>
-            <p className="text-gray-500 text-xs ml-1">
+            <p className="text-muted-foreground text-xs ml-1">
               {user?.totalOrders || "0"} Order(s)
             </p>
           </div>
@@ -89,10 +89,10 @@ const MarketPlaceTable = ({
         const price = formatter({}).format(row.original.price);
         return (
           <div className="flex items-baseline gap-1">
-            <p className="text-gray-600 md:font-semibold text-2xl font-bold md:text-xl">
+            <p className="text-muted-foreground md:font-semibold text-2xl font-bold md:text-xl">
               {price}
             </p>
-            <p className="text-gray-500 text-xs">NGN</p>
+            <p className="text-muted-foreground text-xs">NGN</p>
           </div>
         );
       },
@@ -122,7 +122,7 @@ const MarketPlaceTable = ({
     //       decimal: asset === "USDT" ? 2 : 5,
     //     }).format(value);
     //     return (
-    //       <div className="text-gray-600 uppercase">
+    //       <div className="text-muted-foreground uppercase">
     //         {formatted} {row.original.asset}
     //       </div>
     //     );
@@ -158,8 +158,8 @@ const MarketPlaceTable = ({
         const maxLimit = formatter({}).format(limits.max);
 
         return (
-          <div className="text-gray-600">
-            <p className="font-semibold text-gray-600">
+          <div className="text-muted-foreground">
+            <p className="font-semibold text-muted-foreground">
               {formatter({}).format(quantity)} {asset}
             </p>
             <span>

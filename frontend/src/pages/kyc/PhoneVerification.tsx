@@ -67,7 +67,7 @@ const PhoneVerifcation = () => {
                 }}
               />
             )}
-            <span className="text-gray-600 text-sm">+ {country.dialCode}</span>
+            <span className="text-muted-foreground text-sm">+ {country.dialCode}</span>
           </div>
         </>
       ),

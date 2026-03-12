@@ -25,7 +25,7 @@ const OtherSide = ({
       >
         {header}
       </h3>
-      <p className="text-gray-600 font-normal text-sm">{subHeader}</p>
+      <p className="text-muted-foreground font-normal text-sm">{subHeader}</p>
     </div>
   );
 };

@@ -87,7 +87,7 @@ const Corporate = () => {
         {isCorporateRejected && (
           <div className="flex items-center gap-2 !-mb-2">
             <StatusBadge status="rejected" />
-            <p className="text-gray-500 text-sm">
+            <p className="text-muted-foreground text-sm">
               Your corporate information has been rejected.
             </p>
           </div>
@@ -173,12 +173,12 @@ const Corporate = () => {
             <div className="size-12 rounded-full bg-green-100 flex items-center justify-center mb-4 ">
               <Check className="text-green-500 size-6" />
             </div>
-            <h4 className="text-lg font-semibold text-gray-800">
+            <h4 className="text-lg font-semibold text-foreground">
               {isCorporatePending
                 ? "Your Corporate Information is Pending"
                 : "Your Corporate Information Submitted"}
             </h4>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-muted-foreground">
               {isCorporatePending
                 ? "Your corporate information is pending for review."
                 : "Your corporate information has been submitted successfully, Awaiting review."}

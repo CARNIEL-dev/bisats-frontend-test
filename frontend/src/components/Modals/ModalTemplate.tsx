@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { Fragment, ReactNode } from "react";
 
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/utils";
@@ -39,11 +39,11 @@ const ModalTemplate: React.FC<ModalProps> = ({
   return (
     <>
       {!primary ? (
-        <Transition show={isOpen} as={"div"}>
+        <Transition show={isOpen} as={Fragment}>
           <Dialog onClose={onClose} className="relative z-50">
             {/* Overlay fade */}
             <TransitionChild
-              as={"div"}
+              as={Fragment}
               enter="ease-out duration-200 animate-in fade-in-0"
               enterFrom="opacity-0"
               enterTo="opacity-100"
@@ -52,14 +52,16 @@ const ModalTemplate: React.FC<ModalProps> = ({
               leaveTo="opacity-0"
             >
               <div
-                className={cn("fixed inset-0 bg-black/85 backdrop-blur-sm")}
+                className={cn(
+                  "fixed inset-0 bg-background/85 backdrop-blur-sm",
+                )}
               />
             </TransitionChild>
 
             {/* Panel scale + fade */}
             <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
               <TransitionChild
-                as={"div"}
+                as={Fragment}
                 enter="ease-out duration-200 zoom-in-95 fade-in-0"
                 enterFrom="opacity-0 scale-95"
                 enterTo="opacity-100 scale-100"
@@ -69,7 +71,7 @@ const ModalTemplate: React.FC<ModalProps> = ({
               >
                 <DialogPanel
                   className={cn(
-                    "bg-background fixed top-[50%] left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 rounded-lg border p-6 shadow-lg duration-200 sm:max-w-lg",
+                    "bg-background fixed top-[50%] left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 rounded-lg border p-6 shadow-lg duration-200 sm:max-w-lg border-border",
 
                     className,
                   )}

@@ -151,7 +151,7 @@ const Notification = () => {
                   animate="show"
                   className="text-center py-4"
                 >
-                  <p className="text-slate-500 text-sm">No notifications</p>
+                  <p className="text-muted-foreground text-sm">No notifications</p>
                 </motion.div>
               )}
             </AnimatePresence>

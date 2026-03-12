@@ -132,16 +132,13 @@ const SignUp = () => {
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               />
-              <p className="text-[12px] text-[#515B6E] leading-[16px] font-normal mt-1 ml-2">
+              <p className="text-[12px] text-muted-foreground leading-[16px] font-normal mt-1 ml-2">
                 By creating an account you certify that you are over the age of
                 18 and agree to the Privacy Policy.
               </p>
             </div>
             {formik.touched.agreeToTerms && formik.errors.agreeToTerms ? (
-              <div
-                style={{ color: "red" }}
-                className="text-[12px] text-[#515B6E] leading-[16px] font-normal mb-3"
-              >
+              <div className="text-[12px] text-destructive leading-[16px] font-normal mb-3">
                 {formik.errors.agreeToTerms}
               </div>
             ) : null}
@@ -161,14 +158,14 @@ const SignUp = () => {
           </div>
         </form>
         <div className="w-full flex items-center my-6">
-          <hr className="text-[#F3F4F6] w-1/2 h-[1.5px]" />
-          <span className="text-[12px] text-[#707D96] leading-[16px] font-normal mx-2">
+          <hr className="text-border w-1/2 h-[1.5px]" />
+          <span className="text-sm text-muted-foreground leading-[16px] font-normal mx-2">
             or
           </span>
-          <hr className="text-[#F3F4F6] w-1/2 h-[1.5px]" />
+          <hr className="text-border w-1/2 h-[1.5px]" />
         </div>
         <GoogleButton text="Sign up with Google" />
-        <p className="text-[14px] text-[#515B6E] leading-[24px] font-semibold text-center">
+        <p className="text-[14px] text-muted-foreground leading-[24px] font-semibold text-center">
           Already have an account?
           <span
             className="text-[#C49600] pl-3 cursor-pointer"

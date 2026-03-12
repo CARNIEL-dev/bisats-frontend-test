@@ -38,12 +38,12 @@ export function DataTable<TData, TValue>({
     <div className="space-y-10">
       <div className="rounded-md overflow-hidden">
         <Table>
-          <TableHeader className="bg-gray-100  ">
+          <TableHeader className="bg-muted  ">
             {table.getHeaderGroups().map((headerGroup, index) => (
               <TableRow key={index}>
                 {headerGroup.headers.map((header, idx) => {
                   return (
-                    <TableHead key={idx} className="text-gray-600 font-medium">
+                    <TableHead key={idx} className="text-muted-foreground font-medium">
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -63,10 +63,10 @@ export function DataTable<TData, TValue>({
                 <TableRow
                   key={row.id + index}
                   data-state={row.getIsSelected() && "selected"}
-                  className={cn(index % 2 === 1 && "bg-gray-50", "border-0")}
+                  className={cn(index % 2 === 1 && "bg-muted", "border-0")}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="p-4 text-gray-600">
+                    <TableCell key={cell.id} className="p-4 text-muted-foreground">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()

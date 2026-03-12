@@ -210,7 +210,7 @@ const EditAds = ({
         <ModalTemplate onClose={() => setShowConfirmModal(false)}>
           <div>
             <h2 className="text-lg font-semibold">Update Ads</h2>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-muted-foreground">
               You are about to update this ads. Continue?
             </p>
             <div className="flex items-center gap-2 my-4">
@@ -221,7 +221,7 @@ const EditAds = ({
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               />
-              <span className="text-xs  text-gray-500">Accept changes</span>
+              <span className="text-xs  text-muted-foreground">Accept changes</span>
             </div>
 
             <div className="flex justify-end gap-2 mt-4">

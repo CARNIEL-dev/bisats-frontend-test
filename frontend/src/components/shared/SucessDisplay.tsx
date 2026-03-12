@@ -27,10 +27,10 @@ const SucessDisplay = ({
         <Check className="size-[25px] text-white" />
       </div>
       <div>
-        <h4 className="md:text-xl text-lg font-semibold text-gray-700">
+        <h4 className="md:text-xl text-lg font-semibold text-foreground">
           {heading}
         </h4>
-        <p className=" text-gray-500 text-sm">{subheading}</p>
+        <p className=" text-muted-foreground text-sm">{subheading}</p>
       </div>
 
       <div className="w-1/2 mx-auto mb-3">

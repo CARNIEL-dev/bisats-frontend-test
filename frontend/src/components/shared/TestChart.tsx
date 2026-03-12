@@ -44,7 +44,7 @@ const VolumeByAssetChart = ({ data, title, showXNgn }: Props) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-sm text-gray-500">
+        <CardTitle className="text-sm text-muted-foreground">
           {title} {showXNgn && "(xNGN)"}{" "}
         </CardTitle>
       </CardHeader>
@@ -194,7 +194,7 @@ export const OrderVolumeChart = ({
           />
           <Legend
             formatter={(value) => (
-              <span className="text-gray-600">
+              <span className="text-muted-foreground">
                 {value.toString().toLowerCase() === "buy" ? "Buy" : "Sell"}
               </span>
             )}

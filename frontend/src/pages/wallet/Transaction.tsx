@@ -83,7 +83,7 @@ const Transactions: React.FC = () => {
       header: () => {
         return (
           <div className="flex  flex-col gap-1">
-            <p className="font-semibold text-gray-600 lg:hidden">Asset</p>
+            <p className="font-semibold text-muted-foreground lg:hidden">Asset</p>
             <SelectDropDown
               options={[
                 { label: "Asset", value: "-" },
@@ -98,7 +98,7 @@ const Transactions: React.FC = () => {
                         className="size-4"
                       />
                       <div>
-                        <p className="text-gray-500 font-medium">
+                        <p className="text-muted-foreground font-medium">
                           {item.tokenName}
                         </p>
                       </div>
@@ -120,7 +120,7 @@ const Transactions: React.FC = () => {
       cell: ({ row }) => {
         const item = row.original;
         return (
-          <div className="flex items-center gap-2 text-sm text-gray-600">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <img
               src={tokenLogos[item.Asset as keyof typeof tokenLogos]}
               alt={item.Asset}
@@ -145,7 +145,7 @@ const Transactions: React.FC = () => {
         }).format(amount);
 
         return (
-          <p className="font-semibold text-gray-600 font-mono ">
+          <p className="font-semibold text-muted-foreground font-mono ">
             {price} <span className="text-xs font-normal">{asset}</span>
           </p>
         );
@@ -156,7 +156,7 @@ const Transactions: React.FC = () => {
       header: () => {
         return (
           <div className="flex flex-col gap-1">
-            <p className="font-semibold text-gray-600 lg:hidden">Type</p>
+            <p className="font-semibold text-muted-foreground lg:hidden">Type</p>
             <SelectDropDown
               options={[
                 { label: "Type", value: "-" },

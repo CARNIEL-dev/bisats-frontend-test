@@ -63,7 +63,7 @@ const SummaryCard = ({
         {loading && (
           <span className="flex items-center gap-2 animate-pulse">
             <Loader2 className="animate-spin size-4" />
-            <span className="text-sm font-medium text-gray-600">
+            <span className="text-sm font-medium text-muted-foreground">
               Getting fee...
             </span>
           </span>

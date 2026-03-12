@@ -21,7 +21,7 @@ const CodeEntry = ({ setCode, onClick, loading, code, enable }: Props) => {
       <h2 className="text-xl font-semibold">
         {!enable ? "Disable" : "Enter"} code
       </h2>
-      <p className="text-gray-500 text-sm">
+      <p className="text-muted-foreground text-sm">
         Enter the 6-digit code for "BISATS" generated from your authenticator.
       </p>
       <div className="flex items-center gap-2">

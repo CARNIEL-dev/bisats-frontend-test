@@ -33,7 +33,7 @@ export const Footer = ({
   return (
     <>
       {isAuth ? (
-        <footer className="w-full flex flex-wrap items-center justify-between border-t border-[#D6DAE1] h-[56px]  bg-white">
+        <footer className="w-full flex flex-wrap items-center justify-between border-t border-border h-[56px]  bg-background">
           <div className="flex px-5 items-center w-full lg:w-3/4 mx-auto  justify-between">
             <div className="w-full lg:w-1/3 flex items-center justify-between">
               {LoggedInLinks.map((link, idx) => (
@@ -55,7 +55,7 @@ export const Footer = ({
           </div>
         </footer>
       ) : (
-        <div className="w-full bg-[#0A0E12] px-5 py-10 lg:pt-28">
+        <div className="w-full bg-[#0A0E12] dark:bg-secondary px-5 py-10 lg:pt-28">
           <MaxWidth className="max-w-[120rem]">
             {/* SUB: Newsletter Section */}
             <div className="flex flex-wrap md:flex-col items-center gap-6 mb-32">
@@ -72,7 +72,7 @@ export const Footer = ({
                 <Input
                   placeholder="Email Address"
                   className={cn(
-                    "w-full lg:h-full h-[50px] border border-primary text-slate-600",
+                    "w-full lg:h-full h-[50px] border border-primary text-muted-foreground",
                   )}
                 />
                 <Button className={cn("px-5 py-3 w-full lg:w-[30%] h-full")}>

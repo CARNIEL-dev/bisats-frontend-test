@@ -16,7 +16,7 @@ const DateTimePicker = ({ label, onChange }: { label: string, onChange: (timesta
 
     return (
         <div className="flex flex-col gap-1">
-            <label className="font-semibold text-gray-700">{label}</label>
+            <label className="font-semibold text-foreground">{label}</label>
             <div className="relative">
                 <DatePicker
                     selected={selectedDate}
@@ -24,9 +24,9 @@ const DateTimePicker = ({ label, onChange }: { label: string, onChange: (timesta
                     showTimeSelect
                     dateFormat="yyyy-MM-dd h:mm aa"
                     placeholderText="Select date and time"
-                    className="w-full p-3 pl-4 pr-10 rounded-xl bg-gray-100 text-gray-600 focus:outline-hidden"
+                    className="w-full p-3 pl-4 pr-10 rounded-xl bg-muted text-muted-foreground focus:outline-hidden"
                 />
-                <div className="absolute top-3 right-3 text-gray-500">
+                <div className="absolute top-3 right-3 text-muted-foreground">
                     <Calendar size={20} />
                 </div>
             </div>

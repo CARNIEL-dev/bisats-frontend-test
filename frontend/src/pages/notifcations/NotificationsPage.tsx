@@ -213,13 +213,13 @@ const NotificationsPage = () => {
           <div className="grid grid-cols-[1fr_1.6fr] gap-4 !h-[68dvh] ">
             <div>
               <div className="flex md:items-center flex-col-reverse md:flex-row md:justify-between py-4 border-b gap-y-2">
-                <h5 className="text-sm text-gray-500">
+                <h5 className="text-sm text-muted-foreground">
                   <span>Total : </span>
                   <span>{notificationState?.totalNotification}</span>
                 </h5>
 
                 <div className="flex items-center gap-2">
-                  <span className="text-sm text-gray-500">All </span>
+                  <span className="text-sm text-muted-foreground">All </span>
                   {notificationState.unreadNotifications >= 1 && (
                     <Button
                       variant="ghost"
@@ -319,7 +319,7 @@ const NotificationsPage = () => {
                       animate="show"
                       className="text-center py-4"
                     >
-                      <p className="text-slate-500 text-sm">No notifications</p>
+                      <p className="text-muted-foreground text-sm">No notifications</p>
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -345,7 +345,7 @@ const NotificationsPage = () => {
                       <h3 className="text-lg font-semibold">
                         {notifyId.data?.title}
                       </h3>
-                      <p className="text-gray-500 text-xs capitalize">
+                      <p className="text-muted-foreground text-xs capitalize">
                         {dayjs(notifyId.data?.createdAt).fromNow()}
                       </p>
                       <div className="flex items-center gap-2">
@@ -354,7 +354,7 @@ const NotificationsPage = () => {
                             variant="ghost"
                             size={"sm"}
                             className={cn(
-                              "text-xs rounded-full border border-green-200  size-8 text-slate-600 hover:bg-green-500/10"
+                              "text-xs rounded-full border border-green-200  size-8 text-muted-foreground hover:bg-green-500/10"
                             )}
                             onClick={() => {
                               mutation.mutate({
@@ -393,7 +393,7 @@ const NotificationsPage = () => {
                         </Button>
                       </div>
                     </div>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-muted-foreground">
                       {notifyId.data?.message}
                     </p>
                   </div>

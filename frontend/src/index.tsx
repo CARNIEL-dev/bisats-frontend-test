@@ -5,8 +5,9 @@ import App from "./App";
 import "./index.css";
 import store from "./redux/store";
 // import reportWebVitals from "./reportWebVitals";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+// import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { StrictMode } from "react";
+import { ThemeProvider } from "./components/theme/ThemeProvider";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -26,11 +27,12 @@ root.render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <Provider store={store}>
-        <App />
+        <ThemeProvider defaultTheme="system" storageKey="bisats-ui-theme">
+          <App />
+        </ThemeProvider>
       </Provider>
-      <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />
+      {/* <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" /> */}
     </QueryClientProvider>
-    ,
   </StrictMode>,
 );
 

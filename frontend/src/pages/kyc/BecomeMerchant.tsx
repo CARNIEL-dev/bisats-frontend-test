@@ -87,14 +87,14 @@ const BecomeMerchant = () => {
           <form onSubmit={formik.handleSubmit}>
             <div className="flex flex-col gap-6 mb-4">
               <div className="grid md:grid-cols-2 gap-4 border px-4 py-6 rounded-md">
-                <div className="col-span-full text-sm text-gray-500 space-y-3">
+                <div className="col-span-full text-sm text-muted-foreground space-y-3">
                   <div className="flex items-center gap-3">
                     <IdCard className="text-primary size-8" />
-                    <h4 className="text-xl font-semibold text-gray-900">
+                    <h4 className="text-xl font-semibold text-foreground">
                       Identity Verification
                     </h4>
                   </div>
-                  <p className="text-gray-500">
+                  <p className="text-muted-foreground">
                     Upload a high-resolution photo of yourself holding your
                     valid Passport, Driver's License, or National ID card close
                     to your face. Ensure all text on the ID and your face are
@@ -120,14 +120,14 @@ const BecomeMerchant = () => {
               </div>
 
               <div className="grid gap-4 border px-4 py-6 rounded-md">
-                <div className=" text-sm text-gray-500 space-y-3">
+                <div className=" text-sm text-muted-foreground space-y-3">
                   <div className="flex items-center gap-2">
                     <File className="text-primary size-6" />
-                    <h4 className="text-xl font-semibold text-gray-900">
+                    <h4 className="text-xl font-semibold text-foreground">
                       Utility Bill
                     </h4>
                   </div>
-                  <p className="text-gray-500">
+                  <p className="text-muted-foreground">
                     Please provide a copy of your utility bill not older than 3
                     months. This helps us verify your business address.
                   </p>
@@ -162,10 +162,10 @@ const BecomeMerchant = () => {
             <div className="size-12 rounded-full bg-green-100 flex items-center justify-center mb-4 ">
               <Check className="text-green-500 size-6" />
             </div>
-            <h4 className="text-lg font-semibold text-gray-800">
+            <h4 className="text-lg font-semibold text-foreground">
               Merchant Information Submitted
             </h4>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-muted-foreground">
               Your information has been submitted successfully, Awaiting review.
             </p>
             <Link

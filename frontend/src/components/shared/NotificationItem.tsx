@@ -14,7 +14,7 @@ const NotificationItem = ({
   return (
     <div
       className={cn(
-        " px-2  border-t py-2  text-gray-500   ",
+        " px-2  border-t py-2  text-muted-foreground   ",
         notification.read && "text-gray-300"
       )}
     >
@@ -36,7 +36,7 @@ const NotificationItem = ({
           <h5
             className={cn(
               "text-[#2B313B] text-sm font-semibold leading-[24px]",
-              notification.read && "text-gray-400"
+              notification.read && "text-muted-foreground"
             )}
           >
             {notification.title}

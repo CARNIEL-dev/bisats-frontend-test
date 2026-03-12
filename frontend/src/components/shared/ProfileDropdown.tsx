@@ -108,10 +108,10 @@ const ProfileDropdown = () => {
           sideOffset={10}
         >
           <div className="profile-dropdown">
-            <div className="text-sm  px-2 capitalize text-slate-500">
+            <div className="text-sm  px-2 capitalize text-muted-foreground">
               <h2>
                 Hello,{" "}
-                <span className="font-medium capitalize text-slate-600">
+                <span className="font-medium capitalize text-muted-foreground">
                   {user?.userName || user?.firstName || "User"}{" "}
                 </span>
               </h2>
@@ -134,7 +134,7 @@ const ProfileDropdown = () => {
                       <NavLink
                         to={item.link}
                         className={cn(
-                          "group flex items-center gap-2 py-2.5  font-normal cursor-pointer text-slate-700 text-sm  hover:bg-[#F5FEF8] px-3 hover:font-medium hover:text-green-600 ",
+                          "group flex items-center gap-2 py-2.5  font-normal cursor-pointer text-foreground text-sm  hover:bg-[#F5FEF8] px-3 hover:font-medium hover:text-green-600 ",
                           pathname.includes(item.link) && "active",
                         )}
                         onClick={() => setOpen(false)}
@@ -142,13 +142,13 @@ const ProfileDropdown = () => {
                         <item.icon />
                         <span>{item.text}</span>
                       </NavLink>
-                      <div className="pl-8 border-b">
+                      <div className="pl-8 border-b border-b-border">
                         {item.subMenu.map((subItem, subIndex) => (
                           <NavLink
                             to={subItem.link}
                             key={subIndex}
                             className={cn(
-                              "block py-2.5 text-sm text-slate-600 hover:text-green-500",
+                              "block py-2.5 text-sm text-muted-foreground hover:text-green-500",
                               pathname.includes(subItem.link) && "active",
                             )}
                             onClick={() => setOpen(false)}
@@ -165,7 +165,7 @@ const ProfileDropdown = () => {
                     to={item.link}
                     key={index}
                     className={cn(
-                      "group flex items-center gap-2 py-2.5 hover:text-green-500 font-normal cursor-pointer text-slate-700 text-sm  hover:bg-[#F5FEF8] px-3 border-b ",
+                      "group flex items-center gap-2 py-2.5 hover:text-green-500 font-normal cursor-pointer text-foreground text-sm  hover:bg-[#F5FEF8] px-3 border-b border-b-border",
                     )}
                     onClick={() => setOpen(false)}
                   >
@@ -183,19 +183,19 @@ const ProfileDropdown = () => {
                 key={index}
                 onClick={() => setOpen(false)}
                 className={cn(
-                  " flex items-center gap-2 py-2  font-normal cursor-pointer text-slate-700 text-sm  hover:bg-[#F5FEF8] px-3  hover:font-medium hover:text-green-600",
+                  " flex items-center gap-2 py-2  font-normal cursor-pointer text-foreground text-sm  hover:bg-[#F5FEF8] px-3  hover:font-medium hover:text-green-600",
                 )}
               >
                 <item.icon />
                 <span className="  ">{item.text}</span>
               </NavLink>
             ))}
-            <div className="border-t mt-2">
+            <div className="border-t border-t-border mt-2">
               <Button
                 variant="ghost"
                 onClick={() => setShowLogOutModal(true)}
                 className={cn(
-                  "w-full text-sm px-3 text-slate-700 font-normal justify-start hover:bg-red-500/5 hover:text-red-500 hover:font-medium",
+                  "w-full text-sm px-3 text-foreground font-normal justify-start hover:bg-red-500/5 hover:text-red-500 hover:font-medium",
                 )}
               >
                 <SignOut />

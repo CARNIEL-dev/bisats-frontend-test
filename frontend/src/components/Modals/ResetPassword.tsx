@@ -86,10 +86,10 @@ const ResetPasswordModal: React.FC<Props> = ({ close, open }) => {
                 </div>
               ) : (
                 <div className="my-4">
-                  <p className="font-semibold text-gray-600">
+                  <p className="font-semibold text-muted-foreground">
                     You have not enabled 2FA
                   </p>
-                  <p className="text-gray-500 text-sm">
+                  <p className="text-muted-foreground text-sm">
                     Please enable 2FA to reset your password
                   </p>
                 </div>

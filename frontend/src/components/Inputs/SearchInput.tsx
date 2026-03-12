@@ -22,8 +22,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
   return (
     <div className={cn(`relative w-full`, className)}>
       <Search
-        className="absolute left-3 top-1/2 transform -translate-y-1/2"
-        color="#99A2B4"
+        className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"
         size={iconSize}
       />
       <Input

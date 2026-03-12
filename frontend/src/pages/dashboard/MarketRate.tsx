@@ -68,17 +68,17 @@ const MarketRate: React.FC = () => {
         usdTrend: currencyRates?.solana?.usd_24h_change ?? 0,
       },
     ],
-    [currencyRates]
+    [currencyRates],
   );
 
   return (
-    <div className="border space-y-4 h-full w-full p-6 rounded-2xl">
+    <div className="border border-border space-y-4 h-full w-full p-6 rounded-2xl">
       <div className="flex items-center md:items-start lg:items-center md:flex-col lg:flex-row justify-between gap-2">
-        <p className="md:text-sm text-xs font-semibold text-gray-700">
+        <p className="md:text-sm text-xs font-semibold text-foreground">
           Market Rates (per unit)
         </p>
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-1 text-xs text-gray-500">
+          <div className="flex items-center gap-1 text-xs text-muted-foreground">
             <span>$ USD</span>
             <Switch
               checked={currency === "NGN"}
@@ -115,7 +115,7 @@ const MarketRate: React.FC = () => {
                 (currency === "NGN" ? coin.ngnTrend : coin.usdTrend) > 0;
 
               const percent = Math.abs(
-                currency === "NGN" ? coin.ngnTrend : coin.usdTrend
+                currency === "NGN" ? coin.ngnTrend : coin.usdTrend,
               ).toFixed(2);
               const rate = currency === "NGN" ? coin.NairaRate : coin.USDRate;
 
@@ -166,7 +166,7 @@ const CoinListItem = ({
   isLoading,
 }: CoinListItemProps) => {
   return (
-    <div className="flex justify-between items-center py-2 border-t ">
+    <div className="flex justify-between items-center py-2 border-t border-t-border ">
       <div className="flex items-center gap-2">
         <img
           src={logo || "/Icon/default-coin.png"}
@@ -176,13 +176,13 @@ const CoinListItem = ({
         <div>
           <p
             className={cn(
-              "font-semibold text-xs text-gray-600",
-              !isXNGN && "uppercase"
+              "font-semibold text-xs text-muted-foreground",
+              !isXNGN && "uppercase",
             )}
           >
             {symbol}
           </p>
-          <p className="text-xs text-gray-400">{tokenName}</p>
+          <p className="text-xs text-muted-foreground">{tokenName}</p>
         </div>
       </div>
       {isLoading ? (
@@ -197,20 +197,20 @@ const CoinListItem = ({
         </div>
       ) : (
         <div className="flex items-center text-sm gap-2">
-          <p className="font-semibold  text-gray-800 space-x-1">
+          <p className="font-semibold  text-foreground space-x-1">
             <span className="md:text-base text-sm">
               {formatter({
                 decimal: currency === "USD" && symbol === "xNGN" ? 6 : 2,
               }).format(rate)}
             </span>
-            <span className="text-xs font-normal text-gray-600">
+            <span className="text-xs font-normal text-muted-foreground">
               {currency}
             </span>
           </p>
           <div
             className={cn(
               "flex items-center gap-1",
-              upTrend ? "text-green-600" : "text-red-600"
+              upTrend ? "text-green-600" : "text-red-600",
             )}
           >
             <span className="text-[10px]">{upTrend ? "▲" : "▼"}</span>

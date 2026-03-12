@@ -134,9 +134,9 @@ const TwoFactorAuthModal: React.FC<Props> = ({
           )}
         </div>
         <h2 className="text-xl font-medium">Scan QRCode</h2>
-        <p className="text-gray-500 text-sm">
+        <p className="text-muted-foreground text-sm">
           From your device, launch{" "}
-          <span className="font-bold text-gray-800">Google Authenticator</span>,
+          <span className="font-bold text-foreground">Google Authenticator</span>,
           and scan the QRCode above. Hit done, when you’ve added the key above
           successfully.
         </p>
@@ -163,7 +163,7 @@ const TwoFactorAuthModal: React.FC<Props> = ({
     const secretKey = formatKey();
 
     return (
-      <div className="p-6 max-w-md mx-auto bg-white  flex flex-col gap-2 text-center">
+      <div className="p-6 max-w-md mx-auto bg-background  flex flex-col gap-2 text-center">
         <div className="bg-blue-100 text-blue-800 p-3 rounded font-mono flex items-end">
           {secretKey}
 
@@ -180,7 +180,7 @@ const TwoFactorAuthModal: React.FC<Props> = ({
         </div>
 
         <h2 className="text-xl font-semibold mt-4">Add manually</h2>
-        <p className="text-gray-500 text-sm">
+        <p className="text-muted-foreground text-sm">
           Tap to copy the key above and paste it in your authenticator to start
           generating tokens. Hit done, when you’ve added the key above
           successfully.
