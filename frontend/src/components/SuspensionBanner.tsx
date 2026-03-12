@@ -35,11 +35,11 @@ const SuspensionBanner = ({ className = "" }: SuspensionBannerProps) => {
         <h4 className="text-red-600 text-base lg:text-[20px] font-semibold">
           Account Suspended
         </h4>
-        <p className="text-gray-600 text-xs md:text-sm font-normal">
+        <p className="text-muted-foreground text-xs md:text-sm font-normal">
           {suspensionInfo.reason}
         </p>
         {suspensionInfo.duration && (
-          <p className="text-gray-500 text-xs md:text-sm">
+          <p className="text-muted-foreground text-xs md:text-sm">
             Duration: {suspensionInfo.duration}
           </p>
         )}

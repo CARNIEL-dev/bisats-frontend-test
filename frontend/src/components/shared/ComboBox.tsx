@@ -54,7 +54,7 @@ export default function SearchableDropdownContainer() {
           anchor="bottom"
           transition
           className={clsx(
-            "w-(--input-width) rounded-xl border  bg-white/5 p-1 [--anchor-gap:--spacing(1)] empty:invisible",
+            "w-(--input-width) rounded-xl border  bg-background/5 p-1 [--anchor-gap:--spacing(1)] empty:invisible",
             "transition duration-100 ease-in data-leave:data-closed:opacity-0"
           )}
         >
@@ -62,10 +62,10 @@ export default function SearchableDropdownContainer() {
             <ComboboxOption
               key={person.id}
               value={person}
-              className="group flex cursor-default items-center gap-2 rounded-lg  select-none data-focus:bg-white bg-white"
+              className="group flex cursor-default items-center gap-2 rounded-lg  select-none data-focus:bg-background bg-background"
             >
               <Check className="invisible size-4 fill-black group-data-selected:visible" />
-              <div className="text-sm/6 text-black">{person.name}</div>
+              <div className="text-sm/6 text-foreground">{person.name}</div>
             </ComboboxOption>
           ))}
         </ComboboxOptions>

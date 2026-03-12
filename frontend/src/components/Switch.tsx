@@ -27,7 +27,7 @@ const Switch = ({
     >
       <span
         className={`
-					pointer-events-none inline-block h-[13px] w-[13px] transform rounded-full bg-white shadow-lg 
+					pointer-events-none inline-block h-[13px] w-[13px] transform rounded-full bg-background shadow-lg 
 					ring-0 transition duration-200 ease-in-out ${
             checked ? "translate-x-3" : "translate-x-0"
           }

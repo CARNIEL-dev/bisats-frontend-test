@@ -28,7 +28,7 @@ const BalanceInfo = ({ className, currency, userBalance, wallet }: Props) => {
         <TooltipTrigger
           onClick={() => setOpen(true)}
           className={cn(
-            "hover:bg-primary/10 text-gray-500 hover:text-primary size-10 rounded-full ml-auto flex items-center justify-center",
+            "hover:bg-primary/10 text-muted-foreground hover:text-primary size-10 rounded-full ml-auto flex items-center justify-center",
             className
           )}
         >
@@ -68,7 +68,7 @@ const BalanceInfo = ({ className, currency, userBalance, wallet }: Props) => {
                 value={
                   <p>
                     {symbol}{" "}
-                    <span className="font-bold text-2xl text-black">
+                    <span className="font-bold text-2xl text-foreground">
                       {formatter({}).format(
                         (userBalance?.balanceTotal ?? 0) +
                           (userBalance?.lockedBalanceTotal ?? 0)
@@ -76,7 +76,7 @@ const BalanceInfo = ({ className, currency, userBalance, wallet }: Props) => {
                     </span>
                   </p>
                 }
-                labelClass="text-gray-900"
+                labelClass="text-foreground"
               />
               <InfoDisplay text="Total Amount in your Bisats account" />
             </div>
@@ -86,24 +86,24 @@ const BalanceInfo = ({ className, currency, userBalance, wallet }: Props) => {
                 value={
                   <p>
                     {symbol}{" "}
-                    <span className="font-semibold text-lg text-gray-700">
+                    <span className="font-semibold text-lg text-foreground">
                       {formatter({}).format(userBalance?.balanceTotal ?? 0)}
                     </span>
                   </p>
                 }
-                labelClass="text-gray-900"
+                labelClass="text-foreground"
               />
 
               <InfoDisplay text="Amount available for trading and withdrawal" />
             </div>
             <div>
               <TextBox
-                labelClass="text-gray-900"
+                labelClass="text-foreground"
                 label="Amount Locked in Escrow"
                 value={
                   <p>
                     {symbol}{" "}
-                    <span className="font-semibold text-lg text-gray-700">
+                    <span className="font-semibold text-lg text-foreground">
                       {formatter({}).format(
                         userBalance?.lockedBalanceTotal ?? 0
                       )}
@@ -120,8 +120,8 @@ const BalanceInfo = ({ className, currency, userBalance, wallet }: Props) => {
                 labelClass="text-sm"
                 label="Buy"
                 value={
-                  <p className="text-sm text-gray-800">
-                    <span className="text-gray-400 text-xs">xNGN</span>{" "}
+                  <p className="text-sm text-foreground">
+                    <span className="text-muted-foreground text-xs">xNGN</span>{" "}
                     {formatCompactNumber(wallet?.AdsLimit?.buy ?? 0)}
                   </p>
                 }
@@ -130,8 +130,8 @@ const BalanceInfo = ({ className, currency, userBalance, wallet }: Props) => {
                 labelClass="text-sm"
                 label="Sell"
                 value={
-                  <p className="text-sm text-gray-800">
-                    <span className="text-gray-400 text-xs">xNGN</span>{" "}
+                  <p className="text-sm text-foreground">
+                    <span className="text-muted-foreground text-xs">xNGN</span>{" "}
                     {formatCompactNumber(wallet?.AdsLimit?.sell ?? 0)}
                   </p>
                 }
@@ -140,8 +140,8 @@ const BalanceInfo = ({ className, currency, userBalance, wallet }: Props) => {
                 labelClass="text-sm"
                 label="Daily Withdrawal (xNGN)"
                 value={
-                  <p className="text-sm text-gray-800">
-                    <span className="text-gray-400 text-xs">xNGN</span>{" "}
+                  <p className="text-sm text-foreground">
+                    <span className="text-muted-foreground text-xs">xNGN</span>{" "}
                     {formatCompactNumber(
                       parseInt(wallet?.NGNMaxDailyWithdrawalLimit || "0")
                     ).endsWith("T")
@@ -156,7 +156,7 @@ const BalanceInfo = ({ className, currency, userBalance, wallet }: Props) => {
                 labelClass="text-sm"
                 label="Daily Withdrawal (USD)"
                 value={
-                  <p className="text-sm text-gray-800">
+                  <p className="text-sm text-foreground">
                     $
                     {formatCompactNumber(
                       parseInt(wallet?.USDMaxDailyWithdrawalLimit || "0")
@@ -215,6 +215,6 @@ const InfoDisplay = ({
   className?: string;
 }) => {
   return (
-    <p className={cn("text-xs text-gray-400 md:-mt-1", className)}>{text}</p>
+    <p className={cn("text-xs text-muted-foreground md:-mt-1", className)}>{text}</p>
   );
 };

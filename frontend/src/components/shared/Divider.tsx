@@ -14,7 +14,7 @@ const Divider = ({
       <Separator />
       <p
         className={cn(
-          "text-[#515B6E] font-normal text-xs absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white px-2",
+          "text-[#515B6E] font-normal text-xs absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-background px-2",
           textClassName
         )}
       >

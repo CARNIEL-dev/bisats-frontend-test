@@ -31,7 +31,7 @@ const SwapLayout = () => {
             <h4 className="font-semibold text-lg">
               Your Account is being reviewed
             </h4>
-            <p className="text-gray-500 text-sm">
+            <p className="text-muted-foreground text-sm">
               Please wait for admin approval
             </p>
           </div>

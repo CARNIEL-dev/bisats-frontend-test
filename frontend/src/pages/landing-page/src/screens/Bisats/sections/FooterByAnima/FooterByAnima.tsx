@@ -38,7 +38,7 @@ const footerData = {
 
 export const FooterByAnima = (): React.ReactElement => {
   return (
-    <footer className="w-full bg-accent-black py-20">
+    <footer className="w-full bg-accent-black dark:bg-secondary py-20">
       {/* Newsletter Section */}
       <div className="flex flex-col items-center gap-6 mb-32">
         <div className="flex flex-col items-center gap-2">

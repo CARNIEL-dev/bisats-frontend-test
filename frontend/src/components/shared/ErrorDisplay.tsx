@@ -15,7 +15,7 @@ const ErrorDisplay = ({
   return (
     <div
       className={cn(
-        "flex items-center justify-center text-gray-600 gap-2",
+        "flex items-center justify-center text-muted-foreground gap-2",
         isError && "text-red-500",
         capitalize && "capitalize"
       )}

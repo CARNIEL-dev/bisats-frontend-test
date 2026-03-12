@@ -154,7 +154,7 @@ const PrimaryInput: React.FC<TInput> = ({
         {label && (
           <label
             htmlFor={props.id}
-            className="text-sm font-semibold text-[#606C82]  "
+            className="text-sm font-semibold text-foreground"
           >
             {label}
           </label>
@@ -178,8 +178,8 @@ const PrimaryInput: React.FC<TInput> = ({
                   className={cn(
                     "size-12 text-xl transition-all",
                     // Base Styles: 1px border and the specific #606C82 inset shadow
-                    "border-[#D6DAE1] rounded-[8px] border",
-                    "shadow-[inset_0px_2px_4px_rgba(96,108,130,0.2)]",
+                    "border-border rounded-[8px] border",
+                    "shadow-inner dark:shadow-none",
                     // Focus Styles: Kill the default ring, use primary color
                     "focus-visible:ring-0 focus-visible:ring-offset-0",
                     "aria-selected:border-primary aria-selected:ring-1 aria-selected:ring-primary",
@@ -202,12 +202,12 @@ const PrimaryInput: React.FC<TInput> = ({
               containerClassName="flex items-center justify-center"
               inputStyle={{
                 border: "1px solid transparent",
-                borderColor: error ? "#EF4444" : "#D6DAE1",
+                borderColor: error ? "var(--destructive)" : "var(--border)",
                 borderRadius: "30%",
                 padding: "10px",
                 fontSize: "22px",
                 outline: "0px solid transparent",
-                boxShadow: "inset 0px 2px 8px rgba(96, 108, 130, 0.2)",
+                boxShadow: "inset 0px 2px 8px rgba(0, 0, 0, 0.1)",
                 transition: "all 0.2s ease-in-out",
               }}
             />
@@ -220,8 +220,8 @@ const PrimaryInput: React.FC<TInput> = ({
             inputMode={format ? (inputMode ?? "decimal") : inputMode}
             style={mergedStyle}
             className={cn(
-              `rounded-sm placeholder:text-sm text-base font-normal border border-[#D6DAE1] outline-[none] focus:border-[#C49600] focus:shadow-[0_0_10px_#FEF8E5] w-full text-[#606C82]  p-2.5 no-spinner  px-3 `,
-              error && "border-[#EF4444] outline-0 focus:border-[#EF4444] ",
+              `rounded-sm placeholder:text-sm text-base font-normal border border-border bg-background outline-[none] focus:border-primary focus:ring-1 focus:ring-primary w-full text-foreground p-2.5 no-spinner px-3`,
+              error && "border-destructive outline-0 focus:border-destructive",
               className,
             )}
             data-raw-value={format ? rawValue : undefined}
@@ -249,7 +249,7 @@ const PrimaryInput: React.FC<TInput> = ({
               loadingLeft && "left-5 right-auto",
             )}
           >
-            <Loader className="animate-spin text-gray-400" />
+            <Loader className="animate-spin text-muted-foreground" />
           </p>
         )}
       </div>
@@ -260,12 +260,12 @@ const PrimaryInput: React.FC<TInput> = ({
           type === "pin" ? "justify-center" : "justify-between",
         )}
       >
-        <span className="text-red-500 text-xs ">{error}</span>
+        <span className="text-destructive text-xs ">{error}</span>
 
         {maxFnc && (
           <button
             type="button"
-            className="flex justify-end px-3 py-1 rounded-md  text-xs text-[#C49600] text-[12px w-fit ml-auto hover:bg-primary-light ease transition-all duration-300"
+            className="flex justify-end px-3 py-1 rounded-md text-xs text-primary text-[12px] w-fit ml-auto hover:bg-primary/10 transition-all duration-300"
             onClick={() => maxFnc && maxFnc()}
           >
             {maxText || "Max"}
@@ -309,7 +309,7 @@ const PrimaryInput: React.FC<TInput> = ({
           )}
           <small
             className={cn(
-              "text-[#606C82] text-xs text-left",
+              "text-muted-foreground text-xs text-left",
               infoSuccess && "text-green-600 font-semibold text-sm",
             )}
           >

@@ -43,7 +43,7 @@ const MobileAppPrompt = () => {
         <h2 className="text-xl font-semibold">
           Bisats Web App at Your Fingertips
         </h2>
-        <p className="leading-7 text-sm text-gray-600">
+        <p className="leading-7 text-sm text-muted-foreground">
           Add the Bisats web app directly to your phone’s home screen for
           faster, seamless access—trade instantly without opening your browser
         </p>
@@ -56,7 +56,7 @@ const MobileAppPrompt = () => {
         </Link>
 
         {/* Checkbox Logic */}
-        <div className="flex items-center justify-center gap-2 font-semibold text-sm text-gray-600 mt-3">
+        <div className="flex items-center justify-center gap-2 font-semibold text-sm text-muted-foreground mt-3">
           <InputCheck
             type="checkbox"
             name="agreeToTerms"

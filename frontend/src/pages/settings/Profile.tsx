@@ -140,7 +140,7 @@ const Profile = () => {
             <Button
               variant={"secondary"}
               size="sm"
-              className={cn("text-gray-500 text-sm ")}
+              className={cn("text-muted-foreground text-sm ")}
               onClick={() => setIsEditing(false)}
             >
               <X />
@@ -172,7 +172,7 @@ const Profile = () => {
           </Button>
         )}
       </div>
-      <div className="my-6 border rounded-xl p-6 ">
+      <div className="my-6 border border-border rounded-xl p-6 ">
         <div className="flex flex-col gap-6">
           {isEditing ? (
             <div className="flex flex-col gap-4">
@@ -194,7 +194,7 @@ const Profile = () => {
                 disabled={!canEditDisplayName}
               />
               {(lastUserNameChange || nextEdit) && (
-                <div className="border space-y-1 font-medium bg-gray-50 rounded-md p-2 text-xs  w-fit shadow">
+                <div className="border border-border space-y-1 font-medium bg-muted rounded-md p-2 text-xs  w-fit shadow">
                   {lastUserNameChange && (
                     <p className="text-[#606C82] capitalize">
                       Changed: {lastUserNameChange}
@@ -211,7 +211,7 @@ const Profile = () => {
                 <Divider
                   text="Bvn Verified : Not Editable"
                   className="mb-1 mt-5"
-                  textClassName="bg-gray-100 text-center text-nowrap border  rounded-full"
+                  textClassName="bg-muted text-center text-nowrap border border-border rounded-full"
                 />
               )}
               <PrimaryInput
@@ -266,7 +266,7 @@ const Profile = () => {
                 </div>
                 <TextBox
                   label="KYC Verification Status"
-                  labelClass="text-gray-400 text-xs uppercase"
+                  labelClass="text-muted-foreground text-xs uppercase"
                   direction="column"
                   containerClassName="gap-0.5"
                   value={
@@ -276,7 +276,7 @@ const Profile = () => {
                           "flex items-center gap-2 text-sm font-semibold",
                           user?.accountLevel
                             ? "text-[#17A34A]"
-                            : "text-gray-500",
+                            : "text-muted-foreground",
                         )}
                       >
                         {user?.accountLevel ? "Verified" : "Unverified"}{" "}
@@ -312,7 +312,7 @@ const Profile = () => {
                 return (
                   <div className="flex items-center gap-4" key={idx}>
                     {Icon && (
-                      <div className="bg-slate-100 p-2 rounded-md text-slate-500">
+                      <div className="bg-muted p-2 rounded-md text-muted-foreground">
                         <Icon className="size-6" />
                       </div>
                     )}
@@ -328,7 +328,7 @@ const Profile = () => {
                           {data.value}
                         </p>
                       }
-                      labelClass="text-gray-400 text-xs uppercase"
+                      labelClass="text-muted-foreground text-xs uppercase"
                       direction="column"
                       containerClassName="gap-0.5"
                     />

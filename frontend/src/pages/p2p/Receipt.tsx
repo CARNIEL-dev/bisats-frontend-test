@@ -59,7 +59,7 @@ const Receipt = () => {
             Transaction Completed
           </h1>
 
-          <div className=" bg-slate-50 rounded-[12px] py-4 px-6  my-5 text-sm flex flex-col gap-5 ">
+          <div className=" bg-muted rounded-[12px] py-4 px-6  my-5 text-sm flex flex-col gap-5 ">
             <TextBox
               label="Type"
               value={

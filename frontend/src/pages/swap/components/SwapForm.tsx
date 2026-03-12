@@ -221,6 +221,7 @@ const SwapForm = ({ onSuccess }: SwapFormProps) => {
         setExecuting(false);
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       sourceAsset,
       targetAsset,
@@ -346,16 +347,18 @@ const SwapForm = ({ onSuccess }: SwapFormProps) => {
       {/* SUB: Indicative rate + Timer */}
       {rateData && sourceAsset && targetAsset && (
         <div className="flex items-center justify-between -mt-6 mb-2">
-          <p className="text-xs text-gray-500">
+          <p className="text-xs text-muted-foreground">
             Indicative rate: 1 {sourceAsset} ≈ {formatNumber(rateData.rate)}{" "}
             {targetAsset}
           </p>
           <div className="flex gap-2 items-center">
             {timer !== null && (
-              <div className="flex gap-1 items-center text-xs font-semibold px-2 py-0.5 rounded-md bg-gray-100">
+              <div className="flex gap-1 items-center text-xs font-semibold px-2 py-0.5 rounded-md bg-muted">
                 {timer > 0 ? (
                   <span
-                    className={timer <= 10 ? "text-red-500" : "text-gray-500"}
+                    className={
+                      timer <= 10 ? "text-red-500" : "text-muted-foreground"
+                    }
                   >
                     {timer}s
                   </span>
@@ -367,7 +370,7 @@ const SwapForm = ({ onSuccess }: SwapFormProps) => {
             <RefreshButton
               isFetching={rateLoading}
               refetch={refreshRate}
-              className="bg-transparent hover:bg-gray-100 text-green-600 h-6 w-6 p-1"
+              className="bg-transparent hover:bg-muted text-green-600 h-6 w-6 p-1"
               refreshTime={2000}
             />
           </div>
@@ -400,7 +403,7 @@ const SwapForm = ({ onSuccess }: SwapFormProps) => {
             Sold {swapResult.sourceAmount} {sourceAsset} → Received{" "}
             {swapResult.targetAmount} {targetAsset}
           </p>
-          <p className="text-gray-500 text-xs">
+          <p className="text-muted-foreground text-xs">
             Reference: {swapResult.reference}
           </p>
         </div>

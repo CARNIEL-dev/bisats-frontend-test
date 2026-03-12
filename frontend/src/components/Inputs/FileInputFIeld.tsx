@@ -333,7 +333,7 @@ const FileInputField: React.FC<FileInputProps> = ({
     ? "!border-red-400 !bg-red-500/10 !text-red-600"
     : success
       ? "!border-emerald-400 !bg-emerald-500/10 !text-emerald-700"
-      : "text-gray-500";
+      : "text-muted-foreground";
 
   return (
     <>
@@ -425,7 +425,7 @@ const FileInputField: React.FC<FileInputProps> = ({
             <button
               type="button"
               onClick={handleCropCancel}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md"
+              className="px-4 py-2 text-sm font-medium text-foreground bg-muted hover:bg-secondary rounded-md"
             >
               Cancel
             </button>

@@ -53,7 +53,7 @@ const FileInput: React.FC<TFileInput> = ({
           <label
             htmlFor="file-upload"
             className={cn(
-              "file-upload-box text-gray-500",
+              "file-upload-box text-muted-foreground",
               error && "!border-red-400 !bg-red-500/10 !text-red-600"
             )}
           >

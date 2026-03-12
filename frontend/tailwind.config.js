@@ -1,6 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 
 module.exports = {
+  darkMode: "class",
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
@@ -14,44 +15,61 @@ module.exports = {
         priBlack: "#0A0E12",
         "primary-light": "#fff9e4",
 
-        // OKLCH-based colors
-        background: "oklch(1 0 0)",
-        foreground: "oklch(0.145 0 0)",
-        card: "oklch(1 0 0)",
-        "card-foreground": "oklch(0.145 0 0)",
-        popover: "oklch(1 0 0)",
-        "popover-foreground": "oklch(0.145 0 0)",
+        // HSL-based colors (Shadcn UI standard)
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+        },
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
+        },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
+        },
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
 
-        primary: "#f5bb00",
-        "primary-foreground": "oklch(0.985 0 0)",
-        secondary: "#f5f5f5",
-        "secondary-foreground": "#171717",
+        // Charts
+        chart: {
+          1: "hsl(var(--chart-1))",
+          2: "hsl(var(--chart-2))",
+          3: "hsl(var(--chart-3))",
+          4: "hsl(var(--chart-4))",
+          5: "hsl(var(--chart-5))",
+        },
 
-        muted: "oklch(27.274% 0.00003 271.152)",
-        "muted-foreground": "oklch(0.556 0 0)",
-        accent: "oklch(0.97 0 0)",
-        "accent-foreground": "oklch(0.205 0 0)",
-        destructive: "oklch(0.577 0.245 27.325)",
-        "destructive-foreground": "oklch(0.577 0.245 27.325)",
-
-        border: "oklch(0.922 0 0)",
-        input: "oklch(0.922 0 0)",
-        ring: "oklch(0.708 0 0)",
-
-        "chart-1": "oklch(0.646 0.222 41.116)",
-        "chart-2": "oklch(0.6 0.118 184.704)",
-        "chart-3": "oklch(0.398 0.07 227.392)",
-        "chart-4": "oklch(0.828 0.189 84.429)",
-        "chart-5": "oklch(0.769 0.188 70.08)",
-
-        sidebar: "oklch(0.985 0 0)",
-        "sidebar-foreground": "oklch(0.145 0 0)",
-        "sidebar-primary": "oklch(0.205 0 0)",
-        "sidebar-primary-foreground": "oklch(0.985 0 0)",
-        "sidebar-accent": "oklch(0.97 0 0)",
-        "sidebar-accent-foreground": "oklch(0.205 0 0)",
-        "sidebar-border": "oklch(0.922 0 0)",
-        "sidebar-ring": "oklch(0.708 0 0)",
+        // Sidebar
+        sidebar: {
+          DEFAULT: "hsl(var(--sidebar-background))",
+          foreground: "hsl(var(--sidebar-foreground))",
+          primary: "hsl(var(--sidebar-primary))",
+          "primary-foreground": "hsl(var(--sidebar-primary-foreground))",
+          accent: "hsl(var(--sidebar-accent))",
+          "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
+          border: "hsl(var(--sidebar-border))",
+          ring: "hsl(var(--sidebar-ring))",
+        },
       },
 
       borderRadius: {

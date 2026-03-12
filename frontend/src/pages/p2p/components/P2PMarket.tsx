@@ -455,7 +455,7 @@ const InputField = ({
 
       <div className="absolute right-1 top-1/2 -translate-y-[63%]">
         <button
-          className={`text-gray-600 p-2.5 px-4  border cursor-default h-[48px] rounded-md items-center bg-gradient-to-r from-[#FFFFFF] to-[#dfe2e9]  flex justify-center gap-2 font-semibold text-sm `}
+          className={`text-muted-foreground p-2.5 px-4  border cursor-default h-[48px] rounded-md items-center bg-gradient-to-r from-[#FFFFFF] to-[#dfe2e9]  flex justify-center gap-2 font-semibold text-sm `}
           type="button"
         >
           <span className="shrink-0">{logo}</span>

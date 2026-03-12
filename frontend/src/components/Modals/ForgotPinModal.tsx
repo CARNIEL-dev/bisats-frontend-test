@@ -42,7 +42,7 @@ const ForgotPinModal = ({ open, close }: Props) => {
   return (
     <ModalTemplate isOpen={open} onClose={close} className="px-6">
       <div className="flex items-center gap-2 mb-6">
-        <div className="rounded-full size-12 grid bg-gray-100 place-items-center border">
+        <div className="rounded-full size-12 grid bg-muted place-items-center border">
           <Key />
         </div>
         <Head header="Forgot Pin" />
@@ -50,7 +50,7 @@ const ForgotPinModal = ({ open, close }: Props) => {
       {!(isCodeVerified && token) ? (
         <form onSubmit={formik.handleSubmit}>
           <div className="">
-            <p className="text-gray-500 text-sm mb-2">
+            <p className="text-muted-foreground text-sm mb-2">
               Enter the code sent to your email
             </p>
             <div className="w-full mb-4">

@@ -1,25 +1,40 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-  <meta charset="utf-8" />
-  <link rel="icon" href="%PUBLIC_URL%/web.png" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
-    rel="stylesheet">
-  <meta name="description"
-    content="Bisats makes crypto trading simple in Nigeria. Enjoy fast, secure, and seamless peer-to-peer Bitcoin and crypto transactions powered by blockchain automation." />
-  <link rel="apple-touch-icon" href="%PUBLIC_URL%/web.png" />
-  <link href="/dist/index.css" rel="stylesheet">
-  <!--
+  <head>
+    <script>
+      try {
+        const storedTheme = localStorage.getItem("bisats-ui-theme");
+        if (
+          storedTheme === '"dark"' ||
+          storedTheme === "dark" ||
+          (!storedTheme &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches)
+        ) {
+          document.documentElement.classList.add("dark");
+        }
+      } catch (e) {}
+    </script>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/web.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <meta
+      name="description"
+      content="Bisats makes crypto trading simple in Nigeria. Enjoy fast, secure, and seamless peer-to-peer Bitcoin and crypto transactions powered by blockchain automation."
+    />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/web.png" />
+    <link href="/dist/index.css" rel="stylesheet" />
+    <!--
       manifest.json provides metadata used when your web app is installed on a
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
     -->
-  <!-- <link rel="manifest" href="%PUBLIC_URL%/manifest.json" /> -->
-  <!--
+    <!-- <link rel="manifest" href="%PUBLIC_URL%/manifest.json" /> -->
+    <!--
       Notice the use of %PUBLIC_URL% in the tags above.
       It will be replaced with the URL of the `public` folder during the build.
       Only files inside the `public` folder can be referenced from the HTML.
@@ -28,33 +43,28 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-  <title>Bisats</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    <title>Bisats</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-    body {
+      body {
+        font-family: "Geist", sans-serif;
+        /* font-optical-sizing: auto; */
+        font-weight: 400;
+      }
+    </style>
+  </head>
 
-      font-family: "Geist", sans-serif;
-      /* font-optical-sizing: auto; */
-      font-weight: 300;
-
-
-    }
-  </style>
-
-</head>
-
-<body class="antialiased">
-  <noscript>You need to enable JavaScript to run this app.</noscript>
-  <div id="root"></div>
-
-</body>
-<!--Start of Tawk.to Script-->
-<!-- <script type="text/javascript">
+  <body class="antialiased bg-background text-foreground">
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+  </body>
+  <!--Start of Tawk.to Script-->
+  <!-- <script type="text/javascript">
   var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
   (function () {
     var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
@@ -65,6 +75,5 @@
     s0.parentNode.insertBefore(s1, s0);
   })();
 </script> -->
-<!--End of Tawk.to Script-->
-
+  <!--End of Tawk.to Script-->
 </html>

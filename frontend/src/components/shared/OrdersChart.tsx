@@ -44,7 +44,7 @@ const OrdersChart = () => {
     //? Filter to last 30 days
     const cutoff = subDays(new Date(), days).getTime();
     const recent = orders.filter(
-      (o) => new Date(o.createdAt).getTime() >= cutoff
+      (o) => new Date(o.createdAt).getTime() >= cutoff,
     );
 
     //? Initialise buckets for each asset
@@ -65,8 +65,8 @@ const OrdersChart = () => {
             ? "sell"
             : "buy"
           : whoIsBuyer === "buyer"
-          ? "buy"
-          : "sell";
+            ? "buy"
+            : "sell";
 
       //? choose your “volume” field here – e.g. o.price(asset price * amount bought or sold)  or o.amount
       const volume = showNaira ? o.quantity * o.price : o.quantity;
@@ -80,12 +80,12 @@ const OrdersChart = () => {
   }, [orders, userId, showNaira, days]);
 
   return (
-    <div className="border rounded-2xl md:p-6 p-3 h-fit">
+    <div className="border border-border rounded-2xl md:p-6 p-3 h-fit">
       <div className="flex items-center flex-wrap  md:gap-4 gap-2 mb-4">
-        <h3 className="md:text-lg text-base text-gray-800 font-semibold ">
+        <h3 className="md:text-lg text-base text-foreground font-semibold ">
           Ads Volume
         </h3>
-        <div className="flex items-center ml-auto md:ml-0 gap-1 text-xs text-gray-500">
+        <div className="flex items-center ml-auto md:ml-0 gap-1 text-xs text-muted-foreground">
           <span>Fiat</span>
           <Switch
             checked={showNaira}

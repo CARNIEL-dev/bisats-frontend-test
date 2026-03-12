@@ -13,7 +13,7 @@ const OrdersTotalSection = ({
       {data.map((d) => (
         <div
           key={d.asset}
-          className=" text-[#515B6E] py-2.5 px-3 rounded-md border bg-neutral-50"
+          className=" text-foreground py-2.5 px-3 rounded-md border border-border bg-background"
         >
           <div className="flex items-center gap-2  mb-1">
             <img
@@ -27,23 +27,23 @@ const OrdersTotalSection = ({
           <div>
             <p className="text-sm text-green-600 font-medium">
               Bought :{" "}
-              <span className="font-medium text-base text-gray-700">
+              <span className="font-medium text-base text-foreground">
                 {formatter({
                   decimal: showXNgn ? 2 : d.asset === "USDT" ? 2 : 4,
                 }).format(d.buy)}
               </span>
-              <span className="text-xs font-light text-gray-400 inline-block ml-2 ">
+              <span className="text-xs font-light text-muted-foreground inline-block ml-2 ">
                 {showXNgn ? " xNGN" : d.asset}
               </span>
             </p>
             <p className="text-sm text-red-600 font-medium">
               Sold :{" "}
-              <span className="font-medium text-base text-gray-700">
+              <span className="font-medium text-base text-foreground">
                 {formatter({
                   decimal: showXNgn ? 2 : d.asset === "USDT" ? 2 : 4,
                 }).format(d.sell)}
               </span>
-              <span className="text-xs font-light text-gray-400 inline-block ml-2 ">
+              <span className="text-xs font-light text-muted-foreground inline-block ml-2 ">
                 {showXNgn ? " xNGN" : d.asset}
               </span>
             </p>

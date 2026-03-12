@@ -53,7 +53,7 @@ const SwapPage = () => {
                 className="flex items-center justify-center hover:bg-primary-light rounded-md p-1"
                 onClick={handleSwapHistory}
               >
-                <History className="!size-6 text-gray-500" strokeWidth={1.5} />
+                <History className="!size-6 text-muted-foreground" strokeWidth={1.5} />
                 <span className="sr-only">Swap history</span>
               </TooltipTrigger>
               <TooltipContent>
@@ -73,7 +73,7 @@ const SwapPage = () => {
               <SheetTitle className="text-2xl font-semibold">
                 History
               </SheetTitle>
-              <SheetDescription className="text-xs text-gray-500">
+              <SheetDescription className="text-xs text-muted-foreground">
                 View your past swap transactions
               </SheetDescription>
             </SheetHeader>

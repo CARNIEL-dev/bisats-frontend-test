@@ -62,7 +62,7 @@ const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
           type="button"
           className={cn(
             buttonVariants({ variant: "outline" }),
-            "flex items-center w-full text-sm justify-between bg-neutral-100 font-medium text-gray-600 h-12 ",
+            "flex items-center w-full text-sm justify-between bg-neutral-100 font-medium text-muted-foreground h-12 ",
             error && "!border-red-500"
           )}
           disabled={disabled}

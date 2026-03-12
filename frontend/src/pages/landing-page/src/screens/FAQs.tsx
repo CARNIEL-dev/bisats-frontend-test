@@ -50,10 +50,10 @@ const FAQs = (): React.ReactElement => {
       </div>
       <div
         ref={contentRef}
-        className="w-full py-[64px] lg:py-[80px] px-[20px] bg-white lg:bg-[#F7F7F7]"
+        className="w-full py-[64px] lg:py-[80px] px-[20px] bg-background "
       >
         <MaxWidth className="max-w-[65rem] hidden lg:grid grid-cols-2 items-start gap-[38px] ">
-          <div className="space-y-3 bg-white px-6 py-8 rounded-[12px] sticky top-[15vh]">
+          <div className="space-y-3 bg-background border border-border px-6 py-8 rounded-[12px] sticky top-[15vh]">
             {faqData.map((faq, index) => (
               <button
                 key={faq.id}
@@ -62,7 +62,7 @@ const FAQs = (): React.ReactElement => {
                   "w-full max-w-[446px] rounded-md px-4 py-4 text-left transition-all duration-300",
                   activeQuestion === index
                     ? "bg-primary text-[#0A0E12] font-semibold hover:bg-primary/80"
-                    : "text-[#515B6E] font-normal bg-gray-100 hover:bg-gray-200"
+                    : "text-muted-foreground font-normal  bg-muted dark:bg-muted/50 dark:hover:bg-secondary",
                 )}
               >
                 {faq.question}
@@ -77,10 +77,10 @@ const FAQs = (): React.ReactElement => {
             className="p-[8px]"
             key={activeQuestion}
           >
-            <h3 className="text-3xl font-semibold text-[#2B313B] mb-[8px]">
+            <h3 className="text-3xl font-semibold text-foreground mb-[8px]">
               {faqData[activeQuestion].question}
             </h3>
-            <div className="text-[#606C82] font-normal  leading-relaxed">
+            <div className="text-muted-foreground font-normal leading-relaxed">
               {renderAnswer(faqData[activeQuestion].answer, false)}
             </div>
           </motion.div>

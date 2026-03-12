@@ -199,7 +199,7 @@ const CreateAd = () => {
       {fetching ? (
         <PreLoader />
       ) : isError ? (
-        <div className="h-[12rem] text-gray-400 text-sm flex items-center justify-center">
+        <div className="h-[12rem] text-muted-foreground text-sm flex items-center justify-center">
           <ErrorDisplay
             message="Failed to fetch live rate. Please try again"
             isError={false}

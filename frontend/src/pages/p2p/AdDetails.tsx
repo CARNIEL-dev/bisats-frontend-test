@@ -113,10 +113,10 @@ const AdDetails = () => {
           {adsInfo?.status?.toLowerCase() === "disabled" && adsInfo?.reason && (
             <div className="flex items-center gap-2 !-mb-2">
               <StatusBadge status={adsInfo?.status} />
-              <p className="text-gray-500 text-sm">{adsInfo?.reason}</p>
+              <p className="text-muted-foreground text-sm">{adsInfo?.reason}</p>
             </div>
           )}
-          <div className="h-auto p-4 rounded-lg shadow-sm text-gray-600 bg-gray-100 t space-y-2">
+          <div className="h-auto p-4 rounded-lg shadow-sm text-muted-foreground bg-muted t space-y-2">
             <AdsInfo ads={adsInfo!} adStatus={adsInfo?.status!} />
           </div>
 
@@ -149,7 +149,7 @@ const AdOrderHistoryTable = ({ data }: { data: OrderHistory[] }) => {
         const price = amount ? formatter({ decimal: 2 }).format(amount) : "N/A";
 
         return (
-          <p className="font-semibold text-gray-600 font-mono ">
+          <p className="font-semibold text-muted-foreground font-mono ">
             {price} <span className="text-xs font-normal">xNGN</span>
           </p>
         );
@@ -167,7 +167,7 @@ const AdOrderHistoryTable = ({ data }: { data: OrderHistory[] }) => {
           : "N/A";
 
         return (
-          <p className="font-medium text-gray-600">
+          <p className="font-medium text-muted-foreground">
             {quantity} <span className="text-xs font-normal">{asset}</span>
           </p>
         );
@@ -250,7 +250,7 @@ const AdsInfo = ({ ads, adStatus }: { ads: AdsType; adStatus: string }) => {
     {
       name: "Asset",
       value: (
-        <div className="flex items-center gap-1.5 text-sm text-gray-600">
+        <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
           <img
             src={tokenLogos[ads?.asset as keyof typeof tokenLogos]}
             alt={ads?.asset}
@@ -285,7 +285,7 @@ const AdsInfo = ({ ads, adStatus }: { ads: AdsType; adStatus: string }) => {
               fulfilled
             )}
           </p>
-          <span className="text-xs text-gray-400">{ads.asset}</span>
+          <span className="text-xs text-muted-foreground">{ads.asset}</span>
           <span
             className={percentFilled > 0 ? "text-[#17A34A]" : "text-yellow-500"}
           >
@@ -303,7 +303,7 @@ const AdsInfo = ({ ads, adStatus }: { ads: AdsType; adStatus: string }) => {
               available
             )}
           </p>
-          <span className="text-xs text-gray-400">{ads.asset}</span>
+          <span className="text-xs text-muted-foreground">{ads.asset}</span>
         </div>
       ),
     },
@@ -314,7 +314,7 @@ const AdsInfo = ({ ads, adStatus }: { ads: AdsType; adStatus: string }) => {
           <p className="font-semibold whitespace-nowrap">
             {formatter({ decimal: ads.asset === "USDT" ? 2 : 6 }).format(total)}
           </p>
-          <span className="text-xs text-gray-400">{ads.asset}</span>
+          <span className="text-xs text-muted-foreground">{ads.asset}</span>
         </div>
       ),
     },
@@ -361,7 +361,7 @@ const AdsInfo = ({ ads, adStatus }: { ads: AdsType; adStatus: string }) => {
     {
       name: "Price",
       value: (
-        <p className="font-semibold text-black text-xl">
+        <p className="font-semibold text-foreground text-xl">
           {formatter({ style: "currency", currency: "NGN" }).format(
             getSafeValue(ads.price)
           )}

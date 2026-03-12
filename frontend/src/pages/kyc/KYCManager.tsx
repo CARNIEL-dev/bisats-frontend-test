@@ -151,7 +151,7 @@ const KycManager: React.FC<TKycManager> = ({
         key={modal}
       >
         <div className="flex flex-col gap-2 my-3">
-          <div className="rounded-full size-12 grid bg-gray-100 place-items-center border">
+          <div className="rounded-full size-12 grid bg-muted place-items-center border">
             <Lock className="text-red-600" />
           </div>
           <Head

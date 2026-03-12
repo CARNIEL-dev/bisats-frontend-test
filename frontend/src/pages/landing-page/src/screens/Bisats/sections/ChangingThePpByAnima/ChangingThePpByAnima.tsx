@@ -27,7 +27,7 @@ export const ChangingThePpByAnima = (): React.ReactElement => {
   ];
 
   return (
-    <section className="relative w-full bg-white pb-10 px-5 lg:py-28">
+    <section className="relative w-full bg-background pb-10 px-5 lg:py-28">
       <div className="relative max-w-[90%] mx-auto">
         <h2 className="mb-16 font-['Geist',Helvetica] text-[28px] lg:text-[42px] leading-[56px] font-semibold">
           Elevating Peer-to-peer <br /> transactions for everyone

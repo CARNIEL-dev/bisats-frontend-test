@@ -66,7 +66,7 @@ const MyAds = () => {
     error,
     isLoading,
   } = useFetchUserAds({
-    isKycVerified: !userState.user?.hasAppliedToBeInLevelOne,
+    isKycVerified: !isNA,
   });
 
   const adsData = useMemo(() => {
@@ -151,7 +151,7 @@ const MyAds = () => {
         const asset = row.original.asset;
         const logo = tokenLogos[asset as keyof typeof tokenLogos];
         return (
-          <div className="font-semibold text-gray-600 flex items-center gap-1.5">
+          <div className="font-semibold text-muted-foreground flex items-center gap-1.5">
             <img src={logo} alt={asset} width={18} height={18} />
             <span>{asset}</span>
           </div>
@@ -164,7 +164,7 @@ const MyAds = () => {
       cell: ({ row }) => {
         const price = row.original.price;
         return (
-          <span className="text-gray-600 ">
+          <span className="text-muted-foreground ">
             {formatter({
               decimal: 2,
             }).format(price || 0)}
@@ -178,7 +178,7 @@ const MyAds = () => {
     //   cell: ({ row }) => {
     //     const price = row.original.minimumLimit;
     //     return (
-    //       <span className="text-gray-600 ">
+    //       <span className="text-muted-foreground ">
     //         {formatter({
     //           decimal: 0,
     //         }).format(price || 0)}
@@ -192,7 +192,7 @@ const MyAds = () => {
     //   cell: ({ row }) => {
     //     const price = row.original.maximumLimit;
     //     return (
-    //       <span className="text-gray-600 ">
+    //       <span className="text-muted-foreground ">
     //         {formatter({
     //           decimal: 0,
     //         }).format(price || 0)}
@@ -204,7 +204,7 @@ const MyAds = () => {
       accessorKey: "amountFilled",
       header: () => {
         return (
-          <div className="text-gray-600 flex items-center gap-2 ">
+          <div className="text-muted-foreground flex items-center gap-2 ">
             Amount Fulfilled
             <span className="inline-grid border border-green-600  place-content-center rounded-full size-4">
               <Check className="size-3 text-green-500" />
@@ -223,9 +223,11 @@ const MyAds = () => {
                 item.amountFilled / item.price,
               );
         return (
-          <div className="text-gray-600 uppercase ">
+          <div className="text-muted-foreground uppercase ">
             {amount}{" "}
-            <span className="text-gray-400 text-xs">{item.asset}</span>{" "}
+            <span className="text-muted-foreground text-xs">
+              {item.asset}
+            </span>{" "}
           </div>
         );
       },
@@ -245,9 +247,11 @@ const MyAds = () => {
                 item.amountAvailable / item.price,
               );
         return (
-          <div className="text-gray-600 uppercase ">
+          <div className="text-muted-foreground uppercase ">
             {amount}{" "}
-            <span className="text-gray-400 text-xs">{item.asset}</span>{" "}
+            <span className="text-muted-foreground text-xs">
+              {item.asset}
+            </span>{" "}
           </div>
         );
       },
@@ -266,9 +270,11 @@ const MyAds = () => {
                 item.amount / item.price,
               );
         return (
-          <div className="text-gray-600 uppercase ">
+          <div className="text-muted-foreground uppercase ">
             {amount}{" "}
-            <span className="text-gray-400 text-xs">{item.asset}</span>{" "}
+            <span className="text-muted-foreground text-xs">
+              {item.asset}
+            </span>{" "}
           </div>
         );
       },
@@ -279,7 +285,7 @@ const MyAds = () => {
       cell: ({ row }) => {
         const created = row.original.createdAt;
         return (
-          <span className="text-gray-500">
+          <span className="text-muted-foreground">
             {created ? dayjs(created).format("DD/MM/YYYY") : "N/A"}
           </span>
         );
@@ -305,7 +311,7 @@ const MyAds = () => {
                   ? "text-green-600"
                   : status.toLowerCase() === "closed"
                     ? "text-red-500"
-                    : "text-gray-500",
+                    : "text-muted-foreground",
               )}
             >
               {status}
@@ -313,7 +319,7 @@ const MyAds = () => {
 
             {status.toLowerCase() !== "closed" &&
               (isUpdating ? (
-                <div className="w-5 h-5 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin" />
+                <div className="w-5 h-5 border-2 border-border border-t-blue-600 rounded-full animate-spin" />
               ) : hasAdminReason ? (
                 <button
                   type="button"
@@ -381,7 +387,7 @@ const MyAds = () => {
             <h4 className="font-semibold text-lg">
               Your Account is being reviewed
             </h4>
-            <p className="text-gray-500 text-sm">
+            <p className="text-muted-foreground text-sm">
               Please wait for admin approval
             </p>
           </div>
@@ -425,21 +431,24 @@ const MyAds = () => {
       >
         {showReasonAd && (
           <div className="space-y-3">
-            <h3 className="text-lg font-semibold text-gray-800">Ad Disabled</h3>
-            <div className="text-sm text-gray-600 grid grid-cols-2 gap-2">
+            <h3 className="text-lg font-semibold text-foreground">
+              Ad Disabled
+            </h3>
+            <div className="text-sm text-muted-foreground grid grid-cols-2 gap-2">
               <p>
-                <span className="text-gray-400">Type:</span> {showReasonAd.type}
+                <span className="text-muted-foreground">Type:</span>{" "}
+                {showReasonAd.type}
               </p>
               <p>
-                <span className="text-gray-400">Asset:</span>{" "}
+                <span className="text-muted-foreground">Asset:</span>{" "}
                 {showReasonAd.asset}
               </p>
               <p>
-                <span className="text-gray-400">Price:</span> xNGN{" "}
+                <span className="text-muted-foreground">Price:</span> xNGN{" "}
                 {formatter({ decimal: 0 }).format(showReasonAd.price)}
               </p>
               <p>
-                <span className="text-gray-400">Created:</span>{" "}
+                <span className="text-muted-foreground">Created:</span>{" "}
                 {showReasonAd.createdAt
                   ? dayjs(showReasonAd.createdAt).format("DD/MM/YYYY")
                   : "N/A"}
@@ -447,12 +456,12 @@ const MyAds = () => {
             </div>
 
             <div className="rounded-md border bg-neutral-50 p-3">
-              <p className="text-xs text-gray-500 mb-1">Reason</p>
-              <p className="text-sm text-gray-800 whitespace-pre-wrap">
+              <p className="text-xs text-muted-foreground mb-1">Reason</p>
+              <p className="text-sm text-foreground whitespace-pre-wrap">
                 {(showReasonAd as any)?.reason || "No reason provided"}
               </p>
             </div>
-            <p className="text-[11px] text-gray-500">
+            <p className="text-[11px] text-muted-foreground">
               If you believe this action was a mistake, please contact support
               to rectify.
             </p>

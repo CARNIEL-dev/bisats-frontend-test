@@ -50,7 +50,7 @@ const Reset2FAModal = ({
   return (
     <ModalTemplate onClose={close} isOpen={open}>
       <form onSubmit={formik.handleSubmit} className="flex flex-col gap-2 my-2">
-        <div className="rounded-full size-10 grid bg-gray-100 place-items-center border">
+        <div className="rounded-full size-10 grid bg-muted place-items-center border">
           <Lock className="text-red-600 size-5" />
         </div>
         <Head

@@ -10,6 +10,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import usePreventScroll from "@/hooks/use-preventScroll";
 
 import BisatLogo from "@/components/shared/Logo";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { cn } from "@/utils";
 import { Menu, X } from "lucide-react";
 import { useMotionValueEvent, useScroll } from "motion/react";
@@ -47,8 +48,8 @@ const NavBar = () => {
     <>
       <div
         className={cn(
-          "bg-white w-full fixed inset-x-0 top-0 z-50 shadow-xs transition-shadow duration-300 ease-in-out",
-          showShadow && "shadow-md"
+          "bg-background w-full fixed inset-x-0 top-0 z-50 shadow-xs transition-shadow duration-300 ease-in-out",
+          showShadow && "shadow-md",
         )}
       >
         <MaxWidth
@@ -61,8 +62,8 @@ const NavBar = () => {
 
           <nav
             className={cn(
-              "flex items-center gap-8 flex-col md:flex-row absolute md:static bg-white md:bg-transparent w-full md:w-auto top-full md:top-0   -right-[100vw] md:right-0 z-40 md:z-0 transition-all duration-500 ease transform p-10 md:p-0",
-              toggleMenu && "right-0 duration-700 ease-in-out rounded-b-xl"
+              "flex items-center gap-8 flex-col md:flex-row absolute md:static bg-background md:bg-transparent w-full md:w-auto top-full md:top-0   -right-[100vw] md:right-0 z-40 md:z-0 transition-all duration-500 ease transform p-10 md:p-0",
+              toggleMenu && "right-0 duration-700 ease-in-out rounded-b-xl",
             )}
           >
             {NAV_LINKS.map((link, index) => (
@@ -70,25 +71,27 @@ const NavBar = () => {
                 key={index}
                 to={link.href}
                 onClick={isMobile ? closeMenu : undefined}
-                className="font-normal text-sm leading-[24px] text-slate-600 text-center whitespace-nowrap cursor-pointer hover:text-primary transition-all duration-300 ease-in-out hover:underline underline-offset-2"
+                className="font-normal text-sm leading-[24px] text-muted-foreground text-center whitespace-nowrap cursor-pointer hover:text-primary transition-all duration-300 ease-in-out hover:underline underline-offset-2"
               >
                 {link.title}
               </NavLink>
             ))}
 
+            <ThemeToggle />
+
             <div className="flex items-center gap-x-6 gap-y-4 md:flex-row flex-col w-full md:w-auto">
               {isAuthenticated ? (
                 <>
-                  <a
-                    href={APP_ROUTES.DASHBOARD}
-                    className="text-sm text-slate-600"
+                  <Link
+                    to={APP_ROUTES.DASHBOARD}
+                    className="text-sm text-muted-foreground"
                   >
                     Dashboard
-                  </a>
+                  </Link>
                   <Button
                     variant="secondary"
                     className={cn(
-                      "px-8 md:w-fit w-full self-stretch h-fit py-2.5 text-sm"
+                      "px-8 md:w-fit w-full self-stretch h-fit py-2.5 text-sm",
                     )}
                     type="button"
                     onClick={() => {
@@ -106,7 +109,7 @@ const NavBar = () => {
                   <Link
                     className={cn(
                       buttonVariants({ variant: "secondary" }),
-                      "px-8 md:w-fit w-full self-stretch h-fit py-2.5 text-sm"
+                      "px-8 md:w-fit w-full self-stretch h-fit py-2.5 text-sm",
                     )}
                     to={APP_ROUTES.AUTH.LOGIN}
                     onClick={isMobile ? closeMenu : undefined}
@@ -116,7 +119,7 @@ const NavBar = () => {
                   <Link
                     className={cn(
                       buttonVariants(),
-                      "px-8 md:w-fit w-full self-stretch h-fit py-2.5 text-sm"
+                      "px-8 md:w-fit w-full self-stretch h-fit py-2.5 text-sm",
                     )}
                     to={APP_ROUTES.AUTH.SIGNUP}
                     onClick={isMobile ? closeMenu : undefined}
@@ -149,8 +152,8 @@ const NavBar = () => {
       <div
         onClick={closeMenu}
         className={cn(
-          "md:hidden fixed inset-0 bg-black/80 z-30 opacity-0 duration-500 ease delay-300 invisible",
-          toggleMenu && "opacity-100 visible"
+          "md:hidden fixed inset-0 bg-background/80 z-30 opacity-0 duration-500 ease delay-300 invisible",
+          toggleMenu && "opacity-100 visible",
         )}
       />
     </>

@@ -194,7 +194,7 @@ const SelfieSnap = () => {
               ref={videoRef}
               autoPlay
               muted
-              className="video-feed w-full max-w-md border border-gray-300 rounded-lg"
+              className="video-feed w-full max-w-md border border-border rounded-lg"
             ></video>
             <canvas ref={canvasRef} style={{ display: "none" }}></canvas>
             <button

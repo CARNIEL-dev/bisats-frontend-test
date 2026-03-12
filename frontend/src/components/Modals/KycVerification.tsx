@@ -45,7 +45,7 @@ const KycVerification: React.FC<Props> = ({ close }) => {
 
         <Button
           variant="ghost"
-          className="w-full my-3 text-sm text-gray-600"
+          className="w-full my-3 text-sm text-muted-foreground"
           onClick={close}
         >
           Maybe Later

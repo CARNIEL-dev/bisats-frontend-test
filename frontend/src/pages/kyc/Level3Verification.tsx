@@ -108,7 +108,7 @@ const Level3Verification = () => {
                 <Check />
               </div>
 
-              <h5 className="text-gray-700 font-semibold">
+              <h5 className="text-foreground font-semibold">
                 Details submitted successfully
               </h5>
               <p className="text-sm text-[#515B6E]">

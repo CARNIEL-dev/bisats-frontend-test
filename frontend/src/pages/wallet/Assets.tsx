@@ -121,7 +121,7 @@ const Assets: React.FC = () => {
       cell: ({ row }) => {
         const item = row.original;
         return (
-          <div className="flex items-center gap-2 text-sm text-gray-600">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <img
               src={item.logo}
               alt={item.name}
@@ -166,7 +166,7 @@ const Assets: React.FC = () => {
         const isUSDT = item.Asset === assets.USDT;
 
         return (
-          <div className="flex md:items-center items-end md:flex-row flex-col gap-x-2 gap-y-1 text-sm text-gray-600">
+          <div className="flex md:items-center items-end md:flex-row flex-col gap-x-2 gap-y-1 text-sm text-muted-foreground">
             <p className="font-bold">
               <span className="font-mono text-xl md:text-base">
                 {walletState.showBalance
@@ -220,7 +220,7 @@ const Assets: React.FC = () => {
             >
               {(validateAndExecute) => (
                 <Button
-                  className={cn(" text-xs text-black")}
+                  className={cn(" text-xs text-foreground")}
                   onClick={() => {
                     validateAndExecute();
                   }}
@@ -245,7 +245,7 @@ const Assets: React.FC = () => {
                 <Button
                   variant={"outline"}
                   className={cn(
-                    "bg-transparent text-gray-600 !border-primary text-xs",
+                    "bg-transparent text-muted-foreground !border-primary text-xs",
                   )}
                   onClick={() => {
                     validateAndExecute();

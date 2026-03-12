@@ -212,14 +212,14 @@ const TokenSelection = ({
               {selectedToken.tokenName}
             </div>
           ) : (
-            <span className="font-normal text-gray-400">{placeholder}</span>
+            <span className="font-normal text-muted-foreground">{placeholder}</span>
           )}
           <ChevronsUpDown className="size-4 opacity-50" />
         </Button>
 
         {/* Command Dialog */}
         <CommandDialog open={open} onOpenChange={setOpen} className="px-2 py-6">
-          <p className="mt-4 mb-2 text-sm text-gray-600 font-semibold ml-3">
+          <p className="mt-4 mb-2 text-sm text-muted-foreground font-semibold ml-3">
             {dialogTitle}
           </p>
           <CommandInput placeholder={dialogSearchPlaceholder} className="" />
@@ -231,7 +231,7 @@ const TokenSelection = ({
                   key={token.id}
                   value={token.tokenName}
                   onSelect={() => handleTokenSelect(token.id)}
-                  className="flex items-center gap-2 font-medium text-gray-600"
+                  className="flex items-center gap-2 font-medium text-muted-foreground"
                   tabIndex={0}
                 >
                   {token.tokenLogo}

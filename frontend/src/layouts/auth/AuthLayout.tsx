@@ -46,7 +46,7 @@ const AuthLayout = () => {
           </aside>
 
           {/* SUB: Outlet Section */}
-          <div className="w-full lg:w-[50%] 2xl:w-[50%] flex justify-center items-center flex-col h-fit bg-white z-20">
+          <div className="w-full lg:w-[50%] 2xl:w-[50%] flex justify-center items-center flex-col h-fit bg-background z-20">
             <div className="w-[90%] max-w-[500px] mx-auto ">
               <Outlet />
             </div>

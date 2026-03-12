@@ -19,7 +19,7 @@ const KycBanner = () => {
         <h4 className=" text-white text-base lg:text-[28px] font-semibold">
           Unlock Full Access: Complete Your KYC
         </h4>
-        <p className="text-gray-400  text-xs md:text-sm font-normal">
+        <p className="text-muted-foreground  text-xs md:text-sm font-normal">
           Verify your identity to enjoy unlimited access to all features. It
           only takes a few minutes to complete your KYC.
         </p>

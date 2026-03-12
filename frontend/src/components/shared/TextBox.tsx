@@ -24,11 +24,11 @@ const TextBox = ({
         containerClassName
       )}
     >
-      <p className={cn("text-gray-500", labelClass)}>
+      <p className={cn("text-muted-foreground", labelClass)}>
         {label}
         {showIndicator && ":"}
       </p>
-      <div className="text-gray-600 text-sm">{value}</div>
+      <div className="text-muted-foreground text-sm">{value}</div>
     </div>
   );
 };

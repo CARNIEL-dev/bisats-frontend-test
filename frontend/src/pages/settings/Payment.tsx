@@ -146,7 +146,7 @@ const Payment = () => {
       {isCorporateRejected && (
         <div className="flex items-center gap-2 mb-6">
           <StatusBadge status="rejected" />
-          <p className="text-gray-500 text-sm">
+          <p className="text-muted-foreground text-sm">
             Your corporate information has been rejected.
           </p>
         </div>

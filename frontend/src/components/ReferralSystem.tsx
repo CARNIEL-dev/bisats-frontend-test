@@ -154,25 +154,25 @@ const ReferralSystem = () => {
               {/* Referral Link */}
               <div className="space-y-1">
                 <label className="text-sm font-semibold">Referral Link</label>
-                <div className="flex bg-gray-50 border rounded-xl focus-within:ring-2 focus-within:ring-green-500/20 p-1.5 items-center transition-all">
+                <div className="flex bg-muted border rounded-xl focus-within:ring-2 focus-within:ring-green-500/20 p-1.5 items-center transition-all">
                   <input
                     type="text"
-                    className="w-full bg-transparent border-none outline-none text-gray-600 font-mono text-sm px-3 py-1.5 truncate"
+                    className="w-full bg-transparent border-none outline-none text-muted-foreground font-mono text-sm px-3 py-1.5 truncate"
                     value={referralLink}
                     readOnly
                   />
-                  <div className="flex items-center gap-1.5 pr-1 pl-2 border-l border-gray-200">
+                  <div className="flex items-center gap-1.5 pr-1 pl-2 border-l border-border">
                     <CopyButton
                       text={referralLink}
                       type="link"
                       variant="ghost"
                       size="sm"
-                      className="h-8 w-8 p-0 text-gray-500 hover:text-green-600 hover:bg-green-50"
+                      className="h-8 w-8 p-0 text-muted-foreground hover:text-green-600 hover:bg-green-50"
                       title="Copy Link"
                     />
                     <ShareButton
                       referralLink={referralLink}
-                      className="h-8 w-8 p-0 text-gray-500 hover:text-green-600 hover:bg-green-50"
+                      className="h-8 w-8 p-0 text-muted-foreground hover:text-green-600 hover:bg-green-50"
                       title="Share Link"
                     />
                   </div>
@@ -182,7 +182,7 @@ const ReferralSystem = () => {
               {/* Referral Code */}
               <div className="space-y-1">
                 <label className="text-sm font-semibold ">Referral Code</label>
-                <div className="flex gap-3 items-center justify-between p-1 border rounded-xl bg-gray-50 transition-all duration-500 ring-0 border-green-200">
+                <div className="flex gap-3 items-center justify-between p-1 border rounded-xl bg-muted transition-all duration-500 ring-0 border-green-200">
                   <span className="font-mono text-xl font-bold text-green-700 tracking-widest pl-2 select-all">
                     {referralCode}
                   </span>
@@ -191,7 +191,7 @@ const ReferralSystem = () => {
                     type="code"
                     variant="secondary"
                     size="sm"
-                    className="bg-white hover:bg-gray-50 text-gray-700 border shadow-sm h-9 px-4 rounded-lg"
+                    className="bg-background hover:bg-muted text-foreground border shadow-sm h-9 px-4 rounded-lg"
                     showText={true}
                   >
                     <Copy className="size-4 mr-1" /> Copy Code
@@ -210,12 +210,12 @@ const ReferralSystem = () => {
             <div key="join-view" className="flex flex-col gap-4">
               <div className="flex items-center gap-2 mb-2">
                 <Sparkles className="w-5 h-5 text-green-500" />
-                <h2 className="text-xl font-semibold text-gray-800">
+                <h2 className="text-xl font-semibold text-foreground">
                   Join Referral Programme
                 </h2>
               </div>
 
-              <p className="text-gray-600 leading-relaxed text-sm">
+              <p className="text-muted-foreground leading-relaxed text-sm">
                 Become a part of our exclusive referral program. By joining,
                 you'll receive a unique code to share with your network. Earn
                 rewards and bonuses every time someone registers and transacts
@@ -271,9 +271,9 @@ const ReferralSystem = () => {
                 <CheckCircle className="w-8 h-8" />
               </div>
 
-              <h2 className="text-2xl font-bold text-gray-800">You're In!</h2>
+              <h2 className="text-2xl font-bold text-foreground">You're In!</h2>
 
-              <p className="text-gray-500 text-sm max-w-[280px]">
+              <p className="text-muted-foreground text-sm max-w-[280px]">
                 Congratulations! Your unique referral code has been generated
                 successfully.
               </p>

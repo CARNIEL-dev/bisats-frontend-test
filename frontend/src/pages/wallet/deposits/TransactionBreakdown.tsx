@@ -246,7 +246,7 @@ const TransactionBreakdown = () => {
             <Timer className="text-amber-400 size-6" />
           </div>
           <h4 className="font-semibold text-xl mt-2">Pending Confirmation</h4>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-muted-foreground">
             Your wallet would be credited once the transaction is confirmed .
           </p>
           <Link

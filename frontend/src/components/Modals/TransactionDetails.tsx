@@ -53,7 +53,7 @@ const TransactionDetails: React.FC<Props> = ({ close, details }) => {
         >
           {details?.Type === "top_up" ? "Deposit" : "Withdrawal"}
         </p>
-        <p className="text-gray-600 text-xs 2xl:text-base">
+        <p className="text-muted-foreground text-xs 2xl:text-base">
           Here is the details of your transacion
         </p>
 
@@ -82,7 +82,7 @@ const TransactionDetails: React.FC<Props> = ({ close, details }) => {
           </div>
         </div>
 
-        <div className="border bg-gray-100 rounded-2xl p-2 md:p-4 mt-4 space-y-2">
+        <div className="border bg-muted rounded-2xl p-2 md:p-4 mt-4 space-y-2">
           <TextBetweenDisplay label="Asset" value={details?.Asset} />
           <TextBetweenDisplay
             label="Amount"
@@ -102,7 +102,7 @@ const TransactionDetails: React.FC<Props> = ({ close, details }) => {
           <TextBetweenDisplay label="Reference" value={details?.Reference} />
           {isXNGN && (
             <>
-              <Divider text="Bank details" textClassName="bg-gray-100" />
+              <Divider text="Bank details" textClassName="bg-muted" />
               <TextBetweenDisplay
                 label="Account Name"
                 value={details?.bankDetails?.accountName}
@@ -150,8 +150,8 @@ const TextBetweenDisplay = ({
 }) => {
   return (
     <div className="flex justify-between items-center text-sm w-full ">
-      <p className="text-gray-500 font-normal">{label}:</p>
-      <p className="text-gray-600 font-medium text-xs sm:text-sm capitalize break-all text-right">
+      <p className="text-muted-foreground font-normal">{label}:</p>
+      <p className="text-muted-foreground font-medium text-xs sm:text-sm capitalize break-all text-right">
         {value}
       </p>
     </div>

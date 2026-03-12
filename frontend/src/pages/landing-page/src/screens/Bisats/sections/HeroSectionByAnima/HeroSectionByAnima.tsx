@@ -57,13 +57,13 @@ export const HeroSectionByAnima = (): React.ReactElement => {
             />
             <motion.h1
               variants={slideInRight}
-              className="text-3xl xs:text-[42px] sm:leading-[56px] w-full  lg:text-6xl font-semibold text-[#0A0E12]  lg:leading-[65px]"
+              className="text-3xl xs:text-[42px] sm:leading-[56px] w-full  lg:text-6xl font-semibold text-foreground  lg:leading-[65px]"
             >
               Trade, Rest, and <br /> Stay Happy
             </motion.h1>
             <motion.p
               variants={revealUpVariant}
-              className="w-full lg:w-[541px] text-[16px] leading-[28px] py-3 lg:text-lg lg:leading-[28px] font-light text-[#515B6E]"
+              className="w-full lg:w-[541px] text-[16px] leading-[28px] py-3 lg:text-lg lg:leading-[28px] font-light text-muted-foreground"
             >
               With Bisats, you can say goodbye to your struggles with crypto
               peer-to-peer exchanges
@@ -128,7 +128,7 @@ export const HeroSectionByAnima = (): React.ReactElement => {
               <HeroNotificationBadge
                 key={"Buy Order successful"}
                 text={
-                  <div className="text-sm font-medium text-gray-800">
+                  <div className="text-sm font-medium text-foreground">
                     <h3 className="flex items-center gap-0.5">
                       Buy Order successful
                       <Verified
@@ -169,7 +169,7 @@ export const HeroSectionByAnima = (): React.ReactElement => {
       <img
         src="/landingpage/background-pattern-black.png"
         alt=""
-        className="absolute inset-0 w-full h-[98%] -z-10 "
+        className="absolute inset-0 w-full h-[98%] -z-10 dark:invert"
       />
     </div>
   );

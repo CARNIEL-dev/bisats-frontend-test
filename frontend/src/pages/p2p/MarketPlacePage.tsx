@@ -160,7 +160,7 @@ const MarketPlacePage = () => {
                   value={v}
                   disabled={isFetching}
                   className={cn(
-                    "!w-fit  data-[state=active]:border-b-4 rounded-none  !shadow-none !bg-transparent font-semibold md:px-4 px-10 flex-none text-gray-500 text-base border-0 capitalize",
+                    "!w-fit  data-[state=active]:border-b-4 rounded-none  !shadow-none !bg-transparent font-semibold md:px-4 px-10 flex-none text-muted-foreground text-base border-0 capitalize",
                     v === "buy"
                       ? "data-[state=active]:text-[#17A34A] data-[state=active]:border-b-[#49DE80]"
                       : "data-[state=active]:text-[#DC2625] data-[state=active]:border-b-[#EF4444]",
@@ -190,7 +190,7 @@ const MarketPlacePage = () => {
                     variant="ghost"
                     onClick={() => refetch()}
                     disabled={isFetching}
-                    className="bg-gray-100 hover:bg-gray-200 !h-full"
+                    className="bg-muted hover:bg-secondary !h-full"
                   >
                     <RotateCw className={cn(isFetching && "animate-spin")} />
                     <span className="sr-only">Refresh</span>
@@ -199,7 +199,7 @@ const MarketPlacePage = () => {
                     variant="ghost"
                     onClick={handleClear}
                     disabled={isFetching}
-                    className="bg-gray-100 hover:bg-gray-200 !h-full"
+                    className="bg-muted hover:bg-secondary !h-full"
                   >
                     <X />
                     <span className="sr-only">Clear</span>
