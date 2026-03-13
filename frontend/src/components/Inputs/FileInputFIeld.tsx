@@ -9,8 +9,8 @@ import { cn } from "@/utils";
 import { heicTo, isHeic } from "heic-to";
 import ReactCrop, { type Crop } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
-import ModalTemplate from "../Modals/ModalTemplate";
-import { Button } from "../ui/Button";
+import ModalTemplate from "@/components/Modals/ModalTemplate";
+import { Button } from "@/components/ui/Button";
 import { uploadFile } from "@/redux/actions/generalActions";
 
 type UploadResult =
@@ -346,7 +346,7 @@ const FileInputField: React.FC<FileInputProps> = ({
               "file-upload-box py-8",
               boxStateClasses,
               (loading || disabled) &&
-                "opacity-50 !pointer-events-none !bg-[#f1f1f1]",
+                "opacity-50 !pointer-events-none !bg-muted",
             )}
           >
             {loading ? (
@@ -379,12 +379,14 @@ const FileInputField: React.FC<FileInputProps> = ({
           </label>
 
           {hasFormikError && (
-            <p className="text-xs mt-2 self-start text-red-500">{errorText}</p>
+            <p className="text-xs mt-2 self-start text-destructive">
+              {errorText}
+            </p>
           )}
         </div>
 
         {info && (
-          <span className="text-left flex justify-start items-start text-[12px] text-[#707D96]">
+          <span className="text-left flex justify-start items-start text-[12px] text-muted-foreground">
             {info}
           </span>
         )}

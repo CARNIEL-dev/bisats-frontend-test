@@ -31,7 +31,7 @@ export const countryDataForPhone = [
     dialCode: "234",
     name: "Nigeria",
     flag: "🇳🇬",
-    maxNationalLength: 10,
+    maxNationalLength: 11,
   },
   {
     code: "GB",

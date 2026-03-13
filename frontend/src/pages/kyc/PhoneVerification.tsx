@@ -67,7 +67,9 @@ const PhoneVerifcation = () => {
                 }}
               />
             )}
-            <span className="text-muted-foreground text-sm">+ {country.dialCode}</span>
+            <span className="text-muted-foreground text-sm">
+              + {country.dialCode}
+            </span>
           </div>
         </>
       ),
@@ -104,11 +106,15 @@ const PhoneVerifcation = () => {
     onSubmit: async (values) => {
       // Assemble E.164 format: +<dialCode><nationalNumber>
       const nationalDigits = values.phone.replace(/\D/g, "");
+
+      // 2. Remove the leading zero if it exists
+      const sanitizedNumber = nationalDigits.replace(/^0+/, "");
       const payload = {
         userId: user.user?.userId ?? "",
-        phoneNumber: `+${countryCode}${nationalDigits}`,
+        phoneNumber: `+${countryCode}${sanitizedNumber}`,
         countryCode,
       };
+
       const response = await PostPhoneNumber_KYC(payload);
 
       if (response?.statusCode === 200) {
@@ -195,7 +201,7 @@ const PhoneVerifcation = () => {
                   }}
                   options={listOptions}
                   defaultValue={selectedCountry}
-                  className="w-fit z-10  bg-transparent cursor-pointer px-1  py-0 border rounded-md absolute top-2/3 -translate-y-1/2 left-1 !h-[30px] outline-none  border-transparent"
+                  className="w-fit z-10  !bg-transparent cursor-pointer px-1  py-0 border rounded-md absolute top-2/3 -translate-y-1/2 left-1 !h-[30px] outline-none  border-transparent"
                 />
 
                 <PrimaryInput
@@ -213,7 +219,7 @@ const PhoneVerifcation = () => {
                   }}
                   onBlur={formik.handleBlur}
                   name="phone"
-                  error={formik.errors.phone}
+                  error={undefined}
                   touched={formik.touched.phone}
                 />
               </div>

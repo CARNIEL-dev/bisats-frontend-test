@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/Button";
 import { APP_ROUTES } from "@/constants/app_route";
 import { GetUserDetails } from "@/redux/actions/userActions";
 import Bisatsfetch from "@/redux/fetchWrapper";
-import { cn } from "@/utils";
+import { cn, formatAccountLevel } from "@/utils";
 import { CheckCircle, Copy, Loader2, Sparkles, Users } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useRef, useState } from "react";
@@ -50,7 +50,7 @@ const triggerSideCannons = (instance: ConfettiRef) => {
 };
 
 const ReferralSystem = () => {
-  const userState = useSelector((state: any) => state.user); // Adjusted type for snippet
+  const userState = useSelector((state: RootState) => state.user);
   const user = userState.user;
 
   const confettiRef = useRef<ConfettiRef>(null);
@@ -60,6 +60,8 @@ const ReferralSystem = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSuccessView, setIsSuccessView] = useState(false);
+
+  const { isNA } = formatAccountLevel(user?.accountLevel);
 
   const joinReferralProgram = async () => {
     setIsLoading(true);
@@ -119,7 +121,7 @@ const ReferralSystem = () => {
         className="fixed inset-0 pointer-events-none z-[100] w-full h-full"
       />
 
-      <div className="flex flex-col gap-6 p-6 pb-10 border border-border rounded-2xl bg-slate-800  text-white  relative overflow-hidden">
+      <div className="flex flex-col gap-6 p-6 pb-10 border border-border rounded-2xl bg-slate-800 dark:bg-secondary  text-white  relative overflow-hidden">
         <div className="flex flex-col gap-8">
           <div>
             <h3 className="text-lg font-semibold  flex items-center gap-2">
@@ -140,6 +142,7 @@ const ReferralSystem = () => {
                 setIsSuccessView(false); // Ensure we start on the info screen
                 setIsModalOpen(true);
               }}
+              disabled={isNA}
             >
               Join Referral Programme
             </Button>
@@ -154,7 +157,7 @@ const ReferralSystem = () => {
               {/* Referral Link */}
               <div className="space-y-1">
                 <label className="text-sm font-semibold">Referral Link</label>
-                <div className="flex bg-muted border rounded-xl focus-within:ring-2 focus-within:ring-green-500/20 p-1.5 items-center transition-all">
+                <div className="flex bg-background border border-muted-foreground/30 rounded-xl focus-within:ring-2 focus-within:ring-green-500/20 p-1.5 items-center transition-all">
                   <input
                     type="text"
                     className="w-full bg-transparent border-none outline-none text-muted-foreground font-mono text-sm px-3 py-1.5 truncate"
@@ -182,7 +185,7 @@ const ReferralSystem = () => {
               {/* Referral Code */}
               <div className="space-y-1">
                 <label className="text-sm font-semibold ">Referral Code</label>
-                <div className="flex gap-3 items-center justify-between p-1 border rounded-xl bg-muted transition-all duration-500 ring-0 border-green-200">
+                <div className="flex gap-3 items-center justify-between p-1 border rounded-xl  transition-all duration-500 ring-0 border-green-200 dark:border-green-600 bg-background ">
                   <span className="font-mono text-xl font-bold text-green-700 tracking-widest pl-2 select-all">
                     {referralCode}
                   </span>
@@ -191,7 +194,7 @@ const ReferralSystem = () => {
                     type="code"
                     variant="secondary"
                     size="sm"
-                    className="bg-background hover:bg-muted text-foreground border shadow-sm h-9 px-4 rounded-lg"
+                    className="bg-background hover:bg-muted text-foreground border border-muted-foreground/30 shadow-sm h-9 px-4 rounded-lg"
                     showText={true}
                   >
                     <Copy className="size-4 mr-1" /> Copy Code

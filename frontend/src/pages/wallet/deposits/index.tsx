@@ -1,26 +1,24 @@
-import { PrimaryButton } from "@/components/buttons/Buttons";
 import { SelectDropDown } from "@/components/Inputs/MultiSelectInput";
-import PrimaryInput from "@/components/Inputs/PrimaryInput";
 import Toast from "@/components/Toast";
 import { APP_ROUTES } from "@/constants/app_route";
-import { getUserTokenData, setDepositTranscBreakDown } from "@/helpers";
+import { getUserTokenData } from "@/helpers";
 import Head from "@/pages/wallet/Head";
-import { DepositTranscBreakDown } from "@/redux/actions/walletActions";
 
-import { useFormik } from "formik";
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 
+import CopyButton from "@/components/shared/CopyButton";
 import CopyDisplay from "@/components/shared/CopyDisplay";
+import SecurityBanner from "@/components/shared/SecurityBanner";
+import TextBox from "@/components/shared/TextBox";
 import TokenSelection from "@/components/shared/TokenSelection";
 import { Button } from "@/components/ui/Button";
-import KycManager from "@/pages/kyc/KYCManager";
-import { formatAccountLevel, formatter, getUpgradeButtonState } from "@/utils";
-import { goToNextKycRoute } from "@/utils/kycNavigation";
-import { ACTIONS, bisats_limit } from "@/utils/transaction_limits";
-import * as Yup from "yup";
+import { Card } from "@/components/ui/card";
 import useUserStatus from "@/hooks/use-user-status";
+import { formatAccountLevel, getUpgradeButtonState } from "@/utils";
+import { goToNextKycRoute } from "@/utils/kycNavigation";
+import { bisats_limit } from "@/utils/transaction_limits";
 
 export type TNetwork = {
   label: string;
@@ -34,7 +32,6 @@ export type TProxyNetwork = {
 const DepositPage = () => {
   const location = useLocation();
   const linkedAsset = location.state?.asset;
-  const [isLoading, setIsLoading] = useState(false);
   const [selectedToken, setSelectedToken] = useState<string>(linkedAsset);
   const [networks, setNetworks] = useState<TNetwork[]>([]);
   const [proxyNetworks, setProxyNetworks] = useState<TProxyNetwork[]>([]);
@@ -72,11 +69,6 @@ const DepositPage = () => {
 
   const limit = bisats_limit[accountLevelKey];
 
-  const maxDeposit = useMemo(() => {
-    return limit?.max_deposit_per_transaction_fiat;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [level]);
-
   useEffect(() => {
     const tokenList = getUserTokenData();
     for (let token of tokenList) {
@@ -88,26 +80,6 @@ const DepositPage = () => {
     }
   }, [selectedToken]);
 
-  const depositSchema = Yup.object().shape({
-    amount: Yup.number()
-      .transform((value, originalValue) => {
-        if (originalValue === "" || isNaN(originalValue)) return undefined;
-        return Number(originalValue);
-      })
-      .moreThan(0, "Amount must be greater than 0")
-
-      .required("Amount is required")
-      .test(
-        "max-deposit",
-        `Amount cannot exceed xNGN ${formatter({}).format(maxDeposit)}`,
-        (value) => {
-          if (!value) return true;
-          const numericValue = Number(value);
-          return numericValue <= maxDeposit;
-        },
-      ),
-  });
-
   const clickHandler = () => {
     goToNextKycRoute(user);
   };
@@ -117,30 +89,6 @@ const DepositPage = () => {
     [user, limit],
   );
 
-  //   HDR: FORMIK
-  const formik = useFormik({
-    initialValues: { amount: "" },
-    validationSchema: depositSchema,
-    onSubmit: async (values) => {
-      setIsLoading(true);
-      const { ...payload } = values;
-      const payloadd = {
-        ...payload,
-        amount: Number(payload.amount),
-      };
-      const response = await DepositTranscBreakDown(payloadd);
-      setIsLoading(false);
-      if (response.statusCode === 200) {
-        setDepositTranscBreakDown(response.data);
-        navigate(APP_ROUTES.WALLET.TRANSACTION_BREAKDOWN);
-        return;
-      } else {
-        Toast.error(response.message, "Error");
-        return;
-      }
-    },
-  });
-
   const getAddress = useMemo(() => {
     for (let network of proxyNetworks) {
       if (selectedNetwork === network.value) {
@@ -148,6 +96,16 @@ const DepositPage = () => {
       }
     }
   }, [proxyNetworks, selectedNetwork]);
+
+  const userBanks = useMemo(() => {
+    const userBanks = user.user?.bankAccounts || [];
+    const depositBanks = userBanks.filter(
+      (bank: TBank & { bankAccountType: string }) =>
+        bank.bankAccountType === "deposit",
+    );
+
+    return { depositBanks };
+  }, [user.user?.bankAccounts]);
 
   return (
     <div>
@@ -175,7 +133,7 @@ const DepositPage = () => {
           <div className="space-y-4 mt-2">
             {level === 1 ? (
               <div className="flex flex-col gap-2 mt-10 items-center">
-                <p className="text-sm animate-pulse rounded-full px-4 py-1 border bg-red-500/10 font-medium text-red-500">
+                <p className="text-sm animate-pulse rounded-full px-4 py-1 border border-border bg-red-500/10 font-medium text-red-500">
                   Become a Merchant or Super Merchant to deposit xNGN.
                 </p>
                 <Button
@@ -188,7 +146,7 @@ const DepositPage = () => {
               </div>
             ) : level === 2 && !user?.user?.hasAppliedToBecomeAMerchant ? (
               <div className="flex flex-col gap-2 mt-10 items-center">
-                <p className="text-sm animate-pulse rounded-full px-4 py-1 border bg-red-500/10 font-medium text-red-500">
+                <p className="text-sm animate-pulse rounded-full px-4 py-1 border bg-red-500/10 font-medium text-red-500 border-border">
                   Become a Merchant to deposit xNGN.
                 </p>
                 <Button
@@ -200,33 +158,60 @@ const DepositPage = () => {
               </div>
             ) : (
               <>
-                <PrimaryInput
-                  className={"w-full"}
-                  label={"Amount"}
-                  placeholder="Enter amount"
-                  name="amount"
-                  type="number"
-                  error={formik.errors.amount}
-                  value={formik.values.amount}
-                  touched={formik.touched.amount}
-                  onChange={(e) => {
-                    formik.setFieldValue("amount", e.target.value);
-                  }}
-                  format
-                />
-                <KycManager
-                  action={ACTIONS.DEPOSIT_NGN}
-                  func={() => formik.handleSubmit()}
-                >
-                  {(validateAndExecute) => (
-                    <PrimaryButton
-                      className={"w-full"}
-                      text={"Proceed"}
-                      loading={isLoading}
-                      onClick={validateAndExecute}
-                    />
+                <Card className="px-6 mt-6 gap-2">
+                  <p className="text-lg font-semibold ">Deposit Account</p>
+                  {userBanks.depositBanks?.length > 0 ? (
+                    userBanks.depositBanks?.map((bank: TBank, idx: number) => (
+                      <div
+                        key={idx}
+                        className="flex  flex-wrap items-center justify-between gap-4 my-2 border-b border-muted-foreground/20 pb-4 last:border-0 last:pb-0"
+                      >
+                        <TextBox
+                          label="Account Name"
+                          value={bank?.accountName}
+                          direction="column"
+                          showIndicator={false}
+                          labelClass="text-xs"
+                        />
+                        <TextBox
+                          label="Account Number"
+                          value={
+                            <div className="flex items-center gap-1 bg-background rounded-md pl-3 pr-1 py-0.5 border border-primary/20">
+                              <span className="text-muted-foreground">
+                                {bank?.accountNumber}
+                              </span>
+                              <CopyButton
+                                text={bank?.accountNumber}
+                                title="Copy account number"
+                                type="code"
+                              />
+                            </div>
+                          }
+                          direction="column"
+                          showIndicator={false}
+                          labelClass="text-xs"
+                        />
+                        <TextBox
+                          label="Bank Name"
+                          value={bank?.bankName}
+                          direction="column"
+                          showIndicator={false}
+                          labelClass="text-xs"
+                        />
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-center">
+                      <p>No deposit banks found</p>
+                      <span className="text-sm text-muted-foreground">
+                        Please contact support for assistance.
+                      </span>
+                    </div>
                   )}
-                </KycManager>
+                  <SecurityBanner
+                    text={`Deposits can only be made from the registered name on your Bisats account.\nYou may also deposit using the corporate account that has been added to your profile.\nA ₦1,000 processing fee is required, as mandated by the third‑party bank.\nPlease do not process more than ₦100,000,000 (100 million) in a single transaction.\nProcessing time may take up to 2 minutes.`}
+                  />
+                </Card>
               </>
             )}
           </div>
@@ -251,7 +236,7 @@ const DepositPage = () => {
                 placeholder="Please select a network"
               />
             )}
-            <div className="lg:h-[88px]  border   border-[#F3F4F6] bg-[#F9F9FB] rounded-md py-3 px-5 flex items-start my-5 ">
+            <div className="lg:h-[88px]  border   border-border bg-secondary rounded-md py-3 px-5 flex items-start my-5 ">
               <svg
                 width="16"
                 height="16"
@@ -262,31 +247,31 @@ const DepositPage = () => {
               >
                 <path
                   d="M7.9987 14.6663C11.6654 14.6663 14.6654 11.6663 14.6654 7.99967C14.6654 4.33301 11.6654 1.33301 7.9987 1.33301C4.33203 1.33301 1.33203 4.33301 1.33203 7.99967C1.33203 11.6663 4.33203 14.6663 7.9987 14.6663Z"
-                  stroke="#858FA5"
+                  stroke="hsl(var(--muted-foreground))"
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 />
                 <path
                   d="M8 5.33301V8.66634"
-                  stroke="#858FA5"
+                  stroke="hsl(var(--muted-foreground))"
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 />
                 <path
                   d="M7.99609 10.667H8.00208"
-                  stroke="#858FA5"
+                  stroke="hsl(var(--muted-foreground))"
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 />
               </svg>
 
-              <p className="text-[#606C82] text-[12px] leading-[16px] font-normal ml-2">
+              <p className="text-muted-foreground text-xs leading-[16px] font-normal ml-2">
                 Please confirm that you are depositing
-                <span className="font-semibold ml-1 capitalize">
+                <span className="font-semibold ml-1 capitalize text-primary">
                   {selectedToken}
                 </span>{" "}
                 to this address on the{" "}
-                <span className="font-semibold ml-1 capitalize">
+                <span className="font-semibold ml-1 capitalize text-primary">
                   {selectedNetwork}
                 </span>{" "}
                 network.
