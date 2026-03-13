@@ -84,7 +84,7 @@ export function DataTable<TData, TValue>({
   const topHeaders = table.getHeaderGroups()[0].headers;
 
   return (
-    <div className="flex flex-col gap-y-8 border-t lg:border-t-0 pt-4 lg:pt-0">
+    <div className="flex flex-col gap-y-8 border-t lg:border-t-0 border-border pt-4 lg:pt-0">
       {/* ─────────────────────────────────────── 
          SUB: Filtering 
       ─────────────────────────────────────── */}
@@ -122,7 +122,7 @@ export function DataTable<TData, TValue>({
                       ? null
                       : flexRender(
                           header.column.columnDef.header,
-                          header.getContext()
+                          header.getContext(),
                         )}
                   </TableHead>
                 ))}
@@ -137,10 +137,13 @@ export function DataTable<TData, TValue>({
                   className={i % 2 === 1 ? "bg-muted" : ""}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="p-4 text-muted-foreground">
+                    <TableCell
+                      key={cell.id}
+                      className="p-4 text-muted-foreground"
+                    >
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}
@@ -178,7 +181,7 @@ export function DataTable<TData, TValue>({
                     {header
                       ? flexRender(
                           header.column.columnDef.header,
-                          header.getContext()
+                          header.getContext(),
                         )
                       : cell.column.id}
                   </span>

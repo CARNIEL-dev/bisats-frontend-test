@@ -58,6 +58,7 @@ const TokenSelection = ({
   removeToken,
   removeTokens,
   onlyShowTokens,
+
   // New props
   variant = "primary",
   dialogTitle = "Select Asset",
@@ -212,7 +213,9 @@ const TokenSelection = ({
               {selectedToken.tokenName}
             </div>
           ) : (
-            <span className="font-normal text-muted-foreground">{placeholder}</span>
+            <span className="font-normal text-muted-foreground">
+              {placeholder}
+            </span>
           )}
           <ChevronsUpDown className="size-4 opacity-50" />
         </Button>

@@ -21,14 +21,14 @@ const TextBox = ({
       className={cn(
         "flex justify-between items-center gap-x-3 gap-y-1 flex-wrap sm:flex-nowrap",
         direction === "column" && "flex-col items-start justify-start",
-        containerClassName
+        containerClassName,
       )}
     >
       <p className={cn("text-muted-foreground", labelClass)}>
         {label}
         {showIndicator && ":"}
       </p>
-      <div className="text-muted-foreground text-sm">{value}</div>
+      <div className="text-foreground text-sm">{value}</div>
     </div>
   );
 };

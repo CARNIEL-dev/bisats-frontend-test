@@ -134,7 +134,7 @@ const ProfileDropdown = () => {
                       <NavLink
                         to={item.link}
                         className={cn(
-                          "group flex items-center gap-2 py-2.5  font-normal cursor-pointer text-foreground text-sm  hover:bg-[#F5FEF8] px-3 hover:font-medium hover:text-green-600 ",
+                          "group flex items-center gap-2 py-2.5  font-normal cursor-pointer text-foreground text-sm  hover:bg-[#F5FEF8] px-3 hover:font-medium hover:text-green-600 dark:hover:bg-[#25352a]",
                           pathname.includes(item.link) && "active",
                         )}
                         onClick={() => setOpen(false)}
@@ -165,7 +165,7 @@ const ProfileDropdown = () => {
                     to={item.link}
                     key={index}
                     className={cn(
-                      "group flex items-center gap-2 py-2.5 hover:text-green-500 font-normal cursor-pointer text-foreground text-sm  hover:bg-[#F5FEF8] px-3 border-b border-b-border",
+                      "group flex items-center gap-2 py-2.5 hover:text-green-500 font-normal cursor-pointer text-foreground text-sm  hover:bg-[#F5FEF8] px-3 border-b border-b-border dark:hover:bg-[#25352a]",
                     )}
                     onClick={() => setOpen(false)}
                   >
@@ -183,7 +183,7 @@ const ProfileDropdown = () => {
                 key={index}
                 onClick={() => setOpen(false)}
                 className={cn(
-                  " flex items-center gap-2 py-2  font-normal cursor-pointer text-foreground text-sm  hover:bg-[#F5FEF8] px-3  hover:font-medium hover:text-green-600",
+                  " flex items-center gap-2 py-2  font-normal cursor-pointer text-foreground text-sm  hover:bg-[#F5FEF8] px-3   hover:text-green-600 dark:hover:bg-[#25352a]",
                 )}
               >
                 <item.icon />
@@ -195,7 +195,7 @@ const ProfileDropdown = () => {
                 variant="ghost"
                 onClick={() => setShowLogOutModal(true)}
                 className={cn(
-                  "w-full text-sm px-3 text-foreground font-normal justify-start hover:bg-red-500/5 hover:text-red-500 hover:font-medium",
+                  "w-full text-sm px-3 text-foreground font-normal justify-start hover:bg-red-500/5 hover:text-red-500 ",
                 )}
               >
                 <SignOut />

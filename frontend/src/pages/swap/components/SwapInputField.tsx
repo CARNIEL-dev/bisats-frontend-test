@@ -73,4 +73,4 @@ const SwapInputField = ({
   );
 };
 
-export default SwapInputField;
+export default React.memo(SwapInputField);

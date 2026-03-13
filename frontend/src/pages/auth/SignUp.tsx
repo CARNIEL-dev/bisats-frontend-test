@@ -4,6 +4,7 @@ import GoogleButton from "@/components/buttons/GoogleButton";
 import AuthPasswordInput from "@/components/Inputs/AuthPasswordInput";
 import { InputCheck } from "@/components/Inputs/CheckBox";
 import PrimaryInput from "@/components/Inputs/PrimaryInput";
+import Divider from "@/components/shared/Divider";
 import Toast from "@/components/Toast";
 import { APP_ROUTES } from "@/constants/app_route";
 import { SignupSchema } from "@/formSchemas";
@@ -157,13 +158,11 @@ const SignUp = () => {
             />
           </div>
         </form>
-        <div className="w-full flex items-center my-6">
-          <hr className="text-border w-1/2 h-[1.5px]" />
-          <span className="text-sm text-muted-foreground leading-[16px] font-normal mx-2">
-            or
-          </span>
-          <hr className="text-border w-1/2 h-[1.5px]" />
-        </div>
+        <Divider
+          text="Or"
+          textClassName="text-muted-foreground"
+          className="my-6"
+        />
         <GoogleButton text="Sign up with Google" />
         <p className="text-[14px] text-muted-foreground leading-[24px] font-semibold text-center">
           Already have an account?

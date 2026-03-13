@@ -24,7 +24,7 @@ const HeroNotificationBadge = ({
   return (
     <motion.article
       className={cn(
-        "flex w-fit min-w-[18rem] items-center gap-3 p-2.5 border  bg-background/20 dark:bg-background/80 rounded-lg backdrop-blur-md scale-[63%] lg:scale-[88%]",
+        "flex w-fit min-w-[18rem] items-center gap-3 p-2.5 border  bg-background/20 dark:bg-background/80 rounded-lg backdrop-blur-md scale-[63%] lg:scale-[88%] border-border",
         className,
       )}
       style={{
@@ -32,7 +32,7 @@ const HeroNotificationBadge = ({
       }}
       variants={variant}
     >
-      <div className="border p-1.5 rounded-sm">
+      <div className="border border-border  p-1.5 rounded-sm">
         <img src={logo || bisatLogo} alt="bisat logo" className="w-6 h-6" />
       </div>
       <div className="flex flex-col gap-0.5">

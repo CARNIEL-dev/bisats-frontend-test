@@ -2,16 +2,26 @@ import Bisatsfetch from "@/redux/fetchWrapper";
 import { BACKEND_URLS } from "@/utils/backendUrls";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import useSwapPairs from "./useSwapPairs";
+import useSwapPairs from "@/pages/swap/hooks/useSwapPairs";
 import Toast from "@/components/Toast";
+import { useSelector } from "react-redux";
 
 export function useSwapRate(options?: { skipFetch?: boolean }) {
   const [searchParams, setSearchParams] = useSearchParams();
+  const walletState: WalletState = useSelector((state: any) => state.wallet);
 
   // 1. Sync Form State with URL query params
   const sourceAsset = searchParams.get("sourceAsset") || "";
   const targetAsset = searchParams.get("targetAsset") || "USDT";
   const amount = searchParams.get("amount") || "";
+
+  // SUB: Wallet balance for source asset
+  const assetBalance = sourceAsset ? walletState?.wallet?.[sourceAsset] : null;
+
+  const isInsufficientBalance =
+    assetBalance !== null &&
+    amount !== "" &&
+    Number(amount) > Number(assetBalance);
 
   // 2. Fetch Pairs cache (to resolve IDs)
   const {
@@ -65,6 +75,11 @@ export function useSwapRate(options?: { skipFetch?: boolean }) {
   // 5. Fetch API Logic
   const fetchRate = useCallback(
     async (src: string, tgt: string, amt: string) => {
+      if (isInsufficientBalance) {
+        setRateData(null);
+        setTimer(null);
+        return;
+      }
       if (!src || !tgt || !amt || Number(amt) <= 0) {
         setRateData(null);
         setTimer(null);
@@ -78,13 +93,13 @@ export function useSwapRate(options?: { skipFetch?: boolean }) {
         return;
       }
 
-      setRateLoading(true);
       try {
         const payload = {
           sourceId: ids.sourceId,
           targetId: ids.targetId,
           amount: Number(amt),
         };
+        setRateLoading(true);
         const response = await Bisatsfetch(BACKEND_URLS.SWAP.GET_RATE, {
           method: "POST",
           body: JSON.stringify(payload),
@@ -108,20 +123,18 @@ export function useSwapRate(options?: { skipFetch?: boolean }) {
         } else {
           setRateData(null);
           setTimer(null);
-          // Only show toast if the user explicitly refreshes or types, but not immediately to prevent spam
-          // if (response.message) {
-          //   Toast.error(response.message || "Pair not available", "Swap Rate");
-          // }
         }
       } catch {
         setRateData(null);
         setTimer(null);
         Toast.error("Failed to fetch rate", "Swap Rate");
+        setRateLoading(false);
       } finally {
         setRateLoading(false);
       }
     },
-    [getPairIds],
+    //
+    [getPairIds, isInsufficientBalance],
   );
 
   // 6. Hook to manually refresh using the current URL state
@@ -209,5 +222,7 @@ export function useSwapRate(options?: { skipFetch?: boolean }) {
       setRateData(null);
       setTimer(null);
     },
+    assetBalance,
+    isInsufficientBalance,
   };
 }

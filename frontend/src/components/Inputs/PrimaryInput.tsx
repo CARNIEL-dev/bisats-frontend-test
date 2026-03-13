@@ -154,7 +154,7 @@ const PrimaryInput: React.FC<TInput> = ({
         {label && (
           <label
             htmlFor={props.id}
-            className="text-sm font-semibold text-foreground"
+            className="text-sm font-semibold text-muted-foreground"
           >
             {label}
           </label>
@@ -202,7 +202,9 @@ const PrimaryInput: React.FC<TInput> = ({
               containerClassName="flex items-center justify-center"
               inputStyle={{
                 border: "1px solid transparent",
-                borderColor: error ? "var(--destructive)" : "var(--border)",
+                borderColor: error
+                  ? "hsl(var(--destructive))"
+                  : "hsl(var(--border))",
                 borderRadius: "30%",
                 padding: "10px",
                 fontSize: "22px",

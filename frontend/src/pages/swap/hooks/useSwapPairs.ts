@@ -14,7 +14,7 @@ import { useMemo } from "react";
 /** Assets that are never shown in swap pickers regardless of API response */
 const HARD_EXCLUDED = ["TRX", "xNGN"];
 
-const STALE_TIME = 60 * 1000; // 60s — matches server-side cache
+const STALE_TIME = 1000 * 60 * 30; // 30 minutes
 
 // ---------------------------------------------------------------------------
 // Hook

@@ -3,6 +3,7 @@ import { PrimaryButton } from "@/components/buttons/Buttons";
 import GoogleButton from "@/components/buttons/GoogleButton";
 import AuthPasswordInput from "@/components/Inputs/AuthPasswordInput";
 import PrimaryInput from "@/components/Inputs/PrimaryInput";
+import Divider from "@/components/shared/Divider";
 import Toast from "@/components/Toast";
 import { APP_ROUTES } from "@/constants/app_route";
 import { LogInSchema } from "@/formSchemas";
@@ -107,7 +108,10 @@ const LogIn = () => {
           isLocked.current = true;
         }
 
-        if (response.statusCode.toString().startsWith("4")) {
+        if (
+          response?.statusCode &&
+          response?.statusCode?.toString().startsWith("4")
+        ) {
           Toast.error(errMessage, "Login Failed");
           return;
         }
@@ -201,13 +205,11 @@ const LogIn = () => {
           Forgot password?
         </button>
 
-        <div className="w-full flex items-center my-6">
-          <hr className="text-border w-1/2 h-[1.5px]" />
-          <span className="text-[12px] text-foreground/60 leading-[16px] font-normal mx-2">
-            Or
-          </span>
-          <hr className="text-border w-1/2 h-[1.5px]" />
-        </div>
+        <Divider
+          text="Or"
+          textClassName="text-muted-foreground"
+          className="my-6"
+        />
         <GoogleButton text="Sign in with Google" />
         <div className="text-sm text-muted-foreground flex gap-2 items-center  font-semibold text-center">
           <p>Don’t have an account?</p>

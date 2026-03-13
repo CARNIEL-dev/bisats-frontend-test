@@ -5,10 +5,12 @@ import ModalTemplate from "@/components/Modals/ModalTemplate";
 import Reset2FAModal from "@/components/Modals/Reset2FAModal";
 import ResetPasswordModal from "@/components/Modals/ResetPassword";
 import PinForm from "@/components/shared/PinForm";
+import TextBox from "@/components/shared/TextBox";
 import Toast from "@/components/Toast";
 import { Button } from "@/components/ui/Button";
 import { FORGOT_PIN } from "@/redux/actions/userActions";
-import { Loader2 } from "lucide-react";
+import { cn } from "@/utils";
+import { Key, Loader2, Lock, ShieldCheck } from "lucide-react";
 
 import { useState } from "react";
 import { useSelector } from "react-redux";
@@ -47,101 +49,149 @@ const Security = () => {
 
   return (
     <div>
-      <h4 className="text-[22px] lg:text-[22px] leading-[32px] font-semibold text-[#2B313B]">
+      <h4 className="text-[22px] lg:text-[22px] leading-[32px] font-semibold">
         Security
       </h4>
 
-      <div className="flex flex-col gap-6 md:gap-8 mt-5">
+      <div className="flex flex-col gap-6 md:gap-8 mt-6 border border-border rounded-xl p-6 bg-neutral-50 dark:bg-secondary/20">
         <div className="flex justify-between md:flex-row flex-col  md:items-center gap-4">
-          <div className="text-[#606C82] font-normal">
-            <h4 className="font-semibold mb-2">Password</h4>
-            <p className="text-xs ">
-              Set a unique password for better protection
-            </p>
+          <div className="flex items-center gap-4">
+            <div className="bg-accent p-2 rounded-md text-muted-foreground">
+              <Lock className="size-6" />
+            </div>
+
+            <TextBox
+              label={"Password"}
+              value={
+                <p
+                  className={cn(
+                    "flex items-center gap-2 font-medium text-xs text-muted-foreground",
+                  )}
+                >
+                  Set a unique password for better protection
+                </p>
+              }
+              labelClass=" text-base text-foreground font-semibold"
+              direction="column"
+              containerClassName="gap-0.5"
+              showIndicator={false}
+            />
           </div>
 
-          <WhiteTransparentButton
-            text={"Change Password"}
-            loading={false}
-            size="sm"
-            className="w-[137px]"
-            onClick={() => setOpenResetPasswordModal(true)}
-          />
-        </div>
-
-        <div className="flex justify-between md:flex-row flex-col  md:items-center gap-4">
-          <div className="text-[#606C82] font-normal">
-            <h4 className="font-semibold mb-2">
-              2FA (Two-Factor Authentication)
-            </h4>
-            <p className="text-xs ">
-              Status:{" "}
-              <span
-                className={`${
-                  !user?.twoFactorAuthEnabled
-                    ? "text-[#DC2625]"
-                    : "text-[#17A34A]"
-                }`}
-              >
-                {!user?.twoFactorAuthEnabled ? "Off" : "On"}
-              </span>
-            </p>
-          </div>
-
-          {!user?.twoFactorAuthEnabled ? (
+          <div className="flex flex-col items-end">
             <WhiteTransparentButton
-              text={"Enable"}
+              text={"Change Password"}
               loading={false}
               size="sm"
               className="w-[137px]"
-              onClick={() =>
-                setShow2FAModal({ disable: false, enable: true, reset: false })
-              }
+              onClick={() => setOpenResetPasswordModal(true)}
             />
-          ) : (
-            <div className="flex gap-1">
+          </div>
+        </div>
+
+        <div className="flex justify-between md:flex-row flex-col  md:items-center gap-4">
+          <div className="flex items-center gap-4">
+            <div className="bg-accent p-2 rounded-md text-muted-foreground">
+              <ShieldCheck className="size-6" />
+            </div>
+
+            <TextBox
+              label={"2FA (Two-Factor Authentication)"}
+              value={
+                <p className="text-xs text-muted-foreground">
+                  Status:{" "}
+                  <span
+                    className={`px-3 py-0.5 rounded-md ${
+                      !user?.twoFactorAuthEnabled
+                        ? "text-red-500 bg-destructive/40"
+                        : "text-[#17A34A] bg-[#17A34A]/40"
+                    }`}
+                  >
+                    {!user?.twoFactorAuthEnabled ? "Off" : "On"}
+                  </span>
+                </p>
+              }
+              labelClass=" text-base text-foreground font-semibold"
+              direction="column"
+              containerClassName="gap-0.5"
+              showIndicator={false}
+            />
+          </div>
+
+          <div className="flex flex-col items-end">
+            {!user?.twoFactorAuthEnabled ? (
               <WhiteTransparentButton
-                text={"Disable"}
+                text={"Enable"}
                 loading={false}
                 size="sm"
-                className="w-[100px]"
+                className="w-[137px]"
                 onClick={() =>
                   setShow2FAModal({
-                    disable: true,
-                    enable: false,
+                    disable: false,
+                    enable: true,
                     reset: false,
                   })
                 }
               />
-              <WhiteTransparentButton
-                text={"Reset"}
-                loading={false}
-                size="sm"
-                className="w-[100px] hidden"
-                onClick={() => {
-                  setShow2FAModal({
-                    disable: false,
-                    enable: false,
-                    reset: true,
-                  });
-                }}
-              />
-            </div>
-          )}
+            ) : (
+              <div className="flex gap-1">
+                <WhiteTransparentButton
+                  text={"Disable"}
+                  loading={false}
+                  size="sm"
+                  className="w-[100px]"
+                  onClick={() =>
+                    setShow2FAModal({
+                      disable: true,
+                      enable: false,
+                      reset: false,
+                    })
+                  }
+                />
+                <WhiteTransparentButton
+                  text={"Reset"}
+                  loading={false}
+                  size="sm"
+                  className="w-[100px] hidden"
+                  onClick={() => {
+                    setShow2FAModal({
+                      disable: false,
+                      enable: false,
+                      reset: true,
+                    });
+                  }}
+                />
+              </div>
+            )}
+          </div>
         </div>
         <div className="flex justify-between md:flex-row flex-col  md:items-center gap-4">
-          <div className="text-[#606C82] font-normal">
-            <h4 className="mb-2 font-semibold">Wallet Pin</h4>
-            <p className="text-xs ">
-              Status:{" "}
-              <span
-                className={`${
-                  !user?.wallet?.pinSet ? "text-[#DC2625]" : "text-[#17A34A]"
-                }`}
-              >
-                {!user?.wallet?.pinSet ? "Off" : "On"}
-              </span>
-            </p>
+          <div className="flex items-center gap-4">
+            <div className="bg-accent p-2 rounded-md text-muted-foreground">
+              <Key className="size-6" />
+            </div>
+
+            <TextBox
+              label={"Wallet Pin"}
+              value={
+                <p className="text-xs text-muted-foreground">
+                  Status:{" "}
+                  <span
+                    className={`px-3 py-0.5 rounded-md ${
+                      !user?.wallet?.pinSet
+                        ? "text-red-500 bg-destructive/40"
+                        : "text-[#17A34A] bg-[#17A34A]/40"
+                    }`}
+                  >
+                    {!user?.wallet?.pinSet ? "Off" : "On"}
+                  </span>
+                </p>
+              }
+              labelClass=" text-base text-foreground font-semibold"
+              direction="column"
+              containerClassName="gap-0.5"
+              showIndicator={false}
+            />
           </div>
 
           <div className="flex flex-col items-end">
@@ -153,7 +203,7 @@ const Security = () => {
               onClick={() => setPinModal({ forgot: false, mode: true })}
             />
             {user?.wallet?.pinSet && (
-              <div className="flex items-center text-xs font-normal text-[#606C82] ">
+              <div className="flex items-center text-xs font-normal text-muted-foreground ">
                 <p>Forgot PIN?</p>
                 <Button
                   className="text-sm px-1"
@@ -210,9 +260,7 @@ const Security = () => {
         className="md:!max-w-md"
       >
         <div className="flex flex-col ">
-          <h1 className="text-[#0A0E12] text-[22px]  font-semibold">
-            Security Verification
-          </h1>
+          <h1 className=" text-[22px]  font-semibold">Security Verification</h1>
 
           <PinForm
             close={() => {

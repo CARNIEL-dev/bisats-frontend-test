@@ -13,7 +13,7 @@ const footerData = {
       { name: "Home", url: APP_ROUTES.HOME },
       { name: "Terms and Conditions", url: APP_ROUTES.TERMS },
 
-      { name: "T&C for Merchants", url: APP_ROUTES.TERMS },
+      // { name: "T&C for Merchants", url: APP_ROUTES.TERMS },
       { name: "Policy", url: APP_ROUTES.POLICY },
       { name: "Resources", url: APP_ROUTES.RESOURCES },
       { name: "FAQs", url: APP_ROUTES.FAQ },

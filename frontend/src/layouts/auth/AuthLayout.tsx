@@ -6,15 +6,16 @@ import { Outlet } from "react-router-dom";
 
 import AuthIcons from "@/assets/icons/auth_icons.png";
 import AuthOverlay from "@/assets/illustrations/auth_overlay.png";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 const AuthLayout = () => {
   return (
     <GoogleOAuthProvider clientId={GOOGLE.CLIENT_ID ?? ""}>
       <MaxWidth className={` lg:h-screen w-full pt-8 md:pt-0 max-w-[100rem]`}>
-        <div className="md:hidden px-4 mb-4">
+        <div className="lg:hidden px-4 mb-4">
           <BisatLogo reload={false} />
         </div>
-        <div className="w-full h-full flex flex-col-reverse lg:flex-row lg:justify-start lg:items-center p-3 ">
+        <div className="w-full h-full flex flex-col-reverse lg:flex-row lg:justify-start lg:items-center p-3 relative">
           {/* SUB: Image Section */}
           <aside className="hidden lg:block lg:w-[561px] 2xl:w-[50%]  bg-black h-[98%] ml-2 rounded-[20px] relative isolate">
             {/*CMT:  Background Pattern */}
@@ -50,6 +51,9 @@ const AuthLayout = () => {
             <div className="w-[90%] max-w-[500px] mx-auto ">
               <Outlet />
             </div>
+          </div>
+          <div className="hidden lg:absolute lg:top-20 lg:right-20 lg:block">
+            <ThemeToggle />
           </div>
         </div>
       </MaxWidth>

@@ -322,10 +322,10 @@ const P2PConfirmation: React.FC<Props> = ({
             >
               {isBuy ? "Buy" : "Sell"} {isBuy ? currency : token}
             </h1>
-            <div className="h-fit  border border-[#F9F9FB] bg-[#F9F9FB] rounded-[12px] py-3 px-5 my-5 text-[14px] leading-[24px]">
+            <div className="h-fit  border border-border bg-secondary rounded-[12px] py-3 px-5 my-5 text-[14px] leading-[24px]">
               <div className="flex justify-between items-center mb-1">
-                <p className="text-[#424A59] font-normal">Amount:</p>
-                <p className="text-[#606C82] font-semibold">
+                <p className="text-muted-foreground font-normal">Amount:</p>
+                <p className="text-foreground/80 font-semibold">
                   {formatter({
                     decimal: isBuy
                       ? 2
@@ -337,8 +337,10 @@ const P2PConfirmation: React.FC<Props> = ({
                 </p>
               </div>
               <div className="flex justify-between items-center mb-1">
-                <p className="text-[#424A59] font-normal">You'll receive:</p>
-                <p className="text-[#606C82] font-semibold">
+                <p className="text-muted-foreground font-normal">
+                  You'll receive:
+                </p>
+                <p className="text-foreground/80 font-semibold">
                   {formatter({ decimal: isBuy ? 8 : 2 }).format(
                     Number(receiveAmount),
                   )}{" "}
@@ -347,22 +349,26 @@ const P2PConfirmation: React.FC<Props> = ({
               </div>
               {isBuy && (
                 <div className="flex justify-between items-center mb-1.5">
-                  <p className="text-[#424A59] font-normal">Fee:</p>
-                  <p className="text-[#606C82] font-semibold">{fee} xNGN</p>
+                  <p className="text-muted-foreground font-normal">Fee:</p>
+                  <p className="text-foreground/80 font-semibold">{fee} xNGN</p>
                 </div>
               )}
               {fees.network && (
                 <div className="flex justify-between items-center mb-1.5">
-                  <p className="text-[#424A59] font-normal">Network Fee:</p>
-                  <p className="text-[#606C82] font-semibold">
+                  <p className="text-muted-foreground font-normal">
+                    Network Fee:
+                  </p>
+                  <p className="text-foreground/80 font-semibold">
                     {formatNumber(fees.network)}
                   </p>
                 </div>
               )}
               {fees.transaction && (
                 <div className="flex justify-between items-center mb-1.5">
-                  <p className="text-[#424A59] font-normal">Transaction Fee:</p>
-                  <p className="text-[#606C82] font-semibold">
+                  <p className="text-muted-foreground font-normal">
+                    Transaction Fee:
+                  </p>
+                  <p className="text-foreground/80 font-semibold">
                     {formatNumber(fees.transaction)}
                   </p>
                 </div>
@@ -378,16 +384,16 @@ const P2PConfirmation: React.FC<Props> = ({
             {/* Send to Bank Option - Only show for SELL orders (not buy) */}
             {!isBuy && (
               <div className="mt-4 mb-6">
-                <div className="flex items-center justify-between p-4 border border-[#E5E7EB] rounded-lg">
+                <div className="flex items-center justify-between p-4 border border-border rounded-lg">
                   <div className="flex items-center gap-2">
                     <div className="p-2 bg-primary/10 text-primary rounded-md">
                       <Landmark />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-[#1F2937]">
+                      <p className="text-sm font-medium text-foreground">
                         Direct Bank Transfer
                       </p>
-                      <p className="text-xs text-[#6B7280]">
+                      <p className="text-xs text-muted-foreground">
                         Send funds directly to your bank
                       </p>
                     </div>

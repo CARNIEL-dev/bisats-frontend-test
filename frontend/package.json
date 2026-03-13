@@ -63,6 +63,7 @@
     "react-image-crop": "^11.0.10",
     "react-image-file-resizer": "^0.4.8",
     "react-input-pin-code": "^2.0.1",
+    "react-ip-location": "^1.0.37",
     "react-loading-indicators": "^1.0.1",
     "react-qr-code": "^2.0.18",
     "react-redux": "^9.1.2",
@@ -78,6 +79,7 @@
     "tailwindcss-animated": "^2.0.0",
     "typescript": "^5.3.0",
     "util": "^0.12.5",
+    "uuid": "^13.0.0",
     "vm-browserify": "^1.1.2",
     "web-vitals": "^2.1.4",
     "yup": "^1.4.0"

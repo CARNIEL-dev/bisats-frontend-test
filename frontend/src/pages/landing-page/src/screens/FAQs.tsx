@@ -96,8 +96,8 @@ const FAQs = (): React.ReactElement => {
                 }
                 className={`w-full text-left rounded-[8px] p-[12px] transition-all duration-200 ${
                   activeQuestion === index
-                    ? "bg-[#F5BB00] text-[#0A0E12] font-semibold text-[18px]"
-                    : "bg-[#F9F9FB] text-[#515B6E] font-normal text-[16px]"
+                    ? "bg-primary text-[#0A0E12] font-semibold text-[18px]"
+                    : "text-muted-foreground font-normal  bg-muted dark:bg-muted/50 dark:hover:bg-secondary"
                 }`}
               >
                 {faq.question}

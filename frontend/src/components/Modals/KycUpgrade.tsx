@@ -66,10 +66,10 @@ const KycUpgrade: React.FC<Props> = ({ close }) => {
           alt="student-card"
           className="w-[80px] h-[60px] mx-auto mt-7"
         />
-        <h1 className="text-[#0A0E12] text-[18px] leading-[32px] lg:text-[18px] lg:leading-[32px] font-semibold">
+        <h1 className="text-[18px] leading-[32px] lg:text-[18px] lg:leading-[32px] font-semibold">
           Account Upgrade Required
         </h1>
-        <p className="text-[#606C82] text-[14px] leading-[24px] lg:text-[14px] lg:leading-[24px] font-normal my-3">
+        <p className="text-muted-foreground text-[14px] leading-[24px] lg:text-[14px] lg:leading-[24px] font-normal my-3">
           To proceed with this action, we need you to upgrade your account to a{" "}
           <span className="text-[#17A34A] font-bold">
             {level === 1 ? "Merchant" : "Super Merchant"}
@@ -77,10 +77,10 @@ const KycUpgrade: React.FC<Props> = ({ close }) => {
           . Completing this upgrade will give you access to the following
           features:
         </p>
-        <div className="bg-[#F9F9FB] p-2 my-5 w-fit text-left border border-[#F9F9FB] rounded-[8px] text-[12px] text-[#515B6E] h-fit flex flex-col space-y-2">
+        <div className="bg-secondary p-2 my-5 w-fit text-left border border-border rounded-[8px] text-[12px] text-muted-foreground h-fit flex flex-col space-y-2">
           {account_level_features.map((feat, idx) => (
             <p className="flex items-center" key={idx}>
-              <span className="w-[4px] bg-[#C2C7D2] rounded-[50%] mr-1.5 h-[4px]"></span>
+              <span className="w-[4px] bg-border rounded-[50%] mr-1.5 h-[4px]"></span>
               <span>{feat}</span>
             </p>
           ))}

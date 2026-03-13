@@ -1,12 +1,10 @@
 import { tokenLogos } from "@/assets/tokens";
 import Empty from "@/components/Empty";
-import { SelectDropDown } from "@/components/Inputs/MultiSelectInput";
 import TransactionDetails from "@/components/Modals/TransactionDetails";
 import ErrorDisplay from "@/components/shared/ErrorDisplay";
 import StatusBadge from "@/components/shared/StatusBadge";
 import { Button } from "@/components/ui/Button";
 import { DataTable } from "@/components/ui/data-table";
-import { TokenData } from "@/data";
 import PreLoader from "@/layouts/PreLoader";
 import { useUserWalletHistory } from "@/redux/actions/walletActions";
 
@@ -49,8 +47,8 @@ export type RawTx = {
 const Transactions: React.FC = () => {
   const user = useSelector((state: { user: UserState }) => state.user);
 
-  const [selectedAsset, setSelectedAsset] = useState<string>("");
-  const [selectedType, setSelectedType] = useState<string>("");
+  const [selectedAsset] = useState<string>("");
+  const [selectedType] = useState<string>("");
   const [searchWord] = useState("");
 
   const [selectedDate] = useState<string>("");
@@ -83,8 +81,8 @@ const Transactions: React.FC = () => {
       header: () => {
         return (
           <div className="flex  flex-col gap-1">
-            <p className="font-semibold text-muted-foreground lg:hidden">Asset</p>
-            <SelectDropDown
+            <p className="font-semibold text-muted-foreground ">Asset</p>
+            {/* <SelectDropDown
               options={[
                 { label: "Asset", value: "-" },
                 ...TokenData.map((item) => ({
@@ -113,7 +111,7 @@ const Transactions: React.FC = () => {
               }}
               className="!h-[2.3rem] !w-fit hidden lg:flex"
               defaultValue={selectedAsset ? selectedAsset : "-"}
-            />
+            /> */}
           </div>
         );
       },
@@ -156,8 +154,8 @@ const Transactions: React.FC = () => {
       header: () => {
         return (
           <div className="flex flex-col gap-1">
-            <p className="font-semibold text-muted-foreground lg:hidden">Type</p>
-            <SelectDropDown
+            <p className="font-semibold text-muted-foreground ">Type</p>
+            {/* <SelectDropDown
               options={[
                 { label: "Type", value: "-" },
                 { label: "Deposit", value: "top_up" },
@@ -169,7 +167,7 @@ const Transactions: React.FC = () => {
               }}
               className="!h-[2.3rem] !w-fit hidden lg:flex"
               defaultValue={selectedType ? selectedType : "-"}
-            />
+            /> */}
           </div>
         );
       },

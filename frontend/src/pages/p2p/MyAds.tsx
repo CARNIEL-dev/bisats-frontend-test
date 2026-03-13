@@ -88,11 +88,15 @@ const MyAds = () => {
       updateAdStatus({ adId, newStatus: status }),
     onSuccess(_, variables) {
       refetchWallet();
-      queryClient.invalidateQueries({
+      queryClient.refetchQueries({
         queryKey: ["userAds"],
+        type: "all",
+        exact: false,
       });
       queryClient.invalidateQueries({
         queryKey: ["userNotifications"],
+        type: "all",
+        exact: false,
       });
       queryClient.refetchQueries({
         queryKey: ["searchAds"],
@@ -355,7 +359,7 @@ const MyAds = () => {
 
   return (
     <div className="w-full space-y-8">
-      <div className="flex flex-col p-4 rounded-xl bg-neutral-100 md:flex-row md:items-center justify-between gap-2">
+      <div className="flex flex-col p-4 rounded-xl bg-secondary md:flex-row md:items-center justify-between gap-2">
         <Header
           text="My Ads"
           subtext="Create, view and manage your ads on Bisats here"
@@ -402,7 +406,7 @@ const MyAds = () => {
         ) : (
           <div className="space-y-16">
             <div className="space-y-3">
-              <p className="text-lg font-semibold mb-3 text-green-600 border border-green-500 rounded-lg px-3 py-2 bg-green-500/10">
+              <p className="text-lg font-semibold mb-3 text-green-600 border border-green-500/20 rounded-lg px-3 py-2 bg-green-500/5">
                 Active Ads
               </p>
 
@@ -413,7 +417,7 @@ const MyAds = () => {
               />
             </div>
             <div className="space-y-3">
-              <p className="text-lg font-semibold text-red-600 border border-red-500 rounded-lg px-3 py-2 bg-red-500/10">
+              <p className="text-lg font-semibold text-red-600 border border-destructive/40 rounded-lg px-3 py-2 bg-destructive/10">
                 Closed Ads
               </p>
 

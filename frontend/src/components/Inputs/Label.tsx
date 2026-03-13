@@ -7,7 +7,7 @@ const Label = ({
 }) => {
   return (
     <label
-      className={`text-[14px] leading-[24px] font-semibold text-foreground  ${className}`}
+      className={`text-[14px] leading-[24px] font-semibold text-muted-foreground  ${className}`}
     >
       {text}
     </label>

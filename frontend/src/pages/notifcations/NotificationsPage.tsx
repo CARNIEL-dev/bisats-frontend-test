@@ -171,9 +171,10 @@ const NotificationsPage = () => {
     const hasNotifications = notificationState?.totalNotification >= 1;
     const notifications = notificationState?.notifications || [];
 
-    return hasNotifications
-      ? [...notifications].sort((a, b) => Number(a.read) - Number(b.read))
-      : [];
+    return hasNotifications ? notifications : [];
+    // return hasNotifications
+    //   ? [...notifications].sort((a, b) => Number(a.read) - Number(b.read))
+    //   : [];
   }, [notificationState?.notifications, notificationState?.totalNotification]);
 
   useEffect(() => {
@@ -181,7 +182,7 @@ const NotificationsPage = () => {
 
     // find the <li> whose data-id matches
     const li = listRef.current?.querySelector<HTMLLIElement>(
-      `li[data-id="${id}"]`
+      `li[data-id="${id}"]`,
     );
     if (li) {
       li.scrollIntoView({
@@ -212,7 +213,7 @@ const NotificationsPage = () => {
         ) : (
           <div className="grid grid-cols-[1fr_1.6fr] gap-4 !h-[68dvh] ">
             <div>
-              <div className="flex md:items-center flex-col-reverse md:flex-row md:justify-between py-4 border-b gap-y-2">
+              <div className="flex md:items-center flex-col-reverse md:flex-row md:justify-between py-4 border-b border-border gap-y-2">
                 <h5 className="text-sm text-muted-foreground">
                   <span>Total : </span>
                   <span>{notificationState?.totalNotification}</span>
@@ -225,7 +226,7 @@ const NotificationsPage = () => {
                       variant="ghost"
                       size={"sm"}
                       className={cn(
-                        "text-xs rounded-full border border-green-200  size-8 hover:bg-green-500/10"
+                        "text-xs rounded-full border border-green-200  size-8 hover:bg-green-500/10",
                       )}
                       onClick={() => {
                         mutation.mutate({ type: "readAll" });
@@ -244,7 +245,7 @@ const NotificationsPage = () => {
                       variant="ghost"
                       size={"sm"}
                       className={cn(
-                        "text-xs rounded-full border border-red-200  size-8 hover:bg-red-500/10"
+                        "text-xs rounded-full border border-red-200  size-8 hover:bg-red-500/10",
                       )}
                       onClick={() => {
                         mutation.mutate({ type: "deleteAll" });
@@ -294,7 +295,7 @@ const NotificationsPage = () => {
                             className={cn(
                               id === notification.id
                                 ? "border border-green-600 rounded-md"
-                                : ""
+                                : "",
                             )}
                             onClick={() => {
                               if (id === notification.id) {
@@ -310,7 +311,7 @@ const NotificationsPage = () => {
                             />
                           </motion.li>
                         );
-                      }
+                      },
                     )
                   ) : (
                     <motion.div
@@ -319,13 +320,15 @@ const NotificationsPage = () => {
                       animate="show"
                       className="text-center py-4"
                     >
-                      <p className="text-muted-foreground text-sm">No notifications</p>
+                      <p className="text-muted-foreground text-sm">
+                        No notifications
+                      </p>
                     </motion.div>
                   )}
                 </AnimatePresence>
               </ul>
             </div>
-            <div className="bg-neutral-50 border p-4 rounded-md h-full">
+            <div className="bg-neutral-50 dark:bg-secondary  border p-4 rounded-md h-full border-border">
               {notifyId.isLoading ? (
                 <div className="grid h-full place-content-center">
                   <PreLoader primary={false} />
@@ -341,7 +344,7 @@ const NotificationsPage = () => {
               ) : (
                 notifyId.data && (
                   <div>
-                    <div className="flex items-center flex-wrap gap-2 mb-4 md:justify-between border-b pb-4">
+                    <div className="flex items-center flex-wrap gap-2 mb-4 md:justify-between border-b border-border pb-4">
                       <h3 className="text-lg font-semibold">
                         {notifyId.data?.title}
                       </h3>
@@ -354,7 +357,7 @@ const NotificationsPage = () => {
                             variant="ghost"
                             size={"sm"}
                             className={cn(
-                              "text-xs rounded-full border border-green-200  size-8 text-muted-foreground hover:bg-green-500/10"
+                              "text-xs rounded-full border border-green-200  size-8 text-muted-foreground hover:bg-green-500/10",
                             )}
                             onClick={() => {
                               mutation.mutate({
@@ -375,7 +378,7 @@ const NotificationsPage = () => {
                           variant={"ghost"}
                           size={"sm"}
                           className={cn(
-                            "hover:bg-red-500/10 border border-red-200 rounded-full size-8"
+                            "hover:bg-red-500/10 border border-red-200 rounded-full size-8",
                           )}
                           disabled={isItemLoading(id, "delete")}
                           onClick={() => {

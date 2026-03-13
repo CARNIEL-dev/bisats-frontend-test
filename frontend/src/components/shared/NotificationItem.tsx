@@ -14,8 +14,8 @@ const NotificationItem = ({
   return (
     <div
       className={cn(
-        " px-2  border-t py-2  text-muted-foreground   ",
-        notification.read && "text-gray-300"
+        " px-2  border-t border-border py-2  text-muted-foreground   ",
+        notification.read && "text-muted-foreground",
       )}
     >
       <div className="flex items-center gap-1">
@@ -35,8 +35,8 @@ const NotificationItem = ({
         <div className="flex md:items-center flex-col md:flex-row gap-2 md:justify-between">
           <h5
             className={cn(
-              "text-[#2B313B] text-sm font-semibold leading-[24px]",
-              notification.read && "text-muted-foreground"
+              "text-foreground text-sm font-semibold leading-[24px]",
+              notification.read && "text-muted-foreground",
             )}
           >
             {notification.title}

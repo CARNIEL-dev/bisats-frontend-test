@@ -3,7 +3,7 @@ import { cn } from "@/utils";
 import { FacebookIcon, InstagramIcon, TwitterIcon } from "lucide-react";
 import React from "react";
 import { useSelector } from "react-redux";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 
 import BisatLogo from "@/components/shared/Logo";
 import { Button } from "@/components/ui/Button";
@@ -37,13 +37,13 @@ export const Footer = ({
           <div className="flex px-5 items-center w-full lg:w-3/4 mx-auto  justify-between">
             <div className="w-full lg:w-1/3 flex items-center justify-between">
               {LoggedInLinks.map((link, idx) => (
-                <a
+                <Link
                   key={idx}
-                  href={link?.link}
-                  className="text-[#515B6E] text-[14px] leading-[24px] font-normal cursor-pointer"
+                  to={link?.link}
+                  className="text-muted-foreground text-[14px] leading-[24px] font-normal cursor-pointer"
                 >
                   {link?.title}
-                </a>
+                </Link>
               ))}
             </div>
             <div className="flex items-end justify-end w-2/3 md:w-auto scale-75">

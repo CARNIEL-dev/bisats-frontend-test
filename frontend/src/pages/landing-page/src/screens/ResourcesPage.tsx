@@ -27,7 +27,7 @@ const ResourcesPage = () => {
           //     setSearchParams({ type: value }, { replace: true })
           //   }
         >
-          <TabsList className="grid grid-cols-2 mb-10 max-w-[60rem] mx-auto border-b ">
+          <TabsList className="grid grid-cols-2 mb-10 max-w-[60rem] mx-auto border-b border-border">
             {["Videos", "Articles"].map((tab) => (
               <TabsTrigger key={tab} value={tab} className="w-full">
                 {tab}

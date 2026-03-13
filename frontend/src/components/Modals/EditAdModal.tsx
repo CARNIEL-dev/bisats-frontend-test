@@ -21,7 +21,7 @@ import useGetWallet from "@/hooks/use-getWallet";
 import PreLoader from "@/layouts/PreLoader";
 import { UpdateAdStatusResponse } from "@/pages/p2p/MyAds";
 import { useCryptoRates } from "@/redux/actions/walletActions";
-import { cn, formatter } from "@/utils";
+import { cn, formatAccountLevel, formatter } from "@/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Check } from "lucide-react";
 
@@ -42,8 +42,9 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
   const user = userState.user;
   const { refetchWallet } = useGetWallet();
 
-  const account_level = user?.accountLevel as AccountLevel;
-  const userTransactionLimits = bisats_limit[account_level];
+  const { level } = formatAccountLevel(user?.accountLevel);
+
+  const userTransactionLimits = bisats_limit[`level_${level}` as AccountLevel];
 
   //SUB: Query function
   const {
@@ -94,16 +95,8 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
         if (originalValue === "" || isNaN(originalValue)) return undefined;
         return Number(originalValue);
       })
-      .when([""], ([_], schema) => {
-        // const nRate = Number(rate ?? 0).toFixed(2);
-        const minPrice = 0.9 * Number(rate);
-        const maxPrice = 1.1 * Number(rate);
-
-        return schema
-          .min(minPrice, `Price must be greater than 90% of market rate`)
-          .max(maxPrice, `Price must be lower than 110% of market rate`)
-          .required("Price is required");
-      })
+      .min(0.9 * Number(rate), `Price must be greater than 90% of market rate`)
+      .max(1.1 * Number(rate), `Price must be lower than 110% of market rate`)
       .required("Price is required"),
     amount: Yup.number()
       .moreThan(0, "Amount must be greater than 0")
@@ -159,6 +152,8 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
         refetchWallet(),
         queryClient.refetchQueries({
           queryKey: ["userAds", variables.userId],
+          exact: false,
+          type: "all",
         }),
         queryClient.refetchQueries({
           queryKey: ["searchAds"],
@@ -201,7 +196,7 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
 
   return (
     <div>
-      <p className="text-[#455062] text-[18px] lg:text-[22px] leading-[32px] font-semibold">
+      <p className="text-foreground text-lg lg:text-[22px] leading-[32px] font-semibold">
         Edit Price
       </p>
       {fetching ? (
@@ -221,7 +216,7 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
           <div className="mb-3">
             <div
               className={cn(
-                "h-fit border  border-[#F3F4F6] bg-[#F9F9FB] rounded-md py-2 px-3 my-2 text-xs flex flex-col gap-1.5 w-full ",
+                "h-fit border  border-border bg-secondary rounded-md py-2 px-3 my-2 text-xs flex flex-col gap-1.5 w-full ",
                 ad?.type.toLowerCase() === "buy"
                   ? "bg-green-600/10 text-green-700"
                   : "bg-red-600/10 text-red-700",

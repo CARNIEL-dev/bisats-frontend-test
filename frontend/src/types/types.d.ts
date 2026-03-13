@@ -539,9 +539,8 @@ interface SwapExecutePayload {
   sourceId: string;
   targetId: string;
   amount: number;
-  side: "sell" | "buy";
-  withdrawalPin: string;
-  twoFactorCode: string;
+  sourceCode: string;
+  targetCode: string;
 }
 
 interface SwapExecuteResponse {

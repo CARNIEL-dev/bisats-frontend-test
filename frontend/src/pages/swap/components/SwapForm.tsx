@@ -1,27 +1,31 @@
 import { PrimaryButton } from "@/components/buttons/Buttons";
-import Toast from "@/components/Toast";
+import ModalTemplate from "@/components/Modals/ModalTemplate";
 import RefreshButton from "@/components/RefreshButton";
+import TextBox from "@/components/shared/TextBox";
 import TokenSelection from "@/components/shared/TokenSelection";
+import Toast from "@/components/Toast";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/Button";
 import useGetWallet from "@/hooks/use-getWallet";
 import KycManager from "@/pages/kyc/KYCManager";
+import SwapInputField from "@/pages/swap/components/SwapInputField";
+import { useSwapRate } from "@/pages/swap/hooks/useSwapRate";
 import Bisatsfetch from "@/redux/fetchWrapper";
 import { formatter } from "@/utils";
 import { BACKEND_URLS } from "@/utils/backendUrls";
 import { formatNumber } from "@/utils/numberFormat";
 import { ACTIONS } from "@/utils/transaction_limits";
 import { useQueryClient } from "@tanstack/react-query";
+import { AlertCircle, ArrowRight, CheckCircle2 } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useSelector } from "react-redux";
-import { useSwapRate } from "../hooks/useSwapRate";
-import SwapInputField from "./SwapInputField";
+import { BlinkBlur } from "react-loading-indicators";
 
 type SwapFormProps = {
   onSuccess?: () => void;
 };
 
 const SwapForm = ({ onSuccess }: SwapFormProps) => {
-  const walletState: WalletState = useSelector((state: any) => state.wallet);
   const queryClient = useQueryClient();
   const { refetchWallet } = useGetWallet();
 
@@ -44,22 +48,9 @@ const SwapForm = ({ onSuccess }: SwapFormProps) => {
     getPairIds,
     clearRate,
     refreshRate,
+    assetBalance,
+    isInsufficientBalance,
   } = useSwapRate();
-
-  // SUB: Wallet balance for source asset
-  const assetBalance = sourceAsset ? walletState?.wallet?.[sourceAsset] : null;
-
-  const isInsufficientBalance =
-    assetBalance !== null &&
-    amount !== "" &&
-    Number(amount) > Number(assetBalance);
-
-  // We enforce skipping fetches via an effect returning earlier than the hook, since we can't cleanly pass down local state inside itself
-  useEffect(() => {
-    if (isInsufficientBalance) {
-      clearRate();
-    }
-  }, [isInsufficientBalance, clearRate]);
 
   // SUB: Execution state
   const [executing, setExecuting] = useState(false);
@@ -68,6 +59,13 @@ const SwapForm = ({ onSuccess }: SwapFormProps) => {
   );
   const [duplicateLockout, setDuplicateLockout] = useState(0);
   const lockoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // New Modal States
+  const [isSwapModalOpen, setIsSwapModalOpen] = useState(false);
+  const [swapStage, setSwapStage] = useState<
+    "confirmation" | "executing" | "success"
+  >("confirmation");
+  const [executionError, setExecutionError] = useState<string | null>(null);
 
   // SUB: Cleanup on unmount
   useEffect(() => {
@@ -126,12 +124,12 @@ const SwapForm = ({ onSuccess }: SwapFormProps) => {
         Toast.error(msg || "Account suspended", "Account Suspended");
         return;
       }
-      if (response?.statusCode === 400) {
-        if (msg.toLowerCase().includes("incorrect pin")) {
-          Toast.error("Incorrect PIN. Please try again.", "PIN Error");
-        } else if (msg.toLowerCase().includes("invalid two-factor")) {
-          Toast.error("Invalid authenticator code.", "2FA Error");
-        } else if (msg.toLowerCase().includes("account locked")) {
+      if (
+        response?.status === false ||
+        response?.success === false ||
+        response?.statusCode === 400
+      ) {
+        if (msg.toLowerCase().includes("account locked")) {
           Toast.error(msg, "Account Locked");
         } else if (msg.toLowerCase().includes("duplicate")) {
           Toast.error(
@@ -159,12 +157,8 @@ const SwapForm = ({ onSuccess }: SwapFormProps) => {
     [startDuplicateLockout],
   );
 
-  // ---------------------------------------------------------------------------
-  // Execution — called by KycManager with { pin, code }
-  // ---------------------------------------------------------------------------
-
   const handleExecuteSwap = useCallback(
-    async (secureData?: Record<string, any>) => {
+    async () => {
       if (!sourceAsset || !targetAsset || !amount || !rateData?.quoteId) return;
 
       // Resolve opaque UUIDs — the API requires IDs, not asset codes
@@ -173,25 +167,32 @@ const SwapForm = ({ onSuccess }: SwapFormProps) => {
         Toast.error("Trading pair not found. Please try again.", "Pair Error");
         return;
       }
+      if (swapResult !== null) {
+        setSwapResult(null);
+      }
 
       const payload: SwapExecutePayload = {
         quoteId: rateData.quoteId,
         sourceId: ids.sourceId,
         targetId: ids.targetId,
         amount: Number(amount),
-        side: "sell",
-        withdrawalPin: secureData?.pin ?? "",
-        twoFactorCode: secureData?.code ?? "",
+        sourceCode: sourceAsset,
+        targetCode: targetAsset,
       };
 
       setExecuting(true);
+      setSwapStage("executing");
+      setExecutionError(null);
       try {
         const response = await Bisatsfetch(BACKEND_URLS.SWAP.EXECUTE, {
           method: "POST",
           body: JSON.stringify(payload),
         });
 
-        if (response.status === true && response.data) {
+        if (
+          (response.status === true || response.success === true) &&
+          response.data
+        ) {
           const result: SwapExecuteResponse = response.data;
           setSwapResult(result);
           // Use local asset codes for human-readable labels (response sourceId/targetId are UUIDs)
@@ -212,11 +213,20 @@ const SwapForm = ({ onSuccess }: SwapFormProps) => {
           ]);
 
           onSuccess?.();
+          setSwapStage("success");
         } else {
           handleSwapError(response);
+          setSwapStage("confirmation");
+          setExecutionError(response?.message || "Swap failed");
         }
-      } catch {
-        Toast.error("Something went wrong. Please try again.", "Error");
+      } catch (err) {
+        const error = err as Error;
+        setSwapStage("confirmation");
+        setExecutionError(error?.message || "Something went wrong");
+        Toast.error(
+          error?.message || "Something went wrong. Please try again.",
+          "Error",
+        );
       } finally {
         setExecuting(false);
       }
@@ -272,143 +282,340 @@ const SwapForm = ({ onSuccess }: SwapFormProps) => {
     rateData !== null &&
     !executing &&
     duplicateLockout === 0 &&
-    timer !== 0 && // Disable swap if the quote expired
     !isInsufficientBalance &&
     !pairError;
 
   // ---------------------------------------------------------------------------
-  // Render
+  // Execution flow
+  // ---------------------------------------------------------------------------
+
+  const handleInitiateSwap = useCallback(() => {
+    if (!canSwap) return;
+    setSwapStage("confirmation");
+    setIsSwapModalOpen(true);
+    setExecutionError(null);
+  }, [canSwap]);
+
+  // ---------------------------------------------------------------------------
+  //HDR: Render
   // ---------------------------------------------------------------------------
 
   return (
-    <div className="flex flex-col gap-3 mt-6">
-      {/* SUB: You pay */}
-      <div>
+    <>
+      <div className="flex flex-col gap-3 mt-6">
+        {/* SUB: You pay */}
+        <div>
+          <SwapInputField
+            label="You pay"
+            id="amt"
+            value={amount}
+            error={pairError}
+            onChange={handleAmountChange}
+            onFocus={() => {}}
+          >
+            <TokenSelection
+              value={sourceAsset}
+              handleChange={handleSourceChange}
+              error={undefined}
+              touched={undefined}
+              showBalance={false}
+              onlyShowTokens={pairsLoading ? [] : validSourceAssets}
+              variant="dialog"
+              placeholder={pairsLoading ? "Loading assets..." : "Select asset"}
+              disabled={pairsLoading}
+            />
+          </SwapInputField>
+          {assetBalance !== null && sourceAsset && (
+            <Badge variant="success">
+              Balance:{" "}
+              {formatter({
+                decimal:
+                  sourceAsset === "xNGN" || sourceAsset === "USDT" ? 2 : 6,
+              }).format(assetBalance)}{" "}
+              {sourceAsset}
+            </Badge>
+          )}
+        </div>
+
+        {/* SUB: You'll receive */}
         <SwapInputField
-          label="You pay"
-          id="amt"
-          value={amount}
-          error={pairError}
-          onChange={handleAmountChange}
-          onFocus={() => {}}
+          label="You'll receive (estimated)"
+          id="receiveAmount"
+          value={
+            rateData
+              ? rateData.targetAmount.toString()
+              : rateLoading
+                ? "Loading…"
+                : ""
+          }
+          error={undefined}
+          onChange={() => {}}
+          disabled={true}
+          loading={rateLoading}
         >
           <TokenSelection
-            value={sourceAsset}
-            handleChange={handleSourceChange}
+            value={targetAsset}
+            handleChange={handleTargetChange}
             error={undefined}
             touched={undefined}
             showBalance={false}
-            onlyShowTokens={pairsLoading ? [] : validSourceAssets}
+            onlyShowTokens={
+              pairsLoading || !sourceAsset ? [] : validTargetAssets
+            }
             variant="dialog"
-            placeholder="Select asset"
-            disabled={pairsLoading}
+            placeholder={!sourceAsset ? "Select source first" : "Select asset"}
+            disabled={pairsLoading || !sourceAsset}
           />
         </SwapInputField>
-        {assetBalance !== null && sourceAsset && (
-          <Badge variant="success">
-            Balance:{" "}
-            {formatter({
-              decimal: sourceAsset === "xNGN" || sourceAsset === "USDT" ? 2 : 6,
-            }).format(assetBalance)}{" "}
-            {sourceAsset}
-          </Badge>
+
+        {/* SUB: Indicative rate + Timer */}
+        {rateData && sourceAsset && targetAsset && (
+          <div className="flex items-center justify-between -mt-6 mb-2">
+            <p className="text-xs text-muted-foreground">
+              Indicative rate: 1 {sourceAsset} ≈ {formatNumber(rateData.rate)}{" "}
+              {targetAsset}
+            </p>
+            <div className="flex gap-2 items-center">
+              {timer !== null && (
+                <div className="flex gap-1 items-center text-xs font-semibold px-2 py-0.5 rounded-md bg-muted">
+                  {timer > 0 ? (
+                    <span
+                      className={
+                        timer <= 10
+                          ? "text-destructive"
+                          : "text-muted-foreground"
+                      }
+                    >
+                      {timer}s
+                    </span>
+                  ) : (
+                    <span className="text-destructive font-bold">Expired</span>
+                  )}
+                </div>
+              )}
+              <RefreshButton
+                isFetching={rateLoading}
+                refetch={refreshRate}
+                className="bg-transparent hover:bg-muted text-green-600 size-6 p-1"
+                refreshTime={15 * 1000} // 15 seconds
+              />
+            </div>
+          </div>
         )}
+
+        {/* SUB: Swap button wrapped with KycManager */}
+        <KycManager action={ACTIONS.SWAP} func={handleInitiateSwap}>
+          {(validateAndExecute) => (
+            <PrimaryButton
+              type="button"
+              loading={executing}
+              text={
+                duplicateLockout > 0 ? `Retry in ${duplicateLockout}s` : "Swap"
+              }
+              className="-mt-2"
+              disabled={!canSwap}
+              onClick={validateAndExecute}
+            />
+          )}
+        </KycManager>
       </div>
 
-      {/* SUB: You'll receive */}
-      <SwapInputField
-        label="You'll receive (estimated)"
-        id="receiveAmount"
-        value={
-          rateData
-            ? formatter({ decimal: 6 }).format(rateData.targetAmount)
-            : rateLoading
-              ? "Loading…"
-              : ""
-        }
-        error={undefined}
-        onChange={() => {}}
-        disabled={true}
-        loading={rateLoading}
+      <ModalTemplate
+        isOpen={isSwapModalOpen}
+        onClose={() => {
+          if (swapStage !== "executing") {
+            setIsSwapModalOpen(false);
+          }
+        }}
+        showCloseButton={swapStage !== "executing"}
+        className="max-w-md"
       >
-        <TokenSelection
-          value={targetAsset}
-          handleChange={handleTargetChange}
-          error={undefined}
-          touched={undefined}
-          showBalance={false}
-          onlyShowTokens={pairsLoading || !sourceAsset ? [] : validTargetAssets}
-          variant="dialog"
-          placeholder={!sourceAsset ? "Select source first" : "Select asset"}
-          disabled={pairsLoading || !sourceAsset}
-        />
-      </SwapInputField>
+        <AnimatePresence mode="wait">
+          {swapStage === "confirmation" && (
+            <motion.div
+              key="confirmation"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="flex flex-col gap-6 py-4"
+            >
+              <div className="text-center space-y-2">
+                <h3 className="text-xl font-bold">Confirm Swap</h3>
+                <p className="text-muted-foreground text-xs">
+                  Please review your swap details below
+                </p>
+              </div>
 
-      {/* SUB: Indicative rate + Timer */}
-      {rateData && sourceAsset && targetAsset && (
-        <div className="flex items-center justify-between -mt-6 mb-2">
-          <p className="text-xs text-muted-foreground">
-            Indicative rate: 1 {sourceAsset} ≈ {formatNumber(rateData.rate)}{" "}
-            {targetAsset}
-          </p>
-          <div className="flex gap-2 items-center">
-            {timer !== null && (
-              <div className="flex gap-1 items-center text-xs font-semibold px-2 py-0.5 rounded-md bg-muted">
-                {timer > 0 ? (
-                  <span
-                    className={
-                      timer <= 10 ? "text-red-500" : "text-muted-foreground"
-                    }
-                  >
-                    {timer}s
+              <div className="flex flex-col items-center justify-center py-6 gap-4">
+                <div className="text-center">
+                  <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">
+                    You are swapping
+                  </p>
+                  <h2 className="text-3xl font-extrabold tracking-tight mt-2">
+                    {amount} {sourceAsset}
+                  </h2>
+                </div>
+
+                <div className="bg-muted p-2 rounded-full">
+                  <ArrowRight className="size-6 text-foreground/50" />
+                </div>
+
+                <div className="text-center">
+                  <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">
+                    To receive
+                  </p>
+                  <h2 className="text-3xl font-extrabold tracking-tight text-primary mt-2">
+                    {rateData?.targetAmount} {targetAsset}
+                  </h2>
+                </div>
+              </div>
+
+              <div className="bg-muted/50 p-4 rounded-xl border border-border space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Exchange Rate</span>
+                  <span className="font-medium">
+                    1 {sourceAsset} ≈ {formatNumber(rateData?.rate || 0)}{" "}
+                    {targetAsset}
                   </span>
-                ) : (
-                  <span className="text-red-500 font-bold">Expired</span>
+                </div>
+                {executionError && (
+                  <div className="flex items-center gap-2 text-destructive text-sm mt-2">
+                    <AlertCircle className="size-4" />
+                    <span>{executionError}</span>
+                  </div>
                 )}
               </div>
-            )}
-            <RefreshButton
-              isFetching={rateLoading}
-              refetch={refreshRate}
-              className="bg-transparent hover:bg-muted text-green-600 h-6 w-6 p-1"
-              refreshTime={2000}
-            />
-          </div>
-        </div>
-      )}
 
-      {/* SUB: Swap button wrapped with KycManager */}
-      <KycManager action={ACTIONS.SWAP} func={handleExecuteSwap} isManual>
-        {(validateAndExecute) => (
-          <PrimaryButton
-            type="button"
-            loading={executing}
-            text={
-              duplicateLockout > 0 ? `Retry in ${duplicateLockout}s` : "Swap"
-            }
-            className="-mt-2"
-            disabled={!canSwap}
-            onClick={validateAndExecute}
-          />
-        )}
-      </KycManager>
+              <div className="flex items-center gap-3 mt-4">
+                <Button
+                  variant="ghost"
+                  onClick={() => setIsSwapModalOpen(false)}
+                  disabled={executing}
+                  className="!text-sm"
+                >
+                  Cancel
+                </Button>
+                <PrimaryButton
+                  onClick={handleExecuteSwap}
+                  loading={executing}
+                  text="Confirm Swap"
+                  className="w-full flex-1 h-12 "
+                />
+              </div>
+            </motion.div>
+          )}
 
-      {/* SUB: Success card */}
-      {swapResult && (
-        <div className="border rounded-lg p-4 bg-green-50 text-sm space-y-1">
-          <p className="font-semibold text-green-700">
-            Swap completed successfully!
-          </p>
-          <p>
-            Sold {swapResult.sourceAmount} {sourceAsset} → Received{" "}
-            {swapResult.targetAmount} {targetAsset}
-          </p>
-          <p className="text-muted-foreground text-xs">
-            Reference: {swapResult.reference}
-          </p>
-        </div>
-      )}
-    </div>
+          {swapStage === "executing" && (
+            <motion.div
+              key="executing"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 1.05 }}
+              className="flex flex-col items-center justify-center py-12 gap-8"
+            >
+              <div className="relative flex items-center justify-center w-full max-w-[300px] h-32">
+                {/* Source Asset Bubble */}
+                <motion.div
+                  initial={{ x: -100, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  className="absolute left-0 z-10 size-16 rounded-full bg-background border-2 border-primary/20 flex items-center justify-center shadow-lg font-bold text-xs"
+                >
+                  {sourceAsset}
+                </motion.div>
+
+                <BlinkBlur
+                  color="#32cd32"
+                  size="small"
+                  text="Swapping..."
+                  textColor=""
+                />
+
+                {/* Target Asset Bubble */}
+                <motion.div
+                  initial={{ x: 100, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  className="absolute right-0 z-10 size-20 rounded-full bg-primary flex items-center justify-center shadow-xl text-black font-bold text-sm animate-pulse"
+                >
+                  {targetAsset}
+                </motion.div>
+              </div>
+
+              <div className="text-center space-y-3">
+                <p className="text-muted-foreground  text-sm">
+                  Swapping {amount} {sourceAsset} to{" "}
+                  <span className="text-primary font-semibold">
+                    {rateData?.targetAmount} {targetAsset}
+                  </span>
+                </p>
+              </div>
+            </motion.div>
+          )}
+
+          {swapStage === "success" && (
+            <motion.div
+              key="success"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="flex flex-col items-center justify-center py-8 gap-6 text-center"
+            >
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ type: "spring", damping: 12, stiffness: 200 }}
+                className="size-24 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center"
+              >
+                <CheckCircle2 className="size-14 text-green-600 dark:text-green-400" />
+              </motion.div>
+
+              <div className="space-y-2">
+                <h3 className="text-2xl font-bold text-green-700 dark:text-green-400">
+                  Swap Successful!
+                </h3>
+                <p className="text-muted-foreground text-sm">
+                  Your funds have been successfully converted.
+                </p>
+              </div>
+
+              <div className="w-full bg-muted/30 rounded-2xl p-6 border border-border space-y-2">
+                <TextBox
+                  label="Swapped"
+                  value={
+                    <div className="text-right font-bold">
+                      {swapResult?.sourceAmount} {sourceAsset}
+                    </div>
+                  }
+                  labelClass="text-sm"
+                  showIndicator={false}
+                />
+                <TextBox
+                  label="Received"
+                  value={
+                    <div className="text-right font-bold text-primary">
+                      {swapResult?.targetAmount} {targetAsset}
+                    </div>
+                  }
+                  labelClass="text-sm"
+                  showIndicator={false}
+                />
+                <TextBox
+                  label="Reference"
+                  value={swapResult?.reference}
+                  labelClass="text-sm"
+                  showIndicator={false}
+                />
+              </div>
+
+              <PrimaryButton
+                onClick={() => setIsSwapModalOpen(false)}
+                text="Close"
+                className="w-full h-12 mt-4"
+                loading={false}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </ModalTemplate>
+    </>
   );
 };
 

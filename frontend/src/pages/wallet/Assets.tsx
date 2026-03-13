@@ -146,7 +146,7 @@ const Assets: React.FC = () => {
               variant="default"
               disabled={isFetching}
               className={cn(
-                "p-0! h-[1.5rem] w-fit bg-primary/20  hidden lg:flex",
+                "p-0! h-[1.5rem] w-fit bg-primary/50  hidden lg:flex",
               )}
               onClick={toggleShowBalance}
             >
