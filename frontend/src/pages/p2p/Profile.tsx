@@ -219,7 +219,7 @@ const Profile = () => {
       >
         <BackButton />
         <Card className="bg-[#f9f9f9]  gap-3 items-center md:items-start px-6">
-          <h3 className="text-[28px] md:text-[34px] leading-[40px] font-semibold text-[#0A0E12] flex items-center gap-2">
+          <h3 className="text-[28px] md:text-[34px] leading-[40px] font-semibold text-foreground flex items-center gap-2">
             {user?.userName || "Hello, User"}
             {level === 3 ? (
               // <Medal fill="#FFD700" />
@@ -236,7 +236,7 @@ const Profile = () => {
             <StatusBadge status={user?.accountStatus} />
           </div>
         </Card>
-        <Card className="bg-primary/10 border-primary/20 md:flex-row   gap-3 items-center md:items-start px-6 justify-between">
+        <Card className="bg-primary/10 dark:bg-primary/5 border-primary/20 md:flex-row   gap-3 items-center md:items-start px-6 justify-between">
           <div className=" flex flex-col gap-0.5 items-center md:items-start">
             <h3 className="text-base md:text-lg  font-semibold text-foreground flex items-center gap-2 w-fit">
               <span className=" ">Account Tier:</span>
@@ -260,7 +260,7 @@ const Profile = () => {
           )}
         </Card>
 
-        <Card className="bg-[#f9f9f9]  gap-8   px-6 ">
+        <Card className="bg-[#f9f9f9] gap-8   px-6 ">
           <div className="grid  md:grid-cols-[repeat(auto-fit,minmax(250px,1fr))] grid-cols-2 gap-4">
             <div className="flex items-center gap-2 col-span-full mb-3">
               <User2 className="text-primary size-6" />

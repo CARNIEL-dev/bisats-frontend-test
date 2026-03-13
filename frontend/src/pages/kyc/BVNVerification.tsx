@@ -133,7 +133,7 @@ const BVNVerification = () => {
         <OtherSide
           header="Upgrade your account"
           subHeader={
-            <p className="text-[#515B6E] text-[14px]">
+            <p className="text-muted-foreground text-[14px]">
               Upgrade to <span className="text-[#17A34A]"> Level 2 </span>to
               unlock more access to your Bisats account
             </p>
@@ -152,7 +152,7 @@ const BVNVerification = () => {
             </div>
           ) : (
             <form onSubmit={formik.handleSubmit}>
-              <p className=" mt-16  text-[14px] text-[#515B6E] w-full h-fit flex flex-col  ">
+              <p className=" mt-16  text-[14px] text-muted-foreground w-full h-fit flex flex-col  ">
                 A verification code has been sent to your email
               </p>
 
@@ -193,10 +193,10 @@ const BVNVerification = () => {
         ) : (
           <div>
             <form onSubmit={formik1.handleSubmit}>
-              <div className="bg-[#F9F9FB] p-2 mt-5 border border-[#F9F9FB] rounded-[8px] text-[12px] text-[#515B6E] w-full h-fit flex flex-col space-y-2 ">
+              <div className="bg-secondary p-2 px-3 mt-5 border border-border rounded-[8px] text-[12px] text-muted-foreground w-full h-fit flex flex-col space-y-2 ">
                 {account_level_features.map((feat, idx) => (
                   <p className="flex items-center" key={idx}>
-                    <p className="w-[4px] bg-[#C2C7D2] rounded-[50%]  mr-1.5 h-[4px]"></p>
+                    <p className="size-1 bg-muted-foreground rounded-[50%]  mr-1.5 "></p>
                     <span>{feat}</span>
                   </p>
                 ))}

@@ -49,7 +49,7 @@ export const MultiSelectDropDown = ({
   const { ref, visible, setVisible } = useClickOutside(false);
 
   const [selected, setSelected] = useState<string | React.ReactNode>(
-    value || ""
+    value || "",
   );
   usePreventScroll(visible);
 
@@ -73,13 +73,13 @@ export const MultiSelectDropDown = ({
           id={`${parentId}Btn`}
           data-dropdown-toggle={parentId}
           className={cn(
-            " py-2.5 px-3  bg-neutral-100 border border-input h-[48px] rounded-[8px] flex items-center w-full justify-between  text-sm  font-normal capitalize gap-2 ",
+            " py-2.5 px-3  bg-neutral-100 dark:bg-secondary border border-input h-[48px] rounded-[8px] flex items-center w-full justify-between  text-sm  font-normal capitalize gap-2 ",
             {
               "border-[#EF4444] outline-0 focus:border-[#EF4444]":
                 error && touched,
             },
             selected ? "text-foreground" : "text-muted-foreground",
-            className
+            className,
           )}
           type="button"
           onClick={() => setVisible((prev) => !prev)}
@@ -95,16 +95,16 @@ export const MultiSelectDropDown = ({
           id={parentId}
           className={cn(
             `absolute mt-1 z-10 transition-all duration-150 ease
-         bg-background rounded-md w-full shadow-md border `,
+         bg-background dark:bg-secondary rounded-md w-full shadow-md border border-border`,
             visible
               ? "visible animate-in fade-in-0  slide-in-from-top-4 opacity-100"
-              : "invisible animate-out fade-in-0 slide-out-to-top-0"
+              : "invisible animate-out fade-in-0 slide-out-to-top-0",
           )}
         >
           <ul
             className={cn(
               `p-2 space-y-1 text-xs font-secondary h-fit w-full `,
-              scrollHeight && "overflow-y-scroll max-h-[300px]"
+              scrollHeight && "overflow-y-scroll max-h-[300px]",
             )}
             aria-labelledby={`${parentId}Btn`}
           >
@@ -115,9 +115,9 @@ export const MultiSelectDropDown = ({
                     role="button"
                     key={data.value || index}
                     className={cn(
-                      "flex items-center text-sm px-2 py-2 cursor-pointer text-foreground  hover:bg-neutral-100 rounded-md transition-colors duration-150 capitalize",
+                      "flex items-center text-sm px-2 py-2 cursor-pointer text-foreground  hover:bg-neutral-100 dark:hover:bg-neutral-900 rounded-md transition-colors duration-150 capitalize",
                       selected === (data.labelDisplay ?? data.label) &&
-                        "bg-neutral-200/40"
+                        "bg-neutral-200/40 dark:bg-neutral-900",
                     )}
                     onClick={() => {
                       setVisible(false);
@@ -144,7 +144,7 @@ export const MultiSelectDropDown = ({
       {/* SUB: Error message */}
       {error && touched && (
         <div className="mt-1">
-          <p className="text-[#EF4444] text-xs">{error}</p>
+          <p className="text-destructive text-xs">{error}</p>
         </div>
       )}
     </div>
@@ -193,7 +193,7 @@ export const SelectDropDown = ({
           disabled={disabled}
         >
           <SelectTrigger
-            className={cn("w-full", error && "border-red-500", className)}
+            className={cn("w-full", error && "border-destructive", className)}
             style={style}
           >
             <SelectValue placeholder={placeholder || "Select option"} />
@@ -210,7 +210,7 @@ export const SelectDropDown = ({
         </Select>
       </div>
 
-      {error && <p className="text-red-500 text-xs mt-2.5">{error}</p>}
+      {error && <p className="text-destructive text-xs mt-2.5">{error}</p>}
     </div>
   );
 };

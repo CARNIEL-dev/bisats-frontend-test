@@ -10,10 +10,11 @@ const SecurityBanner = ({
   return (
     <div
       className={cn(
-        "bg-[#F5FEF8] p-2 border border-[#DCFCE7] rounded-[8px] text-xs text-[#17A34A] w-full h-fit flex items-start",
+        "bg-[#F5FEF8] p-2 border border-[#DCFCE7] dark:bg-green-900/20 dark:border-green-800/20 rounded-[8px] text-xs text-[#17A34A] w-full h-fit flex items-start",
         alertType === "danger" &&
-          "bg-[#FEF2F2] border border-[#FED7D7] text-[#EF4444]",
-        alertType === "info" && " border-blue-100 bg-blue-50 text-blue-700"
+          "bg-[#FEF2F2] border border-[#FED7D7] text-[#EF4444] dark:bg-red-900/20 dark:border-red-800/20",
+        alertType === "info" &&
+          " border-blue-100 bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:border-blue-800/20",
       )}
     >
       <svg

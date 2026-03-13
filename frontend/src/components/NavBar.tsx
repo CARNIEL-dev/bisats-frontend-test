@@ -62,7 +62,7 @@ const NavBar = () => {
 
           <nav
             className={cn(
-              "flex items-center gap-8 flex-col md:flex-row absolute md:static bg-background md:bg-transparent w-full md:w-auto top-full md:top-0   -right-[100vw] md:right-0 z-40 md:z-0 transition-all duration-500 ease transform p-10 md:p-0",
+              "flex items-center gap-y-8  gap-x-6 flex-col md:flex-row absolute md:static bg-background md:bg-transparent w-full md:w-auto top-full md:top-0   -right-[100vw] md:right-0 z-40 md:z-0 transition-all duration-500 ease transform p-10 md:p-0",
               toggleMenu && "right-0 duration-700 ease-in-out rounded-b-xl",
             )}
           >
@@ -77,9 +77,10 @@ const NavBar = () => {
               </NavLink>
             ))}
 
-            <ThemeToggle />
-
-            <div className="flex items-center gap-x-6 gap-y-4 md:flex-row flex-col w-full md:w-auto">
+            <div className="flex items-center gap-x-4 gap-y-4 md:flex-row flex-col w-full md:w-auto">
+              <div className="hidden md:flex">
+                <ThemeToggle />
+              </div>
               {isAuthenticated ? (
                 <>
                   <Link
@@ -131,17 +132,20 @@ const NavBar = () => {
             </div>
           </nav>
 
-          <Button
-            variant="ghost"
-            onClick={() => setToggleMenu((prev) => !prev)}
-            className={cn(" p-0! w-fit h-fit bg-transparent md:hidden")}
-          >
-            {toggleMenu ? (
-              <X className="!size-8" />
-            ) : (
-              <Menu className="!size-6" />
-            )}
-          </Button>
+          <div className="md:hidden flex items-center gap-x-2">
+            <ThemeToggle />
+            <Button
+              variant="ghost"
+              onClick={() => setToggleMenu((prev) => !prev)}
+              className={cn(" p-0! w-fit h-fit bg-transparent")}
+            >
+              {toggleMenu ? (
+                <X className="!size-6" />
+              ) : (
+                <Menu className="!size-6" />
+              )}
+            </Button>
+          </div>
         </MaxWidth>
       </div>
 

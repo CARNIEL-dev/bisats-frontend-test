@@ -62,8 +62,8 @@ const TransactionDetails: React.FC<Props> = ({ close, details }) => {
             className={cn(
               "bg-red-100 rounded-2xl p-2 md:p-4 mt-4 space-y-1",
               isSucessful
-                ? "bg-green-100  text-green-700"
-                : "text-red-700 bg-red-100"
+                ? "bg-green-100  text-green-700 dark:bg-green-800/10"
+                : "text-red-700 bg-red-100 dark:bg-red-900/10",
             )}
           >
             <p
@@ -82,7 +82,7 @@ const TransactionDetails: React.FC<Props> = ({ close, details }) => {
           </div>
         </div>
 
-        <div className="border bg-muted rounded-2xl p-2 md:p-4 mt-4 space-y-2">
+        <div className="border border-border bg-muted rounded-2xl p-2 md:p-4 mt-4 space-y-2">
           <TextBetweenDisplay label="Asset" value={details?.Asset} />
           <TextBetweenDisplay
             label="Amount"
@@ -91,8 +91,8 @@ const TransactionDetails: React.FC<Props> = ({ close, details }) => {
                 details?.Asset === "xNGN"
                   ? 0
                   : details?.Asset === "USDT"
-                  ? 2
-                  : 6,
+                    ? 2
+                    : 6,
             }).format(details?.Amount || 0)}
           />
           <TextBetweenDisplay

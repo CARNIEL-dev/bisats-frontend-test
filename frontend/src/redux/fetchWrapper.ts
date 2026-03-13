@@ -8,6 +8,7 @@ import {
 } from "@/helpers";
 import { BACKEND_URLS } from "@/utils/backendUrls";
 import { refreshAccessToken } from "./actions/userActions";
+import { createRequestAuthHeaders } from "@/utils/authHeader";
 
 const Bisatsfetch = async (
   url: string,
@@ -15,6 +16,10 @@ const Bisatsfetch = async (
 ): Promise<any> => {
   // Request interceptor: Add Authorization header
   const token = getToken();
+  const method = options.method || "GET";
+
+  // Generate HMAC headers
+  const authHeaders = createRequestAuthHeaders(method, url);
 
   // Check if content type is multipart/form-data
   const contentType =
@@ -38,6 +43,7 @@ const Bisatsfetch = async (
     Accept: "application/json",
     "Content-Type": contentType || "application/json",
     ...(token && { Authorization: `Bearer ${token}` }),
+    ...authHeaders,
     ...options.headers,
   };
 
@@ -78,8 +84,10 @@ const Bisatsfetch = async (
           setToken(token);
           setRefreshToken(tokenObj.refreshToken);
 
+          const retryAuthHeaders = createRequestAuthHeaders(method, url);
           const retryHeaders = {
             ...headers,
+            ...retryAuthHeaders,
             Authorization: `${token}`,
           };
           const retryConfig: RequestInit = {

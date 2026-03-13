@@ -126,7 +126,7 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
         <Button
           variant="default"
           disabled={isFetching}
-          className={cn("p-0! size-10 rounded-full bg-primary/20 ")}
+          className={cn("p-0! size-10 rounded-full bg-primary/50 ")}
           onClick={toggleShowBalance}
         >
           {showBalance ? (
@@ -146,7 +146,7 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
         {isLoading || isFetching ? (
           <ThreeDot
             variant="pulsate"
-            color={["#F5BB00", "#000"]}
+            color={["hsl(var(--primary))", "hsl(var(--foreground))"]}
             size="small"
             text=""
             textColor=""
@@ -185,7 +185,7 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
 
         <div>
           <DropdownMenu>
-            <DropdownMenuTrigger className="outline-none text-sm bg-neutral-100 py-1 px-1.5 rounded-md border">
+            <DropdownMenuTrigger className="outline-none text-sm bg-background py-1 px-1.5 rounded-md border border-border">
               <div className="flex items-center gap-0.5 uppercase">
                 {currency || "USD"}
                 <ChevronDown className="w-4 h-4" />

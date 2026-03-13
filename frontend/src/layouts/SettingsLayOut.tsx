@@ -25,7 +25,7 @@ const SettingsLayOut = () => {
 
   return (
     <div>
-      <div className="md:top-[5rem] top-[4rem] space-y-4 fixed pt-4  bg-neutral-50 border-b inset-x-0 z-10">
+      <div className="md:top-[5rem] top-[4rem] space-y-4 fixed pt-4  bg-neutral-50 border-b dark:bg-secondary border-border inset-x-0 z-10">
         <MaxWidth className="space-y-4 ">
           <div className=" flex items-center gap-4">
             <BackButton />
@@ -34,7 +34,7 @@ const SettingsLayOut = () => {
             </h1>
           </div>
           <>
-            <div className=" flex mx-6  gap-6  items-center flex-nowrap text-[#515B6E] dashboard-navbar   py-3">
+            <div className=" flex mx-6  gap-6  items-center flex-nowrap text-muted-foreground dashboard-navbar   py-3">
               {PageData.map((page) => {
                 const isProfileActive =
                   page.link === APP_ROUTES.SETTINGS.PROFILE &&

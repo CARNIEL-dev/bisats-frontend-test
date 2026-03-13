@@ -96,7 +96,7 @@ const SwapHistory = () => {
 
   if (isError) {
     return (
-      <p className="text-center text-red-500 text-sm py-8">
+      <p className="text-center text-destructive text-sm py-8">
         Failed to load swap history
       </p>
     );

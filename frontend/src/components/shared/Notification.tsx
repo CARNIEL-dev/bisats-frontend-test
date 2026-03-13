@@ -92,7 +92,7 @@ const Notification = () => {
     <DropdownMenu>
       <DropdownMenuTrigger className="outline-none relative">
         {notificationData.unreadNotificationsCount >= 1 && (
-          <small className="absolute -right-2 -top-3 bg-priYellow grid place-content-center w-5 h-5 text-xs font-medium rounded-full ">
+          <small className="absolute -right-2 -top-3 bg-primary grid place-content-center w-5 h-5 text-xs font-medium rounded-full dark:text-black ">
             {notificationData.unreadNotificationsCount}
           </small>
         )}
@@ -100,7 +100,7 @@ const Notification = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
-        className="md:w-[380px] w-[85dvw] p-4 h-full"
+        className="md:w-[380px] w-[85dvw] p-4 h-full bg-secondary"
         sideOffset={10}
       >
         <div className="mb-1 flex items-center justify-between">
@@ -151,7 +151,9 @@ const Notification = () => {
                   animate="show"
                   className="text-center py-4"
                 >
-                  <p className="text-muted-foreground text-sm">No notifications</p>
+                  <p className="text-muted-foreground text-sm">
+                    No notifications
+                  </p>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -169,7 +171,7 @@ const NotificationBellState = ({ loading = true }: { loading?: boolean }) => {
     <div className="relative">
       <div
         className={cn(
-          "absolute -right-2 -top-3 bg-priYellow grid place-content-center w-5 h-5 text-xs font-medium rounded-full ",
+          "absolute -right-2 -top-3 bg-primary text-black grid place-content-center w-5 h-5 text-xs font-medium rounded-full ",
           !loading && "bg-red-500",
         )}
       >

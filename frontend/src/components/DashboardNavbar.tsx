@@ -33,7 +33,7 @@ const DashboardNavbar = () => {
   }, [location.pathname]);
 
   return (
-    <header className="bg-background shadow-sm fixed inset-x-0 top-0 z-50  w-full">
+    <header className="bg-background shadow-sm fixed inset-x-0 top-0 z-50  w-full dark:border-b dark:border-border">
       <MaxWidth as="nav" className="flex items-center justify-between py-5">
         <div className="scale-75">
           <BisatLogo link={APP_ROUTES.DASHBOARD} reload={false} />

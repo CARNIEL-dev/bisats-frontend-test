@@ -28,12 +28,12 @@ const SecurityVerification: React.FC<Props> = ({
           code: "",
         }
       : mode === "TWO_FA_ONLY"
-      ? {
-          code: "",
-        }
-      : {
-          pin: "",
-        };
+        ? {
+            code: "",
+          }
+        : {
+            pin: "",
+          };
 
   const validationSchema = Yup.object({
     code:
@@ -97,11 +97,11 @@ const SecurityVerification: React.FC<Props> = ({
   return (
     <ModalTemplate onClose={close}>
       <div className="flex flex-col justify-center w-full  mx-auto">
-        <p className="text-[#0A0E12] text-[22px] leading-[32px] font-semibold text-left mt-5">
+        <p className="text-foreground text-[22px] leading-[32px] font-semibold text-left mt-5">
           Security Verification
         </p>
         <form
-          className="mt-5 flex flex-col gap-3"
+          className="mt-5 flex flex-col gap-3 text-center"
           onSubmit={formik.handleSubmit}
         >
           {mode !== "PIN" && (

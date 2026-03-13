@@ -52,9 +52,7 @@ const ModalTemplate: React.FC<ModalProps> = ({
               leaveTo="opacity-0"
             >
               <div
-                className={cn(
-                  "fixed inset-0 bg-background/85 backdrop-blur-sm",
-                )}
+                className={cn("fixed inset-0 bg-black/85 backdrop-blur-sm")}
               />
             </TransitionChild>
 

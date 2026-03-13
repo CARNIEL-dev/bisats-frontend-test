@@ -29,7 +29,7 @@ const BalanceInfo = ({ className, currency, userBalance, wallet }: Props) => {
           onClick={() => setOpen(true)}
           className={cn(
             "hover:bg-primary/10 text-muted-foreground hover:text-primary size-10 rounded-full ml-auto flex items-center justify-center",
-            className
+            className,
           )}
         >
           <Info className={"!size-5 "} strokeWidth={1.5} />
@@ -51,7 +51,7 @@ const BalanceInfo = ({ className, currency, userBalance, wallet }: Props) => {
               <h3
                 className={cn(
                   "font-medium text-sm",
-                  wallet?.activated ? "text-green-600" : "text-red-500"
+                  wallet?.activated ? "text-green-600" : "text-red-500",
                 )}
               >
                 {wallet?.activated
@@ -71,7 +71,7 @@ const BalanceInfo = ({ className, currency, userBalance, wallet }: Props) => {
                     <span className="font-bold text-2xl text-foreground">
                       {formatter({}).format(
                         (userBalance?.balanceTotal ?? 0) +
-                          (userBalance?.lockedBalanceTotal ?? 0)
+                          (userBalance?.lockedBalanceTotal ?? 0),
                       )}
                     </span>
                   </p>
@@ -105,7 +105,7 @@ const BalanceInfo = ({ className, currency, userBalance, wallet }: Props) => {
                     {symbol}{" "}
                     <span className="font-semibold text-lg text-foreground">
                       {formatter({}).format(
-                        userBalance?.lockedBalanceTotal ?? 0
+                        userBalance?.lockedBalanceTotal ?? 0,
                       )}
                     </span>
                   </p>
@@ -115,7 +115,7 @@ const BalanceInfo = ({ className, currency, userBalance, wallet }: Props) => {
               <InfoDisplay text="Amount locked in your created ads" />
             </div>
             <Divider text="Limits" className="my-1" />
-            <MaxWidth className="border space-y-2 bg-neutral-50  p-4 rounded-xl">
+            <MaxWidth className="border border-border space-y-2 bg-neutral-50 dark:bg-secondary p-4 rounded-xl">
               <TextBox
                 labelClass="text-sm"
                 label="Buy"
@@ -143,11 +143,11 @@ const BalanceInfo = ({ className, currency, userBalance, wallet }: Props) => {
                   <p className="text-sm text-foreground">
                     <span className="text-muted-foreground text-xs">xNGN</span>{" "}
                     {formatCompactNumber(
-                      parseInt(wallet?.NGNMaxDailyWithdrawalLimit || "0")
+                      parseInt(wallet?.NGNMaxDailyWithdrawalLimit || "0"),
                     ).endsWith("T")
                       ? "Unlimited"
                       : formatCompactNumber(
-                          parseInt(wallet?.NGNMaxDailyWithdrawalLimit || "0")
+                          parseInt(wallet?.NGNMaxDailyWithdrawalLimit || "0"),
                         )}
                   </p>
                 }
@@ -159,7 +159,7 @@ const BalanceInfo = ({ className, currency, userBalance, wallet }: Props) => {
                   <p className="text-sm text-foreground">
                     $
                     {formatCompactNumber(
-                      parseInt(wallet?.USDMaxDailyWithdrawalLimit || "0")
+                      parseInt(wallet?.USDMaxDailyWithdrawalLimit || "0"),
                     )}
                   </p>
                 }
@@ -168,7 +168,7 @@ const BalanceInfo = ({ className, currency, userBalance, wallet }: Props) => {
           </div>
           {/* SUB: Info */}
           <Divider text="Info" />
-          <MaxWidth className="border space-y-2 bg-neutral-50  p-4 rounded-xl">
+          <MaxWidth className="border border-border space-y-2 bg-neutral-50 dark:bg-secondary p-4 rounded-xl">
             <TextBox
               labelClass="text-sm"
               label="Wallet pin"
@@ -176,7 +176,7 @@ const BalanceInfo = ({ className, currency, userBalance, wallet }: Props) => {
                 <p
                   className={cn(
                     wallet?.pinSet && "text-green-500",
-                    "flex items-center gap-1 text-sm"
+                    "flex items-center gap-1 text-sm",
                   )}
                 >
                   {wallet?.pinSet ? "Enabled" : "Not set"}
@@ -190,8 +190,8 @@ const BalanceInfo = ({ className, currency, userBalance, wallet }: Props) => {
               value={
                 <p
                   className={cn(
-                    "px-3 py-1 text-xs rounded-full bg-gray-200",
-                    wallet?.onHold && "text-red-500 bg-red-50 "
+                    "px-3 py-1 text-xs rounded-full bg-gray-200 dark:bg-neutral-900",
+                    wallet?.onHold && "text-red-500 bg-red-50 dark:bg-red-900 ",
                   )}
                 >
                   {wallet?.onHold ? "On Hold" : "Not on hold"}
@@ -215,6 +215,8 @@ const InfoDisplay = ({
   className?: string;
 }) => {
   return (
-    <p className={cn("text-xs text-muted-foreground md:-mt-1", className)}>{text}</p>
+    <p className={cn("text-xs text-muted-foreground md:-mt-1", className)}>
+      {text}
+    </p>
   );
 };

@@ -29,7 +29,7 @@ import { useSelector } from "react-redux";
 
 const QuickWallet = () => {
   const { wallet, showBalance, defaultCurrency } = useSelector(
-    (state: { wallet: WalletState }) => state.wallet
+    (state: { wallet: WalletState }) => state.wallet,
   );
 
   const { data: currencyRate, isFetching } = useCryptoRates({
@@ -74,7 +74,7 @@ const QuickWallet = () => {
         NairaRate: currencyRate?.tether?.ngn ?? 0,
       },
     ],
-    [currencyRate, wallet]
+    [currencyRate, wallet],
   );
 
   const totals = useMemo<UserBalanceType | undefined>(() => {
@@ -92,7 +92,7 @@ const QuickWallet = () => {
           lockedBalanceTotal: 0,
         };
       },
-      { balanceTotal: 0, lockedBalanceTotal: 0 }
+      { balanceTotal: 0, lockedBalanceTotal: 0 },
     );
   }, [assetsData, wallet, currencyRate, defaultCurrency]);
 
@@ -100,7 +100,7 @@ const QuickWallet = () => {
 
   return (
     <Sheet>
-      <SheetTrigger className=" bg-primary flex items-center fixed right-0 top-[20%] z-50 px-3 py-2 rounded-s-full gap-2 group transition-all duration-400">
+      <SheetTrigger className=" bg-primary flex items-center fixed right-0 top-[20%] z-50 px-3 py-2 rounded-s-full gap-2 group transition-all duration-400 dark:text-black">
         <Wallet className="size-6 scale-100 group-hover:scale-110" />
         <span className="text-xs hidden group-hover:block font-semibolds">
           Your Wallet
@@ -119,7 +119,7 @@ const QuickWallet = () => {
             <h4 className="text-lg md:text-xl font-semibold">Your Balance</h4>
             <Button
               variant="default"
-              className="size-10 rounded-full bg-primary/20"
+              className="size-10 rounded-full bg-primary/50"
               onClick={toggleShowBalance}
             >
               {showBalance ? (
@@ -154,7 +154,7 @@ const QuickWallet = () => {
               <p className="font-semibold text-2xl">***</p>
             )}
             <DropdownMenu>
-              <DropdownMenuTrigger className="outline-none text-sm bg-neutral-100 py-1 px-1.5 rounded-md border uppercase">
+              <DropdownMenuTrigger className="outline-none text-sm bg-neutral-100  dark:bg-secondary py-1 px-1.5 rounded-md border border-border uppercase">
                 <div className="flex items-center gap-0.5">
                   {defaultCurrency || "USD"}
                   <ChevronDown className="w-4 h-4" />
@@ -176,7 +176,7 @@ const QuickWallet = () => {
             </DropdownMenu>
           </div>
 
-          <div className="divide-y mt-8 rounded-lg border bg-neutral-50">
+          <div className=" mt-8 rounded-lg border bg-neutral-50 dark:bg-secondary border-border">
             {assetsData.map((item) => {
               const isXNGN = item.asset === "xNGN";
               const approx = getCurrencyBalance({
@@ -188,7 +188,7 @@ const QuickWallet = () => {
               return (
                 <div
                   key={item.asset}
-                  className="flex items-center justify-between p-3"
+                  className="flex items-center justify-between p-3 border-b border-border last:border-none"
                 >
                   <div className="flex items-center gap-3">
                     <img

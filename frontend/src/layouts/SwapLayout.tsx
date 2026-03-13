@@ -17,7 +17,7 @@ const SwapLayout = () => {
 
   return (
     <div className=" mb-10">
-      <div className="bg-primary-light h-[48px] md:overflow-hidden overflow-scroll w-screen fixed inset-x-0 md:top-[5rem] top-[4rem] z-10 flex items-center ">
+      <div className="bg-primary-light dark:bg-secondary h-[48px] md:overflow-hidden overflow-scroll w-screen fixed inset-x-0 md:top-[5rem] top-[4rem] z-10 flex items-center ">
         <RateBanner />
       </div>
 

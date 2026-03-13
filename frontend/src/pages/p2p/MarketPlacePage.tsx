@@ -152,7 +152,7 @@ const MarketPlacePage = () => {
           className="gap-4"
           onValueChange={onTabChange}
         >
-          <div className="border-b">
+          <div className="border-b border-border">
             <TabsList className="p-0 bg-transparent px-2 md:gap-4 justify-around w-full md:w-fit">
               {["buy", "sell"].map((v) => (
                 <TabsTrigger

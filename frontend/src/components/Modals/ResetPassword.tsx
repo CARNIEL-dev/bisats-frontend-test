@@ -59,7 +59,7 @@ const ResetPasswordModal: React.FC<Props> = ({ close, open }) => {
   return (
     <ModalTemplate onClose={close} isOpen={open} className="md:!max-w-md">
       <div className="mt-2">
-        <h1 className="text-[#2B313B] text-[18px] lg:text-[22px] leading-[32px] font-semibold">
+        <h1 className=" text-[18px] lg:text-[22px] leading-[32px] font-semibold">
           Reset Password
         </h1>
         <form onSubmit={formik.handleSubmit}>

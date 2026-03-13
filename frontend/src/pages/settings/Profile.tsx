@@ -131,7 +131,7 @@ const Profile = () => {
   return (
     <>
       <div className="flex justify-between mb-6">
-        <h3 className="text-[22px] lg:text-[22px] leading-[32px] font-semibold text-[#2B313B]">
+        <h3 className="text-[22px] lg:text-[22px] leading-[32px] font-semibold ">
           {isEditing ? "Edit Profile" : "Profile"}
         </h3>
 
@@ -172,7 +172,7 @@ const Profile = () => {
           </Button>
         )}
       </div>
-      <div className="my-6 border border-border rounded-xl p-6 ">
+      <div className="my-6 border border-border rounded-xl p-6 bg-neutral-50 dark:bg-secondary/20">
         <div className="flex flex-col gap-6">
           {isEditing ? (
             <div className="flex flex-col gap-4">
@@ -196,12 +196,12 @@ const Profile = () => {
               {(lastUserNameChange || nextEdit) && (
                 <div className="border border-border space-y-1 font-medium bg-muted rounded-md p-2 text-xs  w-fit shadow">
                   {lastUserNameChange && (
-                    <p className="text-[#606C82] capitalize">
+                    <p className="text-muted-foreground capitalize">
                       Changed: {lastUserNameChange}
                     </p>
                   )}
                   {nextEdit && (
-                    <p className="text-[#606C82] capitalize">
+                    <p className="text-muted-foreground capitalize">
                       Next edit: {nextEdit.format("MMMM D, YYYY")}
                     </p>
                   )}
@@ -312,7 +312,7 @@ const Profile = () => {
                 return (
                   <div className="flex items-center gap-4" key={idx}>
                     {Icon && (
-                      <div className="bg-muted p-2 rounded-md text-muted-foreground">
+                      <div className="bg-accent p-2 rounded-md text-muted-foreground">
                         <Icon className="size-6" />
                       </div>
                     )}
@@ -328,7 +328,7 @@ const Profile = () => {
                           {data.value}
                         </p>
                       }
-                      labelClass="text-muted-foreground text-xs uppercase"
+                      labelClass=" text-xs uppercase"
                       direction="column"
                       containerClassName="gap-0.5"
                     />

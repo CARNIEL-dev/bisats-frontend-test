@@ -143,7 +143,7 @@ const P2PMarket = ({
         )}
       </h3>
 
-      <div className="text-[#515B6E] text-sm flex items-center gap-1 font-normal ">
+      <div className="text-muted-foreground text-sm flex items-center gap-1 font-normal ">
         <p>1 {adDetail?.asset}</p>  ≈ 
         <div className="flex items-center gap-1">
           <p>{formatNumber(Number(adDetail?.price))} xNGN</p>
@@ -153,7 +153,7 @@ const P2PMarket = ({
         </div>
       </div>
       <div className="flex items-center w-2/3 justify-between">
-        <div className="text-[12px] text-[#515B6E]">
+        <div className="text-[12px] text-muted-foreground">
           <h4 className="font-semibold">
             {type === "buy" ? "Available" : "Maximum"}
           </h4>
@@ -175,7 +175,7 @@ const P2PMarket = ({
             </p>
           )}
         </div>
-        <div className="text-[12px] text-[#515B6E]">
+        <div className="text-[12px] text-muted-foreground">
           <h2 className="font-semibold">Limit</h2>
           <p>
             {formatNumber(Number(adDetail?.minimumLimit))} -{" "}
@@ -455,7 +455,7 @@ const InputField = ({
 
       <div className="absolute right-1 top-1/2 -translate-y-[63%]">
         <button
-          className={`text-muted-foreground p-2.5 px-4  border cursor-default h-[48px] rounded-md items-center bg-gradient-to-r from-[#FFFFFF] to-[#dfe2e9]  flex justify-center gap-2 font-semibold text-sm `}
+          className={`text-muted-foreground p-2.5 px-4  border border-border cursor-default h-[48px] rounded-md items-center   flex justify-center gap-2 font-semibold text-sm bg-secondary`}
           type="button"
         >
           <span className="shrink-0">{logo}</span>

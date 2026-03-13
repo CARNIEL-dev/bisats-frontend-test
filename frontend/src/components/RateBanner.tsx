@@ -53,7 +53,7 @@ const RateBanner = () => {
         usdTrend: currencyRates?.solana?.usd_24h_change ?? 0,
       },
     ],
-    [currencyRates]
+    [currencyRates],
   );
 
   return (
@@ -77,7 +77,7 @@ const RateBanner = () => {
               const up = coin.usdTrend > 0;
               return (
                 <div
-                  className="flex gap-1.5 items-center text-xs text-[#515B6E] w-fit md:mx-12 mx-4"
+                  className="flex gap-1.5 items-center text-xs text-muted-foreground w-fit md:mx-12 mx-4"
                   key={idx}
                 >
                   <img

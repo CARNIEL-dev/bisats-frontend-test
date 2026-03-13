@@ -28,10 +28,10 @@ const KycVerification: React.FC<Props> = ({ close }) => {
           alt="student-card"
           className="w-[80px] h-[60px] mx-auto mt-7"
         />
-        <h1 className="text-[#0A0E12] text-[18px] leading-[32px] lg:text-[18px] lg:leading-[32px] font-semibold ">
+        <h1 className=" text-[18px] leading-[32px] lg:text-[18px] lg:leading-[32px] font-semibold ">
           KYC Verification Required
         </h1>
-        <p className="text-[#606C82] text-[14px] leading-[24px] lg:text-[14px] lg:leading-[24px] font-normal my-3">
+        <p className="text-muted-foreground text-[14px] leading-[24px] lg:text-[14px] lg:leading-[24px] font-normal my-3">
           To proceed with this action, we need to verify your identity.
           Completing KYC ensures a secure and compliant trading experience for
           all users.

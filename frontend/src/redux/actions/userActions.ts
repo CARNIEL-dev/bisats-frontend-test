@@ -42,6 +42,7 @@ export const Login = async (payload: TLogin) => {
     return response;
   } catch (error) {
     // throw handleApiError(error);
+
     return error;
   }
 };

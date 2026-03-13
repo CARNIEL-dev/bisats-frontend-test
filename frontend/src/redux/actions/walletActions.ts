@@ -614,7 +614,7 @@ const updateAdStatus = async ({
       body: JSON.stringify({ status: newStatus }),
     });
 
-    if (!response.success) {
+    if (response.status !== true || response.statusCode !== 200) {
       const message = response.message || "Failed to update ad status";
       throw new Error(message);
     }

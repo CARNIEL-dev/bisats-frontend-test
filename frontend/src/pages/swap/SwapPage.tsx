@@ -50,10 +50,13 @@ const SwapPage = () => {
           <div className="w-full flex items-center justify-end">
             <Tooltip>
               <TooltipTrigger
-                className="flex items-center justify-center hover:bg-primary-light rounded-md p-1"
+                className="flex items-center justify-center hover:bg-secondary rounded-md p-1"
                 onClick={handleSwapHistory}
               >
-                <History className="!size-6 text-muted-foreground" strokeWidth={1.5} />
+                <History
+                  className="!size-6 text-muted-foreground"
+                  strokeWidth={1.5}
+                />
                 <span className="sr-only">Swap history</span>
               </TooltipTrigger>
               <TooltipContent>

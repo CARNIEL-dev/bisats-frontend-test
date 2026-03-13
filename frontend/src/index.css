@@ -19,11 +19,11 @@
   --popover-foreground: 222.2 47.4% 11.2%;
   --primary: 46 100% 48%;
   --primary-foreground: 210 40% 98%;
-  --secondary: 210 40% 96.1%;
+  --secondary: 210 20% 96.1%;
   --secondary-foreground: 222.2 47.4% 11.2%;
   --muted: 210 40% 96.1%;
   --muted-foreground: 215.4 16.3% 46.9%;
-  --accent: 210 40% 96.1%;
+  --accent: 0 0% 92%;
   --accent-foreground: 222.2 47.4% 11.2%;
   --destructive: 0 84.2% 60.2%;
   --destructive-foreground: 210 40% 98%;
@@ -67,20 +67,26 @@
   --muted: 0 0% 12%;
   --muted-foreground: 240 5% 65%;
   /* --muted-foreground: 205 20% 70%; */
-  --accent: 0 0% 12%;
+  --accent: 0 0% 15%;
   --accent-foreground: 210 40% 95%;
-  --destructive: 0 63% 31%;
+  --destructive: 0 63% 41%;
   --destructive-foreground: 210 40% 98%;
-  --border: 217 19% 15%;
-  --input: 217 19% 15%;
-  --ring: 217 19% 15%;
+  --border: 0 0% 15%;
+  /* --border: 217 19% 15%; */
+  --input: 0 0% 20%;
+  --ring: 0 0% 20%;
 
   /* Charts */
   --chart-1: 220 70% 50%;
+  --chart-2: 173 58% 39%;
+  --chart-3: 197 37% 24%;
+  --chart-4: 43 74% 66%;
+  --chart-5: 340 75% 55%;
+  /* --chart-1: 220 70% 50%;
   --chart-2: 160 60% 45%;
   --chart-3: 30 80% 55%;
   --chart-4: 280 65% 60%;
-  --chart-5: 340 75% 55%;
+  --chart-5: 340 75% 55%; */
 
   /* Sidebar */
   --sidebar: 0 0% 12%;
@@ -403,7 +409,7 @@ a.active {
 }
 
 input:read-only {
-  @apply pointer-events-none border opacity-70 outline-none bg-neutral-100;
+  @apply pointer-events-none border opacity-70 outline-none bg-neutral-100 dark:bg-secondary;
 }
 
 html.lenis,

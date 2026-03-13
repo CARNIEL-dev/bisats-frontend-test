@@ -82,13 +82,13 @@ const VolumeByAssetChart = ({ data, title, showXNgn }: Props) => {
             <Bar
               dataKey="buy"
               name="Buy"
-              fill="var(--chart-2)"
+              fill="hsl(var(--chart-2))"
               radius={[4, 4, 0, 0]}
             />
             <Bar
               dataKey="sell"
               name="Sell"
-              fill="var(--chart-4)"
+              fill="hsl(var(--chart-4))"
               radius={[4, 4, 0, 0]}
             />
           </BarChart>

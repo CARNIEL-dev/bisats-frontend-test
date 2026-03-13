@@ -119,7 +119,7 @@ const ReferralSystem = () => {
         className="fixed inset-0 pointer-events-none z-[100] w-full h-full"
       />
 
-      <div className="flex flex-col gap-6 p-6 pb-10 border rounded-2xl bg-slate-800 text-white  relative overflow-hidden">
+      <div className="flex flex-col gap-6 p-6 pb-10 border border-border rounded-2xl bg-slate-800  text-white  relative overflow-hidden">
         <div className="flex flex-col gap-8">
           <div>
             <h3 className="text-lg font-semibold  flex items-center gap-2">
@@ -222,18 +222,18 @@ const ReferralSystem = () => {
                 on our P2P platform using your link.
               </p>
 
-              <div className="bg-green-50 rounded-lg p-4 border border-green-100 mt-2">
-                <h4 className="font-medium text-green-800 text-sm mb-2">
+              <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4 border border-green-100 dark:border-green-900/20 mt-2">
+                <h4 className="font-medium text-green-800 dark:text-green-200 text-sm mb-2">
                   Benefits include:
                 </h4>
-                <ul className="text-sm text-green-700 space-y-1.5 list-disc list-inside">
+                <ul className="text-sm text-green-700 dark:text-green-200 space-y-1.5 list-disc list-inside">
                   <li>Earn a percentage of fees on referrals</li>
                   <li>Exclusive access to premium features</li>
                   <li>Track your referrals in real-time</li>
                 </ul>
               </div>
 
-              <div className="flex justify-end gap-3 mt-4 pt-2 border-t">
+              <div className="flex justify-end gap-3 mt-4 pt-2 border-t border-border">
                 <Button
                   variant="secondary"
                   onClick={handleCloseModal}
@@ -267,7 +267,7 @@ const ReferralSystem = () => {
               transition={{ duration: 0.8, type: "spring", bounce: 0.3 }}
               className="flex flex-col items-center justify-center gap-3 py-6 text-center"
             >
-              <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-2 shadow-inner">
+              <div className="w-16 h-16 bg-green-100 dark:bg-green-900/20 text-green-600 dark:text-green-200 rounded-full flex items-center justify-center mb-2 shadow-inner">
                 <CheckCircle className="w-8 h-8" />
               </div>
 
@@ -278,11 +278,11 @@ const ReferralSystem = () => {
                 successfully.
               </p>
 
-              <div className="bg-green-50 border border-green-200 rounded-xl p-4 w-full mt-4 flex flex-col items-center">
-                <p className="text-xs text-green-600 font-semibold mb-1 uppercase tracking-wider">
+              <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-900/20 rounded-xl p-4 w-full mt-4 flex flex-col items-center">
+                <p className="text-xs text-green-600 dark:text-green-200 font-semibold mb-1 uppercase tracking-wider">
                   Your Code
                 </p>
-                <p className="text-2xl font-mono font-bold text-green-800 tracking-widest">
+                <p className="text-2xl font-mono font-bold text-green-800 dark:text-green-200 tracking-widest">
                   {referralCode}
                 </p>
               </div>
