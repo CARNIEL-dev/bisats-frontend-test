@@ -121,7 +121,7 @@ const Corporate = () => {
             /> */}
             <div
               className={cn(
-                "bg-neutral-50 rounded-md p-4 border border-dashed mb-6",
+                "bg-neutral-50 dark:bg-accent/20 rounded-md p-4 border border-dashed border-border mb-6",
                 {
                   "border-red-500 ":
                     formik.errors.bankName ||

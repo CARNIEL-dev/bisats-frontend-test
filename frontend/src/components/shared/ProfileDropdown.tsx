@@ -98,7 +98,7 @@ const ProfileDropdown = () => {
           <img
             src="/avatar.png"
             alt="profile"
-            className="w-[32px] h-[32px] md:w-[40px] md:h-[40px]"
+            className="w-[32px] h-[32px] md:w-[40px] md:h-[40px] border border-muted-foreground/50 rounded-full"
           />
           <ChevronDown className="w-4 h-4" />
         </DropdownMenuTrigger>

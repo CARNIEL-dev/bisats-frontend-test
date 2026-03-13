@@ -76,7 +76,7 @@ const BecomeMerchant = () => {
           header="Apply to become a Merchant"
           headerClassName="text-xl lg:text-4xl"
           subHeader={
-            <p className="text-[#515B6E] text-sm">
+            <p className=" text-sm">
               Join our marketplace. Please upload the required documents to
               verify your business identity and legality.
             </p>
@@ -86,7 +86,7 @@ const BecomeMerchant = () => {
         <div className="mt-6 mb-6">
           <form onSubmit={formik.handleSubmit}>
             <div className="flex flex-col gap-6 mb-4">
-              <div className="grid md:grid-cols-2 gap-4 border px-4 py-6 rounded-md">
+              <div className="grid md:grid-cols-2 gap-4 border border-border px-4 py-6 rounded-md">
                 <div className="col-span-full text-sm text-muted-foreground space-y-3">
                   <div className="flex items-center gap-3">
                     <IdCard className="text-primary size-8" />
@@ -119,7 +119,7 @@ const BecomeMerchant = () => {
                 />
               </div>
 
-              <div className="grid gap-4 border px-4 py-6 rounded-md">
+              <div className="grid gap-4 border border-border px-4 py-6 rounded-md">
                 <div className=" text-sm text-muted-foreground space-y-3">
                   <div className="flex items-center gap-2">
                     <File className="text-primary size-6" />
@@ -159,7 +159,7 @@ const BecomeMerchant = () => {
       {showModal && (
         <ModalTemplate onClose={() => {}} showCloseButton={false}>
           <div className="flex flex-col items-center text-center gap-1 my-6 md:mx-8">
-            <div className="size-12 rounded-full bg-green-100 flex items-center justify-center mb-4 ">
+            <div className="size-12 rounded-full bg-green-100 dark:bg-green-800/50 flex items-center justify-center mb-4 ">
               <Check className="text-green-500 size-6" />
             </div>
             <h4 className="text-lg font-semibold text-foreground">

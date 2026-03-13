@@ -46,7 +46,7 @@ export const RedTransparentButton: React.FC<TButtons> = ({
   return (
     <button
       type="submit"
-      className={`h-[48px] rounded-[6px] bg-transparent text-[#DC2625] text-[14px] leading-[24px] font-semibold text-center py-3 `}
+      className={`h-[48px] rounded-[6px] bg-transparent text-destructive text-[14px] leading-[24px] font-semibold text-center py-3 `}
       {...props}
     >
       {loading ? <Loader2 className="animate-spin size-6" /> : text}
@@ -66,7 +66,7 @@ export const WhiteTransparentButton: React.FC<TButtons> = ({
       variant={"outline"}
       type="submit"
       className={cn(
-        "bg-transparent text-foreground hover:text-foreground/90",
+        "bg-transparent text-muted-foreground hover:text-foreground/90",
         size === "sm"
           ? "h-[32px] text-[12px] py-0.5 px-3"
           : "h-[48px] text-[14px] py-3",

@@ -219,7 +219,7 @@ const WithdrawalBankAccount: React.FC<Props> = ({
       <div className="mt-2">
         <h4
           className={cn(
-            "text-[#2B313B] text-[18px] lg:text-[22px] leading-[32px] font-semibold",
+            "text-[18px] lg:text-[22px] leading-[32px] font-semibold",
             mode === "custom" && "hidden",
           )}
         >

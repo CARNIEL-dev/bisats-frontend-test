@@ -4,6 +4,7 @@ import ErrorDisplay from "@/components/shared/ErrorDisplay";
 import MaxWidth from "@/components/shared/MaxWith";
 import SEO from "@/components/shared/SEO";
 import StatusBadge from "@/components/shared/StatusBadge";
+import TextBox from "@/components/shared/TextBox";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/card";
@@ -28,6 +29,7 @@ import {
   BadgeCheck,
   ChartNoAxesCombined,
   Check,
+  Infinity,
   Info,
   User2,
 } from "lucide-react";
@@ -251,7 +253,7 @@ const Profile = () => {
           {(isNA || level !== 3) && (
             <Button
               type="submit"
-              className={` px-4 rounded-[6px] bg-[#F5BB00] text-[#0A0E12] text-sm font-semibold text-center `}
+              className={` px-4 rounded-[6px] bg-primary text-[#0A0E12] text-sm font-semibold text-center `}
               onClick={clickHandler}
               disabled={disabled}
             >
@@ -268,7 +270,7 @@ const Profile = () => {
             </div>
             {getKycStatus(userState)?.map((item, idx) => (
               <div className="space-y-2" key={idx}>
-                <p className="text-sm font-medium text-[#606C82]">
+                <p className="text-sm font-medium text-muted-foreground">
                   {item.type}
                 </p>
 
@@ -277,7 +279,7 @@ const Profile = () => {
                     <Check className="size-4" strokeWidth={3} />
                   </div>
                 ) : (
-                  <span className="text-sm text-muted-foreground font-medium">
+                  <span className="text-sm text-foreground font-medium">
                     No
                   </span>
                 )}
@@ -288,23 +290,26 @@ const Profile = () => {
 
           <div className="grid  grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4">
             <div className="flex items-center gap-2 col-span-full mb-3">
-              <User2 className="text-primary size-6" />
+              <Infinity className="text-primary size-6" />
               <h4 className="font-semibold text-base">Limits</h4>
             </div>
 
             {userLimits.length > 0 ? (
               userLimits?.map((item, idx) => (
-                <div key={idx} className="space-y-2">
-                  <p className="text-xs font-normal text-[#707D96]">
-                    {item.limit}
-                  </p>
-                  <p className="text-sm  font-semibold text-[#515B6E]">
-                    {item.amount}
-                  </p>
+                <div key={idx}>
+                  <TextBox
+                    label={item.limit}
+                    value={
+                      <span className=" font-semibold ">{item.amount}</span>
+                    }
+                    labelClass="text-xs"
+                    direction="column"
+                    showIndicator={false}
+                  />
                 </div>
               ))
             ) : (
-              <div className="my-3 flex items-center gap-1 text-muted-foreground border border-border rounded-[8px] py-2 px-3 bg-priYellow/10">
+              <div className="my-3 flex items-center gap-1 text-muted-foreground border border-border rounded-[8px] py-2 px-3 bg-primary/10">
                 <Info className="size-5" />
                 <p className="text-sm text-center ">
                   Verify your account to get your limits
@@ -339,13 +344,13 @@ const Profile = () => {
                   <div className="grid md:grid-cols-2 gap-4">
                     {ActivitySummary?.map((item, idx) => (
                       <Card key={idx} className="px-4 gap-2 bg-[#f9f9f9]">
-                        <p className="text-[12px]  leading-[16px] font-normal text-[#707D96]">
+                        <p className="text-[12px]  leading-[16px] font-normal text-muted-foreground">
                           {" "}
                           {item.type}
                         </p>
                         <h5
                           className={cn(
-                            "text-xl font-semibold text-[#515B6E]",
+                            "text-xl font-semibold text-foreground",
                             item?.isColoured && "text-primary",
                           )}
                         >

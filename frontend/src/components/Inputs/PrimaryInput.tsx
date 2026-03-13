@@ -222,7 +222,7 @@ const PrimaryInput: React.FC<TInput> = ({
             inputMode={format ? (inputMode ?? "decimal") : inputMode}
             style={mergedStyle}
             className={cn(
-              `rounded-sm placeholder:text-sm text-base font-normal border border-border bg-background outline-[none] focus:border-primary focus:ring-1 focus:ring-primary w-full text-foreground p-2.5 no-spinner px-3`,
+              `rounded-sm placeholder:text-sm text-base font-normal border border-border bg-transparent outline-[none] focus:border-primary focus:ring-1 focus:ring-primary w-full text-foreground p-2.5 no-spinner px-3`,
               error && "border-destructive outline-0 focus:border-destructive",
               className,
             )}

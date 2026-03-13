@@ -47,7 +47,7 @@ const SecurityBanner = ({
         />
       </svg>
 
-      <p className="w-[95%]">
+      <p className="w-[95%] whitespace-pre-line">
         {text ||
           "We take your security seriously. All the information you provide is encrypted and protected using industry-leading security standards. Your details remain strictly confidential."}
       </p>
