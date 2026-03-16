@@ -50,6 +50,7 @@ import ResourcesPage from "@/pages/landing-page/src/screens/ResourcesPage";
 import NotificationsPage from "@/pages/notifcations/NotificationsPage";
 import MarketPlacePage from "@/pages/p2p/MarketPlacePage";
 import Corporate from "@/pages/settings/Corporate";
+import SwapHistoryPage from "@/pages/swap/SwapHistoryPage";
 import SwapPage from "@/pages/swap/SwapPage";
 import TransferPage from "@/pages/wallet/transfer";
 import NotFound from "@/routing/NotFound";
@@ -147,6 +148,7 @@ const Routing = () => {
             <Route path={APP_ROUTES.PROFILE} element={<Profile />} />
             <Route element={<SwapLayout />}>
               <Route path={APP_ROUTES.SWAP.HOME} element={<SwapPage />} />
+              <Route path={APP_ROUTES.SWAP.HISTORY} element={<SwapHistoryPage />} />
             </Route>
           </Route>
 

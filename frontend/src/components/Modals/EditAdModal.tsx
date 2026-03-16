@@ -152,7 +152,7 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
         refetchWallet(),
         queryClient.refetchQueries({
           queryKey: ["userAds", variables.userId],
-          exact: false,
+          exact: true,
           type: "all",
         }),
         queryClient.refetchQueries({

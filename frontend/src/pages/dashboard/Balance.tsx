@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import BalanceInfo from "@/components/shared/BalanceInfo";
+
 import { Button } from "@/components/ui/Button";
 import {
   DropdownMenu,
@@ -120,138 +121,121 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
   const { isNA } = formatAccountLevel(userState?.user?.accountLevel);
 
   return (
-    <div className="border border-border flex flex-col gap-2 p-6 rounded-2xl">
-      <div className="flex items-center gap-1">
-        <p className="font-semibold text-foreground/60">Balance</p>
-        <Button
-          variant="default"
-          disabled={isFetching}
-          className={cn("p-0! size-10 rounded-full bg-primary/50 ")}
-          onClick={toggleShowBalance}
-        >
-          {showBalance ? (
-            <Eye className="!size-5" />
-          ) : (
-            <EyeOff className="!size-5" />
-          )}
-        </Button>
-        <BalanceInfo
-          className="ml-auto"
-          userBalance={userBalance}
-          currency={currency}
-          wallet={wallet as TWallet}
-        />
-      </div>
-      <div className="flex items-baseline gap-3">
-        {isLoading || isFetching ? (
-          <ThreeDot
-            variant="pulsate"
-            color={["hsl(var(--primary))", "hsl(var(--foreground))"]}
-            size="small"
-            text=""
-            textColor=""
-            speedPlus={-2}
-          />
-        ) : isError ? (
-          <span className="text-red-500 font-normal ">Error</span>
-        ) : (
-          <div className="flex items-center gap-0.5 mt-2">
-            <span className="text-[28px] md:text-[34px] font-extrabold inline-block">
-              {currency !== undefined && currency === "ngn" ? "₦" : "$"}
-            </span>
+    <>
+      <div className="relative border border-border flex flex-col gap-2 p-6 rounded-2xl overflow-hidden">
+        <div className="flex items-center gap-1">
+          <p className="font-semibold text-foreground/60">Balance</p>
+          <Button
+            variant="default"
+            disabled={isFetching}
+            className={cn("p-0! size-10 rounded-full bg-primary/50 ")}
+            onClick={toggleShowBalance}
+          >
             {showBalance ? (
-              <p className="font-extrabold space-x-0.5">
-                <span className="text-2xl md:text-4xl">
-                  {
-                    formatter({})
-                      .format(userBalance?.balanceTotal ?? 0)
-                      .split(".")[0]
-                  }
-                </span>
-                <span className={`mr-[4px] text-base md:text-xl `}>
-                  .{" "}
-                  {
-                    formatter({})
-                      .format(userBalance?.balanceTotal ?? 0)
-                      .split(".")[1]
-                  }
-                </span>
-              </p>
+              <Eye className="!size-5" />
             ) : (
-              <p className="font-semibold text-xl md:text-3xl self-end"> ***</p>
+              <EyeOff className="!size-5" />
             )}
-          </div>
-        )}
-
-        <div>
-          <DropdownMenu>
-            <DropdownMenuTrigger className="outline-none text-sm bg-background py-1 px-1.5 rounded-md border border-border">
-              <div className="flex items-center gap-0.5 uppercase">
-                {currency || "USD"}
-                <ChevronDown className="w-4 h-4" />
-              </div>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="">
-              <DropdownMenuLabel>Choose Currency</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuRadioGroup
-                value={currency || "usd"}
-                onValueChange={(val) => setWalletCurrency(val as "usd" | "ngn")}
-              >
-                <DropdownMenuRadioItem value="usd">USD</DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value="ngn">NGN</DropdownMenuRadioItem>
-              </DropdownMenuRadioGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          </Button>
+          <BalanceInfo
+            className="ml-auto"
+            userBalance={userBalance}
+            currency={currency}
+            wallet={wallet as TWallet}
+          />
         </div>
-      </div>
-      <div className="flex gap-2  md:mt-10 mt-6 ">
-        <KycManager
-          action={ACTIONS.DEPOSIT_CRYPTO}
-          func={() => navigate(APP_ROUTES.WALLET.DEPOSIT)}
-        >
-          {(validateAndExecute) => (
-            <Button
-              className={cn("flex-1 py-6")}
-              onClick={() => {
-                validateAndExecute();
-              }}
-              disabled={isNA || isSuspended}
-            >
-              {isNA && userState?.user?.hasAppliedToBeInLevelOne
-                ? !showWithdraw
-                  ? "Pending verification"
-                  : "Pending"
-                : "Deposit"}
-            </Button>
+        <div className="flex items-baseline gap-3">
+          {isLoading || isFetching ? (
+            <ThreeDot
+              variant="pulsate"
+              color={["hsl(var(--primary))", "hsl(var(--foreground))"]}
+              size="small"
+              text=""
+              textColor=""
+              speedPlus={-2}
+            />
+          ) : isError ? (
+            <span className="text-red-500 font-normal ">Error</span>
+          ) : (
+            <div className="flex items-center gap-0.5 mt-2">
+              <span className="text-[28px] md:text-[34px] font-extrabold inline-block">
+                {currency !== undefined && currency === "ngn" ? "₦" : "$"}
+              </span>
+              {showBalance ? (
+                <p className="font-extrabold space-x-0.5">
+                  <span className="text-2xl md:text-4xl">
+                    {
+                      formatter({})
+                        .format(userBalance?.balanceTotal ?? 0)
+                        .split(".")[0]
+                    }
+                  </span>
+                  <span className={`mr-[4px] text-base md:text-xl `}>
+                    .{" "}
+                    {
+                      formatter({})
+                        .format(userBalance?.balanceTotal ?? 0)
+                        .split(".")[1]
+                    }
+                  </span>
+                </p>
+              ) : (
+                <p className="font-semibold text-xl md:text-3xl self-end">
+                  {" "}
+                  ***
+                </p>
+              )}
+            </div>
           )}
-        </KycManager>
-        <KycManager
-          action={ACTIONS.MAKE_TRANSFER}
-          func={() => navigate(APP_ROUTES.WALLET.TRANSFER)}
-        >
-          {(validateAndExecute) => (
-            <Button
-              variant={"secondary"}
-              className={cn("flex-1 py-6")}
-              onClick={() => {
-                validateAndExecute();
-              }}
-              disabled={isNA || isSuspended}
-            >
-              {isNA && userState?.user?.hasAppliedToBeInLevelOne
-                ? !showWithdraw
-                  ? "Pending verification"
-                  : "Pending"
-                : "Transfer"}
-            </Button>
-          )}
-        </KycManager>
 
-        {showWithdraw && (
+          <div>
+            <DropdownMenu>
+              <DropdownMenuTrigger className="outline-none text-sm bg-background py-1 px-1.5 rounded-md border border-border">
+                <div className="flex items-center gap-0.5 uppercase">
+                  {currency || "USD"}
+                  <ChevronDown className="w-4 h-4" />
+                </div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="">
+                <DropdownMenuLabel>Choose Currency</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuRadioGroup
+                  value={currency || "usd"}
+                  onValueChange={(val) =>
+                    setWalletCurrency(val as "usd" | "ngn")
+                  }
+                >
+                  <DropdownMenuRadioItem value="usd">USD</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="ngn">NGN</DropdownMenuRadioItem>
+                </DropdownMenuRadioGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </div>
+        <div className="flex gap-2  md:mt-10 mt-6 ">
           <KycManager
-            action={ACTIONS.WITHDRAW}
-            func={() => navigate(APP_ROUTES.WALLET.WITHDRAW)}
+            action={ACTIONS.DEPOSIT_CRYPTO}
+            func={() => navigate(APP_ROUTES.WALLET.DEPOSIT)}
+          >
+            {(validateAndExecute) => (
+              <Button
+                className={cn("flex-1 py-6")}
+                onClick={() => {
+                  validateAndExecute();
+                }}
+                disabled={isNA || isSuspended}
+              >
+                {isNA && userState?.user?.hasAppliedToBeInLevelOne
+                  ? !showWithdraw
+                    ? "Pending verification"
+                    : "Pending"
+                  : "Deposit"}
+              </Button>
+            )}
+          </KycManager>
+          <KycManager
+            action={ACTIONS.MAKE_TRANSFER}
+            func={() => navigate(APP_ROUTES.WALLET.TRANSFER)}
           >
             {(validateAndExecute) => (
               <Button
@@ -262,16 +246,43 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
                 }}
                 disabled={isNA || isSuspended}
               >
-                {userState?.user?.hasAppliedToBeInLevelOne && isNA
-                  ? "Pending"
-                  : "Withdraw"}
+                {isNA && userState?.user?.hasAppliedToBeInLevelOne
+                  ? !showWithdraw
+                    ? "Pending verification"
+                    : "Pending"
+                  : "Transfer"}
               </Button>
             )}
           </KycManager>
-        )}
+
+          {showWithdraw && (
+            <KycManager
+              action={ACTIONS.WITHDRAW}
+              func={() => navigate(APP_ROUTES.WALLET.WITHDRAW)}
+            >
+              {(validateAndExecute) => (
+                <Button
+                  variant={"secondary"}
+                  className={cn("flex-1 py-6")}
+                  onClick={() => {
+                    validateAndExecute();
+                  }}
+                  disabled={isNA || isSuspended}
+                >
+                  {userState?.user?.hasAppliedToBeInLevelOne && isNA
+                    ? "Pending"
+                    : "Withdraw"}
+                </Button>
+              )}
+            </KycManager>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
 export default Balance;
+
+// this the login-  "email":"bocepel654@7novels.com",
+//     "password":"Password24@"

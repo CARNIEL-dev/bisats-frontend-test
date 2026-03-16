@@ -72,7 +72,7 @@ export const GetAds = async (payload: { userId: string }) => {
       `/api/v1/user/${payload.userId}/ads/get-user-ads`,
       {
         method: "GET",
-      }
+      },
     );
 
     return response;
@@ -85,11 +85,11 @@ export const GetAds = async (payload: { userId: string }) => {
 export const UpdateAd = async (payload: Partial<TUpdateAdsRequest>) => {
   try {
     const response = await Bisatsfetch(
-      `/api/v1/user/${payload.userId}/ads/${payload?.adId}/update-ads`,
+      `/api/v1/user/ads/${payload?.adId}/update-ads`,
       {
         method: "PUT",
         body: JSON.stringify(payload),
-      }
+      },
     );
     const data = response;
     if (data.status) {
@@ -104,10 +104,10 @@ export const UpdateAd = async (payload: Partial<TUpdateAdsRequest>) => {
 export const GetAdOrder = async (payload: { userId: string; adId: string }) => {
   try {
     const response = await Bisatsfetch(
-      `/api/v1/user/${payload.userId}/ads/${payload.adId}/get-user-ads-order`,
+      `/api/v1/user/ads/${payload.adId}/get-user-ads-order`,
       {
         method: "GET",
-      }
+      },
     );
 
     return response;

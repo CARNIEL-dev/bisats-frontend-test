@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/table";
 import { useState } from "react";
 import { Input } from "./input";
+import { cn } from "@/utils";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -31,6 +32,7 @@ interface DataTableProps<TData, TValue> {
   filterColumns?: string[];
   sortColumns?: SortingState;
   filteredValue?: string;
+  compactHeight?: boolean;
 }
 
 export function DataTable<TData, TValue>({
@@ -41,6 +43,7 @@ export function DataTable<TData, TValue>({
   filterColumns = [],
   sortColumns = [],
   filteredValue = "",
+  compactHeight = false,
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [sorting, setSorting] = useState<SortingState>(sortColumns);
@@ -108,7 +111,13 @@ export function DataTable<TData, TValue>({
       {/* ─────────────────────────────────────── 
          SUB: Desktop: full grid table 
       ─────────────────────────────────────── */}
-      <div className="hidden lg:block rounded-md overflow-hidden">
+      <div
+        className={cn(
+          "hidden lg:block rounded-md overflow-hidden ",
+          compactHeight &&
+            " overflow-auto max-h-[70dvh] border-t-2 border-border no-scrollbar",
+        )}
+      >
         <Table>
           <TableHeader className="bg-muted ">
             {table.getHeaderGroups().map((hg) => (

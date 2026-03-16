@@ -13,8 +13,8 @@ import OfflineBanner from "./components/shared/OfflineBanner";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 60 * 5, // 5 minutes
-      gcTime: 1000 * 60 * 15, // 15 minutes
+      staleTime: 1000 * 60 * 10, // 10 minutes
+      gcTime: 1000 * 60 * 20, // 20 minutes
       refetchOnWindowFocus: false,
       refetchOnReconnect: true,
     },

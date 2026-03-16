@@ -272,6 +272,7 @@ const Transactions: React.FC = () => {
             columns={columns}
             data={transactionsData}
             enableFiltering
+            compactHeight
           />
         </>
       )}

@@ -93,10 +93,10 @@ const Level3Verification = () => {
         />
 
         <div>
-          <div className="bg-[#F9F9FB] p-3 mt-5 border border-[#F9F9FB] rounded-[8px] text-[12px] text-[#515B6E] w-full h-fit flex flex-col space-y-2 ">
+          <div className="bg-secondary p-3 mt-5 border border-border rounded-[8px] text-[12px] text-foreground w-full h-fit flex flex-col space-y-2 ">
             {account_level_features.map((feat, idx) => (
               <p className="flex items-center" key={idx}>
-                <p className="w-[4px] bg-[#C2C7D2] rounded-[50%]  mr-1.5 h-[4px]" />
+                <p className="w-[4px] bg-primary rounded-[50%]  mr-1.5 h-[4px]" />
                 <span>{feat}</span>
               </p>
             ))}
