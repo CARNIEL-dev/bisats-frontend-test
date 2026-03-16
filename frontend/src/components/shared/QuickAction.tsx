@@ -34,9 +34,10 @@ import {
   Zap,
 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import useClickOutside from "@/hooks/use-clickOutside";
 
 const quickActions = [
   {
@@ -70,9 +71,12 @@ const quickActions = [
 ];
 
 const QuickAction = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const {
+    ref,
+    visible: isOpen,
+    setVisible: setIsOpen,
+  } = useClickOutside(false);
   const [sheetOpen, setSheetOpen] = useState(false);
-  const closeTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const navigate = useNavigate();
 
   const { wallet, showBalance, defaultCurrency } = useSelector(
@@ -145,22 +149,9 @@ const QuickAction = () => {
 
   const symbol = defaultCurrency === "ngn" ? "₦" : "$";
 
-  const handleMouseEnter = useCallback(() => {
-    if (closeTimeout.current) {
-      clearTimeout(closeTimeout.current);
-      closeTimeout.current = null;
-    }
-    setIsOpen(true);
-  }, []);
-
-  const handleMouseLeave = useCallback(() => {
-    closeTimeout.current = setTimeout(() => {
-      setIsOpen(false);
-    }, 300);
-  }, []);
-
   const handleActionClick = useCallback(
     (action: (typeof quickActions)[number]) => {
+      if (!isOpen) return;
       setIsOpen(false);
       if (action.action === "sheet") {
         setSheetOpen(true);
@@ -168,7 +159,8 @@ const QuickAction = () => {
         navigate(action.path);
         // Wait for navigation, then scroll to the target element
         setTimeout(() => {
-          const scrollTo = "scrollTo" in action ? (action.scrollTo as string) : null;
+          const scrollTo =
+            "scrollTo" in action ? (action.scrollTo as string) : null;
           const el = scrollTo ? document.getElementById(scrollTo) : null;
           if (el) {
             el.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -178,28 +170,26 @@ const QuickAction = () => {
         navigate(action.path);
       }
     },
-    [navigate],
+    [navigate, isOpen],
   );
 
   return (
     <>
       {/* Quick Action Trigger + Menu */}
-      <div
-        className="fixed right-0 top-[20%] z-50"
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      >
+      <div ref={ref} className="fixed right-0 top-[20%] z-50">
         {/* Action items that fan out below */}
         <AnimatePresence>
           {isOpen && (
             <motion.div
-              className="absolute right-0 top-full mt-3 flex flex-col items-end gap-2 pr-1"
+              className="absolute right-[-20dvw] top-full mt-3 flex flex-col items-end gap-2 pr-1"
               initial="hidden"
               animate="visible"
               exit="hidden"
               variants={{
-                hidden: {},
+                hidden: { pointerEvents: "none" as const },
                 visible: {
+                  right: 0,
+                  pointerEvents: "auto" as const,
                   transition: { staggerChildren: 0.08, delayChildren: 0.05 },
                 },
               }}
@@ -258,7 +248,8 @@ const QuickAction = () => {
         {/* Main trigger button */}
         <motion.button
           className="bg-primary flex items-center px-3 py-2.5 rounded-s-full gap-2 cursor-pointer dark:text-black"
-          onClick={() => setIsOpen((prev) => !prev)}
+          onClick={() => setIsOpen(!isOpen)}
+          onMouseEnter={() => setIsOpen(true)}
           whileHover={{ paddingLeft: 16, paddingRight: 14 }}
           whileTap={{ scale: 0.95 }}
         >

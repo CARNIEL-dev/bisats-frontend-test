@@ -15,7 +15,7 @@ const useClickOutside = (initialState: boolean) => {
     document.addEventListener("mousedown", handler);
 
     return () => {
-      document.addEventListener("mousedown", handler);
+      document.removeEventListener("mousedown", handler);
     };
   }, [ref]);
 
