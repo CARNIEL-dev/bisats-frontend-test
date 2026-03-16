@@ -42,7 +42,9 @@ const OrderHistory = () => {
         <h4 className="font-semibold text-lg">
           Your Account is being reviewed
         </h4>
-        <p className="text-muted-foreground text-sm">Please wait for admin approval</p>
+        <p className="text-muted-foreground text-sm">
+          Please wait for admin approval
+        </p>
       </div>
     );
   }
@@ -85,6 +87,7 @@ const OrderHistory = () => {
             columns={columns}
             data={orders}
             enableFiltering
+            compactHeight
           />
         </>
       )}

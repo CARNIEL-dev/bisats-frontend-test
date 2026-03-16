@@ -53,7 +53,7 @@ const SummaryCard = ({
       />
 
       <TextBox
-        label="Total"
+        label="Total Debit"
         value={
           <span className="font-semibold">
             {total || "-"} {currency}
@@ -73,7 +73,7 @@ const SummaryCard = ({
         {loading && (
           <span className="flex items-center gap-2 animate-pulse">
             <Loader2 className="animate-spin size-4" />
-            <span className="text-sm font-medium text-muted-foreground">
+            <span className="text-sm font-medium text-foreground">
               Getting fee...
             </span>
           </span>

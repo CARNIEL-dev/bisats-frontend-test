@@ -6,6 +6,7 @@ import { cn, formatter, splitTextInMiddle } from "@/utils";
 import { CheckCircle } from "lucide-react";
 import CopyButton from "@/components/shared/CopyButton";
 import TextBox from "@/components/shared/TextBox";
+import { OK_STATUS, PENDING_STATUS } from "@/constants";
 
 interface Props {
   close: () => void;
@@ -13,21 +14,19 @@ interface Props {
 }
 const TransactionDetails: React.FC<Props> = ({ close, details }) => {
   const isXNGN = details?.Asset === "xNGN";
-  const isSucessful = [
-    "success",
-    "completed",
-    "paid",
-    "approved",
-    "successful",
-    "confirmed",
-  ].includes(details?.Status!);
+  const isSucessful = OK_STATUS.includes(details?.Status!);
+  const isPending = PENDING_STATUS.includes(details?.Status!);
 
   return (
     <ModalTemplate onClose={close} className="md:!max-w-[45rem]">
       <div className="">
         <p
           className={` ${
-            details?.Type === "top_up" ? "text-green-600" : "text-red-600"
+            details?.Type === "top_up"
+              ? "text-green-600"
+              : isPending
+                ? "text-yellow-600"
+                : "text-red-600"
           }  text-lg md:text-xl 2xl:text-3xl font-semibold`}
         >
           {details?.Type === "top_up" ? "Deposit" : "Withdrawal"}
@@ -42,7 +41,9 @@ const TransactionDetails: React.FC<Props> = ({ close, details }) => {
               "bg-red-100 rounded-2xl p-2 md:p-4 mt-4 space-y-1",
               isSucessful
                 ? "bg-green-100  text-green-700 dark:bg-green-800/10"
-                : "text-red-700 bg-red-100 dark:bg-red-900/10",
+                : isPending
+                  ? "bg-yellow-100  text-yellow-700 dark:bg-yellow-800/10"
+                  : "text-red-700 bg-red-100 dark:bg-red-900/10",
             )}
           >
             <p

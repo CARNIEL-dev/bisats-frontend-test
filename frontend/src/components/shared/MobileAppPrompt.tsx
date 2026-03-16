@@ -1,10 +1,10 @@
 import mobileAppImage from "@/assets/illustrations/mobile-app_prompt.svg";
 import { InputCheck } from "@/components/Inputs/CheckBox";
 import ModalTemplate from "@/components/Modals/ModalTemplate";
-import { buttonVariants } from "@/components/ui/Button";
+import { Button, buttonVariants } from "@/components/ui/Button";
 import { cn } from "@/utils";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 
 const MobileAppPrompt = () => {
   const [showModal, setShowModal] = useState(() => {
@@ -48,12 +48,12 @@ const MobileAppPrompt = () => {
           faster, seamless access—trade instantly without opening your browser
         </p>
 
-        <Link
-          to={"#"}
+        <Button
+          onClick={handleClose}
           className={cn(buttonVariants({ size: "lg" }), "text-sm py-6")}
         >
-          Learn More
-        </Link>
+          Close
+        </Button>
 
         {/* Checkbox Logic */}
         <div className="flex items-center justify-center gap-2 font-semibold text-sm text-muted-foreground mt-3">

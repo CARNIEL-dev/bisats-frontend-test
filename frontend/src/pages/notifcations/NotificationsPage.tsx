@@ -265,6 +265,7 @@ const NotificationsPage = () => {
               <ul
                 className="overflow-y-scroll h-[65dvh]  no-scrollbar"
                 ref={listRef}
+
               >
                 <AnimatePresence mode="sync">
                   {notificationData.length >= 1 ? (

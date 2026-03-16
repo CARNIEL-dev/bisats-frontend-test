@@ -363,7 +363,9 @@ const Profile = () => {
               )}
             </div>
           </div>
-          <ReferralSystem />
+          <div id="referral-section">
+            <ReferralSystem />
+          </div>
         </section>
       </MaxWidth>
 

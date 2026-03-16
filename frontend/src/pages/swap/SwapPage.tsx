@@ -23,9 +23,9 @@ const SwapPage = () => {
     <div className="grid gap-6">
       <div className="flex flex-col gap-2 w-full">
         {/* SUB: Header */}
-        <Head header="Swap" />
+        <div className="flex items-center justify-between">
+          <Head header="Swap" subHeader="Swap from one asset to the other." />
 
-        <div className="w-full flex items-center justify-end">
           <Tooltip>
             <TooltipTrigger
               className="flex items-center justify-center hover:bg-secondary rounded-md p-1"

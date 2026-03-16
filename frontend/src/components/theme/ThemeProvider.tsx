@@ -25,7 +25,7 @@ const ThemeProviderContext = createContext<ThemeProviderState>(initialState);
 export function ThemeProvider({
   children,
   defaultTheme = "system",
-  storageKey = "bisats-ui-theme",
+  storageKey = "theme",
   ...props
 }: ThemeProviderProps) {
   // Use a lazy initializer function to read from localStorage just once, right as

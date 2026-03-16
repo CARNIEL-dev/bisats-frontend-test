@@ -1,7 +1,7 @@
 import RateBanner from "@/components/RateBanner";
 
 import MaxWidth from "@/components/shared/MaxWith";
-import QuickWallet from "@/components/shared/QuickWallet";
+import QuickAction from "@/components/shared/QuickAction";
 import { APP_ROUTES } from "@/constants/app_route";
 import { cn } from "@/utils";
 import { Link, Outlet, useLocation } from "react-router-dom";
@@ -53,7 +53,7 @@ const P2PLayOut = () => {
         </MaxWidth>
       </div>
 
-      <QuickWallet />
+      <QuickAction />
     </>
   );
 };

@@ -178,10 +178,10 @@ const CryptoWithdrawal = ({
     }),
     onSubmit: async (values) => {
       const amountVal = parseFloat(values.amount).toFixed(6);
-      const inDecimal = new Decimal(amountVal).toNumber();
+      const networkFee = data?.networkFee ?? 0;
+      const inDecimal = new Decimal(amountVal).minus(networkFee).toNumber();
 
       const payload = {
-        userId: `${user?.userId}`,
         amount: inDecimal,
         address: values.walletAddress ?? "",
         asset: asset,
@@ -259,7 +259,6 @@ const CryptoWithdrawal = ({
     queryFn: async () =>
       await getNetworkFee({
         paylod: {
-          userId: user?.userId,
           amount: Number(debouncedAmount),
           address: formik.values.walletAddress,
           asset: asset,
@@ -268,6 +267,7 @@ const CryptoWithdrawal = ({
       }),
     refetchOnWindowFocus: false,
     refetchOnMount: false,
+    retry: 2,
     enabled:
       isAmountReady &&
       Boolean(formik.values.walletAddress) &&
@@ -578,7 +578,9 @@ const CryptoWithdrawal = ({
                   </h4>
                   <div>
                     <p>Network</p>
-                    <p className="font-medium text-muted-foreground">{item.network}</p>
+                    <p className="font-medium text-muted-foreground">
+                      {item.network}
+                    </p>
                   </div>
                   <div>
                     <p>Wallet</p>

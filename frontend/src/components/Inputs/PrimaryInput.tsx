@@ -28,6 +28,7 @@ interface TInput extends InputHTMLAttributes<HTMLInputElement> {
   secretMode?: boolean;
   infoSuccess?: boolean;
   loadingLeft?: boolean;
+  isCodeCentered?: boolean;
 }
 
 const PrimaryInput: React.FC<TInput> = ({
@@ -55,6 +56,7 @@ const PrimaryInput: React.FC<TInput> = ({
     style,
     name,
     loadingLeft,
+    isCodeCentered,
     ...inputProps
   } = props;
 
@@ -170,7 +172,12 @@ const PrimaryInput: React.FC<TInput> = ({
             name={name}
             pattern={REGEXP_ONLY_DIGITS}
           >
-            <InputOTPGroup className="flex gap-2">
+            <InputOTPGroup
+              className={cn(
+                "flex gap-2 w-full",
+                isCodeCentered && "justify-center",
+              )}
+            >
               {Array.from({ length: otpLength }).map((_, index) => (
                 <InputOTPSlot
                   key={index}
@@ -259,7 +266,9 @@ const PrimaryInput: React.FC<TInput> = ({
       <div
         className={cn(
           "flex items-center  gap-1",
-          type === "pin" ? "justify-center" : "justify-between",
+          type === "pin" || isCodeCentered
+            ? "justify-center"
+            : "justify-between",
         )}
       >
         <span className="text-destructive text-xs ">{error}</span>

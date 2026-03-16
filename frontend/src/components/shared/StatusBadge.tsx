@@ -1,19 +1,8 @@
+import { OK_STATUS, PENDING_STATUS } from "@/constants";
 import { cn } from "@/utils";
 
 export type StatusBadgeVariant = "primary" | "secondary" | "icon" | undefined;
 
-const OK_STATUS = [
-  "approved",
-  "active",
-  "completed",
-  "paid",
-  "verified",
-  "done",
-  "success",
-  "successful",
-];
-
-const PENDING_STATUS = ["pending", "awaiting", "awaiting_payment", "on_hold"];
 const StatusBadge = ({
   status,
   variant,

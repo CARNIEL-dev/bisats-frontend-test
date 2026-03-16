@@ -1,3 +1,5 @@
+import { cn } from "@/utils";
+
 const PageData = [
   {
     tab: "Ad Details",
@@ -20,11 +22,11 @@ const HeaderTabs = ({
       {PageData.map((page, idx) => (
         <button
           key={idx}
-          className={` ${
-            activePage === page.active
-              ? "border-b-2 border-[#F5BB00] text-[#937000]"
-              : ""
-          } text-[14px] text-[#515B6E] py-2 text-center w-full font-semibold `}
+          className={cn(
+            "text-[14px] text-muted-foreground py-2 text-center w-full font-semibold",
+            activePage === page.active &&
+              "border-b-2 border-primary text-[#937000]",
+          )}
           onClick={() => setStage(page.active as "details" | "review")}
         >
           {page.tab}
