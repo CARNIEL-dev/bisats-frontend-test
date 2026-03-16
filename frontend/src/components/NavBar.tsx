@@ -48,8 +48,8 @@ const NavBar = () => {
     <>
       <div
         className={cn(
-          "bg-background w-full fixed inset-x-0 top-0 z-50 shadow-xs transition-shadow duration-300 ease-in-out",
-          showShadow && "shadow-md",
+          "bg-background w-full fixed inset-x-0 top-0 z-50 shadow-xs dark:border-b dark:border-transparent transition-[box-shadow,border-color] duration-300 ease-in-out",
+          showShadow && "shadow-md dark:border-primary/20",
         )}
       >
         <MaxWidth
@@ -156,7 +156,7 @@ const NavBar = () => {
       <div
         onClick={closeMenu}
         className={cn(
-          "md:hidden fixed inset-0 bg-background/80 z-30 opacity-0 duration-500 ease delay-300 invisible",
+          "md:hidden fixed inset-0 bg-black/80 z-30 opacity-0 duration-500 ease delay-300 invisible",
           toggleMenu && "opacity-100 visible",
         )}
       />
