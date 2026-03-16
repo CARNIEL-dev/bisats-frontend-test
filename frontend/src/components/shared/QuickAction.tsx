@@ -38,6 +38,7 @@ import { useCallback, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import useClickOutside from "@/hooks/use-clickOutside";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const quickActions = [
   {
@@ -76,6 +77,7 @@ const QuickAction = () => {
     visible: isOpen,
     setVisible: setIsOpen,
   } = useClickOutside(false);
+  const isMobile = useIsMobile();
   const [sheetOpen, setSheetOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -249,8 +251,8 @@ const QuickAction = () => {
         {/* Main trigger button */}
         <motion.button
           className="bg-primary flex items-center px-3 py-2.5 rounded-s-full gap-2 cursor-pointer dark:text-black"
-          onClick={() => setIsOpen(!isOpen)}
-          onMouseEnter={() => setIsOpen(true)}
+          onClick={() => setIsOpen((prev) => !prev)}
+          onMouseEnter={isMobile ? undefined : () => setIsOpen(true)}
           whileHover={{ paddingLeft: 16, paddingRight: 14 }}
           whileTap={{ scale: 0.95 }}
         >
