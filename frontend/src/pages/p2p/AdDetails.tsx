@@ -122,11 +122,9 @@ const AdDetails = () => {
 
           <div className="mb-2 space-y-4">
             <p>
-              <span className="font-semibold text-lg text-[#0A0E12]">
-                Order History
-              </span>
+              <span className="font-semibold text-lg ">Order History</span>
             </p>
-            <AdOrderHistoryTable data={adsInfo?.orders!} />
+            <AdOrderHistoryTable data={adsInfo?.orders || []} />
           </div>
         </div>
       )}
@@ -195,7 +193,7 @@ const AdOrderHistoryTable = ({ data }: { data: OrderHistory[] }) => {
               "text-xs capitalize px-2.5 py-0.5 rounded-full border w-fit",
               status === "completed"
                 ? "text-green-600 bg-green-300/10 border-green-600"
-                : "text-red-600 border-red-600 bg-red-300/10"
+                : "text-red-600 border-red-600 bg-red-300/10",
             )}
           >
             {status}
@@ -240,7 +238,7 @@ const AdsInfo = ({ ads, adStatus }: { ads: AdsType; adStatus: string }) => {
         <p
           className={cn(
             ads.type === "buy" ? "text-[#17A34A]" : "text-[#DC2625]",
-            "font-bold uppercase"
+            "font-bold uppercase",
           )}
         >
           {ads.type}
@@ -282,7 +280,7 @@ const AdsInfo = ({ ads, adStatus }: { ads: AdsType; adStatus: string }) => {
         <div className="whitespace-nowrap flex items-center gap-1">
           <p className="font-semibold whitespace-nowrap">
             {formatter({ decimal: ads.asset === "USDT" ? 2 : 6 }).format(
-              fulfilled
+              fulfilled,
             )}
           </p>
           <span className="text-xs text-muted-foreground">{ads.asset}</span>
@@ -300,7 +298,7 @@ const AdsInfo = ({ ads, adStatus }: { ads: AdsType; adStatus: string }) => {
         <div className="whitespace-nowrap flex items-center gap-1">
           <p className="font-semibold whitespace-nowrap">
             {formatter({ decimal: ads.asset === "USDT" ? 2 : 6 }).format(
-              available
+              available,
             )}
           </p>
           <span className="text-xs text-muted-foreground">{ads.asset}</span>
@@ -323,7 +321,7 @@ const AdsInfo = ({ ads, adStatus }: { ads: AdsType; adStatus: string }) => {
       value: (
         <p>
           {formatter({ style: "currency", currency: "NGN" }).format(
-            getSafeValue(ads.priceUpperLimit)
+            getSafeValue(ads.priceUpperLimit),
           )}
         </p>
       ),
@@ -333,7 +331,7 @@ const AdsInfo = ({ ads, adStatus }: { ads: AdsType; adStatus: string }) => {
       value: (
         <p>
           {formatter({ style: "currency", currency: "NGN" }).format(
-            getSafeValue(ads.priceLowerLimit)
+            getSafeValue(ads.priceLowerLimit),
           )}
         </p>
       ),
@@ -343,7 +341,7 @@ const AdsInfo = ({ ads, adStatus }: { ads: AdsType; adStatus: string }) => {
       value: (
         <p>
           {formatter({ style: "currency", currency: "NGN" }).format(
-            getSafeValue(ads.maximumLimit)
+            getSafeValue(ads.maximumLimit),
           )}
         </p>
       ),
@@ -353,7 +351,7 @@ const AdsInfo = ({ ads, adStatus }: { ads: AdsType; adStatus: string }) => {
       value: (
         <p>
           {formatter({ style: "currency", currency: "NGN" }).format(
-            getSafeValue(ads.minimumLimit)
+            getSafeValue(ads.minimumLimit),
           )}
         </p>
       ),
@@ -363,7 +361,7 @@ const AdsInfo = ({ ads, adStatus }: { ads: AdsType; adStatus: string }) => {
       value: (
         <p className="font-semibold text-foreground text-xl">
           {formatter({ style: "currency", currency: "NGN" }).format(
-            getSafeValue(ads.price)
+            getSafeValue(ads.price),
           )}
         </p>
       ),

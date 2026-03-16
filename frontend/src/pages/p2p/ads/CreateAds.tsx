@@ -110,10 +110,10 @@ const CreateAd = () => {
           type: "all",
         });
         queryClient
-          .invalidateQueries({
+          .refetchQueries({
             queryKey: ["userAds", variables.userId],
-            exact: false,
-            refetchType: "all",
+            exact: true,
+            type: "all",
           })
           .then(() => {
             navigate(APP_ROUTES.P2P.MY_ADS);

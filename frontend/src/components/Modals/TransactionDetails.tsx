@@ -1,38 +1,17 @@
 import ModalTemplate from "@/components/Modals/ModalTemplate";
 import Divider from "@/components/shared/Divider";
-import Toast from "@/components/Toast";
 import { Button } from "@/components/ui/Button";
 import { ITransaction } from "@/pages/wallet/Transaction";
-import { handleCopy } from "@/redux/actions/generalActions";
-import { cn, formatter } from "@/utils";
-import { Check, CheckCircle, Copy } from "lucide-react";
-import { useEffect, useState } from "react";
+import { cn, formatter, splitTextInMiddle } from "@/utils";
+import { CheckCircle } from "lucide-react";
+import CopyButton from "@/components/shared/CopyButton";
+import TextBox from "@/components/shared/TextBox";
 
 interface Props {
   close: () => void;
   details?: ITransaction;
 }
 const TransactionDetails: React.FC<Props> = ({ close, details }) => {
-  const [copied, setCopied] = useState(false);
-
-  const handleCopyToClip = async (prop: string) => {
-    const result = await handleCopy(prop);
-    if (result.status) {
-      setCopied(true);
-    } else {
-      Toast.error(result.message, "");
-    }
-  };
-
-  useEffect(() => {
-    if (copied) {
-      setTimeout(() => {
-        setCopied(false);
-      }, 5000);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [copied]);
-
   const isXNGN = details?.Asset === "xNGN";
   const isSucessful = [
     "success",
@@ -73,18 +52,37 @@ const TransactionDetails: React.FC<Props> = ({ close, details }) => {
               {isSucessful && <CheckCircle size={16} />}
             </p>
 
-            {!isXNGN && (
-              <TextBetweenDisplay
+            {!isXNGN && details?.txHash && (
+              <TextBox
                 label="Transaction Hash"
-                value={details?.txHash}
+                value={
+                  <div className="flex items-center gap-1">
+                    <p className="text-muted-foreground font-medium text-xs sm:text-sm capitalize break-all text-right">
+                      {splitTextInMiddle({
+                        str: details?.txHash || "",
+                        visibleChars: 8,
+                      })}
+                    </p>
+                    <CopyButton
+                      text={details?.txHash || ""}
+                      title="Copy hash"
+                      type="code"
+                    />
+                  </div>
+                }
               />
             )}
           </div>
         </div>
 
         <div className="border border-border bg-muted rounded-2xl p-2 md:p-4 mt-4 space-y-2">
-          <TextBetweenDisplay label="Asset" value={details?.Asset} />
-          <TextBetweenDisplay
+          <TextBox
+            labelClass="text-muted-foreground"
+            label="Asset"
+            value={details?.Asset}
+          />
+          <TextBox
+            labelClass="text-muted-foreground"
             label="Amount"
             value={formatter({
               decimal:
@@ -95,41 +93,53 @@ const TransactionDetails: React.FC<Props> = ({ close, details }) => {
                     : 6,
             }).format(details?.Amount || 0)}
           />
-          <TextBetweenDisplay
+          <TextBox
+            labelClass="text-muted-foreground"
             label="Network"
             value={details?.Asset === "xNGN" ? "Bank" : details?.Network || ""}
           />
-          <TextBetweenDisplay label="Reference" value={details?.Reference} />
+
           {isXNGN && (
             <>
               <Divider text="Bank details" textClassName="bg-muted" />
-              <TextBetweenDisplay
+              <TextBox
+                labelClass="text-muted-foreground"
                 label="Account Name"
                 value={details?.bankDetails?.accountName}
               />
-              <TextBetweenDisplay
+              <TextBox
+                labelClass="text-muted-foreground"
                 label="Account Number"
                 value={details?.bankDetails?.accountNumber}
               />
-              <TextBetweenDisplay
+              <TextBox
+                labelClass="text-muted-foreground"
                 label="Bank Name"
                 value={details?.bankDetails?.bankName}
               />
             </>
           )}
           <Divider text="" />
-          <TextBetweenDisplay label="Date" value={details?.Date} />
-          <TextBetweenDisplay label="Reference" value={details?.Reference} />
+          <TextBox
+            labelClass="text-muted-foreground"
+            label="Date"
+            value={details?.Date}
+          />
+          <TextBox
+            labelClass="text-muted-foreground"
+            label="Reference"
+            value={details?.Reference}
+          />
         </div>
 
         <div className="flex items-center gap-2 mt-4 justify-end ">
-          <Button
-            onClick={() => handleCopyToClip(details?.Reference || "")}
-            className="text-sm"
-          >
-            {copied ? <Check /> : <Copy />}
-            {copied ? "Copied" : "Copy"} Reference
-          </Button>
+          <CopyButton
+            text={details?.Reference || ""}
+            title="Copy reference"
+            type="Reference"
+            showText
+            variant="default"
+          />
           <Button variant={"secondary"} onClick={close} className="text-sm">
             Close
           </Button>
@@ -140,20 +150,3 @@ const TransactionDetails: React.FC<Props> = ({ close, details }) => {
 };
 
 export default TransactionDetails;
-
-const TextBetweenDisplay = ({
-  label,
-  value,
-}: {
-  label: string;
-  value?: string;
-}) => {
-  return (
-    <div className="flex justify-between items-center text-sm w-full ">
-      <p className="text-muted-foreground font-normal">{label}:</p>
-      <p className="text-muted-foreground font-medium text-xs sm:text-sm capitalize break-all text-right">
-        {value}
-      </p>
-    </div>
-  );
-};

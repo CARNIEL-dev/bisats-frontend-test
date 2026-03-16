@@ -4,10 +4,10 @@ import { memo, useCallback, useState } from "react";
 
 interface CopyButtonProps {
   text: string;
-  type: "link" | "code";
+  type: "link" | "code" | string;
   children?: React.ReactNode;
   className?: string;
-  variant?: "ghost" | "secondary";
+  variant?: "ghost" | "secondary" | "default";
   size?: "sm" | "default" | "icon";
   showText?: boolean;
   title?: string;
@@ -46,7 +46,8 @@ const CopyButton = memo(function CopyButton({
         children
       ) : (
         <>
-          <Copy className="w-4 h-4" /> Copy {type === "code" ? "Code" : "Link"}
+          <Copy className="w-4 h-4" /> Copy{" "}
+          {type === "code" ? "Code" : type === "link" ? "Link" : type}
         </>
       )}
     </>

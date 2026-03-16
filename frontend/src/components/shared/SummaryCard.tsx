@@ -1,5 +1,6 @@
 import { cn } from "@/utils";
 import { AlertCircle, Loader2 } from "lucide-react";
+import TextBox from "./TextBox";
 
 // HDR: SUMMARY CARD
 type SummaryTypeProps = {
@@ -24,40 +25,49 @@ const SummaryCard = ({
   error,
 }: SummaryTypeProps) => {
   return (
-    <div className="border  border-[#F3F4F6] bg-[#F9F9FB] rounded-md py-4 px-5  my-5 text-sm flex flex-col gap-2 relative">
-      <div className="flex justify-between items-center">
-        <p className="text-[#424A59] font-normal">Daily remaining limit:</p>
-        <p className="text-[#606C82]  font-semibold">
-          {type === "fiat" && currency} {dailyLimit}
-        </p>
-      </div>
-      <div className="flex justify-between items-center">
-        <p className="text-[#424A59] font-normal">
-          {type === "fiat" ? "Transaction" : "Network"} fee:
-        </p>
-        <p className="text-[#606C82]  font-semibold">
-          {fee} {currency}
-        </p>
-      </div>
-      <div className="flex justify-between items-center">
-        <p className="text-[#424A59] font-normal">Withdrawal amount:</p>
-        <p className="text-[#606C82]  font-semibold">
-          {amount} {currency}
-        </p>
-      </div>
-      <div className="flex justify-between items-center">
-        <p className="text-[#424A59] font-normal">Total:</p>
-        <p className="text-[#606C82]  font-semibold">
-          {total || "-"} {currency}
-        </p>
-      </div>
+    <div className="border  border-border bg-secondary/60 rounded-md py-4 px-5  my-5 text-sm flex flex-col gap-2 relative">
+      <TextBox
+        label="Daily remaining limit"
+        value={
+          <span className="font-semibold">
+            {type === "fiat" && currency} {dailyLimit}
+          </span>
+        }
+      />
+      <TextBox
+        label={`${type === "fiat" ? "Transaction" : "Network"} fee`}
+        value={
+          <span className="font-semibold">
+            {fee} {currency}
+          </span>
+        }
+      />
+
+      <TextBox
+        label="Withdrawal amount"
+        value={
+          <span className="font-semibold">
+            {amount} {currency}
+          </span>
+        }
+      />
+
+      <TextBox
+        label="Total"
+        value={
+          <span className="font-semibold">
+            {total || "-"} {currency}
+          </span>
+        }
+      />
+
       <div
         className={cn(
           "absolute inset-0 bg-yellow-50/60 grid place-content-center border w-full h-full rounded-md  border-black/20",
           {
             hidden: !loading && !error,
             "bg-red-500/10 border-red-500": error,
-          }
+          },
         )}
       >
         {loading && (

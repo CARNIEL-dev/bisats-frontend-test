@@ -54,6 +54,7 @@ export const APP_ROUTES = {
   },
   SWAP: {
     HOME: "/swap",
+    HISTORY: "/swap/history",
   },
   SETTINGS: {
     PROFILE: "/settings",

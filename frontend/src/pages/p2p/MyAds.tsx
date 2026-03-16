@@ -67,6 +67,7 @@ const MyAds = () => {
     isLoading,
   } = useFetchUserAds({
     isKycVerified: !isNA,
+    userId: userState?.user?.userId,
   });
 
   const adsData = useMemo(() => {
@@ -86,12 +87,12 @@ const MyAds = () => {
   >({
     mutationFn: ({ adId, status }: UpdateAdStatusVars) =>
       updateAdStatus({ adId, newStatus: status }),
-    onSuccess(_, variables) {
+    onSuccess() {
       refetchWallet();
       queryClient.refetchQueries({
-        queryKey: ["userAds"],
+        queryKey: ["userAds", userState?.user?.userId],
         type: "all",
-        exact: false,
+        exact: true,
       });
       queryClient.invalidateQueries({
         queryKey: ["userNotifications"],

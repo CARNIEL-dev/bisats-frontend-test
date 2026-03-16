@@ -65,18 +65,18 @@ const EditAds = ({
 
   const defaultValues = useMemo(() => {
     return {
-      type: adDetail.type === "buy" ? "Buy" : "Sell",
-      priceType: adDetail.priceType,
-      currency: adDetail.currency || "NGN",
-      priceMargin: adDetail.priceMargin,
-      asset: adDetail.asset,
-      amount: adDetail.amountAvailable,
-      amountToken: adDetail.amountAvailable,
-      price: adDetail.price,
-      minimumLimit: adDetail.minimumLimit,
-      maximumLimit: adDetail.maximumLimit,
-      priceUpperLimit: adDetail.priceUpperLimit,
-      priceLowerLimit: adDetail.priceLowerLimit,
+      type: adDetail?.type === "buy" ? "Buy" : "Sell",
+      priceType: adDetail?.priceType,
+      currency: adDetail?.currency || "NGN",
+      priceMargin: adDetail?.priceMargin,
+      asset: adDetail?.asset,
+      amount: adDetail?.amountAvailable,
+      amountToken: adDetail?.amountAvailable,
+      price: adDetail?.price,
+      minimumLimit: adDetail?.minimumLimit,
+      maximumLimit: adDetail?.maximumLimit,
+      priceUpperLimit: adDetail?.priceUpperLimit,
+      priceLowerLimit: adDetail?.priceLowerLimit,
       agree: false,
     };
   }, [adDetail]);
@@ -88,9 +88,12 @@ const EditAds = ({
         refetchWallet(),
         queryClient.refetchQueries({
           queryKey: ["adDetails", variables.userId, adDetail.id],
+          exact: true,
         }),
         queryClient.refetchQueries({
           queryKey: ["userAds", variables.userId],
+          exact: true,
+          type: "all",
         }),
         queryClient.refetchQueries({
           queryKey: ["searchAds"],
@@ -181,7 +184,7 @@ const EditAds = ({
 
   return (
     <>
-      <MaxWidth className="max-w-[38rem] mb-10 border py-4 px-6 rounded-2xl">
+      <MaxWidth className="max-w-[38rem] mb-10 border py-4 px-6 rounded-2xl border-border bg-secondary/20">
         <>
           {isFetching ? (
             <div className="flex items-center justify-center">
@@ -221,7 +224,9 @@ const EditAds = ({
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               />
-              <span className="text-xs  text-muted-foreground">Accept changes</span>
+              <span className="text-xs  text-muted-foreground">
+                Accept changes
+              </span>
             </div>
 
             <div className="flex justify-end gap-2 mt-4">

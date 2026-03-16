@@ -678,7 +678,7 @@ const useUserWalletHistory = ({
         bankDetails: t.bankDetails,
       }));
     },
-    // staleTime: 1000 * 60 * 5,
+    staleTime: 1000 * 60 * 15, // 15 minutes
     enabled: Boolean(isKycVerified),
     refetchOnMount: false,
   });
@@ -704,14 +704,20 @@ const useFetchOrder = ({ isKycVerified }: { isKycVerified?: boolean }) => {
   });
 };
 
-const useFetchUserAds = ({ isKycVerified }: { isKycVerified?: boolean }) => {
+const useFetchUserAds = ({
+  isKycVerified,
+  userId,
+}: {
+  isKycVerified?: boolean;
+  userId?: string;
+}) => {
   return useQuery<AdsTypes[], Error>({
-    queryKey: ["userAds"],
+    queryKey: ["userAds", userId],
     queryFn: getUserAds,
     retry: false,
     refetchOnMount: false,
     staleTime: Infinity,
-    enabled: Boolean(isKycVerified),
+    enabled: Boolean(isKycVerified && userId),
   });
 };
 
@@ -762,8 +768,8 @@ const useCryptoRates = ({ isEnabled }: { isEnabled: boolean }) => {
   return useQuery<CryptoRates, Error>({
     queryKey: ["cryptoRates"],
     queryFn: getCryptoRates,
-    refetchOnMount: false,
-    staleTime: 2 * 60 * 1000, // 2 minutes
+    refetchOnMount: true,
+
     enabled: isEnabled,
     retry: true,
   });
@@ -779,8 +785,8 @@ const useAssetRate = ({
   return useQuery<Coin[], Error>({
     queryKey: ["assetRates", isNgnRate],
     queryFn: () => getCoinRates({ isNgnRate }),
-    refetchOnMount: false,
-    staleTime: 2 * 60 * 1000, // 2 minutes
+    refetchOnMount: true,
+
     enabled: isEnabled,
   });
 };
@@ -796,8 +802,8 @@ const useGetAdsDetails = ({
   return useQuery<AdsType & { orders: OrderHistory[] }, Error>({
     queryKey: ["adDetails", userId, adId],
     queryFn: () => GetAdDetails({ userId, adId }),
-    refetchOnMount: false,
-    staleTime: 2 * 60 * 1000, // 2 minutes
+    refetchOnMount: true,
+
     enabled,
   });
 };
@@ -821,8 +827,8 @@ const useGetAdsDetail = ({
 
       return response.data;
     },
-    refetchOnMount: false,
-    staleTime: 2 * 60 * 1000, // 2 minutes
+    refetchOnMount: true,
+
     enabled,
   });
 };

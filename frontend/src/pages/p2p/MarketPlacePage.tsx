@@ -100,7 +100,7 @@ const MarketPlacePage = () => {
     queryKey: ["searchAds", adsParam, pagination, userId],
     queryFn: fetchAds,
     retry: false,
-    refetchOnMount: false,
+    refetchOnMount: true,
     enabled: Boolean(userId),
   });
 

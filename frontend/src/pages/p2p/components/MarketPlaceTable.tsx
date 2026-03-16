@@ -67,7 +67,7 @@ const MarketPlaceTable = ({
               >
                 <p className="font-semibold">{initials}</p>
               </div>
-              <p className="text-muted-foreground font-medium">{userName}</p>
+              <p className="text-foreground font-medium">{userName}</p>
               <div className="md:-ml-2">
                 {user?.accountLevel === "level_3" && (
                   <BadgeCheck fill="#F5BB00" stroke="#fff" size={20} />
@@ -89,7 +89,7 @@ const MarketPlaceTable = ({
         const price = formatter({}).format(row.original.price);
         return (
           <div className="flex items-baseline gap-1">
-            <p className="text-muted-foreground md:font-semibold text-2xl font-bold md:text-xl">
+            <p className="text-foreground md:font-semibold text-2xl font-bold md:text-xl">
               {price}
             </p>
             <p className="text-muted-foreground text-xs">NGN</p>
@@ -159,10 +159,13 @@ const MarketPlaceTable = ({
 
         return (
           <div className="text-muted-foreground">
-            <p className="font-semibold text-muted-foreground">
-              {formatter({}).format(quantity)} {asset}
+            <p className="font-semibold text-foreground">
+              {formatter({ decimal: asset === "USDT" ? 2 : 6 }).format(
+                quantity,
+              )}{" "}
+              {asset}
             </p>
-            <span>
+            <span className="text-xs 2xl:text-sm">
               {minLimit} - {maxLimit} xNGN
             </span>
           </div>
