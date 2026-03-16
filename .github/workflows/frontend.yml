@@ -41,6 +41,7 @@ jobs:
           REACT_APP_TAWK_URL: ${{ secrets.REACT_APP_TAWK_URL }}
           REACT_APP_ZOHO_URL: ${{ secrets.REACT_APP_ZOHO_URL }}
           REACT_APP_AUTH_HEADER_SECRET: ${{ secrets.REACT_APP_AUTH_HEADER_SECRET }}
+          
         run: npm run build
 
       - name: Configure AWS credentials (OIDC)
