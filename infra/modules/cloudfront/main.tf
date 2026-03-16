@@ -89,8 +89,11 @@ resource "aws_cloudfront_response_headers_policy" "security_headers" {
     }
 
     content_security_policy {
-      content_security_policy = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'; frame-ancestors 'none';"
+
+      content_security_policy = "default-src 'self'; connect-src 'self' https://www.gstatic.com https://api.ipify.org https://api.coingecko.com/api/v3/coins/markets https://api.coingecko.com/api/v3/simple/price https://v1-api.bisats.com; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; object-src 'none'; frame-ancestors 'none';"
+
       override = true
+
     }
   }
 }
