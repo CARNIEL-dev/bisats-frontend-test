@@ -68,6 +68,7 @@ const CryptoFilter = ({
       >
         <ul
           className="p-1 space-y-1 text-xs font-secondary h-[230px] overflow-y-scroll"
+
           aria-labelledby={`tokenSelectBtn`}
         >
           <div className=" w-full gap-4 px-3 ">

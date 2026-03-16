@@ -847,7 +847,6 @@ export const getNetworkFee = async ({
   paylod,
 }: {
   paylod: {
-    userId: string;
     amount: number;
     address: string;
     asset: string;
@@ -860,6 +859,25 @@ export const getNetworkFee = async ({
       {
         method: "POST",
         body: JSON.stringify(paylod),
+      },
+    );
+
+    if (response.statusCode !== 200) {
+      throw new Error(response.message);
+    }
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getNGNCommission = async (amount: number) => {
+  try {
+    const response = await Bisatsfetch(
+      `/api/v1/user/withdrawal/ngn-commission`,
+      {
+        method: "POST",
+        body: JSON.stringify({ amount }),
       },
     );
 

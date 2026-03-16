@@ -102,6 +102,7 @@ export const MultiSelectDropDown = ({
           )}
         >
           <ul
+
             className={cn(
               `p-2 space-y-1 text-xs font-secondary h-fit w-full `,
               scrollHeight && "overflow-y-scroll max-h-[300px]",

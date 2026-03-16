@@ -101,7 +101,7 @@ const SecurityVerification: React.FC<Props> = ({
           Security Verification
         </p>
         <form
-          className="mt-5 flex flex-col gap-3 text-center"
+          className="mt-5 flex flex-col gap-3 text-center w-full"
           onSubmit={formik.handleSubmit}
         >
           {mode !== "PIN" && (
@@ -113,6 +113,7 @@ const SecurityVerification: React.FC<Props> = ({
               value={formik.values.code}
               name="code"
               onChange={formik.handleChange}
+              isCodeCentered
             />
           )}
 

@@ -117,6 +117,7 @@ export function DataTable<TData, TValue>({
           compactHeight &&
             " overflow-auto max-h-[70dvh] border-t-2 border-border no-scrollbar",
         )}
+
       >
         <Table>
           <TableHeader className="bg-muted ">
@@ -175,11 +176,18 @@ export function DataTable<TData, TValue>({
       {/* ─────────────────────────────────────── 
          SUB: Mobile: card list layout 
       ─────────────────────────────────────── */}
-      <div className="lg:hidden space-y-3">
+      <div
+        className={cn(
+          "lg:hidden space-y-3",
+          compactHeight &&
+            "max-h-[80dvh] overflow-auto no-scrollbar border-t border-border",
+        )}
+
+      >
         {table.getRowModel().rows.map((row) => (
           <div
             key={row.id}
-            className="bg-background p-4 rounded-lg shadow-sm border"
+            className="bg-background p-4 rounded-lg shadow-sm border border-input"
           >
             {row.getVisibleCells().map((cell) => {
               const header = topHeaders.find((h) => h.id === cell.column.id);

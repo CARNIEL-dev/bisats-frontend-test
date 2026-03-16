@@ -9,6 +9,7 @@ import Toast from "@/components/Toast";
 import Head from "@/pages/wallet/Head";
 import {
   Complete_Withdraw_xNGN,
+  getNGNCommission,
   useCryptoRates,
   Withdraw_xNGN,
 } from "@/redux/actions/walletActions";
@@ -43,6 +44,8 @@ import { APP_ROUTES } from "@/constants/app_route";
 import useGetWallet from "@/hooks/use-getWallet";
 import CryptoWithdrawal from "@/pages/wallet/withdrawal/CryptoWithdrawal";
 import useUserStatus from "@/hooks/use-user-status";
+import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/card";
 
 export type TNetwork = {
   label: string;
@@ -89,6 +92,7 @@ const WithdrawalPage = () => {
     data: transaction_limits,
     isError,
     isLoading,
+    refetch,
   } = useQuery<UserTransactionLimits, Error>({
     queryKey: ["UserTransactions"],
     queryFn: GET_WITHDRAWAL_LIMIT,
@@ -122,7 +126,12 @@ const WithdrawalPage = () => {
         {isLoading ? (
           <PreLoader primary={false} />
         ) : isError ? (
-          <ErrorDisplay message="Failed to fetch transaction limits" />
+          <Card className="flex flex-col items-center gap-2">
+            <ErrorDisplay message="Failed to fetch transaction limits" />
+            <Button size="sm" onClick={() => refetch()}>
+              Try again
+            </Button>
+          </Card>
         ) : (
           <>
             <TokenSelection
@@ -201,6 +210,9 @@ const NGNWithdrawal = ({
   const queryClient = useQueryClient();
   const { refetchWallet } = useGetWallet();
 
+  // SUB: Debounced amount for commission fetch
+  const [debouncedAmount, setDebouncedAmount] = useState("");
+
   // SUB: User bank list
   const userBankList = useMemo(() => {
     const bankAccounts = user?.bankAccounts;
@@ -278,8 +290,11 @@ const NGNWithdrawal = ({
       // Reset on every new submission attempt
       withdrawSubmitSuccessRef.current = false;
 
+      const withdrawAmount =
+        commissionData?.amountPaidOut || Number(values.amount);
+
       const payLoad = {
-        amount: Number(values.amount),
+        amount: withdrawAmount,
         bankAccountId: values.bank,
       };
 
@@ -315,6 +330,41 @@ const NGNWithdrawal = ({
         });
     },
   });
+
+  // SUB: Debounce the amount for commission API
+  useEffect(() => {
+    if (formik.errors.amount) return;
+
+    const handler = setTimeout(() => {
+      setDebouncedAmount(formik.values.amount);
+    }, 800);
+
+    return () => clearTimeout(handler);
+  }, [formik.values.amount, formik.errors.amount]);
+
+  const {
+    data: commissionData,
+    isLoading: commissionLoading,
+    error: commissionError,
+  } = useQuery<{
+    commission: number;
+    amountPaidOut: number;
+    totalDebit: number;
+  }>({
+    queryKey: ["ngnCommission", debouncedAmount],
+    queryFn: async () => await getNGNCommission(Number(debouncedAmount)),
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    staleTime: 2 * 60 * 60 * 1000, // 2 hours
+    gcTime: 5 * 60 * 60 * 1000, // 5 hours
+    enabled:
+      debouncedAmount !== "" &&
+      !Number.isNaN(Number(debouncedAmount)) &&
+      Number(debouncedAmount) > 0 &&
+      !formik.errors.amount,
+  });
+
+  const commissionFee = commissionData?.commission ?? 0;
 
   const handlCompleteWithdrawl = async () => {
     setWithdrawlLoading(true);
@@ -399,6 +449,7 @@ const NGNWithdrawal = ({
                     // if (max && Number(value) > max) {
                     //   value = max.toString();
                     // }
+
                     formik.setFieldValue("amount", e.target.value);
                   }}
                   format
@@ -424,25 +475,24 @@ const NGNWithdrawal = ({
                         )
                   }
                   fee={
-                    !formik.values.amount || !formik.isValid
+                    !formik.values.amount || !formik.isValid || !commissionData
                       ? "-"
-                      : userTransactionLimits?.charge_on_single_withdrawal_fiat
+                      : commissionFee
                   }
                   amount={
-                    formik.errors.amount || !formik.isValid
+                    formik.errors.amount || !formik.isValid || !commissionData
                       ? "-"
                       : formatter({ decimal: 2 }).format(
-                          isNaN(parseFloat(formik.values.amount))
-                            ? 0
-                            : parseFloat(formik.values.amount) -
-                                userTransactionLimits?.charge_on_single_withdrawal_fiat,
+                          commissionData.amountPaidOut,
                         )
                   }
                   total={`${formatNumber(
-                    !formik.values.amount || !formik.isValid
+                    !formik.values.amount || !formik.isValid || !commissionData
                       ? "-"
-                      : Number(formik.values.amount ?? 0),
+                      : commissionData.totalDebit,
                   )}`}
+                  loading={commissionLoading}
+                  error={commissionError}
                 />
                 <KycManager
                   action={ACTIONS.WITHDRAW_NGN}
@@ -472,7 +522,10 @@ const NGNWithdrawal = ({
                       onClick={() => {
                         validateAndExecute();
                       }}
-                      disabled={!formik.isValid || !formik.dirty}
+                      disabled={
+                        !formik.isValid || !formik.dirty || commissionLoading
+                        // !!commissionError
+                      }
                     />
                   )}
                 </KycManager>
@@ -513,9 +566,9 @@ const NGNWithdrawal = ({
       {withdrawalModal && (
         <WithdrawalConfirmationNGN
           close={() => setWithDrawalModal(false)}
-          transactionFee={`${userTransactionLimits?.charge_on_single_withdrawal_fiat}`}
-          withdrawalAmount={`${formik.values.amount}`}
-          total={`${Number(formik.values.amount ?? 0)}`}
+          transactionFee={`${commissionFee}`}
+          withdrawalAmount={`${commissionData?.amountPaidOut ?? formik.values.amount}`}
+          total={`${commissionData?.totalDebit ?? Number(formik.values.amount ?? 0)}`}
           submit={handlCompleteWithdrawl}
           isLoading={withdrawlLoading}
         />

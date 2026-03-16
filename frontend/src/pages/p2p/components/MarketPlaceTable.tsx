@@ -55,7 +55,7 @@ const MarketPlaceTable = ({
         const initials = userName?.charAt(0) || "B";
 
         return (
-          <div className="flex flex-col md:gap-2 gap-1 items-end md:items-start">
+          <div className="flex flex-col md:gap-2 gap-1 items-end lg:items-start">
             <div className=" flex items-center gap-1">
               <div
                 className={cn(
@@ -158,7 +158,7 @@ const MarketPlaceTable = ({
         const maxLimit = formatter({}).format(limits.max);
 
         return (
-          <div className="text-muted-foreground">
+          <div className="text-muted-foreground text-right lg:text-left">
             <p className="font-semibold text-foreground">
               {formatter({ decimal: asset === "USDT" ? 2 : 6 }).format(
                 quantity,

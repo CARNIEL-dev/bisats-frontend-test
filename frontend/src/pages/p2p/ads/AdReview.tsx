@@ -2,124 +2,119 @@ import { InputCheck } from "@/components/Inputs/CheckBox";
 import { formatNumber } from "@/utils/numberFormat";
 import { AdsProps } from "@/pages/p2p/ads/CreateAds";
 import { formatter } from "@/utils";
+import TextBox from "@/components/shared/TextBox";
 
 const AdReview: React.FC<AdsProps> = ({ formik }) => {
   return (
-    <div className="text-sm mb-3">
-      <div className="mb-4 flex items-center justify-between w-full">
-        <p className="mb-1">
-          <span className="text-[#606C82] font-light mr-2">
-            Transaction Type
+    <div className="text-sm mb-3 flex flex-col gap-4">
+      <TextBox
+        label="Transaction Type"
+        value={
+          <span
+            className={
+              formik.values.type === "Buy"
+                ? "text-green-600 border border-green-600 rounded-full px-3 py-0.5 bg-green-500/10 font-semibold"
+                : "text-red-600 border border-red-600 rounded-full px-3 py-0.5 bg-red-500/10  font-semibold"
+            }
+          >
+            {formik.values.type}
           </span>
-        </p>
-        <p
-          className={
-            formik.values.type === "Buy"
-              ? "text-green-600 border border-green-600 rounded-full px-3 py-0.5 bg-green-500/10 font-semibold"
-              : "text-red-600 border border-red-600 rounded-full px-3 py-0.5 bg-red-500/10  font-semibold"
-          }
-        >
-          {formik.values.type}
-        </p>
-      </div>
-      <div className="mb-4 flex items-center justify-between w-full">
-        <p className="mb-1">
-          <span className="text-[#606C82] font-light mr-2">Asset</span>
-        </p>
-        <p className="text-[#515B6E] font-semibold">{formik.values.asset}</p>
-      </div>
-      <div className="mb-4 flex items-center justify-between w-full">
-        <p className="mb-1">
-          <span className="text-[#606C82] font-light mr-2">Limits</span>
-        </p>
-        <p className="text-[#515B6E] font-semibold">
-          <span className="mr-2">
-            Min: {formatNumber(formik.values.minimumLimit ?? 0)}
+        }
+        showIndicator={false}
+      />
+
+      <TextBox
+        label="Asset"
+        value={<span className="font-semibold">{formik.values.asset}</span>}
+        showIndicator={false}
+      />
+      <TextBox
+        label="Limits"
+        value={
+          <span className=" font-semibold">
+            <span className="mr-2">
+              Min: {formatNumber(formik.values.minimumLimit ?? 0)}
+            </span>
+            <span>Max: {formatNumber(formik.values.maximumLimit ?? 0)}</span>
           </span>
-          <span>Max: {formatNumber(formik.values.maximumLimit ?? 0)}</span>
-        </p>
-      </div>
-      {/* <div className="mb-4 flex items-center justify-between w-full">
-        <p className="mb-1">
-          <span className="text-[#606C82] font-light mr-2">Pricing Type</span>
-        </p>
-        <p className="text-[#515B6E] font-semibold">
-          {formik.values.priceType}
-        </p>
-      </div> */}
-      <div className="mb-4 flex items-center justify-between w-full">
-        <p className="mb-1">
-          <span className="text-[#606C82] font-light mr-2">Amount</span>
-        </p>
-        <p className="text-[#515B6E] font-semibold">
-          {formatter({
-            decimal: formik.values.type.toLowerCase() === "sell" ? 6 : 2,
-          }).format(
-            formik.values.type.toLowerCase() === "sell"
-              ? formik.values?.amountToken || 0
-              : formik.values?.amount || 0
-          )}
-        </p>
-      </div>
-      <div className="mb-4 flex items-center justify-between w-full">
-        <p className="mb-1">
-          <span className="text-[#606C82] font-light mr-2">Your Price</span>
-        </p>
-        <p className="text-[#515B6E] font-semibold">
-          {formatNumber(formik.values.price ?? 0)}
-        </p>
-      </div>
-
-      <div className="mb-4 flex items-center justify-between w-full">
-        <p className="mb-1">
-          <span className="text-[#606C82] font-light mr-2">Upper Limit</span>
-        </p>
-        <p className="text-[#515B6E] font-semibold">
-          {formatNumber(formik.values.priceUpperLimit ?? 0)}
-        </p>
-      </div>
-      <div className="mb-4 flex items-center justify-between w-full">
-        <p className="mb-1">
-          <span className="text-[#606C82] font-light mr-2">Lower Limit</span>
-        </p>
-        <p className="text-[#515B6E] font-semibold">
-          {formatNumber(formik.values.priceLowerLimit ?? 0)}
-        </p>
-      </div>
-      <div className="mb-4 flex items-center justify-between w-full">
-        <p className="mb-1">
-          <span className="text-[#606C82] font-light mr-2">Currency</span>
-        </p>
-        <p className="text-[#515B6E] font-semibold">{formik.values.currency}</p>
-      </div>
-      <div className="mb-4 flex items-center justify-between w-full">
-        <p className="mb-1">
-          <span className="text-[#606C82] font-light mr-2">
-            Transaction fee
+        }
+        showIndicator={false}
+      />
+      <TextBox
+        label="Amount"
+        value={
+          <span className=" font-semibold">
+            {formatter({
+              decimal: formik.values.type.toLowerCase() === "sell" ? 6 : 2,
+            }).format(
+              formik.values.type.toLowerCase() === "sell"
+                ? formik.values?.amountToken || 0
+                : formik.values?.amount || 0,
+            )}
           </span>
-        </p>
-        <p className="text-[#515B6E] font-semibold">
-          {formik.values.type === "Buy"
-            ? formatter({
-                decimal: 2,
-                currency: "NGN",
-                style: "currency",
-              }).format(0.0002 * (formik.values.amount ?? 0))
-            : "-"}
-        </p>
-      </div>
+        }
+        showIndicator={false}
+      />
+      <TextBox
+        label="Your Price"
+        value={
+          <span className=" font-semibold">
+            {formatNumber(formik.values.price ?? 0)}
+          </span>
+        }
+        showIndicator={false}
+      />
 
-      <div className="w-full p-3 rounded-[8px] border border-[#F3F4F6] bg-[#F9F9FB] my-4">
-        <h1 className="text-[#2B313B] text-[14px] leading-[24px] font-semibold">
-          Summary
-        </h1>
+      <TextBox
+        label="Upper Limit"
+        value={
+          <span className=" font-semibold">
+            {formatNumber(formik.values.priceUpperLimit ?? 0)}
+          </span>
+        }
+        showIndicator={false}
+      />
+      <TextBox
+        label="Lower Limit"
+        value={
+          <span className=" font-semibold">
+            {formatNumber(formik.values.priceLowerLimit ?? 0)}
+          </span>
+        }
+        showIndicator={false}
+      />
 
-        <p className="text-[#606C82] text-[13px] leading-[24px] font-normal">
+      <TextBox
+        label="Currency"
+        value={<span className=" font-semibold">{formik.values.currency}</span>}
+        showIndicator={false}
+      />
+
+      <TextBox
+        label="Transaction fee"
+        value={
+          <span className=" font-semibold">
+            {formik.values.type === "Buy"
+              ? formatter({
+                  decimal: 2,
+                  currency: "NGN",
+                  style: "currency",
+                }).format(0.0002 * (formik.values.amount ?? 0))
+              : "-"}
+          </span>
+        }
+        showIndicator={false}
+      />
+
+      <div className="w-full p-3 rounded-[8px] border border-border bg-secondary mb-4 mt-6">
+        <h1 className=" text-[14px] leading-[24px] font-semibold">Summary</h1>
+
+        <p className="text-muted-foreground text-[13px] leading-[24px] font-normal">
           You are about to create an ad to{" "}
-          <span className="font-semibold">
+          <span className="font-semibold text-primary">
             {formik.values.type.toLowerCase() === "buy"
               ? `Buy ${formatter({ decimal: 2 }).format(
-                  formik.values.amount || 0
+                  formik.values.amount || 0,
                 )} NGN worth of ${formik.values.asset}`
               : `Sell ${formatter({
                   decimal: 6,
@@ -129,7 +124,7 @@ const AdReview: React.FC<AdsProps> = ({ formik }) => {
             at{" "}
             {formik.values.priceType?.toLowerCase() === "static"
               ? `${formatter({ decimal: 0 }).format(
-                  formik.values.price || 0
+                  formik.values.price || 0,
                 )} NGN/USDT.`
               : ` a margin of ${formik.values.priceMargin}% ${
                   formik.values.type?.toLowerCase() === "buy"
@@ -152,7 +147,7 @@ const AdReview: React.FC<AdsProps> = ({ formik }) => {
           onBlur={formik.handleBlur}
         />
 
-        <span className="text-[12px] pl-2 text-[#515B6E]">
+        <span className="text-[12px] pl-2 text-muted-foreground">
           I agree to the platform's Terms and Conditions.
         </span>
       </div>
