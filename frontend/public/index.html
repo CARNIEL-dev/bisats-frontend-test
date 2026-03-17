@@ -3,7 +3,7 @@
   <head>
     <script>
       try {
-        const storedTheme = localStorage.getItem("bisats-ui-theme");
+        const storedTheme = localStorage.getItem("theme");
         const prefersDark = window.matchMedia(
           "(prefers-color-scheme: dark)",
         ).matches;
@@ -176,6 +176,12 @@
         .dark #app-preloader {
           background: #141415 !important;
           color: #f7f7f7;
+        }
+        @media (prefers-color-scheme: dark) {
+          #app-preloader {
+            background: #141415 !important;
+            color: #f7f7f7;
+          }
         }
         @keyframes preloaderFadeIn {
           from {
