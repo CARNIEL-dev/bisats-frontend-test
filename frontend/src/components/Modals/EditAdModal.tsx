@@ -70,18 +70,20 @@ const EditAd: React.FC<Props> = ({ close, ad }) => {
   const amountAvailable = Number(ad?.amountAvailable) || 0;
 
   //   SUB: Calculate balance
+  const isActiveAd = ad?.status?.toLowerCase() === "active";
+
   const calculateDisplayWalletBallance: number = useMemo(() => {
     if (ad?.type.toLowerCase() === "buy") {
-      const amountAval = (Number(walletData?.xNGN) + amountAvailable).toFixed(
-        2,
-      );
-      return Number(amountAval) || 0;
+      const walletBalance = Number(walletData?.xNGN) || 0;
+      const total = isActiveAd
+        ? walletBalance + amountAvailable
+        : walletBalance;
+      return Number(total.toFixed(2));
     } else {
-      return walletData
-        ? Number(walletData?.[ad?.asset!]) + amountAvailable
-        : amountAvailable || 0;
+      const walletBalance = walletData ? Number(walletData?.[ad?.asset!]) : 0;
+      return isActiveAd ? walletBalance + amountAvailable : walletBalance || 0;
     }
-  }, [ad?.asset, ad?.type, walletData, amountAvailable]);
+  }, [ad?.asset, ad?.type, walletData, amountAvailable, isActiveAd]);
 
   const rate = useMemo(() => {
     return liveRate![ad?.asset as keyof typeof liveRate];

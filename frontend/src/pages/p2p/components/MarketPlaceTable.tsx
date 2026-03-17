@@ -68,11 +68,10 @@ const MarketPlaceTable = ({
                 <p className="font-semibold">{initials}</p>
               </div>
               <p className="text-foreground font-medium">{userName}</p>
-              <div className="md:-ml-2">
-                {user?.accountLevel === "level_3" && (
-                  <BadgeCheck fill="#F5BB00" stroke="#fff" size={20} />
-                )}
-              </div>
+
+              {user?.accountLevel === "level_3" && (
+                <BadgeCheck fill="#F5BB00" stroke="#fff" className="size-5" />
+              )}
             </div>
             <p className="text-muted-foreground text-xs ml-1">
               {user?.totalOrders || "0"} Order(s)

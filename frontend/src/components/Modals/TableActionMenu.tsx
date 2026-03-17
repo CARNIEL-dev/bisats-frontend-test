@@ -48,7 +48,7 @@ const TableActionMenu = ({ adDetail, onCloseAd }: TableActionMenuProps) => {
     }
   };
 
-  const isActiveAd = ["active", "open"].includes(adDetail.status.toLowerCase());
+  // const isActiveAd = ["active", "open"].includes(adDetail.status.toLowerCase());
 
   return (
     <>
@@ -65,15 +65,13 @@ const TableActionMenu = ({ adDetail, onCloseAd }: TableActionMenuProps) => {
               View full details
             </Link>
           </DropdownMenuItem>
-          {isActiveAd && (
-            <>
-              {!adDetail.reason && (
-                <DropdownMenuItem onSelect={() => setShowEdit(true)}>
-                  Edit price
-                </DropdownMenuItem>
-              )}
-            </>
+
+          {!adDetail.reason && (
+            <DropdownMenuItem onSelect={() => setShowEdit(true)}>
+              Edit price
+            </DropdownMenuItem>
           )}
+
           {adDetail.status !== "closed" && (
             <DropdownMenuItem onSelect={handleCloseAd}>
               Close ad

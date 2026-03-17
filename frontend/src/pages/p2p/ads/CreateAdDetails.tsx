@@ -54,6 +54,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
   wallet,
   liveRate,
   editMode,
+  adStatus,
 }) => {
   const [adType, setAdType] = useState(formik.values.type || "Buy");
   const [token, setToken] = useState(formik.values.asset || "USDT");
@@ -66,6 +67,8 @@ const CreateAdDetails: React.FC<AdsProps> = ({
   const account_level = user?.accountLevel as AccountLevel;
   const userTransactionLimits = bisats_limit[account_level];
 
+  console.log("Wallet", walletData);
+
   //SUB: Handle Next Stage
   const handleValidation = async () => {
     try {
@@ -77,7 +80,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
 
       startTransition(() => {
         const hasErrors = Object.keys(errors).some((field) =>
-          requiredFieldsList.includes(field)
+          requiredFieldsList.includes(field),
         );
 
         if (!hasErrors) {
@@ -98,15 +101,21 @@ const CreateAdDetails: React.FC<AdsProps> = ({
 
   // SUB: Calculate wallet balance
 
+  const isActiveAd = adStatus?.toLowerCase() === "active";
+
   const walletBalance: number = useMemo(() => {
     if (editMode) {
       if (adType.toLowerCase() === "buy") {
-        const amountAval = (walletData?.xNGN + formik.values.amount).toFixed(2);
-        return Number(amountAval) || 0;
+        const walletBal = Number(walletData?.xNGN) || 0;
+        const total = isActiveAd
+          ? walletBal + (formik.values.amount ?? 0)
+          : walletBal;
+        return Number(total.toFixed(2));
       } else {
-        return walletData
-          ? walletData?.[token] + formik.values.amountToken
-          : formik.values.amountToken || 0;
+        const walletBal = walletData ? Number(walletData?.[token]) : 0;
+        return isActiveAd
+          ? walletBal + (formik.values.amountToken ?? 0)
+          : walletBal || 0;
       }
     } else {
       if (adType.toLowerCase() === "buy") {
@@ -116,7 +125,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
       }
     }
     //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [adType, token, walletData]);
+  }, [adType, token, walletData, isActiveAd]);
 
   // SUB: Handle percentage click
   const handlePercentageClick = useCallback(
@@ -137,7 +146,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
         priceLowerLimit: price - percentageValue,
       });
     },
-    [formik]
+    [formik],
   );
 
   // SUB: Rate
@@ -162,7 +171,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
           <SelectTrigger
             className={cn(
               "w-full ",
-              formik.errors.type && formik.touched.type && "border-red-500"
+              formik.errors.type && formik.touched.type && "border-red-500",
             )}
           >
             <SelectValue placeholder="Select option" />
@@ -275,8 +284,8 @@ const CreateAdDetails: React.FC<AdsProps> = ({
               adType.toLowerCase() === "buy"
                 ? 2
                 : token === "xNGN" || token === "USDT"
-                ? 2
-                : 7,
+                  ? 2
+                  : 7,
           }).format(walletBalance)}{" "}
           {adType.toLowerCase() === "buy" ? "xNGN" : token}
         </Badge>
@@ -321,7 +330,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
                 "w-full  !h-11",
                 formik.errors.currency &&
                   formik.touched.currency &&
-                  "border-red-500"
+                  "border-red-500",
               )}
             >
               <SelectValue placeholder="Select option" />
@@ -336,7 +345,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
           </Select>
         </div>
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 flex-wrap">
         <Badge variant={"secondary"}>
           Market Price: xNGN {formatNumber(rate ?? 0)}{" "}
         </Badge>
@@ -381,7 +390,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
               if (isValidDecimal) {
                 formik.setFieldValue(
                   "priceLowerLimit",
-                  value === "" ? undefined : Number(value)
+                  value === "" ? undefined : Number(value),
                 );
                 formik.validateField("priceLowerLimit");
               }
@@ -407,7 +416,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
               if (isValidDecimal) {
                 formik.setFieldValue(
                   "priceUpperLimit",
-                  value === "" ? undefined : Number(value)
+                  value === "" ? undefined : Number(value),
                 );
               }
             }}
@@ -416,7 +425,9 @@ const CreateAdDetails: React.FC<AdsProps> = ({
 
         {/* SUB: Percentage Buttons */}
         <div className="flex gap-1 mb-2 items-center">
-          <p className="text-muted-foreground text-xs">Or Percentage difference :</p>
+          <p className="text-muted-foreground text-xs">
+            Or Percentage difference :
+          </p>
           {PERCENTAGES.map((percent) => (
             <Badge
               role="button"
@@ -428,7 +439,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
               tabIndex={0}
               className={cn(
                 "!p-2 size-8 rounded-full hover:bg-green-500/20",
-                activePercentage === percent && "bg-green-500/30"
+                activePercentage === percent && "bg-green-500/30",
               )}
             >
               {percent}%
@@ -475,7 +486,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
               if (value === "" || /^\d+(\.\d{0,})?$/.test(value)) {
                 formik.setFieldValue(
                   "minimumLimit",
-                  value === "" ? undefined : Number(value)
+                  value === "" ? undefined : Number(value),
                 );
               }
             }}
@@ -484,7 +495,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
                 "minimumLimit",
                 adType === "Buy"
                   ? userTransactionLimits?.lower_limit_buy_ad
-                  : userTransactionLimits?.lower_limit_sell_ad
+                  : userTransactionLimits?.lower_limit_sell_ad,
               );
             }}
             maxText="Min"
@@ -500,8 +511,8 @@ const CreateAdDetails: React.FC<AdsProps> = ({
                     Math.min(
                       userTransactionLimits?.upper_limit_sell_ad || Infinity,
                       Number(formik.values.price) *
-                        Number(formik.values.amountToken)
-                    )
+                        Number(formik.values.amountToken),
+                    ),
                   )
             })`}
             name="maximumLimit"
@@ -529,7 +540,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
                 ) {
                   Toast.warning(
                     "Please enter an amount token",
-                    "Amount required"
+                    "Amount required",
                   );
                   return;
                 }
@@ -541,7 +552,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
                 ).toFixed(2);
                 const tokenPrice = Math.min(
                   userTransactionLimits?.upper_limit_sell_ad || Infinity,
-                  parseFloat(tokenValue)
+                  parseFloat(tokenValue),
                 );
 
                 return formik.setFieldValue("maximumLimit", tokenPrice);
@@ -551,7 +562,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
                   Number(formik.values.amount) >=
                     userTransactionLimits?.upper_limit_buy_ad
                     ? userTransactionLimits?.upper_limit_buy_ad
-                    : Number(formik.values.amount)
+                    : Number(formik.values.amount),
                 );
               }
             }}
@@ -560,7 +571,7 @@ const CreateAdDetails: React.FC<AdsProps> = ({
               if (value === "" || /^\d+(\.\d{0,})?$/.test(value)) {
                 formik.setFieldValue(
                   "maximumLimit",
-                  value === "" ? undefined : Number(value)
+                  value === "" ? undefined : Number(value),
                 );
               }
             }}
