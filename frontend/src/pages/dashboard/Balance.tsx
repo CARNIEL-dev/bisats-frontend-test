@@ -283,6 +283,3 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
 };
 
 export default Balance;
-
-// this the login-  "email":"bocepel654@7novels.com",
-//     "password":"Password24@"
