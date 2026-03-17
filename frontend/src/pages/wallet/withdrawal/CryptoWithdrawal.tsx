@@ -18,7 +18,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Decimal from "decimal.js";
 import { FormikProps, useFormik } from "formik";
 import { X } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { SelectDropDown } from "@/components/Inputs/MultiSelectInput";
@@ -50,6 +50,7 @@ const CryptoWithdrawal = ({
   asset,
   currencyRate,
 }: PropsCrypto) => {
+  const withdrawSubmitSuccessRef = useRef(false);
   const [withdrawalLoding, setWithdrawalLoding] = useState(false);
   const [withdrawalModal, setWithDrawalModal] = useState(false);
   const [showSavedAddressModal, setShowSavedAddressModal] = useState(false);
@@ -196,7 +197,7 @@ const CryptoWithdrawal = ({
               withdrawalPin: "",
               twoFactorCode: "",
             });
-            return true;
+            withdrawSubmitSuccessRef.current = true;
           } else {
             Toast.error(res.message, "");
             setWithdrawalData({
@@ -204,20 +205,17 @@ const CryptoWithdrawal = ({
               withdrawalPin: "",
               twoFactorCode: "",
             });
-
-            return false;
+            withdrawSubmitSuccessRef.current = false;
           }
         })
         .catch((err) => {
           Toast.error(err.message, "");
-
           setWithdrawalData({
             referenceId: "",
             withdrawalPin: "",
             twoFactorCode: "",
           });
-
-          return false;
+          withdrawSubmitSuccessRef.current = false;
         });
     },
   });
@@ -497,6 +495,11 @@ const CryptoWithdrawal = ({
         />
         <KycManager
           action={ACTIONS.WITHDRAW_CRYPTO}
+          preAction={async () => {
+            withdrawSubmitSuccessRef.current = false;
+            await formik.submitForm();
+            return withdrawSubmitSuccessRef.current;
+          }}
           func={(val) => {
             setWithDrawalModal(true);
             setWithdrawalData((prev) => ({
@@ -512,11 +515,8 @@ const CryptoWithdrawal = ({
               className="w-full"
               text={"Withdraw"}
               loading={formik.isSubmitting}
-              onClick={async () => {
-                const success = await formik.submitForm();
-                if (success) {
-                  validateAndExecute(); // Proceeds immediately on success
-                }
+              onClick={() => {
+                validateAndExecute();
               }}
               disabled={
                 !formik.isValid || !formik.dirty || isLoading || isError

@@ -224,9 +224,21 @@ const resizeFile = (file: File) =>
     );
   });
 
+// const getClientIp = async (): Promise<string | null> => {
+//   try {
+//     const res = await fetch(
+//       `${BACKEND_URLS.BASE_URL}${BACKEND_URLS.IP_ADDRESS_API}`,
+//     );
+//     console.log("Res", res);
+//     return null;
+//   } catch (err) {
+//     console.error("Failed to get IP:", err);
+//     return null;
+//   }
+// };
 const getClientIp = async (): Promise<string | null> => {
   try {
-    const res = await fetch(BACKEND_URLS.IP_ADDRESS_API);
+    const res = await fetch(BACKEND_URLS.IP_ADDRESS_API_ZOHO);
     const data = await res.json();
     return data.ip;
   } catch (err) {
@@ -234,16 +246,6 @@ const getClientIp = async (): Promise<string | null> => {
     return null;
   }
 };
-// const getClientIp = async (): Promise<string | null> => {
-//   try {
-//     const res = await fetch(BACKEND_URLS.IP_ADDRESS_API);
-//     const data = await res.json();
-//     return data.ip;
-//   } catch (err) {
-//     console.error("Failed to get IP:", err);
-//     return null;
-//   }
-// };
 
 const formatAccountLevel = (
   accountLevel?: string | number | null,

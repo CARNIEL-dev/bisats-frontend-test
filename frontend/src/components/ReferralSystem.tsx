@@ -55,9 +55,14 @@ const ReferralSystem = () => {
 
   const confettiRef = useRef<ConfettiRef>(null);
 
-  const hasReferralCode = !!user?.referralCode && user.referralCode !== "null" && user.referralCode !== "NULL";
+  const hasReferralCode =
+    !!user?.referralCode &&
+    user.referralCode !== "null" &&
+    user.referralCode !== "NULL";
   const [isJoined, setIsJoined] = useState(hasReferralCode);
-  const [referralCode, setReferralCode] = useState(hasReferralCode ? user.referralCode : "");
+  const [referralCode, setReferralCode] = useState(
+    hasReferralCode ? user.referralCode : "",
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSuccessView, setIsSuccessView] = useState(false);
@@ -75,7 +80,7 @@ const ReferralSystem = () => {
       if (response && response.status && response.data) {
         const code =
           response.data.referralCode || response.data.code || response.data;
-        if (typeof code === "string") {
+        if (typeof code === "string" && code !== "null" && code !== "NULL") {
           setReferralCode(code);
           setIsJoined(true);
 

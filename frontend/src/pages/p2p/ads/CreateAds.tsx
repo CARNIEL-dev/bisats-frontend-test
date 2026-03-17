@@ -56,6 +56,7 @@ export interface AdsProps {
   liveRate?: Partial<PriceData>;
   wallet?: WalletState;
   editMode?: boolean;
+  adStatus?: string;
 }
 
 const CreateAd = () => {

@@ -30,7 +30,7 @@ root.render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <Provider store={store}>
-        <ThemeProvider defaultTheme="system" storageKey="bisats-ui-theme">
+        <ThemeProvider defaultTheme="system" storageKey="theme">
           <App />
           <OfflineBanner />
         </ThemeProvider>
