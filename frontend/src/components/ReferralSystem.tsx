@@ -80,8 +80,7 @@ const ReferralSystem = () => {
       if (response && response.status && response.data) {
         const code =
           response.data.referralCode || response.data.code || response.data;
-        // if (typeof code === "string" && code !== "null" && code !== "NULL")
-        if (typeof code === "string") {
+        if (typeof code === "string" && code !== "null" && code !== "NULL") {
           setReferralCode(code);
           setIsJoined(true);
 
