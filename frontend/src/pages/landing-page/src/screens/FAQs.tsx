@@ -52,7 +52,7 @@ const FAQs = (): React.ReactElement => {
         ref={contentRef}
         className="w-full py-[64px] lg:py-[80px] px-[20px] bg-background "
       >
-        <MaxWidth className="max-w-[65rem] hidden lg:grid grid-cols-2 items-start gap-[38px] ">
+        <MaxWidth className="max-w-[65rem] hidden lg:grid grid-cols-2 items-start gap-[38px]">
           <div className="space-y-3 bg-background border border-border px-6 py-8 rounded-[12px] sticky top-[15vh]">
             {faqData.map((faq, index) => (
               <button
