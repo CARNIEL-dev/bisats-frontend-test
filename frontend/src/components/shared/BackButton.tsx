@@ -1,14 +1,18 @@
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/utils";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ChevronLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const BackButton = ({
   onClick,
   className,
+  text,
+  variant = "primary",
 }: {
   className?: string;
   onClick?: () => void;
+  text?: string;
+  variant?: "primary" | "secondary";
 }) => {
   const navigate = useNavigate();
   return (
@@ -18,8 +22,8 @@ const BackButton = ({
       className={cn("w-fit", className)}
       type="button"
     >
-      <ArrowLeft />
-      Back
+      {variant === "primary" ? <ArrowLeft /> : <ChevronLeft />}
+      {text || "Back"}
     </Button>
   );
 };
