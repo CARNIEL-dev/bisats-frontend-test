@@ -193,7 +193,7 @@ const CryptoWithdrawal = ({
         .then(async (res) => {
           if (res?.status === true && res?.statusCode === 200) {
             setWithdrawalData({
-              referenceId: res.data,
+              referenceId: res.data.reference,
               withdrawalPin: "",
               twoFactorCode: "",
             });
