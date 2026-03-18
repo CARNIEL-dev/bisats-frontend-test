@@ -37,7 +37,7 @@ const ForgotPassword = () => {
           <>
             {" "}
             <button
-              className="text-[14px] text-muted-foreground leading-[24px] font-semibold text-left flex items-center cursor-pointer mb-2"
+              className="text-[14px] text-muted-foreground leading-[24px] font-semibold text-left flex items-center mb-2 hover:bg-muted-foreground/10 px-2 py-1 rounded-md cursor-pointer"
               onClick={() => navigate(APP_ROUTES.AUTH.LOGIN)}
             >
               {" "}
@@ -75,9 +75,14 @@ const ForgotPassword = () => {
           </div>
           <div className="text-[14px] text-muted-foreground leading-[24px] font-semibold text-left">
             Need help?
-            <button className="text-[#C49600] pl-2 cursor-pointer">
+            <a
+              href="mailto:support@Bisats.com"
+              target="_blank"
+              rel="noreferrer"
+              className="text-[#C49600] pl-2 cursor-pointer"
+            >
               Contact Support
-            </button>
+            </a>
           </div>
         </div>
       </form>

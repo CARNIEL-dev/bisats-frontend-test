@@ -50,13 +50,16 @@ const OTP = () => {
         upperSubHeader={
           <>
             {" "}
-            <p className="text-[14px] text-[#707D96] leading-[24px] font-semibold text-left flex items-center cursor-pointer mb-2">
+            <button
+              className="text-[14px] text-muted-foreground leading-[24px] font-semibold text-left flex items-center mb-2 hover:bg-muted-foreground/10 px-2 py-1 rounded-md cursor-pointer"
+              onClick={() => navigate(APP_ROUTES.AUTH.LOGIN)}
+            >
               {" "}
               <span className="mr-2">
                 <BackArrow />
               </span>{" "}
               Back to Log in
-            </p>
+            </button>
           </>
         }
       />
@@ -66,7 +69,7 @@ const OTP = () => {
             type="code"
             name="code"
             label="Code"
-            className="w-full h-[48px] px-3 outline-hidden "
+            className="w-full   outline-hidden "
             error={formik.errors.code}
             touched={formik.touched.code}
             value={formik.values.code}
@@ -74,7 +77,7 @@ const OTP = () => {
             onBlur={formik.handleBlur}
           />
 
-          <div className="w-full mb-3">
+          <div className="w-full mb-3 mt-4">
             <PrimaryButton
               className={"w-full"}
               text={"Enter code"}
@@ -88,9 +91,14 @@ const OTP = () => {
             <p className="text-[14px] text-[#515B6E] leading-[24px] font-normal text-left">
               00:31
             </p>
-            <span className="text-[#C49600] text-[14px] leading-[24px] font-semibold ">
+            <a
+              href="mailto:support@Bisats.com"
+              target="_blank"
+              rel="noreferrer"
+              className="text-[#C49600] text-[14px] leading-[24px] font-semibold cursor-pointer "
+            >
               Contact Support
-            </span>
+            </a>
           </div>
         </div>
       </form>
