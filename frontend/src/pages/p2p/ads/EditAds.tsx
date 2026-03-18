@@ -205,6 +205,7 @@ const EditAds = ({
               wallet={walletState}
               liveRate={liveRate}
               editMode
+              adStatus={adDetail?.status}
             />
           )}
         </>

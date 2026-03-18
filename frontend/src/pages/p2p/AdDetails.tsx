@@ -59,6 +59,10 @@ const AdDetails = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
+  const isClosed = ["closed", "close"].includes(
+    adsInfo?.status?.toLowerCase() || "",
+  );
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
@@ -68,7 +72,7 @@ const AdDetails = () => {
           <h2 className="font-semibold md:text-3xl text-xl">
             {mode ? "Edit Ad" : "Ad details"}
           </h2>
-          {adsInfo?.status?.toLowerCase() === "active" && (
+          {!isClosed && (
             <Button
               size={"sm"}
               variant={"outline"}
