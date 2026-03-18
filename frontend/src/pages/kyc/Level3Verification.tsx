@@ -85,7 +85,7 @@ const Level3Verification = () => {
         <OtherSide
           header="Upgrade your account"
           subHeader={
-            <p className="text-[#515B6E] text-[14px]">
+            <p className="text-muted-foreground text-sm">
               Upgrade to <span className="text-[#17A34A]"> Level 3 </span>to
               unlock more access to your Bisats account
             </p>
