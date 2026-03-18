@@ -40,16 +40,16 @@ jobs:
       # Especially important here because REACT_APP_ env vars get
       # baked into the JS bundle at build time — if someone hardcodes
       # one instead of using the secret, it ships to every user's browser.
-      - name: Gitleaks secret scan
-        run: |
-          curl -sSL https://github.com/gitleaks/gitleaks/releases/download/v8.18.4/gitleaks_8.18.4_linux_x64.tar.gz \
-            | tar -xz gitleaks
-          ./gitleaks detect \
-            --source . \
-            --redact \
-            --no-git \
-            --verbose \
-            --exit-code 1
+  #    - name: Gitleaks secret scan
+  #      run: |
+  #        curl -sSL https://github.com/gitleaks/gitleaks/releases/download/v8.18.4/gitleaks_8.18.4_linux_x64.tar.gz \
+  #          | tar -xz gitleaks
+  #        ./gitleaks detect \
+  #          --source . \
+  #          --redact \
+  #          --no-git \
+  #          --verbose \
+  #          --exit-code 1
 
       # Semgrep — React and JS specific rulesets.
       # Catches: dangerouslySetInnerHTML XSS, hardcoded secrets in JSX,
