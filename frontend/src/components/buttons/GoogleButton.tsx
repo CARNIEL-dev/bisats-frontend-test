@@ -30,7 +30,7 @@ const GoogleButton: React.FC<TGButtonProps> = ({ text }) => {
       fetchUserData(tokenResponse.access_token);
     },
     onError(errorResponse: any) {
-      console.log(errorResponse);
+      console.error(errorResponse);
     },
   });
 

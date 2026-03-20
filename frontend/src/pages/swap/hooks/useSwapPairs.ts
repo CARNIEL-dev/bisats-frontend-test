@@ -32,7 +32,7 @@ const useSwapPairs = (sourceAsset?: string) => {
       const res = await Bisatsfetch(BACKEND_URLS.SWAP.GET_PAIRS, {
         method: "GET",
       });
-      if (res.data) return res.data as SwapPairEntry[];
+      if (Array.isArray(res.data)) return res.data as SwapPairEntry[];
       throw new Error(res.message || "Failed to fetch swap pairs");
     },
     staleTime: STALE_TIME,
@@ -45,7 +45,7 @@ const useSwapPairs = (sourceAsset?: string) => {
       const res = await Bisatsfetch(BACKEND_URLS.SWAP.GET_CURRENCIES, {
         method: "GET",
       });
-      if (res.status || res.data) return res.data as SwapCurrency[];
+      if (Array.isArray(res.data)) return res.data as SwapCurrency[];
       throw new Error(res.message || "Failed to fetch swap currencies");
     },
     staleTime: STALE_TIME,
@@ -56,7 +56,7 @@ const useSwapPairs = (sourceAsset?: string) => {
   const allTradeable = useMemo<Set<string>>(() => {
     if (!pairs) return new Set();
     const codes = new Set<string>();
-    pairs.forEach((p) => {
+    pairs?.forEach((p) => {
       if (!HARD_EXCLUDED.includes(p.source.code)) codes.add(p.source.code);
       if (!HARD_EXCLUDED.includes(p.target.code)) codes.add(p.target.code);
     });
@@ -69,7 +69,7 @@ const useSwapPairs = (sourceAsset?: string) => {
   const validSourceAssets = useMemo<string[]>(() => {
     if (!pairs) return [];
     const seen = new Set<string>();
-    pairs.forEach((p) => {
+    pairs?.forEach((p) => {
       if (![...HARD_EXCLUDED, "USDT"].includes(p.source.code))
         seen.add(p.source.code);
     });
