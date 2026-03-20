@@ -67,8 +67,6 @@ const CreateAdDetails: React.FC<AdsProps> = ({
   const account_level = user?.accountLevel as AccountLevel;
   const userTransactionLimits = bisats_limit[account_level];
 
-  console.log("Wallet", walletData);
-
   //SUB: Handle Next Stage
   const handleValidation = async () => {
     try {
