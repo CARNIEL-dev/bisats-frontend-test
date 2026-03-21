@@ -3,7 +3,7 @@ name: Deploy bisats-frontend (S3 + CloudFront)
 on:
   push:
     branches:
-      - main
+      - main             # only deploy from main branch
     paths:
       - 'frontend/**'
       - '.github/workflows/frontend.yml'
