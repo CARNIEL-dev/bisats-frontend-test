@@ -10,9 +10,8 @@ resource "aws_wafv2_web_acl" "this" {
   default_action {
     allow {}
   }
-
-  ############################################################
-  # 1️⃣ AWS Common Protections
+############################################################
+  # 1️⃣ AWS Common Protections (MAX SECURITY)
   ############################################################
   rule {
     name     = "AWSManagedRulesCommonRuleSet"
@@ -26,6 +25,7 @@ resource "aws_wafv2_web_acl" "this" {
       managed_rule_group_statement {
         name        = "AWSManagedRulesCommonRuleSet"
         vendor_name = "AWS"
+        
       }
     }
 
@@ -35,7 +35,6 @@ resource "aws_wafv2_web_acl" "this" {
       sampled_requests_enabled   = true
     }
   }
-
   ############################################################
   # 2️⃣ SQL Injection Protection
   ############################################################

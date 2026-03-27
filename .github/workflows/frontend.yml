@@ -55,7 +55,7 @@ jobs:
       # Catches: dangerouslySetInnerHTML XSS, hardcoded secrets in JSX,
       # insecure fetch usage, exposed sensitive data in component state.
       - name: Semgrep SAST scan
-        uses: semgrep/semgrep-action@v1
+        uses: semgrep/semgrep-action@v2
         with:
           config: >-
             p/javascript
