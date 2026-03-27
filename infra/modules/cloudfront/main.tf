@@ -12,7 +12,7 @@ resource "aws_s3_bucket" "cloudfront_logs" {
   }
 }
 
-# 🔐 Block Public Access
+#  Block Public Access
 resource "aws_s3_bucket_public_access_block" "logs_block" {
   bucket = aws_s3_bucket.cloudfront_logs.id
 
@@ -22,7 +22,7 @@ resource "aws_s3_bucket_public_access_block" "logs_block" {
   restrict_public_buckets = true
 }
 
-# 🔐 Enable Encryption
+#  Enable Encryption
 resource "aws_s3_bucket_server_side_encryption_configuration" "logs_encryption" {
   bucket = aws_s3_bucket.cloudfront_logs.id
 
@@ -33,7 +33,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "logs_encryption" 
   }
 }
 
-# 🧾 Lifecycle Policy (Cost + Hygiene)
+#  Lifecycle Policy (Cost + Hygiene)
 resource "aws_s3_bucket_lifecycle_configuration" "logs_lifecycle" {
   bucket = aws_s3_bucket.cloudfront_logs.id
 
@@ -56,7 +56,7 @@ resource "aws_s3_bucket_ownership_controls" "logs" {
   }
 }
 
-# 🔐 Private ACL
+#  Private ACL
 
 ############################################
 # CloudFront Security Headers Policy
@@ -88,9 +88,9 @@ resource "aws_cloudfront_response_headers_policy" "security_headers" {
       override                   = true
     }
 
-   content_security_policy {
-  content_security_policy = "default-src 'self'; connect-src 'self' https://www.gstatic.com https://api.ipify.org https://api.coingecko.com https://v1-api.bisats.com https://.zohopublic.eu https://salesiq.zohopublic.eu https://.zoho.eu https://.zoho.com wss://.zoho.eu wss://.zoho.com https://.zohosalesiq.eu; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://.zohopublic.eu https://salesiq.zohopublic.eu https://.zoho.eu https://.zoho.com https://.zohocdn.com https://.zohosalesiq.eu; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://.zohopublic.eu https://salesiq.zohopublic.eu https://.zoho.eu https://.zoho.com https://.zohocdn.com https://.zohosalesiq.eu; font-src 'self' https://fonts.gstatic.com https://.zohocdn.com https://.zoho.eu https://.zoho.com; img-src 'self' data: https://.zohopublic.eu https://salesiq.zohopublic.eu https://.zoho.eu https://.zoho.com https://.zohocdn.com https://.zohosalesiq.eu; frame-src 'self' https://.zohopublic.eu https://salesiq.zohopublic.eu https://.zoho.eu https://.zoho.com https://.zohosalesiq.eu; object-src 'none'; frame-ancestors 'none';"
-  override = true
+ content_security_policy {
+      content_security_policy = "default-src 'self'; connect-src 'self' https://www.gstatic.com https://api.ipify.org https://api.coingecko.com https://v1-api.bisats.com https://*.zohopublic.eu https://salesiq.zohopublic.eu https://*.zoho.eu https://*.zoho.com wss://*.zoho.eu wss://*.zoho.com https://*.zohosalesiq.eu; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://*.zohopublic.eu https://salesiq.zohopublic.eu https://*.zoho.eu https://*.zoho.com https://*.zohocdn.com https://*.zohosalesiq.eu; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.zohopublic.eu https://salesiq.zohopublic.eu https://*.zoho.eu https://*.zoho.com https://*.zohocdn.com https://*.zohosalesiq.eu; font-src 'self' data: https://fonts.gstatic.com https://*.zohocdn.com https://*.zoho.eu https://*.zoho.com; img-src 'self' data: https://*.zohopublic.eu https://salesiq.zohopublic.eu https://*.zoho.eu https://*.zoho.com https://*.zohocdn.com https://*.zohosalesiq.eu; frame-src 'self' https://*.zohopublic.eu https://salesiq.zohopublic.eu https://*.zoho.eu https://*.zoho.com https://*.zohosalesiq.eu; object-src 'none'; frame-ancestors 'none';"
+      override = true
     }
   }
 }
@@ -113,6 +113,8 @@ resource "aws_cloudfront_distribution" "this" {
   default_root_object = "index.html"
   price_class         = "PriceClass_100"
 
+  aliases = ["bisats.com", "www.bisats.com"]
+  
   origin {
     domain_name              = var.bucket_domain_name
     origin_id                = "s3-origin"

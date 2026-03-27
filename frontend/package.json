@@ -23,9 +23,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "@types/canvas-confetti": "^1.9.0",
-    "@types/crypto-js": "^4.2.2",
     "@types/jest": "^27.5.2",
-    "@types/node": "^16.18.119",
     "@types/react": "^19.2.14",
     "@types/react-datepicker": "^6.2.0",
     "@types/react-dom": "^19.2.3",
@@ -112,6 +110,8 @@
     ]
   },
   "devDependencies": {
+    "@types/crypto-js": "^4.2.2",
+    "@types/node": "^25.5.0",
     "@types/numeral": "^2.0.5",
     "@types/react-helmet": "^6.1.11",
     "@types/react-world-flags": "^1.6.0",
