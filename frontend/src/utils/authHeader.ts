@@ -18,5 +18,6 @@ export const createRequestAuthHeaders = (method: string, path: string) => {
     "X-Request-Timestamp": timestamp,
     "X-Request-Nonce": nonce,
     "X-Request-Signature": signature,
+    "X-Channel": "web",
   };
 };

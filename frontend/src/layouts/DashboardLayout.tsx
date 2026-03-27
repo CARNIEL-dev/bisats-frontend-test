@@ -1,6 +1,6 @@
 import DashboardNavbar from "@/components/DashboardNavbar";
 import { Footer } from "@/components/Footer";
-import MobileAppPrompt from "@/components/shared/MobileAppPrompt";
+// import MobileAppPrompt from "@/components/shared/MobileAppPrompt";
 import SEO from "@/components/shared/SEO";
 import useGetWallet from "@/hooks/use-getWallet";
 import ChatWidget from "@/layouts/ChatWidget";
@@ -13,7 +13,7 @@ const DashboardLayout: React.FC = () => {
     <>
       <ChatWidget />
       <div className="grid md:grid-rows-[80px_1fr] grid-rows-[62px_1fr]">
-        <MobileAppPrompt />
+        {/* <MobileAppPrompt /> */}
 
         <DashboardNavbar />
         <div className="row-start-2 row-end-3">

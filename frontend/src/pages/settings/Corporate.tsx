@@ -130,7 +130,7 @@ const Corporate = () => {
                 },
               )}
             >
-              <h3 className="text-sm text-[#606C82] font-semibold">
+              <h3 className="text-sm text-muted-foreground font-semibold">
                 Your Business Bank Account
               </h3>
               <WithdrawalBankAccount
