@@ -219,23 +219,17 @@ const FileInputField: React.FC<FileInputProps> = ({
       clearFiedError();
       const fileTo64 = await fileToBase64(file);
 
-      console.log("fileTo64", fileTo64);
-
       // Strip the Data URL prefix (e.g., "data:image/jpeg;base64," or "data:application/pdf;base64,")
       // so the backend receives only the pure base64 string.
       const base64Data = fileTo64.includes("base64,")
         ? fileTo64.split("base64,")[1]
         : fileTo64;
 
-      console.log("base64Data", base64Data);
       const data = {
         image: base64Data,
         fileName: file.name.replace(/\s/g, ""),
         contentType: file.type,
       };
-
-      console.log("data", data);
-      return;
 
       const result: string = await uploadFile(data);
       // const value = valueMapper(file, result);
