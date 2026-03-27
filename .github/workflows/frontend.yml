@@ -55,12 +55,12 @@ jobs:
       # Catches: dangerouslySetInnerHTML XSS, hardcoded secrets in JSX,
       # insecure fetch usage, exposed sensitive data in component state.
       - name: Semgrep SAST scan
-        uses: semgrep/semgrep-action@v2
-        with:
-          config: >-
-            p/javascript
-            p/react
-            p/secrets
+        run: |
+          pipx install semgrep
+          semgrep ci \
+            --config "p/javascript" \
+            --config "p/react" \
+            --config "p/secrets"
         env:
           SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
 
