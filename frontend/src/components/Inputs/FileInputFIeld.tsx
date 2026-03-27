@@ -1,5 +1,3 @@
-/** @format */
-
 import React, { useId, useRef, useState } from "react";
 import { FormikProps } from "formik";
 import { FileUp, Loader2 } from "lucide-react";
