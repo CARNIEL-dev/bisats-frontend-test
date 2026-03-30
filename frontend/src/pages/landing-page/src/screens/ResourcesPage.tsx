@@ -1,12 +1,12 @@
 import { HeroSection } from "@/components/shared/HeroSection";
 import MaxWidth from "@/components/shared/MaxWith";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import NotFound from "@/routing/NotFound";
+import ComingSoon from "@/components/shared/ComingSoon";
 import { isProduction } from "@/utils";
 
 const ResourcesPage = () => {
   if (isProduction) {
-    return NotFound();
+    return <ComingSoon title="Resources" />;
   }
   // const [searchParams, setSearchParams] = useSearchParams();
   // const currentTab = searchParams.get("type") || "Videos";

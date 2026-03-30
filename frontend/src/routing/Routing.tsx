@@ -53,6 +53,7 @@ import Corporate from "@/pages/settings/Corporate";
 import SwapHistoryPage from "@/pages/swap/SwapHistoryPage";
 import SwapPage from "@/pages/swap/SwapPage";
 import TransferPage from "@/pages/wallet/transfer";
+import WithdrawalProcessingDemo from "@/pages/__demo/WithdrawalProcessingDemo";
 import NotFound from "@/routing/NotFound";
 import { Route, Routes } from "react-router-dom";
 
@@ -180,6 +181,9 @@ const Routing = () => {
             </Route>
           </Route>
         </Route>
+
+        {/* TEMP: Demo page — remove after testing */}
+        <Route path="/demo/withdrawal-processing" element={<WithdrawalProcessingDemo />} />
 
         {/* SUB: MAIN PAGES */}
         <Route element={<Layout />}>
