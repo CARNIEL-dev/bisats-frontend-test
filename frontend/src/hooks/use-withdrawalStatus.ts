@@ -60,8 +60,12 @@ const useWithdrawalStatus = ({
 
     attemptCount.current += 1;
 
-    const status = data?.data?.status ?? data?.status;
-    if (status === "successful" || status === "completed") {
+    const status = data?.data?.status ?? data?.data?.internalStatus;
+    if (
+      status?.toLowerCase() === "successful" ||
+      status?.toLowerCase() === "completed" ||
+      status?.toLowerCase() === "success"
+    ) {
       setShouldPoll(false);
       setCurrentStep(2);
       onSuccess?.();
