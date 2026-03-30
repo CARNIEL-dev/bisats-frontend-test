@@ -5,6 +5,7 @@ import {
 import { MultiSelectDropDown } from "@/components/Inputs/MultiSelectInput";
 import PrimaryInput from "@/components/Inputs/PrimaryInput";
 import WithdrawalConfirmationNGN from "@/components/Modals/WithdrawalConfirmationNGN";
+import WithdrawalProcessingModal from "@/components/Modals/WithdrawalProcessingModal";
 import Toast from "@/components/Toast";
 import Head from "@/pages/wallet/Head";
 import {
@@ -35,13 +36,13 @@ import KycManager from "@/pages/kyc/KYCManager";
 import { GET_WITHDRAWAL_LIMIT } from "@/redux/actions/userActions";
 import { formatAccountLevel, formatCompactNumber, formatter } from "@/utils";
 import { formatNumber } from "@/utils/numberFormat";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 import { useFormik } from "formik";
 
 import { APP_ROUTES } from "@/constants/app_route";
 
-import useGetWallet from "@/hooks/use-getWallet";
+
 import CryptoWithdrawal from "@/pages/wallet/withdrawal/CryptoWithdrawal";
 import useUserStatus from "@/hooks/use-user-status";
 import { Button } from "@/components/ui/Button";
@@ -191,6 +192,7 @@ const NGNWithdrawal = ({
 
   const [addBankModal, setAddBankModal] = useState(false);
   const [withdrawalModal, setWithDrawalModal] = useState(false);
+  const [processingModal, setProcessingModal] = useState(false);
   const [withdrawalData, setWithdrawalData] = useState({
     referenceId: "",
     withdrawalPin: "",
@@ -206,9 +208,6 @@ const NGNWithdrawal = ({
     !isNA && level ? (`level_${level}` as AccountLevel) : "level_1";
 
   const userTransactionLimits = bisats_limit[accountLevelKey];
-
-  const queryClient = useQueryClient();
-  const { refetchWallet } = useGetWallet();
 
   // SUB: Debounced amount for commission fetch
   const [debouncedAmount, setDebouncedAmount] = useState("");
@@ -375,16 +374,11 @@ const NGNWithdrawal = ({
       twoFactorCode: withdrawalData.twoFactorCode,
     };
     await Complete_Withdraw_xNGN(payLoad)
-      .then(async (res) => {
+      .then((res) => {
         if (res?.status || res?.statusCode === 200) {
-          Toast.success(res.message, "Withdrawal Initiated");
-          await Promise.all([
-            queryClient.refetchQueries({
-              queryKey: ["userWalletHistory"],
-              exact: false,
-            }),
-            refetchWallet(),
-          ]).then(() => navigate(APP_ROUTES.WALLET.HOME));
+          setWithDrawalModal(false);
+          setWithdrawlLoading(false);
+          setProcessingModal(true);
         } else {
           Toast.error(res.message, "");
           setWithdrawalData({
@@ -392,6 +386,8 @@ const NGNWithdrawal = ({
             withdrawalPin: "",
             twoFactorCode: "",
           });
+          setWithDrawalModal(false);
+          setWithdrawlLoading(false);
         }
       })
       .catch((err) => {
@@ -401,8 +397,6 @@ const NGNWithdrawal = ({
           withdrawalPin: "",
           twoFactorCode: "",
         });
-      })
-      .finally(() => {
         setWithDrawalModal(false);
         setWithdrawlLoading(false);
       });
@@ -571,6 +565,16 @@ const NGNWithdrawal = ({
           total={`${commissionData?.totalDebit ?? Number(formik.values.amount ?? 0)}`}
           submit={handlCompleteWithdrawl}
           isLoading={withdrawlLoading}
+        />
+      )}
+      {processingModal && (
+        <WithdrawalProcessingModal
+          isOpen={processingModal}
+          reference={withdrawalData.referenceId}
+          onComplete={() => {
+            setProcessingModal(false);
+            navigate(APP_ROUTES.WALLET.HOME);
+          }}
         />
       )}
     </>

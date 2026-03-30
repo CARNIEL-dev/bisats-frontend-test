@@ -66,6 +66,7 @@ export const BACKEND_URLS = {
     DELE_BANK_ACCOUNT: "/delete-bank-details",
     WITHDRAW: "/withdraw",
     WITHDRAW_COMPLETE: "/complete-ngn-withdrawal",
+    NGN_WITHDRAWAL_STATUS: "/ngn-withdrawal-status",
     WITHDRAW_CRYPTO: "/withdraw-token",
     WITHDRAW_CRYPTO_COMPLETE: "/complete-token-withdrawal",
     WALLET_TRANSC_HISTORY: "/transactions",

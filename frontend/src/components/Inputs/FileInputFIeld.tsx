@@ -32,7 +32,6 @@ interface FileInputProps {
   maxSizeMB?: number;
   placeholder?: string;
   className?: string;
-  // Crop options
   cropAspect?: number; // Aspect ratio for cropping (e.g., 1 for square, 16/9 for wide, etc.)
   cropMinWidth?: number;
   cropMinHeight?: number;

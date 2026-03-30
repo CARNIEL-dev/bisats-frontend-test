@@ -11,8 +11,9 @@ const ChatWidget = () => {
 
     // Initialize the Zoho SalesIQ object
     (window as any).$zoho = (window as any).$zoho || {};
-    (window as any).$zoho.salesiq =
-      (window as any).$zoho.salesiq || { ready: function () {} };
+    (window as any).$zoho.salesiq = (window as any).$zoho.salesiq || {
+      ready: function () {},
+    };
 
     // Load the Zoho script
     const zohoScript = document.createElement("script");
@@ -33,7 +34,7 @@ const ChatWidget = () => {
       );
       zohoElements.forEach((el) => el.remove());
 
-      // Clear the $zoho window object for fresh load next time
+      // Clear the $zoho window object for fresh load next time.
       if ((window as any).$zoho) {
         delete (window as any).$zoho;
       }

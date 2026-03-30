@@ -352,6 +352,14 @@ export const Complete_Withdraw_xNGN = async (
   }
 };
 
+export const getXNGNWithdrawalStatus = async (reference: string) => {
+  const response = await Bisatsfetch(
+    `/api/v1/user${BACKEND_URLS.WALLET.NGN_WITHDRAWAL_STATUS}/${reference}`,
+    { method: "GET" },
+  );
+  return response;
+};
+
 export const Withdraw_Crypto = async (payload: TCryptoWithdrawalRequest) => {
   try {
     const response = await Bisatsfetch(

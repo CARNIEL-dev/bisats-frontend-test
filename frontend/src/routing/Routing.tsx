@@ -148,7 +148,10 @@ const Routing = () => {
             <Route path={APP_ROUTES.PROFILE} element={<Profile />} />
             <Route element={<SwapLayout />}>
               <Route path={APP_ROUTES.SWAP.HOME} element={<SwapPage />} />
-              <Route path={APP_ROUTES.SWAP.HISTORY} element={<SwapHistoryPage />} />
+              <Route
+                path={APP_ROUTES.SWAP.HISTORY}
+                element={<SwapHistoryPage />}
+              />
             </Route>
           </Route>
 
