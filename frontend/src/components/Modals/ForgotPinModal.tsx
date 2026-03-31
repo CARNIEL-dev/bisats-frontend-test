@@ -91,7 +91,7 @@ const ForgotPinModal = ({ open, close }: Props) => {
               setIsCodeVerified(false);
             }}
           />
-          <PinForm close={close} type="create" />
+          <PinForm close={close} type="reset" token={token} />
         </div>
       )}
     </ModalTemplate>
