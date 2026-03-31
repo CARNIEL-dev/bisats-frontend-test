@@ -28,7 +28,11 @@ const DeleteWithdrawalAccount: React.FC<Props> = ({ close, bank }) => {
       bankAccountId: bank?.id ?? "",
     });
     setIsLoading(false);
-    if (response?.status || response?.statusCode === 200) {
+    if (
+      response?.status === true ||
+      response?.success ||
+      response?.statusCode === 200
+    ) {
       refetchWallet();
       Toast.success(response.message, "Bank Account Deleted");
       close();
