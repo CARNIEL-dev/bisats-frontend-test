@@ -30,7 +30,11 @@ const DeleteWalletAddressModal: React.FC<Props> = ({ close, wallet }) => {
       addressId: wallet?.id ?? "",
     });
     setIsLoading(false);
-    if (response?.success || response?.status === 200) {
+    if (
+      response?.status === true ||
+      response?.success ||
+      response?.statusCode === 200
+    ) {
       await GetUserDetails({ userId: user?.userId, token: user?.token });
       Toast.success(response.message, "Wallet Address Deleted");
       close();

@@ -39,17 +39,17 @@ const useSwapPairs = (sourceAsset?: string) => {
   });
 
   // SUB: Fetch tradeable currencies (GET /swap/currencies)
-  const { data: currencies } = useQuery<SwapCurrency[], Error>({
-    queryKey: ["swapCurrencies"],
-    queryFn: async () => {
-      const res = await Bisatsfetch(BACKEND_URLS.SWAP.GET_CURRENCIES, {
-        method: "GET",
-      });
-      if (Array.isArray(res.data)) return res.data as SwapCurrency[];
-      throw new Error(res.message || "Failed to fetch swap currencies");
-    },
-    staleTime: STALE_TIME,
-  });
+  // const { data: currencies } = useQuery<SwapCurrency[], Error>({
+  //   queryKey: ["swapCurrencies"],
+  //   queryFn: async () => {
+  //     const res = await Bisatsfetch(BACKEND_URLS.SWAP.GET_CURRENCIES, {
+  //       method: "GET",
+  //     });
+  //     if (Array.isArray(res.data)) return res.data as SwapCurrency[];
+  //     throw new Error(res.message || "Failed to fetch swap currencies");
+  //   },
+  //   staleTime: STALE_TIME,
+  // });
 
   // SUB: Build a Set of all currency codes that appear in any active pair,
   //      excluding hard-excluded tokens.
@@ -109,7 +109,6 @@ const useSwapPairs = (sourceAsset?: string) => {
 
   return {
     pairs,
-    currencies,
     pairsLoading,
     pairsError,
     allTradeable,
