@@ -385,7 +385,29 @@ const AdSchema = Yup.object().shape({
             const typeLower = String(type ?? "").toLowerCase();
             const amountDecimal = toSafeDecimal(value);
 
-            //? 1. Check maximum transaction limit (for buy orders)
+            //? 1. Check wallet balance
+
+            const walletBaseDecimal =
+              typeLower === "buy"
+                ? toSafeDecimal(walletData?.xNGN)
+                : toSafeDecimal(walletData?.[asset]);
+
+            const editAllowanceDecimal = isEditMode
+              ? toSafeDecimal(amountAvailable)
+              : new Decimal(0);
+
+            const walletBalDecimal =
+              walletBaseDecimal.plus(editAllowanceDecimal);
+
+            if (amountDecimal.gt(walletBalDecimal)) {
+              return this.createError({
+                message: `Amount cannot exceed your wallet balance of ${formatNumber(
+                  walletBalDecimal.toNumber(),
+                )} xNGN`,
+              });
+            }
+
+            //? 2. Check maximum transaction limit (for buy orders)
             if (typeLower === "buy") {
               const maxLimitDecimal = toSafeDecimal(
                 userTransactionLimits?.maximum_ad_creation_amount,
@@ -409,28 +431,6 @@ const AdSchema = Yup.object().shape({
                   )} xNGN limit`,
                 });
               }
-            }
-
-            //? 2. Check wallet balance
-
-            const walletBaseDecimal =
-              typeLower === "buy"
-                ? toSafeDecimal(walletData?.xNGN)
-                : toSafeDecimal(walletData?.[asset]);
-
-            const editAllowanceDecimal = isEditMode
-              ? toSafeDecimal(amountAvailable)
-              : new Decimal(0);
-
-            const walletBalDecimal =
-              walletBaseDecimal.plus(editAllowanceDecimal);
-
-            if (amountDecimal.gt(walletBalDecimal)) {
-              return this.createError({
-                message: `Amount cannot exceed your wallet balance of ${formatNumber(
-                  walletBalDecimal.toNumber(),
-                )} xNGN`,
-              });
             }
 
             return true;
@@ -461,12 +461,21 @@ const AdSchema = Yup.object().shape({
               liveRate[asset as keyof PriceData],
             );
 
-            // 1. Minimum amount check
-            // if (numericValue <= 0) {
-            //   return this.createError({
-            //     message: "Token amount must be greater than 0",
-            //   });
-            // }
+            // 1. Wallet balance check
+            const walletBalanceDecimal = toSafeDecimal(walletData?.[asset]);
+            const editAllowanceDecimal = isEditMode
+              ? toSafeDecimal(amountAvailable)
+              : new Decimal(0);
+            const walletBalDecimal =
+              walletBalanceDecimal.plus(editAllowanceDecimal);
+
+            if (amountDecimal.gt(walletBalDecimal)) {
+              return this.createError({
+                message: `Insufficient balance (Available: ${walletBalDecimal
+                  .toDecimalPlaces(5)
+                  .toString()} ${asset})`,
+              });
+            }
 
             // 2. Maximum token limit (NGN converted to tokens)
             if (typeLower === "sell") {
@@ -507,22 +516,6 @@ const AdSchema = Yup.object().shape({
                   )} limit)`,
                 });
               }
-            }
-
-            // 3. Wallet balance check
-            const walletBalanceDecimal = toSafeDecimal(walletData?.[asset]);
-            const editAllowanceDecimal = isEditMode
-              ? toSafeDecimal(amountAvailable)
-              : new Decimal(0);
-            const walletBalDecimal =
-              walletBalanceDecimal.plus(editAllowanceDecimal);
-
-            if (amountDecimal.gt(walletBalDecimal)) {
-              return this.createError({
-                message: `Insufficient balance (Available: ${walletBalDecimal
-                  .toDecimalPlaces(5)
-                  .toString()} ${asset})`,
-              });
             }
 
             return true;

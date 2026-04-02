@@ -9,17 +9,11 @@ import {
 import { BACKEND_URLS } from "@/utils/backendUrls";
 import { refreshAccessToken } from "./actions/userActions";
 import { createRequestAuthHeaders } from "@/utils/authHeader";
-import { logoutUser } from "./actions/userActions";
-import queryClient from "@/lib/queryClient";
-import Toast from "@/components/Toast";
-
 let isRefreshing = false;
 
 const forceLogout = () => {
   isRefreshing = false;
-  logoutUser();
-  queryClient.clear();
-  Toast.info("Please log in again", "Session expired");
+  window.dispatchEvent(new Event("session-expired"));
 };
 
 const Bisatsfetch = async (
