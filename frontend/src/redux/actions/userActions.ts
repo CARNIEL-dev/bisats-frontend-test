@@ -368,12 +368,8 @@ export const GetUserDetails = async ({
       setUserId(userId!);
 
       return data;
-    } else {
-      logoutUser();
     }
   } catch (error) {
-    // console.log("Errorfrom getting profile", error);
-    logoutUser();
     // throw handleApiError(error);
     return error;
   }

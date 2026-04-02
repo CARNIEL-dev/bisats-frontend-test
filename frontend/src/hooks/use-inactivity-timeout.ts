@@ -23,9 +23,7 @@ const useInactivityTimeout = (isActive: boolean) => {
 
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
-      events.forEach((event) =>
-        window.removeEventListener(event, resetTimer),
-      );
+      events.forEach((event) => window.removeEventListener(event, resetTimer));
     };
   }, [isActive]);
 };

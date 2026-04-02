@@ -55,7 +55,9 @@ const App: React.FC = () => {
           <Routing />
         </ScrollToTop>
 
-        {sessionExpired && <SessionExpiredModal />}
+        {sessionExpired && userState.isAuthenticated && (
+          <SessionExpiredModal />
+        )}
 
         <ToastContainer
           position="top-right"
