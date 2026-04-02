@@ -180,20 +180,18 @@ export const UpdatePassword = async (payload: {
 };
 
 export const refreshAccessToken = async (payload: { refreshToken: string }) => {
-  try {
-    const response = await Bisatsfetch("/api/v1/user/refresh-token", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    });
-    const data = response.data;
-    setUserId(data?.userId);
-    setToken(data.token);
-    setRefreshToken(data.refreshToken);
-    return data as TUser;
-  } catch (error) {
-    // throw handleApiError(error);
-    return error;
+  const response = await Bisatsfetch("/api/v1/user/refresh-token", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+  const data = response.data;
+  if (!data?.token || !data?.refreshToken) {
+    throw new Error("Refresh token response missing tokens");
   }
+  setUserId(data.userId);
+  setToken(data.token);
+  setRefreshToken(data.refreshToken);
+  return data as TUser;
 };
 export const rehydrateUser = ({
   userId,
