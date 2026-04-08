@@ -99,6 +99,7 @@ jobs:
           echo "REACT_APP_AUTH_HEADER_SECRET=${{ secrets.REACT_APP_AUTH_HEADER_SECRET }}" >> .env
 
       - name: Build the Application
+        working-directory: frontend
         run: npm run build
 
       - name: Configure AWS credentials (OIDC)
