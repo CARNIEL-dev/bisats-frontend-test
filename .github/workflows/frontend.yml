@@ -87,19 +87,16 @@ jobs:
         working-directory: frontend
         run: npm ci
 
-      - name: Generate Environment Variables
+      - name: Build frontend
         working-directory: frontend
-        run: |
-          echo "REACT_APP_NODE_ENV=production" >> .env
-          echo "REACT_APP_DEV_DOMAIN=${{ secrets.REACT_APP_DEV_DOMAIN }}" >> .env
-          echo "REACT_APP_GOOGLE_API_CLIENT_ID=${{ secrets.REACT_APP_GOOGLE_API_CLIENT_ID }}" >> .env
-          echo "REACT_APP_REDUX_SECRET=${{ secrets.REACT_APP_REDUX_SECRET }}" >> .env
-          echo "REACT_APP_TAWK_URL=${{ secrets.REACT_APP_TAWK_URL }}" >> .env
-          echo "REACT_APP_ZOHO_URL=${{ secrets.REACT_APP_ZOHO_URL }}" >> .env
-          echo "REACT_APP_AUTH_HEADER_SECRET=${{ secrets.REACT_APP_AUTH_HEADER_SECRET }}" >> .env
-
-      - name: Build the Application
-        working-directory: frontend
+        env:
+          REACT_APP_NODE_ENV: production
+          REACT_APP_DEV_DOMAIN: ${{ secrets.REACT_APP_DEV_DOMAIN }}
+          REACT_APP_GOOGLE_API_CLIENT_ID: ${{ secrets.REACT_APP_GOOGLE_API_CLIENT_ID }}
+          REACT_APP_REDUX_SECRET: ${{ secrets.REACT_APP_REDUX_SECRET }}
+          REACT_APP_TAWK_URL: ${{ secrets.REACT_APP_TAWK_URL }}
+          REACT_APP_ZOHO_URL: ${{ secrets.REACT_APP_ZOHO_URL }}
+          REACT_APP_AUTH_HEADER_SECRET: ${{ secrets.REACT_APP_AUTH_HEADER_SECRET }}
         run: npm run build
 
       - name: Configure AWS credentials (OIDC)
