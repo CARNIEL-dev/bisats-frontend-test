@@ -11,9 +11,17 @@ import { refreshAccessToken } from "./actions/userActions";
 import { createRequestAuthHeaders } from "@/utils/authHeader";
 let isRefreshing = false;
 
-const forceLogout = () => {
+export class SessionExpiredError extends Error {
+  constructor() {
+    super("Session expired");
+    this.name = "SessionExpiredError";
+  }
+}
+
+const forceLogout = (): never => {
   isRefreshing = false;
   window.dispatchEvent(new Event("session-expired"));
+  throw new SessionExpiredError();
 };
 
 const Bisatsfetch = async (
@@ -62,14 +70,12 @@ const Bisatsfetch = async (
       // — the refresh token is invalid/expired. Force logout to break the loop.
       if (isRefreshing) {
         forceLogout();
-        return resData;
       }
 
       const refreshToken = getRefreshToken();
 
       if (!refreshToken) {
         forceLogout();
-        return resData;
       }
 
       try {
@@ -80,7 +86,6 @@ const Bisatsfetch = async (
 
         if (!tokenObj?.token || !tokenObj?.refreshToken) {
           forceLogout();
-          return resData;
         }
 
         setToken(tokenObj.token);
@@ -106,7 +111,6 @@ const Bisatsfetch = async (
         return retryDataResponse;
       } catch (err) {
         forceLogout();
-        return resData;
       } finally {
         isRefreshing = false;
       }

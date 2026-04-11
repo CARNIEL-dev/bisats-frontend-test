@@ -1,19 +1,21 @@
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
+import { isProduction } from "@/utils";
 
-const INACTIVITY_TIMEOUT = 15 * 60 * 1000; // 15 minutes
+const INACTIVITY_TIMEOUT = isProduction ? 15 * 60 * 1000 : 2 * 60 * 1000;
 
 const useInactivityTimeout = (isActive: boolean) => {
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  const resetTimer = useCallback(() => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    if (!isActive) return;
+    timerRef.current = setTimeout(() => {
+      window.dispatchEvent(new Event("inactivity-warning"));
+    }, INACTIVITY_TIMEOUT);
+  }, [isActive]);
+
   useEffect(() => {
     if (!isActive) return;
-
-    const resetTimer = () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
-      timerRef.current = setTimeout(() => {
-        window.dispatchEvent(new Event("session-expired"));
-      }, INACTIVITY_TIMEOUT);
-    };
 
     const events = ["mousedown", "keydown", "touchstart", "scroll"];
     events.forEach((event) => window.addEventListener(event, resetTimer));
@@ -25,7 +27,9 @@ const useInactivityTimeout = (isActive: boolean) => {
       if (timerRef.current) clearTimeout(timerRef.current);
       events.forEach((event) => window.removeEventListener(event, resetTimer));
     };
-  }, [isActive]);
+  }, [isActive, resetTimer]);
+
+  return { resetTimer };
 };
 
 export default useInactivityTimeout;
