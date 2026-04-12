@@ -1,3 +1,4 @@
+import Empty from "@/components/Empty";
 import TableActionMenu from "@/components/Modals/TableActionMenu";
 import Switch from "@/components/Switch";
 import Toast from "@/components/Toast";
@@ -23,7 +24,8 @@ import { ACTIONS } from "@/utils/transaction_limits";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Check } from "lucide-react";
 import { useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export interface Ad {
   id: string;
@@ -46,11 +48,14 @@ export type UpdateAdStatusResponse = {
 };
 
 const MyAds = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const userState: UserState = useSelector((state: any) => state.user);
   const queryClient = useQueryClient();
   const { refetchWallet } = useGetWallet();
 
   const navigate = useNavigate();
+
+  const activeTab = searchParams.get("tab") ?? "active";
 
   const { isNA } = formatAccountLevel(userState?.user?.accountLevel);
   const { isSuspended } = useUserStatus();
@@ -358,6 +363,13 @@ const MyAds = () => {
     },
   ];
 
+  //SUB: Tab change handler
+  const onTabChange = (newTab: string) => {
+    const params = new URLSearchParams(searchParams);
+    params.set("tab", newTab);
+    setSearchParams(params, { replace: false });
+  };
+
   return (
     <div className="w-full space-y-8">
       <div className="flex flex-col p-4 rounded-xl bg-secondary md:flex-row md:items-center justify-between gap-2">
@@ -405,26 +417,53 @@ const MyAds = () => {
             showIcon={false}
           />
         ) : (
-          <div className="space-y-16">
-            <div className="space-y-3">
-              <p className="text-lg font-semibold mb-3 text-green-600 border border-green-500/20 rounded-lg px-3 py-2 bg-green-500/5">
-                Active Ads
-              </p>
-
-              <DataTable
-                columns={column}
-                data={adsData.activeAds}
-                paginated={false}
-              />
+          <Tabs
+            defaultValue={activeTab}
+            className="gap-4"
+            onValueChange={onTabChange}
+          >
+            <div className="border-b border-border">
+              <TabsList className="p-0 bg-transparent px-2 md:gap-4 justify-around w-full md:w-fit">
+                {[
+                  { value: "active", label: "Active Ads" },
+                  { value: "closed", label: "Closed Ads" },
+                ].map((tab) => (
+                  <TabsTrigger
+                    key={tab.value}
+                    value={tab.value}
+                    className={cn(
+                      "!w-fit data-[state=active]:border-b-4 rounded-none !shadow-none !bg-transparent font-semibold md:px-4 px-10 flex-none text-muted-foreground text-base border-0 capitalize",
+                      tab.value === "active"
+                        ? "data-[state=active]:text-[#17A34A] data-[state=active]:border-b-[#49DE80]"
+                        : "data-[state=active]:text-[#DC2625] data-[state=active]:border-b-[#EF4444]",
+                    )}
+                  >
+                    {tab.label}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
             </div>
-            <div className="space-y-3">
-              <p className="text-lg font-semibold text-red-600 border border-destructive/40 rounded-lg px-3 py-2 bg-destructive/10">
-                Closed Ads
-              </p>
 
-              <DataTable columns={column} data={adsData.closedAds} />
-            </div>
-          </div>
+            <TabsContent value="active">
+              {adsData.activeAds.length === 0 ? (
+                <Empty text="No active ads" />
+              ) : (
+                <DataTable
+                  columns={column}
+                  data={adsData.activeAds}
+                  paginated={false}
+                />
+              )}
+            </TabsContent>
+
+            <TabsContent value="closed">
+              {adsData.closedAds.length === 0 ? (
+                <Empty text="No closed ads" />
+              ) : (
+                <DataTable columns={column} data={adsData.closedAds} />
+              )}
+            </TabsContent>
+          </Tabs>
         )}
       </div>
 
