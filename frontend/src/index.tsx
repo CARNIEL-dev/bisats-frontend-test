@@ -1,4 +1,4 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
 import App from "@/App";
@@ -10,18 +10,7 @@ import { StrictMode } from "react";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import OfflineBanner from "@/components/shared/OfflineBanner";
 import "@/lib/network";
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      networkMode: "offlineFirst",
-      staleTime: 1000 * 60 * 10, // 10 minutes
-      gcTime: 1000 * 60 * 20, // 20 minutes
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: true,
-    },
-  },
-});
+import queryClient from "@/lib/queryClient";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement,
@@ -35,7 +24,7 @@ root.render(
           <OfflineBanner />
         </ThemeProvider>
       </Provider>
-      <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />
+      <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-right" />
     </QueryClientProvider>
   </StrictMode>,
 );

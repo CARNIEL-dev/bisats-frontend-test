@@ -96,6 +96,14 @@ export const BACKEND_URLS = {
   SUPPORT_CHANNEL: "/v1/support",
   SUPPORT_SOCKET_CHAT: "/withdraw",
 
+  RESOURCES: {
+    PUBLISHED_ARTICLES: "/admin2/api/v1/admin/blog/published",
+    PUBLISHED_VIDEOS: "/admin2/api/v1/admin/videos/published/list",
+    CATEGORIES: "/admin2/api/v1/admin/categories",
+    POST_BY_ID: "/admin2/api/v1/admin/blog",
+    VIDEO_BY_ID: "/admin2/api/v1/admin/videos",
+  },
+
   SWAP: {
     GET_PAIRS: "/api/v1/user/swap/pairs",
     GET_CURRENCIES: "/api/v1/user/swap/currencies",

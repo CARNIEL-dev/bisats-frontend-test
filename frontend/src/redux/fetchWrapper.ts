@@ -9,6 +9,20 @@ import {
 import { BACKEND_URLS } from "@/utils/backendUrls";
 import { refreshAccessToken } from "./actions/userActions";
 import { createRequestAuthHeaders } from "@/utils/authHeader";
+let isRefreshing = false;
+
+export class SessionExpiredError extends Error {
+  constructor() {
+    super("Session expired");
+    this.name = "SessionExpiredError";
+  }
+}
+
+const forceLogout = (): never => {
+  isRefreshing = false;
+  window.dispatchEvent(new Event("session-expired"));
+  throw new SessionExpiredError();
+};
 
 const Bisatsfetch = async (
   url: string,
@@ -27,17 +41,6 @@ const Bisatsfetch = async (
     (options.headers as Record<string, string>)["Content-Type"];
 
   let body = options.body;
-
-  // if (!isMultipart && body) {
-  //   try {
-  //     // Expect body could be JSON-string or object: normalize to object for encryption
-  //     const parsedBody = typeof body === "string" ? JSON.parse(body) : body;
-  //     const encryptedBody = encryptDataInfo(parsedBody);
-  //     body = JSON.stringify({ data: encryptedBody });
-  //   } catch (err) {
-  //     console.warn("Body encryption failed, sending original body", err);
-  //   }
-  // }
 
   const headers = {
     Accept: "application/json",
@@ -58,58 +61,58 @@ const Bisatsfetch = async (
     const response = await fetch(`${BACKEND_URLS.BASE_URL}${url}`, config);
     const resData = await response.json();
 
-    // console.log("Response from fetch wrapper", resData);
-
     // Response interceptor: Handle 401 (Unauthorized) and refresh token
     if (
-      resData.statusCode === 401 &&
+      response.status === 401 &&
       resData.message?.toLowerCase()?.startsWith("unauthorized")
     ) {
-      const originalRequest = { url, config };
+      // If we're already refreshing, this 401 is from the refresh call itself
+      // — the refresh token is invalid/expired. Force logout to break the loop.
+      if (isRefreshing) {
+        forceLogout();
+      }
 
       const refreshToken = getRefreshToken();
-      if (refreshToken) {
-        try {
-          const tokenObj = (await refreshAccessToken({
-            refreshToken,
-          })) as TUser;
 
-          // Update tokens in storage
-          const token = tokenObj?.token;
+      if (!refreshToken) {
+        forceLogout();
+      }
 
-          // console.log("REtry tk", token);
-          if (!tokenObj.token || !tokenObj.refreshToken) {
-            throw new Error("Failed to refresh access token");
-          }
-          setToken(token);
-          setRefreshToken(tokenObj.refreshToken);
+      try {
+        isRefreshing = true;
+        const tokenObj = (await refreshAccessToken({
+          refreshToken,
+        })) as TUser;
 
-          const retryAuthHeaders = createRequestAuthHeaders(method, url);
-          const retryHeaders = {
-            ...headers,
-            ...retryAuthHeaders,
-            Authorization: `${token}`,
-          };
-          const retryConfig: RequestInit = {
-            ...config,
-            headers: retryHeaders,
-          };
-
-          const retryResponse = await fetch(
-            `${BACKEND_URLS.BASE_URL}${originalRequest.url}`,
-            retryConfig,
-          );
-          const retryDataResponse = await retryResponse.json();
-
-          // console.log("Retry Response", retryDataResponse);
-          // Decrypt retry response
-          // const retryData = decryptDataInfo(retryDataResponse);
-
-          return retryDataResponse;
-        } catch (err) {
-          // Handle refresh token failure
-          throw new Error("Failed to refresh access token");
+        if (!tokenObj?.token || !tokenObj?.refreshToken) {
+          forceLogout();
         }
+
+        setToken(tokenObj.token);
+        setRefreshToken(tokenObj.refreshToken);
+
+        const retryAuthHeaders = createRequestAuthHeaders(method, url);
+        const retryHeaders = {
+          ...headers,
+          ...retryAuthHeaders,
+          Authorization: `Bearer ${tokenObj.token}`,
+        };
+        const retryConfig: RequestInit = {
+          ...config,
+          headers: retryHeaders,
+        };
+
+        const retryResponse = await fetch(
+          `${BACKEND_URLS.BASE_URL}${url}`,
+          retryConfig,
+        );
+        const retryDataResponse = await retryResponse.json();
+
+        return retryDataResponse;
+      } catch (err) {
+        forceLogout();
+      } finally {
+        isRefreshing = false;
       }
     }
 

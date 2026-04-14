@@ -16,7 +16,7 @@ jobs:
   # ─────────────────────────────────────────────────────────────
   # JOB 1: Security gate — runs before any build starts.
   # Catches secrets, bad code patterns, and console.logs.
-  # ─────────────────────────────────────────────────────────────
+  # ───────────────────────────────────────────────────────────
   security-scan:
     name: Security Gate
     runs-on: ubuntu-latest

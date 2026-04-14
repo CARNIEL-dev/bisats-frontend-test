@@ -55,10 +55,10 @@ export const Footer = ({
           </div>
         </footer>
       ) : (
-        <div className="w-full bg-[#0A0E12] dark:bg-secondary px-5 py-10 lg:pt-28">
+        <div className="w-full bg-[#0A0E12] dark:bg-secondary px-5 py-10 lg:pt-20 mt-16">
           <MaxWidth className="max-w-[120rem]">
             {/* SUB: Newsletter Section */}
-            <div className="flex flex-wrap md:flex-col items-center gap-6 mb-32">
+            <div className=" flex-wrap md:flex-col items-center gap-6 mb-32 hidden">
               <div className="flex flex-col items-center text-center gap-2">
                 <h3 className="text-center font-desktop-header5 text-[28px] font-semibold text-white leading-[40px]">
                   Join Our Newsletter
