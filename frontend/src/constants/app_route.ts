@@ -10,7 +10,13 @@ export const APP_ROUTES = {
   NOTIFICATION: "/dashboard/notifications",
   AD: "/ad",
   PROFILE: "/profile",
-  RESOURCES: "/resources",
+  RESOURCES: {
+    HOME: "/resources",
+    ARTICLES: "/resources/articles",
+    ARTICLE_DETAIL: "/resources/articles/:id",
+    VIDEOS: "/resources/videos",
+    VIDEO_DETAIL: "/resources/videos/:id",
+  },
 
   AUTH: {
     LOGIN: "/auth/login",

@@ -28,7 +28,8 @@ const ScrollToTop = ({ children }: { children: React.ReactNode }) => {
     };
 
     scrollToHash();
-  }, [location]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname, location.hash]);
 
   return <>{children}</>;
 };
