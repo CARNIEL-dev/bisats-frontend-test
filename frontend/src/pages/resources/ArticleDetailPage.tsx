@@ -1,14 +1,14 @@
 import BackButton from "@/components/shared/BackButton";
-import MaxWidth from "@/components/shared/MaxWith";
-import PreLoader from "@/layouts/PreLoader";
 import ErrorDisplay from "@/components/shared/ErrorDisplay";
+import MaxWidth from "@/components/shared/MaxWith";
 import { Badge } from "@/components/ui/badge";
+import PreLoader from "@/layouts/PreLoader";
 import { usePostById } from "@/pages/resources/hooks/useResources";
 import type { Article } from "@/types/resources";
-import { Eye, Calendar, User } from "lucide-react";
-import { useParams } from "react-router-dom";
 import DOMPurify from "dompurify";
 import parse from "html-react-parser";
+import { Calendar, Eye } from "lucide-react";
+import { useParams } from "react-router-dom";
 
 const ArticleDetailPage = () => {
   const { id } = useParams<{ id: string }>();
