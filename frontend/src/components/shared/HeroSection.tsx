@@ -1,20 +1,27 @@
+import { cn } from "@/utils";
+
 interface HeroSectionProps {
   title: string;
   desc?: string;
   image: string;
+  className?: string;
 }
 
 export const HeroSection = ({
   title,
   desc,
   image,
+  className,
 }: HeroSectionProps): React.ReactElement => {
   const titleAlignment = desc ? "text-left" : "text-center lg:text-left";
   const descAlignment = desc ? "text-left" : "";
 
   return (
     <div
-      className="h-[80vh] lg:max-h-[624px] w-full bg-[#0A0E12] bg-cover bg-center dark:bg-background bg-no-repeat relative overflow-hidden"
+      className={cn(
+        "h-[80vh] lg:max-h-[624px] w-full bg-[#0A0E12] bg-cover bg-center dark:bg-background bg-no-repeat relative overflow-hidden",
+        className,
+      )}
       style={{
         backgroundImage: "url('/landingpage/Background-pattern.png')",
       }}

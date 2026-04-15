@@ -1,8 +1,6 @@
 import { HeroSection } from "@/components/shared/HeroSection";
 import MaxWidth from "@/components/shared/MaxWith";
-import ComingSoon from "@/components/shared/ComingSoon";
 import { APP_ROUTES } from "@/constants/app_route";
-import { isProduction } from "@/utils";
 import { cn } from "@/utils";
 import { Link, Outlet, useLocation } from "react-router-dom";
 
@@ -15,16 +13,13 @@ const ResourcesLayout = () => {
   const location = useLocation();
   const pathname = location.pathname;
 
-  if (isProduction) {
-    return <ComingSoon title="Resources" />;
-  }
-
   return (
-    <>
+    <div>
       <HeroSection
         title="Resources"
         desc="Deep dives, tutorials, and expert perspectives to sharpen your crypto understanding"
         image="/resources-icon.svg"
+        className="!max-h-[60dvh]"
       />
       <MaxWidth className="max-w-6xl">
         <div className="my-10 md:my-16 w-full">
@@ -43,10 +38,11 @@ const ResourcesLayout = () => {
               </Link>
             ))}
           </div>
+
           <Outlet />
         </div>
       </MaxWidth>
-    </>
+    </div>
   );
 };
 
