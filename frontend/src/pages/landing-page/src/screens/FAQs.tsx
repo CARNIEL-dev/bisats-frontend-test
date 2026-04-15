@@ -22,10 +22,10 @@ const renderAnswer = (answer: string, isMobile: boolean = false) => {
 
 const FAQs = (): React.ReactElement => {
   const contentRef = useRef<HTMLDivElement>(null);
-  const [activeQuestion, setActiveQuestion] = useState<number>(0);
+  const [activeQuestion, setActiveQuestion] = useState<number | null>(0);
 
   const handleQuestionClick = (index: number) => {
-    setActiveQuestion(index);
+    setActiveQuestion(activeQuestion === index ? null : index);
   };
 
   useEffect(() => {
@@ -70,20 +70,22 @@ const FAQs = (): React.ReactElement => {
             ))}
           </div>
 
-          <motion.div
-            variants={slideUpSmallVariant}
-            initial="hidden"
-            animate="show"
-            className="p-[8px]"
-            key={activeQuestion}
-          >
-            <h3 className="text-3xl font-semibold text-foreground mb-[8px]">
-              {faqData[activeQuestion].question}
-            </h3>
-            <div className="text-muted-foreground font-normal leading-relaxed">
-              {renderAnswer(faqData[activeQuestion].answer, false)}
-            </div>
-          </motion.div>
+          {activeQuestion !== null && (
+            <motion.div
+              variants={slideUpSmallVariant}
+              initial="hidden"
+              animate="show"
+              className="p-[8px]"
+              key={activeQuestion}
+            >
+              <h3 className="text-3xl font-semibold text-foreground mb-[8px]">
+                {faqData[activeQuestion].question}
+              </h3>
+              <div className="text-muted-foreground font-normal leading-relaxed">
+                {renderAnswer(faqData[activeQuestion].answer, false)}
+              </div>
+            </motion.div>
+          )}
         </MaxWidth>
 
         {/* Mobile Layout */}
@@ -91,9 +93,7 @@ const FAQs = (): React.ReactElement => {
           {faqData.map((faq, index) => (
             <div key={faq.id} className="space-y-[24px] w-full">
               <button
-                onClick={() =>
-                  handleQuestionClick(activeQuestion === index ? -1 : index)
-                }
+                onClick={() => handleQuestionClick(index)}
                 className={`w-full text-left rounded-[8px] p-[12px] transition-all duration-200 ${
                   activeQuestion === index
                     ? "bg-primary text-[#0A0E12] font-semibold text-[18px]"

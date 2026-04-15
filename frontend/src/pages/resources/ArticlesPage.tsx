@@ -1,7 +1,9 @@
+import { container } from "@/components/animation";
+import { SelectDropDown } from "@/components/Inputs/MultiSelectInput";
 import SearchInput from "@/components/Inputs/SearchInput";
+import ErrorDisplay from "@/components/shared/ErrorDisplay";
 import { Button } from "@/components/ui/Button";
 import PreLoader from "@/layouts/PreLoader";
-import ErrorDisplay from "@/components/shared/ErrorDisplay";
 import ArticleCard from "@/pages/resources/components/ArticleCard";
 import ResourcePagination from "@/pages/resources/components/ResourcePagination";
 import {
@@ -9,7 +11,6 @@ import {
   usePublishedPosts,
 } from "@/pages/resources/hooks/useResources";
 import type { Article } from "@/types/resources";
-import { container } from "@/components/animation";
 import { motion } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
@@ -94,9 +95,20 @@ const ArticlesPage = () => {
   if (isLoading) return <PreLoader />;
 
   return (
-    <div className="space-y-6">
-      {/* Category pills */}
-      <div className="flex items-center gap-1 min-w-0">
+    <div className="space-y-6 overflow-hidden w-full">
+      {/* Category filter — dropdown on mobile, pills on desktop */}
+      <div className="md:hidden">
+        <SelectDropDown
+          options={[
+            { value: "all", label: "All Categories" },
+            ...categories.map((cat) => ({ value: cat.id, label: cat.name })),
+          ]}
+          value={category ?? "all"}
+          onChange={(val) => handleCategoryChange(val === "all" ? null : val)}
+          placeholder="Select category"
+        />
+      </div>
+      <div className="hidden md:flex items-center gap-1">
         <Button
           onClick={() => handleCategoryChange(null)}
           variant={!category ? "default" : "outline"}
@@ -105,19 +117,17 @@ const ArticlesPage = () => {
         >
           All
         </Button>
-        <div className="flex items-center gap-1 overflow-x-auto pb-1 no-scrollbar min-w-0">
-          {categories.map((cat) => (
-            <Button
-              key={cat.id}
-              onClick={() => handleCategoryChange(cat.id)}
-              variant={category === cat.id ? "default" : "outline"}
-              size="sm"
-              className="rounded-full px-3 py-1.5 h-fit shrink-0 whitespace-nowrap"
-            >
-              {cat.name}
-            </Button>
-          ))}
-        </div>
+        {categories.map((cat) => (
+          <Button
+            key={cat.id}
+            onClick={() => handleCategoryChange(cat.id)}
+            variant={category === cat.id ? "default" : "outline"}
+            size="sm"
+            className="rounded-full px-3 py-1.5 h-fit shrink-0 whitespace-nowrap"
+          >
+            {cat.name}
+          </Button>
+        ))}
       </div>
 
       {/* Search */}
@@ -144,7 +154,7 @@ const ArticlesPage = () => {
           variants={container}
           initial="hidden"
           animate="show"
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 min-w-0"
         >
           {articles.map((article) => (
             <ArticleCard key={article.id} article={article} />

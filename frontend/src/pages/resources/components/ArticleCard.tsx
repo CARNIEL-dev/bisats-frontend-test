@@ -19,7 +19,7 @@ const ArticleCard = ({ article }: ArticleCardProps) => {
     : null;
 
   return (
-    <motion.div variants={slideUpSmallVariant}>
+    <motion.div variants={slideUpSmallVariant} className="min-w-0">
       <Link
         to={`/resources/articles/${article.id}`}
         className="group block rounded-xl border border-border bg-card overflow-hidden transition-shadow hover:shadow-md"
@@ -29,11 +29,12 @@ const ArticleCard = ({ article }: ArticleCardProps) => {
             <img
               src={article.mediaUrl}
               alt={article.title}
+              loading="lazy"
               className="h-full w-full object-cover transition-transform group-hover:scale-105"
             />
           </div>
         )}
-        <div className="p-4 space-y-3">
+        <div className="p-4 space-y-3 min-w-0">
           <Badge variant="outline" className="text-xs">
             {article.categoryName}
           </Badge>

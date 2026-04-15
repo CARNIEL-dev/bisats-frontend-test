@@ -14,11 +14,12 @@ const ResourcesLayout = () => {
   const pathname = location.pathname;
 
   return (
-    <>
+    <div>
       <HeroSection
         title="Resources"
         desc="Deep dives, tutorials, and expert perspectives to sharpen your crypto understanding"
         image="/resources-icon.svg"
+        className="!max-h-[60dvh]"
       />
       <MaxWidth className="max-w-6xl">
         <div className="my-10 md:my-16 w-full">
@@ -37,10 +38,11 @@ const ResourcesLayout = () => {
               </Link>
             ))}
           </div>
+
           <Outlet />
         </div>
       </MaxWidth>
-    </>
+    </div>
   );
 };
 

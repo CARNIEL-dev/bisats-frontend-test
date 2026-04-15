@@ -46,7 +46,7 @@ const ArticleDetailPage = () => {
     : null;
 
   return (
-    <MaxWidth className="max-w-5xl py-8 md:py-12 flex flex-col gap-4">
+    <MaxWidth className="max-w-5xl py-8 md:py-12 flex flex-col gap-4 overflow-hidden">
       <BackButton text="Back to Resources" variant="secondary" />
 
       <div className="space-y-4">
