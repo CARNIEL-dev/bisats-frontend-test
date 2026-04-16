@@ -29,10 +29,7 @@ const ShareButton = memo(function ShareButton({
             url: referralLink,
           });
           Toast.success("Shared successfully", "Referral");
-        } catch (error) {
-          // User cancelled or error occurred
-          console.log("Error sharing", error);
-        }
+        } catch {}
       } else {
         // Fallback: copy to clipboard
         navigator.clipboard.writeText(referralLink);
