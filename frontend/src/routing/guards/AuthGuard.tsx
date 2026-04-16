@@ -49,7 +49,10 @@ const AuthGuard: React.FC = () => {
     const handleVisibility = () => {
       if (document.hidden) return;
 
-      if (sessionState !== "active") {
+      // Only auto-reset a false "expired" state (caused by a transient refresh
+      // failure during tab resume). "inactive" is a legitimate inactivity timeout
+      // that should remain until the user clicks "Stay Signed In".
+      if (sessionState === "expired") {
         const refreshToken = getRefreshToken();
         if (refreshToken) {
           resetSessionExpiredFlag();

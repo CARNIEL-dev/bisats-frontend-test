@@ -57,6 +57,7 @@ import Corporate from "@/pages/settings/Corporate";
 import SwapHistoryPage from "@/pages/swap/SwapHistoryPage";
 import SwapPage from "@/pages/swap/SwapPage";
 import TransferPage from "@/pages/wallet/transfer";
+import ReferralPage from "@/pages/referral/ReferralPage";
 import NotFound from "@/routing/NotFound";
 import { Navigate, Route, Routes } from "react-router-dom";
 
@@ -150,6 +151,7 @@ const Routing = () => {
             />
             <Route path={APP_ROUTES.WALLET.HOME} element={<Wallet />} />
             <Route path={APP_ROUTES.PROFILE} element={<Profile />} />
+            <Route path={APP_ROUTES.REFERRAL} element={<ReferralPage />} />
             <Route element={<SwapLayout />}>
               <Route path={APP_ROUTES.SWAP.HOME} element={<SwapPage />} />
               <Route

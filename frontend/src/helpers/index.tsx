@@ -144,7 +144,7 @@ const setRefreshToken = (token: string) => {
 const getRefreshToken = () => {
   if (typeof window === "undefined") return undefined;
 
-  if (!localStorage.getItem("token")) return undefined;
+  if (!localStorage.getItem("refreshToken")) return undefined;
 
   const token = localStorage.getItem("refreshToken");
 

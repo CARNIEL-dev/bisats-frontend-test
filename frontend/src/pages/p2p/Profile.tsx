@@ -1,3 +1,5 @@
+import BonusStatus from "@/components/BonusStatus";
+import ReferralStats from "@/components/ReferralStats";
 import ReferralSystem from "@/components/ReferralSystem";
 import BackButton from "@/components/shared/BackButton";
 import ErrorDisplay from "@/components/shared/ErrorDisplay";
@@ -220,6 +222,7 @@ const Profile = () => {
         as="section"
       >
         <BackButton />
+
         <Card className="bg-[#f9f9f9]  gap-3 items-center md:items-start px-6">
           <h3 className="text-[28px] md:text-[34px] leading-[40px] font-semibold text-foreground flex items-center gap-2">
             {user?.userName || "Hello, User"}
@@ -363,8 +366,9 @@ const Profile = () => {
               )}
             </div>
           </div>
-          <div id="referral-section">
+          <div id="referral-section" className="flex flex-col gap-4">
             <ReferralSystem />
+            <ReferralStats />
           </div>
         </section>
       </MaxWidth>
