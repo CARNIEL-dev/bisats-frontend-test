@@ -1,13 +1,22 @@
 import { APP_ROUTES } from "@/constants/app_route";
+import { getRefreshToken } from "@/helpers";
 import PreLoader from "@/layouts/PreLoader";
 import { AnimatePresence } from "motion/react";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Navigate, Outlet } from "react-router-dom";
 import useInactivityTimeout from "@/hooks/use-inactivity-timeout";
 import SessionExpiredModal from "@/components/Modals/SessionExpiredModal";
+import { resetSessionExpiredFlag } from "@/redux/fetchWrapper";
 
 type SessionState = "active" | "inactive" | "expired";
+
+/** Remove any orphaned scroll locks left by modals or the usePreventScroll hook */
+const cleanupScrollLocks = () => {
+  document.body.classList.remove("scroll-disabled");
+  document.body.style.overflow = "";
+  document.body.style.pointerEvents = "";
+};
 
 const AuthGuard: React.FC = () => {
   const userState: UserState = useSelector((state: RootState) => state.user);
@@ -32,10 +41,35 @@ const AuthGuard: React.FC = () => {
     return () => window.removeEventListener("session-expired", handleExpired);
   }, []);
 
-  const handleStay = () => {
+  // When tab becomes visible, validate session state and clean up scroll locks.
+  // If the session was marked expired/inactive while hidden but the refresh token
+  // still exists, the session is actually valid — the fetchWrapper will handle
+  // token refresh transparently.
+  useEffect(() => {
+    const handleVisibility = () => {
+      if (document.hidden) return;
+
+      if (sessionState !== "active") {
+        const refreshToken = getRefreshToken();
+        if (refreshToken) {
+          resetSessionExpiredFlag();
+          setSessionState("active");
+          resetTimer();
+          cleanupScrollLocks();
+        }
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () =>
+      document.removeEventListener("visibilitychange", handleVisibility);
+  }, [sessionState, resetTimer]);
+
+  const handleStay = useCallback(() => {
     setSessionState("active");
     resetTimer();
-  };
+    cleanupScrollLocks();
+  }, [resetTimer]);
 
   if (userState.loading) {
     return (
