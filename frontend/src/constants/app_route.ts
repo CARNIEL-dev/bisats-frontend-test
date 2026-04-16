@@ -10,6 +10,7 @@ export const APP_ROUTES = {
   NOTIFICATION: "/dashboard/notifications",
   AD: "/ad",
   PROFILE: "/profile",
+  REFERRAL: "/referral",
   RESOURCES: {
     HOME: "/resources",
     ARTICLES: "/resources/articles",

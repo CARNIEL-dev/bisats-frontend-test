@@ -136,7 +136,10 @@ const Bisatsfetch = async (
         }
         await refreshPromise;
       } catch {
-        signalSessionExpired();
+        // Transient failure (network error, timeout, etc.) — do NOT mark session
+        // as expired. The refresh token may still be valid. Let the request fail
+        // gracefully; TanStack Query will retry, and the next attempt will try
+        // refreshing again.
         return SESSION_EXPIRED_RESPONSE;
       }
 

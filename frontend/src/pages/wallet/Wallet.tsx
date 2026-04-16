@@ -1,3 +1,4 @@
+import BonusStatus from "@/components/BonusStatus";
 import MaxWidth from "@/components/shared/MaxWith";
 import SEO from "@/components/shared/SEO";
 import Balance from "@/pages/dashboard/Balance";
@@ -12,6 +13,7 @@ const Wallet = () => {
           <div className="sm:w-fit sm:min-w-[30rem] max-w-[45rem]">
             <Balance showWithdraw />
           </div>
+          <BonusStatus showView />
 
           <div className="sm:border border-border md:space-y-4 space-y-2 rounded-2xl  sm:p-6">
             <p className="font-semibold md:text-lg text-foreground">

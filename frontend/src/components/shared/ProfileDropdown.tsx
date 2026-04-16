@@ -3,6 +3,7 @@ import {
   MakeDeposit,
   P2PMC,
   Profile,
+  Referral,
   Settings,
   SignOut,
   Swap,
@@ -33,6 +34,11 @@ const mainMenuItems = [
     text: "Profile",
     link: APP_ROUTES.PROFILE,
     icon: Profile,
+  },
+  {
+    text: "Referral",
+    link: APP_ROUTES.REFERRAL,
+    icon: Referral,
   },
   {
     text: "Settings",
@@ -76,6 +82,11 @@ const mobileMenuItems = [
         link: APP_ROUTES.P2P.ORDER_HISTORY,
       },
     ],
+  },
+  {
+    text: "Referral",
+    link: APP_ROUTES.REFERRAL,
+    icon: Referral,
   },
 ];
 

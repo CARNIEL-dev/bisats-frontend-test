@@ -250,11 +250,51 @@ const Swap = () => (
   </svg>
 );
 
-// You can apply the same pattern to other icons like P2PMC, SignOut, etc.
+const Referral = () => (
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 16 16"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M6.00065 7.33333C7.47341 7.33333 8.66732 6.13943 8.66732 4.66667C8.66732 3.19391 7.47341 2 6.00065 2C4.52789 2 3.33398 3.19391 3.33398 4.66667C3.33398 6.13943 4.52789 7.33333 6.00065 7.33333Z"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M1.33398 14C1.33398 11.4227 3.42332 9.33333 6.00065 9.33333"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M11.334 14C12.8068 14 14.0007 12.8061 14.0007 11.3333C14.0007 9.86057 12.8068 8.66667 11.334 8.66667C9.86122 8.66667 8.66732 9.86057 8.66732 11.3333C8.66732 12.8061 9.86122 14 11.334 14Z"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M11.334 10V12.6667"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M10 11.3333H12.6673"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
 
 export {
   MakeDeposit,
   Profile,
+  Referral,
   Settings,
   Support,
   Home,

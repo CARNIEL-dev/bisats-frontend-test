@@ -22,6 +22,8 @@ export const BACKEND_URLS = {
     RESEND_PHONE_OTP: "/resend-phone-verification-otp",
 
     GET_ACTIVITY_SUMMARY: "/profile/activity-summary",
+    GET_REFERRAL_STATS: "/api/v1/user/referral-stats",
+    GET_BONUS_STATUS: "/api/v1/user/bonus-status",
     GET_WITHDRAWAL_LIMIT: "/get-withdrawal-limits",
 
     SET_PIN: "/wallet/set-pin",

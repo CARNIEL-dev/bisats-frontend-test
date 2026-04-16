@@ -760,6 +760,31 @@ export const GET_ACTIVITY_SUMMARY = async () => {
   }
 };
 
+export const GET_REFERRAL_STATS = async () => {
+  try {
+    const response = await Bisatsfetch("/api/v1/user/referral-stats", {
+      method: "GET",
+    });
+
+    if (response.success) return response.data;
+    throw new Error(response.message);
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const GET_BONUS_STATUS = async () => {
+  try {
+    const response = await Bisatsfetch("/api/v1/user/bonus-status", {
+      method: "GET",
+    });
+    if (response.success) return response.data;
+    throw new Error(response.message);
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const GET_WITHDRAWAL_LIMIT = async () => {
   try {
     const response = await Bisatsfetch(
