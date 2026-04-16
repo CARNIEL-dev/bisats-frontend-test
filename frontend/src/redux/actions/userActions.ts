@@ -8,7 +8,7 @@ import {
   setToken,
   setUserId,
 } from "@/helpers";
-import Bisatsfetch from "@/redux/fetchWrapper";
+import Bisatsfetch, { resetSessionExpiredFlag } from "@/redux/fetchWrapper";
 import { GeneralTypes, UserActionTypes } from "@/redux/types";
 import {
   TIdentity,
@@ -215,6 +215,9 @@ export const logoutUser = () => {
   localStorage.removeItem("_uid");
   localStorage.removeItem("token");
   localStorage.removeItem("refreshToken");
+
+  // Reset the session-expired flag so the next login starts clean
+  resetSessionExpiredFlag();
 
   dispatchWrapper({ type: UserActionTypes?.LOG_OUT, payload: null });
   dispatchWrapper({ type: "RESET_WALLET", payload: null });
