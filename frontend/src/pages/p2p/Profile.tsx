@@ -1,4 +1,3 @@
-import BonusStatus from "@/components/BonusStatus";
 import ReferralStats from "@/components/ReferralStats";
 import ReferralSystem from "@/components/ReferralSystem";
 import BackButton from "@/components/shared/BackButton";
