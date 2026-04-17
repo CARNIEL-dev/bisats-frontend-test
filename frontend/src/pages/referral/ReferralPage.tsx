@@ -40,7 +40,6 @@ const ReferralPage = () => {
             <BonusStatus />
 
             {/* Full referred users list */}
-
             {hasReferralCode && <ReferralStats />}
           </div>
 

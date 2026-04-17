@@ -39,7 +39,12 @@ const Verify2FA = () => {
           data.token && setToken(data?.token);
           data.refreshToken && setRefreshToken(data?.refreshToken);
         }
-        navigate(APP_ROUTES.DASHBOARD);
+        const fromLocation = state?.from;
+        const redirectTo =
+          fromLocation?.pathname && fromLocation.pathname.startsWith("/")
+            ? fromLocation.pathname + (fromLocation.search || "")
+            : APP_ROUTES.DASHBOARD;
+        navigate(redirectTo, { replace: true });
       } else {
         Toast.error(response.message, "Verification failed");
       }
