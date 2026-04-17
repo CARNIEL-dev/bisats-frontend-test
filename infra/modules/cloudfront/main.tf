@@ -89,10 +89,16 @@ resource "aws_cloudfront_response_headers_policy" "security_headers" {
     }
 
 content_security_policy {
-      content_security_policy = "default-src 'self'; connect-src 'self' https://www.gstatic.com https://api.ipify.org https://api.coingecko.com https://v1-api.bisats.com https://*.zohopublic.eu https://salesiq.zohopublic.eu https://*.zoho.eu https://*.zoho.com wss://*.zoho.eu wss://*.zoho.com https://*.zohosalesiq.eu https://*.mailchimp.com https://*.intuit.com https://9kvu81ddh3.execute-api.us-east-2.amazonaws.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://*.zohopublic.eu https://salesiq.zohopublic.eu https://*.zoho.eu https://*.zoho.com https://*.zohocdn.com https://*.zohosalesiq.eu https://chimpstatic.com https://*.mailchimp.com; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.zohopublic.eu https://salesiq.zohopublic.eu https://*.zoho.eu https://*.zoho.com https://*.zohocdn.com https://*.zohosalesiq.eu; font-src 'self' data: https://fonts.gstatic.com https://*.zohocdn.com https://*.zoho.eu https://*.zoho.com; img-src 'self' data: https://*.zohopublic.eu https://salesiq.zohopublic.eu https://*.zoho.eu https://*.zoho.com https://*.zohocdn.com https://*.zohosalesiq.eu; frame-src 'self' https://*.zohopublic.eu https://salesiq.zohopublic.eu https://*.zoho.eu https://*.zoho.com https://*.zohosalesiq.eu; object-src 'none'; frame-ancestors 'none';"
+      content_security_policy = "default-src 'self'; connect-src 'self' https://www.gstatic.com https://api.ipify.org https://api.coingecko.com https://v1-api.bisats.com https://*.zohopublic.eu https://salesiq.zohopublic.eu https://*.zoho.eu https://*.zoho.com wss://*.zoho.eu wss://*.zoho.com https://*.zohosalesiq.eu https://*.mailchimp.com https://*.intuit.com https://9kvu81ddh3.execute-api.us-east-2.amazonaws.com https://*.facebook.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://*.zohopublic.eu https://salesiq.zohopublic.eu https://*.zoho.eu https://*.zoho.com https://*.zohocdn.com https://*.zohosalesiq.eu https://chimpstatic.com https://*.mailchimp.com https://connect.facebook.net; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.zohopublic.eu https://salesiq.zohopublic.eu https://*.zoho.eu https://*.zoho.com https://*.zohocdn.com https://*.zohosalesiq.eu; font-src 'self' data: https://fonts.gstatic.com https://*.zohocdn.com https://*.zoho.eu https://*.zoho.com; img-src 'self' data: https://*.zohopublic.eu https://salesiq.zohopublic.eu https://*.zoho.eu https://*.zoho.com https://*.zohocdn.com https://*.zohosalesiq.eu https://*.mailchimp.com https://chimpstatic.com https://*.facebook.com; frame-src 'self' https://*.zohopublic.eu https://salesiq.zohopublic.eu https://*.zoho.eu https://*.zoho.com https://*.zohosalesiq.eu; object-src 'none'; frame-ancestors 'none'; form-action 'self';"
       override = true
     }
   }
+
+  remove_headers_config {
+    items {
+      header = "Server"
+    }
+}
 }
 
 ############################################
@@ -139,11 +145,17 @@ resource "aws_cloudfront_distribution" "this" {
 
   custom_error_response {
     error_code            = 403
-    response_code         = 403
+    response_code         = 200
     response_page_path    = "/index.html"
-    error_caching_min_ttl = 0
+    error_caching_min_ttl = 10
   }
 
+  custom_error_response {
+    error_code            = 404
+    response_code         = 200
+    response_page_path    = "/index.html"
+    error_caching_min_ttl = 10
+  }
   ##########################################
   # SSL
   ##########################################

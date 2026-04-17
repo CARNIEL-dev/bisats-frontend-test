@@ -64,6 +64,20 @@ jobs:
         env:
           SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
 
+      - name: Download Trivy HTML Template
+        run: wget https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/html.tpl
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          ignore-unfixed: true
+          format: 'template'
+          template: '@html.tpl' 
+          output: 'trivy-security-report.html'
+          severity: 'CRITICAL,HIGH'
+     
+
   # ─────────────────────────────────────────────────────────────
   # JOB 2: Build and deploy — only runs if security gate passes.
   # ─────────────────────────────────────────────────────────────
