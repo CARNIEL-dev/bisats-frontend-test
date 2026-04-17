@@ -81,7 +81,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always() 
         with:
-          name: backend-security-report
+          name: frontend-security-report
           path: trivy-security-report.html    
      
 
