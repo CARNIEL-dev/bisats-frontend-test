@@ -107,7 +107,7 @@ const BonusStatus = ({ showView }: { showView?: boolean }) => {
             <div className="flex md:flex-row flex-col gap-2">
               {/* Sign-up Bonus */}
               {data.signupBonus && (
-                <div className="flex items-center gap-2 bg-secondary rounded-xl p-4 ">
+                <div className="flex items-center gap-2 bg-secondary rounded-xl p-4 basis-[40%] ">
                   <CircularProgress
                     percent={data.signupBonus.progressPercent}
                   />
@@ -127,7 +127,7 @@ const BonusStatus = ({ showView }: { showView?: boolean }) => {
               )}
 
               {/* Referral Bonuses summary */}
-              <div className="flex flex-col justify-center gap-2 bg-secondary rounded-xl p-4 flex-1">
+              <div className="flex flex-col justify-center gap-2 bg-secondary rounded-xl p-4 basis-[100%]">
                 <span className="text-xs text-muted-foreground font-medium">
                   Referral Bonuses
                 </span>
