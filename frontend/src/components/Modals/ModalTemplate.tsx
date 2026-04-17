@@ -90,10 +90,14 @@ const ModalTemplate: React.FC<ModalProps> = ({
           </Dialog>
         </Transition>
       ) : (
-        <ShadcnDialog open={isOpen} onOpenChange={onClose}>
+        <ShadcnDialog open={isOpen} onOpenChange={showCloseButton ? onClose : undefined}>
           <DialogContent
             className={cn(className)}
             showCloseButton={showCloseButton}
+            {...(!showCloseButton && {
+              onInteractOutside: (e: Event) => e.preventDefault(),
+              onEscapeKeyDown: (e: KeyboardEvent) => e.preventDefault(),
+            })}
           >
             <DialogHeader className="hidden">
               <DialogTitle>Bisat modal</DialogTitle>

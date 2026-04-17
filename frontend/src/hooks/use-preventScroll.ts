@@ -7,7 +7,12 @@ const usePreventScroll = (isActive: boolean) => {
     } else {
       document.body.classList.remove("scroll-disabled");
     }
-  });
+
+    return () => {
+      document.body.classList.remove("scroll-disabled");
+    };
+  }, [isActive]);
+
   return null;
 };
 

@@ -2,7 +2,7 @@ import { APP_ROUTES } from "@/constants/app_route";
 
 const NAV_LINKS = [
   { title: "About us", href: APP_ROUTES.ABOUT },
-  { title: "Resources", href: APP_ROUTES.RESOURCES },
+  { title: "Resources", href: APP_ROUTES.RESOURCES.HOME },
   // { title: "Contact", href: "/contact" },
 ];
 
@@ -15,7 +15,7 @@ const footerData = {
 
       // { name: "T&C for Merchants", url: APP_ROUTES.TERMS },
       { name: "Policy", url: APP_ROUTES.POLICY },
-      { name: "Resources", url: APP_ROUTES.RESOURCES },
+      { name: "Resources", url: APP_ROUTES.RESOURCES.HOME },
       { name: "FAQs", url: APP_ROUTES.FAQ },
     ],
   },

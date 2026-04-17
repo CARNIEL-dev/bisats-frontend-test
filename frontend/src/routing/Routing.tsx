@@ -46,7 +46,11 @@ import SwapLayout from "@/layouts/SwapLayout";
 import Verify2FA from "@/pages/auth/Verify2FA";
 import BecomeMerchant from "@/pages/kyc/BecomeMerchant";
 import { LandingPage } from "@/pages/landing-page/src/screens/Bisats/LandingPage";
-import ResourcesPage from "@/pages/landing-page/src/screens/ResourcesPage";
+import ResourcesLayout from "@/pages/resources/ResourcesLayout";
+import ArticlesPage from "@/pages/resources/ArticlesPage";
+import VideosPage from "@/pages/resources/VideosPage";
+import ArticleDetailPage from "@/pages/resources/ArticleDetailPage";
+import VideoDetailPage from "@/pages/resources/VideoDetailPage";
 import NotificationsPage from "@/pages/notifcations/NotificationsPage";
 import MarketPlacePage from "@/pages/p2p/MarketPlacePage";
 import Corporate from "@/pages/settings/Corporate";
@@ -54,7 +58,7 @@ import SwapHistoryPage from "@/pages/swap/SwapHistoryPage";
 import SwapPage from "@/pages/swap/SwapPage";
 import TransferPage from "@/pages/wallet/transfer";
 import NotFound from "@/routing/NotFound";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 
 const Routing = () => {
   return (
@@ -192,7 +196,15 @@ const Routing = () => {
           <Route path={APP_ROUTES.TERMS} element={<TermsAndCondition />} />
           <Route path={APP_ROUTES.POLICY} element={<Policy />} />
           <Route path={APP_ROUTES.FAQ} element={<FAQs />} />
-          <Route path={APP_ROUTES.RESOURCES} element={<ResourcesPage />} />
+
+          {/* SUB: RESOURCES PAGES */}
+          <Route path={APP_ROUTES.RESOURCES.HOME} element={<ResourcesLayout />}>
+            <Route index element={<Navigate to="articles" replace />} />
+            <Route path="articles" element={<ArticlesPage />} />
+            <Route path="videos" element={<VideosPage />} />
+          </Route>
+          <Route path={APP_ROUTES.RESOURCES.ARTICLE_DETAIL} element={<ArticleDetailPage />} />
+          <Route path={APP_ROUTES.RESOURCES.VIDEO_DETAIL} element={<VideoDetailPage />} />
         </Route>
       </Routes>
     </>

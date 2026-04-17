@@ -24,7 +24,7 @@ root.render(
           <OfflineBanner />
         </ThemeProvider>
       </Provider>
-      <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />
+      <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-right" />
     </QueryClientProvider>
   </StrictMode>,
 );
