@@ -1,4 +1,5 @@
 import BonusStatus from "@/components/BonusStatus";
+import ReferralStats from "@/components/ReferralStats";
 import ReferralSystem from "@/components/ReferralSystem";
 import BackButton from "@/components/shared/BackButton";
 import ErrorDisplay from "@/components/shared/ErrorDisplay";
@@ -67,7 +68,7 @@ const ReferralPage = () => {
             <BonusStatus />
 
             {/* Full referred users list */}
-            {hasReferralCode && (
+            {/* {hasReferralCode && (
               <div className="flex flex-col gap-4 p-6 border border-border rounded-2xl bg-slate-800 dark:bg-secondary text-white">
                 <div className="flex items-center justify-between">
                   <h3 className="text-lg font-semibold flex items-center gap-2">
@@ -152,7 +153,8 @@ const ReferralPage = () => {
                   </p>
                 )}
               </div>
-            )}
+            )} */}
+            {hasReferralCode && <ReferralStats />}
           </div>
 
           <div>

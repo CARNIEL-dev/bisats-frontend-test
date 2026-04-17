@@ -367,7 +367,7 @@ const Profile = () => {
           </div>
           <div id="referral-section" className="flex flex-col gap-4">
             <ReferralSystem />
-            <ReferralStats />
+            <ReferralStats showLess />
           </div>
         </section>
       </MaxWidth>
