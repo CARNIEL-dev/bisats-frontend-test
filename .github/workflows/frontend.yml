@@ -76,6 +76,13 @@ jobs:
           template: '@html.tpl' 
           output: 'trivy-security-report.html'
           severity: 'CRITICAL,HIGH'
+
+      - name: Upload Security Report
+        uses: actions/upload-artifact@v4
+        if: always() 
+        with:
+          name: backend-security-report
+          path: trivy-security-report.html    
      
 
   # ─────────────────────────────────────────────────────────────
