@@ -122,7 +122,7 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
 
   return (
     <>
-      <div className="relative border border-border flex flex-col gap-2 p-6 rounded-2xl overflow-hidden">
+      <div className="relative border border-border flex flex-col gap-2 p-6 rounded-2xl overflow-hidden justify-between">
         <div className="flex items-center gap-1">
           <p className="font-semibold text-foreground/60">Balance</p>
           <Button
@@ -227,7 +227,7 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
               >
                 {isNA && userState?.user?.hasAppliedToBeInLevelOne
                   ? !showWithdraw
-                    ? "Pending verification"
+                    ? "Verifying"
                     : "Pending"
                   : "Deposit"}
               </Button>
@@ -248,7 +248,7 @@ const Balance = ({ showWithdraw }: { showWithdraw?: boolean }) => {
               >
                 {isNA && userState?.user?.hasAppliedToBeInLevelOne
                   ? !showWithdraw
-                    ? "Pending verification"
+                    ? "Verifying"
                     : "Pending"
                   : "Transfer"}
               </Button>

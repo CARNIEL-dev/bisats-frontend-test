@@ -21,7 +21,7 @@ const ArticleDetailPage = () => {
 
   if (isLoading)
     return (
-      <div className="min-h-[70dvh] grid place-content-center">
+      <div className="min-h-[80dvh] grid place-content-center">
         <PreLoader primary={false} />
       </div>
     );

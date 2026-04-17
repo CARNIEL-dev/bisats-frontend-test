@@ -4,7 +4,7 @@ import PreLoader from "@/layouts/PreLoader";
 import { AnimatePresence } from "motion/react";
 import React, { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 import useInactivityTimeout from "@/hooks/use-inactivity-timeout";
 import SessionExpiredModal from "@/components/Modals/SessionExpiredModal";
 import { resetSessionExpiredFlag } from "@/redux/fetchWrapper";
@@ -21,6 +21,7 @@ const cleanupScrollLocks = () => {
 const AuthGuard: React.FC = () => {
   const userState: UserState = useSelector((state: RootState) => state.user);
   const [sessionState, setSessionState] = useState<SessionState>("active");
+  const location = useLocation();
 
   const { resetTimer } = useInactivityTimeout(
     userState.isAuthenticated && sessionState === "active",
@@ -83,7 +84,7 @@ const AuthGuard: React.FC = () => {
   }
 
   if (!userState.isAuthenticated && !userState.token) {
-    return <Navigate to={APP_ROUTES.AUTH.LOGIN} replace />;
+    return <Navigate to={APP_ROUTES.AUTH.LOGIN} state={{ from: location }} replace />;
   }
 
   return (

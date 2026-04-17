@@ -10,10 +10,13 @@ const Wallet = () => {
     <>
       <MaxWidth as="section" className="space-y-8 max-w-6xl lg:pb-5 mb-10 mt-6">
         <div className="w-full space-y-4  ">
-          <div className="sm:w-fit sm:min-w-[30rem] max-w-[45rem]">
+          {/* <div className="sm:w-fit sm:min-w-[30rem] max-w-[45rem]">
+          </div> */}
+          <div className="grid md:grid-cols-2 gap-4">
             <Balance showWithdraw />
+
+            <BonusStatus showView />
           </div>
-          <BonusStatus showView />
 
           <div className="sm:border border-border md:space-y-4 space-y-2 rounded-2xl  sm:p-6">
             <p className="font-semibold md:text-lg text-foreground">

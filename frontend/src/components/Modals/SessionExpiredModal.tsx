@@ -5,7 +5,7 @@ import queryClient from "@/lib/queryClient";
 import { logoutUser } from "@/redux/actions/userActions";
 import { Frown } from "lucide-react";
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/Button";
 
 interface SessionExpiredModalProps {
@@ -18,11 +18,16 @@ const SessionExpiredModal: React.FC<SessionExpiredModalProps> = ({
   onStay,
 }) => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = () => {
+    const currentPath = location.pathname + location.search;
     logoutUser();
     queryClient.clear();
-    navigate(APP_ROUTES.AUTH.LOGIN, { replace: true });
+    navigate(APP_ROUTES.AUTH.LOGIN, {
+      replace: true,
+      state: { from: { pathname: currentPath } },
+    });
   };
 
   return (

@@ -356,7 +356,7 @@ const TransferPage = () => {
                   <div>
                     <Label text="Note (Optional)" />
                     <textarea
-                      className="w-full mt-1.5 p-3 border  rounded-md focus:outline-none focus:ring-1 focus:ring-[#C49600] focus:border-transparent resize-none h-24 placeholder:text-sm font-normal text-[#606C82]"
+                      className="w-full mt-1.5 p-3 border-border  rounded-md focus:outline-none focus:ring-1 focus:ring-[#C49600] focus:border-transparent resize-none h-24 placeholder:text-sm font-normal text-foreground bg-secondary"
                       placeholder="Add a note for the recipient (optional)"
                       value={formik.values.note}
                       onChange={(e) =>
@@ -365,7 +365,7 @@ const TransferPage = () => {
                     />
                   </div>
 
-                  <div className="border  border-[#F3F4F6] bg-[#F9F9FB] rounded-md py-4 px-5  my-2 text-sm flex flex-col gap-2  ">
+                  <div className="border  border-border bg-secondary rounded-md py-4 px-5  my-2 text-sm flex flex-col gap-2  ">
                     <TextBox
                       label="Recipient"
                       value={userInfo?.data || ""}
