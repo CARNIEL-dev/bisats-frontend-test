@@ -13,10 +13,11 @@ import { SignUp as Signup } from "@/redux/actions/userActions";
 import { useFormik } from "formik";
 import { motion } from "motion/react";
 import { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
 const SignUp = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [searchParams] = useSearchParams();
 
   const urlRefCode = searchParams.get("ref");
@@ -47,7 +48,9 @@ const SignUp = () => {
       if (response?.statusCode === 200) {
         sessionStorage.removeItem("p2p_referral_code");
         // ReSendverificationCode();
-        return navigate(APP_ROUTES.AUTH.VERIFY);
+        return navigate(APP_ROUTES.AUTH.VERIFY, {
+          state: { from: (location.state as any)?.from },
+        });
       } else {
         Toast.error(response.message, "Sign Up Failed");
       }
@@ -168,7 +171,11 @@ const SignUp = () => {
           Already have an account?
           <span
             className="text-[#C49600] pl-3 cursor-pointer"
-            onClick={() => navigate(APP_ROUTES.AUTH.LOGIN)}
+            onClick={() =>
+              navigate(APP_ROUTES.AUTH.LOGIN, {
+                state: { from: (location.state as any)?.from },
+              })
+            }
           >
             Sign In
           </span>

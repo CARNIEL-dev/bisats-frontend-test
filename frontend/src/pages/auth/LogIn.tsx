@@ -228,7 +228,11 @@ const LogIn = () => {
           <p>Don’t have an account?</p>
           <button
             className="text-[#C49600]  cursor-pointer"
-            onClick={() => navigate(APP_ROUTES.AUTH.SIGNUP)}
+            onClick={() =>
+              navigate(APP_ROUTES.AUTH.SIGNUP, {
+                state: { from: (location.state as any)?.from },
+              })
+            }
           >
             Sign Up
           </button>
