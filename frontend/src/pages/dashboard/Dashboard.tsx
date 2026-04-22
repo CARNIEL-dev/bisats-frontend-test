@@ -8,6 +8,7 @@ import SuspensionBanner from "@/components/SuspensionBanner";
 
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import BonusStatus from "@/components/BonusStatus";
 // import MockApp from "@/components/shared/MockApp";
 
 const Dashboard = () => {
@@ -39,8 +40,8 @@ const Dashboard = () => {
         <SuspensionBanner />
         {openKycModal && <KycBanner />}
 
-        <div className="">
-          <div className="grid md:grid-cols-2 gap-4 my-4 ">
+        <div className="space-y-4">
+          <div className="grid md:grid-cols-2 gap-4 ">
             <div className="space-y-4">
               <div className="border-0 rounded-2xl px-5 py-2 border-priYellow bg-priYellow/10 md:mt-4">
                 <TextAnimate
@@ -58,6 +59,7 @@ const Dashboard = () => {
             </div>
             <MarketRate />
           </div>
+          <BonusStatus showView />
           {!openKycModal && <OrdersChart />}
         </div>
         {/* <MockApp /> */}

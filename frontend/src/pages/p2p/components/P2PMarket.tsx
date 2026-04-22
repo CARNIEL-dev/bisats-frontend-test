@@ -14,11 +14,11 @@ import { formatNumber } from "@/utils/numberFormat";
 import { ACTIONS, bisats_charges } from "@/utils/transaction_limits";
 import Decimal from "decimal.js";
 import { FormikProps, useFormik } from "formik";
+import AdShare from "@/pages/p2p/components/AdShare";
 import { BadgeCheck } from "lucide-react";
 import React, { ChangeEventHandler, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-// assets = isDev ? TestAssets : LiveAssets
 
 export const assetIndexMap: Record<string, number> = Object.values(
   assets,
@@ -45,7 +45,6 @@ const P2PMarket = ({
   const [focusedField, setFocusedField] = useState<
     "amount" | "otherAmount" | null
   >("amount");
-
   const walletState: WalletState = useSelector((state: any) => state.wallet);
   const user = useSelector((state: { user: UserState }) => state.user);
 
@@ -136,12 +135,15 @@ const P2PMarket = ({
         {type === "buy" ? "You're Buying from" : "You're Selling to"}
       </p>
 
-      <h3 className="text-[28px] md:text-[34px] flex items-center gap-2  font-semibold leading-[40px]">
-        {adDetail?.user?.userName}{" "}
-        {adDetail?.user?.accountLevel === "level_3" && (
-          <BadgeCheck fill="#F5BB00" stroke="#fff" size={30} />
-        )}
-      </h3>
+      <div className="flex items-center justify-between">
+        <h3 className="text-[28px] md:text-[34px] flex items-center gap-2  font-semibold leading-[40px]">
+          {adDetail?.user?.userName}{" "}
+          {adDetail?.user?.accountLevel === "level_3" && (
+            <BadgeCheck fill="#F5BB00" stroke="#fff" size={30} />
+          )}
+        </h3>
+        <AdShare adDetail={adDetail} />
+      </div>
 
       <div className="text-muted-foreground text-sm flex items-center gap-1 font-normal ">
         <p>1 {adDetail?.asset}</p>  ≈ 

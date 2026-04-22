@@ -48,7 +48,7 @@ const Receipt = () => {
   };
 
   return (
-    <MaxWidth className="max-w-[38rem] shadow-sm border my-12 p-6 rounded-xl">
+    <MaxWidth className="max-w-[38rem] shadow-sm border border-border my-12 p-6 rounded-xl">
       {loading && !orderData ? (
         <div className="h-[30rem] grid place-content-center">
           <PreLoader primary={false} />

@@ -1,3 +1,4 @@
+import BackButton from "@/components/shared/BackButton";
 import MaxWidth from "@/components/shared/MaxWith";
 
 import ErrorDisplay from "@/components/shared/ErrorDisplay";
@@ -211,8 +212,8 @@ const NotificationsPage = () => {
             />
           </div>
         ) : (
-          <div className="grid grid-cols-[1fr_1.6fr] gap-4 !h-[68dvh] ">
-            <div>
+          <div className="grid grid-cols-1 md:grid-cols-[1fr_1.6fr] gap-4 min-h-[68dvh]">
+            <div className={cn("md:block", id ? "hidden" : "block")}>
               <div className="flex md:items-center flex-col-reverse md:flex-row md:justify-between py-4 border-b border-border gap-y-2">
                 <h5 className="text-sm text-muted-foreground">
                   <span>Total : </span>
@@ -226,7 +227,7 @@ const NotificationsPage = () => {
                       variant="ghost"
                       size={"sm"}
                       className={cn(
-                        "text-xs rounded-full border border-green-200  size-8 hover:bg-green-500/10",
+                        "text-xs rounded-full border border-green-200 size-10 md:size-8 hover:bg-green-500/10",
                       )}
                       onClick={() => {
                         mutation.mutate({ type: "readAll" });
@@ -245,7 +246,7 @@ const NotificationsPage = () => {
                       variant="ghost"
                       size={"sm"}
                       className={cn(
-                        "text-xs rounded-full border border-red-200  size-8 hover:bg-red-500/10",
+                        "text-xs rounded-full border border-red-200 size-10 md:size-8 hover:bg-red-500/10",
                       )}
                       onClick={() => {
                         mutation.mutate({ type: "deleteAll" });
@@ -263,9 +264,8 @@ const NotificationsPage = () => {
               </div>
 
               <ul
-                className="overflow-y-scroll h-[65dvh]  no-scrollbar"
+                className="overflow-y-scroll h-[60dvh] md:h-[65dvh] no-scrollbar"
                 ref={listRef}
-
               >
                 <AnimatePresence mode="sync">
                   {notificationData.length >= 1 ? (
@@ -329,8 +329,19 @@ const NotificationsPage = () => {
                 </AnimatePresence>
               </ul>
             </div>
-            <div className="bg-neutral-50 dark:bg-secondary  border p-4 rounded-md h-full border-border">
-              {notifyId.isLoading ? (
+            <div
+              className={cn(
+                "bg-neutral-50 dark:bg-secondary border rounded-md border-border md:h-full md:block",
+                id ? "block p-4" : "hidden md:block md:p-4",
+              )}
+            >
+              {!id ? (
+                <div className="hidden md:grid h-full place-content-center text-center">
+                  <p className="text-muted-foreground text-sm">
+                    Select a notification to view details
+                  </p>
+                </div>
+              ) : notifyId.isLoading ? (
                 <div className="grid h-full place-content-center">
                   <PreLoader primary={false} />
                 </div>
@@ -345,57 +356,64 @@ const NotificationsPage = () => {
               ) : (
                 notifyId.data && (
                   <div>
-                    <div className="flex items-center flex-wrap gap-2 mb-4 md:justify-between border-b border-border pb-4">
-                      <h3 className="text-lg font-semibold">
-                        {notifyId.data?.title}
-                      </h3>
-                      <p className="text-muted-foreground text-xs capitalize">
-                        {dayjs(notifyId.data?.createdAt).fromNow()}
-                      </p>
-                      <div className="flex items-center gap-2">
-                        {!notifyId.data.read && (
+                    <BackButton
+                      className="md:hidden mb-3"
+                      onClick={() => setSearchParams({})}
+                      text="Back"
+                    />
+                    <div className="flex flex-col gap-2 mb-4 border-b border-border pb-4">
+                      <div className="flex items-start justify-between gap-2">
+                        <h3 className="text-lg font-semibold leading-tight">
+                          {notifyId.data?.title}
+                        </h3>
+                        <div className="flex items-center gap-2 shrink-0">
+                          {!notifyId.data.read && (
+                            <Button
+                              variant="ghost"
+                              size={"sm"}
+                              className={cn(
+                                "text-xs rounded-full border border-green-200 size-10 md:size-8 text-muted-foreground hover:bg-green-500/10",
+                              )}
+                              onClick={() => {
+                                mutation.mutate({
+                                  type: "read",
+                                  id: id,
+                                });
+                              }}
+                              disabled={isItemLoading(id, "read")}
+                            >
+                              {isItemLoading(id, "read") ? (
+                                <Loader2 className="animate-spin text-green-600" />
+                              ) : (
+                                <Check className="text-green-600" />
+                              )}
+                            </Button>
+                          )}
                           <Button
-                            variant="ghost"
+                            variant={"ghost"}
                             size={"sm"}
                             className={cn(
-                              "text-xs rounded-full border border-green-200  size-8 text-muted-foreground hover:bg-green-500/10",
+                              "hover:bg-red-500/10 border border-red-200 rounded-full size-10 md:size-8",
                             )}
+                            disabled={isItemLoading(id, "delete")}
                             onClick={() => {
                               mutation.mutate({
-                                type: "read",
+                                type: "delete",
                                 id: id,
                               });
                             }}
-                            disabled={isItemLoading(id, "read")}
                           >
-                            {isItemLoading(id, "read") ? (
-                              <Loader2 className="animate-spin text-green-600" />
+                            {isItemLoading(id, "delete") ? (
+                              <Loader2 className="animate-spin text-red-500" />
                             ) : (
-                              <Check className="text-green-600" />
+                              <X className="text-red-500" />
                             )}
                           </Button>
-                        )}
-                        <Button
-                          variant={"ghost"}
-                          size={"sm"}
-                          className={cn(
-                            "hover:bg-red-500/10 border border-red-200 rounded-full size-8",
-                          )}
-                          disabled={isItemLoading(id, "delete")}
-                          onClick={() => {
-                            mutation.mutate({
-                              type: "delete",
-                              id: id,
-                            });
-                          }}
-                        >
-                          {isItemLoading(id, "delete") ? (
-                            <Loader2 className="animate-spin text-red-500" />
-                          ) : (
-                            <X className="text-red-500" />
-                          )}
-                        </Button>
+                        </div>
                       </div>
+                      <p className="text-muted-foreground text-xs capitalize">
+                        {dayjs(notifyId.data?.createdAt).fromNow()}
+                      </p>
                     </div>
                     <p className="text-sm text-muted-foreground">
                       {notifyId.data?.message}

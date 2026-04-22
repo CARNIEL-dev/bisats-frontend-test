@@ -1,8 +1,7 @@
-import ComingSoon from "@/components/shared/ComingSoon";
 import { HeroSection } from "@/components/shared/HeroSection";
 import MaxWidth from "@/components/shared/MaxWith";
 import { APP_ROUTES } from "@/constants/app_route";
-import { cn, isProduction } from "@/utils";
+import { cn } from "@/utils";
 import { Link, Outlet, useLocation } from "react-router-dom";
 
 const tabs = [
@@ -13,10 +12,6 @@ const tabs = [
 const ResourcesLayout = () => {
   const location = useLocation();
   const pathname = location.pathname;
-
-  if (isProduction) {
-    return <ComingSoon title="Resources" />;
-  }
 
   return (
     <div>

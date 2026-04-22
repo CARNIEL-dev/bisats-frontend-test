@@ -312,7 +312,7 @@ const P2PConfirmation: React.FC<Props> = ({
 
   return (
     <>
-      <ModalTemplate onClose={close}>
+      <ModalTemplate onClose={close} primary={false}>
         <div className="flex flex-col justify-center w-full mx-auto">
           <div>
             <h1

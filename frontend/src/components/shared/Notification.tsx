@@ -11,7 +11,7 @@ import { cn } from "@/utils";
 import { Bell, ChevronRight, Loader2, X } from "lucide-react";
 import { useSelector } from "react-redux";
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { slideInLeft } from "@/components/animation";
 import NotificationItem from "@/components/shared/NotificationItem";
@@ -28,6 +28,7 @@ const refreshPaths = [
 ];
 
 const Notification = () => {
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const userState: UserState = useSelector((state: any) => state.user);
   const userId: string = userState?.user?.userId || "";
   const pathName = useLocation().pathname;
@@ -89,7 +90,10 @@ const Notification = () => {
   }
 
   return (
-    <DropdownMenu>
+    <DropdownMenu
+      open={isNotificationOpen}
+      onOpenChange={setIsNotificationOpen}
+    >
       <DropdownMenuTrigger className="outline-none relative">
         {notificationData.unreadNotificationsCount >= 1 && (
           <small className="absolute -right-2 -top-3 bg-primary grid place-content-center w-5 h-5 text-xs font-medium rounded-full dark:text-black ">
@@ -113,6 +117,9 @@ const Notification = () => {
               "text-[#C49600] text-sm",
             )}
             to={APP_ROUTES.NOTIFICATION}
+            onClick={() => {
+              setIsNotificationOpen(false);
+            }}
           >
             View all <ChevronRight />
           </Link>

@@ -8,6 +8,19 @@ import { BACKEND_URLS } from "@/utils/backendUrls";
 import { refreshAccessToken } from "./actions/userActions";
 import { createRequestAuthHeaders } from "@/utils/authHeader";
 
+/**
+ * Thrown by refreshAccessToken when the server explicitly rejects the refresh
+ * token (e.g. { status: false, message: "Token refresh failed" }).
+ * Distinct from a generic network/server error so the fetch wrapper can
+ * treat it as true session expiration rather than a transient failure.
+ */
+export class RefreshTokenInvalidError extends Error {
+  constructor(message?: string) {
+    super(message ?? "Refresh token invalid");
+    this.name = "RefreshTokenInvalidError";
+  }
+}
+
 // Within-tab coordination: only one refresh at a time per tab
 let refreshPromise: Promise<void> | null = null;
 
@@ -37,6 +50,10 @@ const signalSessionExpired = () => {
 export const resetSessionExpiredFlag = () => {
   sessionExpired = false;
 };
+
+/** Read the current expired state — used by AuthGuard on mount to catch
+ *  expirations that fired before the guard was rendered. */
+export const getSessionExpiredFlag = () => sessionExpired;
 
 /**
  * Performs a token refresh with two layers of protection:
@@ -135,8 +152,14 @@ const Bisatsfetch = async (
           });
         }
         await refreshPromise;
-      } catch {
-        signalSessionExpired();
+      } catch (error) {
+        if (error instanceof RefreshTokenInvalidError) {
+          // Server explicitly rejected the refresh token — session is truly dead.
+          signalSessionExpired();
+        }
+        // For all other errors (network error, timeout, server 5xx, etc.) do NOT
+        // mark the session as expired. The refresh token may still be valid;
+        // TanStack Query will retry and the next attempt will try refreshing again.
         return SESSION_EXPIRED_RESPONSE;
       }
 

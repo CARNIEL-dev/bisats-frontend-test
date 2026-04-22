@@ -18,6 +18,8 @@ import { PriceData } from "@/pages/wallet/Assets";
 import Head from "@/pages/wallet/Head";
 import { CreateAds, useCryptoRates } from "@/redux/actions/walletActions";
 
+import useGetWallet from "@/hooks/use-getWallet";
+import KycManager from "@/pages/kyc/KYCManager";
 import {
   AccountLevel,
   ACTIONS,
@@ -26,7 +28,6 @@ import {
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { UpdateAdStatusResponse } from "../MyAds";
-import KycManager from "@/pages/kyc/KYCManager";
 
 export type TNetwork = {
   label: string;
@@ -60,6 +61,7 @@ export interface AdsProps {
 }
 
 const CreateAd = () => {
+  const { refetchWallet } = useGetWallet();
   const [isPending, startTransition] = useTransition();
   const [stage, setStage] = useState<"details" | "review">("details");
   // const [fetching, setIsFetching] = useState(true);
@@ -110,6 +112,7 @@ const CreateAd = () => {
           exact: false,
           type: "all",
         });
+        refetchWallet();
         queryClient
           .refetchQueries({
             queryKey: ["userAds", variables.userId],

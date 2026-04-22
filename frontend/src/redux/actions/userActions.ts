@@ -8,7 +8,10 @@ import {
   setToken,
   setUserId,
 } from "@/helpers";
-import Bisatsfetch, { resetSessionExpiredFlag } from "@/redux/fetchWrapper";
+import Bisatsfetch, {
+  RefreshTokenInvalidError,
+  resetSessionExpiredFlag,
+} from "@/redux/fetchWrapper";
 import { GeneralTypes, UserActionTypes } from "@/redux/types";
 import {
   TIdentity,
@@ -95,7 +98,6 @@ export const ReSendverificationCode = async () => {
   try {
     const response = await Bisatsfetch(`/api/v1/user/resend-verification-otp`, {
       method: "GET",
-      // body: JSON.stringify(payload),
     });
     return response;
   } catch (error) {
@@ -186,6 +188,11 @@ export const refreshAccessToken = async (payload: { refreshToken: string }) => {
   });
   const data = response.data;
   if (!data?.token || !data?.refreshToken) {
+    // If the server explicitly returned a failure (status: false), the refresh
+    // token is invalid — signal session expiration, not a transient error.
+    if (response.status === false) {
+      throw new RefreshTokenInvalidError(response.message);
+    }
     throw new Error("Refresh token response missing tokens");
   }
   setUserId(data.userId);
@@ -755,6 +762,31 @@ export const GET_ACTIVITY_SUMMARY = async () => {
     }
 
     throw new Error(data.message);
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const GET_REFERRAL_STATS = async () => {
+  try {
+    const response = await Bisatsfetch("/api/v1/user/referral-stats", {
+      method: "GET",
+    });
+
+    if (response.success) return response.data;
+    throw new Error(response.message);
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const GET_BONUS_STATUS = async () => {
+  try {
+    const response = await Bisatsfetch("/api/v1/user/bonus-status", {
+      method: "GET",
+    });
+    if (response.success) return response.data;
+    throw new Error(response.message);
   } catch (error) {
     throw error;
   }

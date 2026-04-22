@@ -1,5 +1,6 @@
 import { QueryClientProvider } from "@tanstack/react-query";
 import ReactDOM from "react-dom/client";
+import { HelmetProvider } from "react-helmet-async";
 import { Provider } from "react-redux";
 import App from "@/App";
 import "./index.css";
@@ -17,6 +18,7 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <StrictMode>
+    <HelmetProvider>
     <QueryClientProvider client={queryClient}>
       <Provider store={store}>
         <ThemeProvider defaultTheme="system" storageKey="theme">
@@ -24,8 +26,9 @@ root.render(
           <OfflineBanner />
         </ThemeProvider>
       </Provider>
-      <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-right" />
+      <ReactQueryDevtools initialIsOpen={false} buttonPosition="top-left" />
     </QueryClientProvider>
+    </HelmetProvider>
   </StrictMode>,
 );
 

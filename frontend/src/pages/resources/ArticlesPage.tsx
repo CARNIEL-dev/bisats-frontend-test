@@ -2,6 +2,7 @@ import { container } from "@/components/animation";
 import { SelectDropDown } from "@/components/Inputs/MultiSelectInput";
 import SearchInput from "@/components/Inputs/SearchInput";
 import ErrorDisplay from "@/components/shared/ErrorDisplay";
+import SEO from "@/components/shared/SEO";
 import { Button } from "@/components/ui/Button";
 import PreLoader from "@/layouts/PreLoader";
 import ArticleCard from "@/pages/resources/components/ArticleCard";
@@ -11,6 +12,7 @@ import {
   usePublishedPosts,
 } from "@/pages/resources/hooks/useResources";
 import type { Article } from "@/types/resources";
+import { cn } from "@/utils";
 import { motion } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
@@ -74,6 +76,26 @@ const ArticlesPage = () => {
   const { data: categories = [], isLoading: categoriesLoading } =
     useCategories("BLOG");
 
+  const pillsRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+
+  useEffect(() => {
+    const el = pillsRef.current;
+    if (!el) return;
+    const check = () => {
+      setCanScrollLeft(el.scrollLeft > 4);
+      setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
+    };
+    check();
+    el.addEventListener("scroll", check);
+    window.addEventListener("resize", check);
+    return () => {
+      el.removeEventListener("scroll", check);
+      window.removeEventListener("resize", check);
+    };
+  }, [categories]);
+
   const {
     data: postsResponse,
     isLoading: postsLoading,
@@ -92,10 +114,16 @@ const ArticlesPage = () => {
 
   const isLoading = categoriesLoading || postsLoading;
 
-  if (isLoading) return <PreLoader />;
+  if (isLoading)
+    return (
+      <div className="min-h-[60dvh] grid place-content-center">
+        <PreLoader primary={false} />
+      </div>
+    );
 
   return (
     <div className="space-y-6 overflow-hidden w-full">
+      <SEO title="Articles " />
       {/* Category filter — dropdown on mobile, pills on desktop */}
       <div className="md:hidden">
         <SelectDropDown
@@ -117,17 +145,38 @@ const ArticlesPage = () => {
         >
           All
         </Button>
-        {categories.map((cat) => (
-          <Button
-            key={cat.id}
-            onClick={() => handleCategoryChange(cat.id)}
-            variant={category === cat.id ? "default" : "outline"}
-            size="sm"
-            className="rounded-full px-3 py-1.5 h-fit shrink-0 whitespace-nowrap"
+        <div className="relative flex-1 min-w-0">
+          <div
+            ref={pillsRef}
+            className="flex items-center gap-1 overflow-x-auto no-scrollbar pb-1"
           >
-            {cat.name}
-          </Button>
-        ))}
+            {categories.map((cat) => (
+              <Button
+                key={cat.id}
+                onClick={() => handleCategoryChange(cat.id)}
+                variant={category === cat.id ? "default" : "outline"}
+                size="sm"
+                className="rounded-full px-3 py-1.5 h-fit shrink-0 whitespace-nowrap"
+              >
+                {cat.name}
+              </Button>
+            ))}
+          </div>
+          {/* Left fade */}
+          <div
+            className={cn(
+              "pointer-events-none absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-background to-transparent transition-opacity duration-200",
+              canScrollLeft ? "opacity-100" : "opacity-0",
+            )}
+          />
+          {/* Right fade */}
+          <div
+            className={cn(
+              "pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-background to-transparent transition-opacity duration-200",
+              canScrollRight ? "opacity-100" : "opacity-0",
+            )}
+          />
+        </div>
       </div>
 
       {/* Search */}
@@ -141,7 +190,13 @@ const ArticlesPage = () => {
 
       {/* Articles grid */}
       {isError ? (
-        <ErrorDisplay message={(error as Error)?.message} />
+        <div className="min-h-[30dvh] grid place-content-center">
+          <ErrorDisplay
+            message={(error as Error)?.message}
+            isError={false}
+            showIcon={false}
+          />
+        </div>
       ) : articles.length === 0 ? (
         <div className="text-center py-16 text-muted-foreground">
           <p className="text-lg font-medium">No articles found</p>

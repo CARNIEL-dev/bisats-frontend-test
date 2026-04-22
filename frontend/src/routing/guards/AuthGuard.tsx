@@ -4,10 +4,13 @@ import PreLoader from "@/layouts/PreLoader";
 import { AnimatePresence } from "motion/react";
 import React, { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 import useInactivityTimeout from "@/hooks/use-inactivity-timeout";
 import SessionExpiredModal from "@/components/Modals/SessionExpiredModal";
-import { resetSessionExpiredFlag } from "@/redux/fetchWrapper";
+import {
+  getSessionExpiredFlag,
+  resetSessionExpiredFlag,
+} from "@/redux/fetchWrapper";
 
 type SessionState = "active" | "inactive" | "expired";
 
@@ -21,10 +24,20 @@ const cleanupScrollLocks = () => {
 const AuthGuard: React.FC = () => {
   const userState: UserState = useSelector((state: RootState) => state.user);
   const [sessionState, setSessionState] = useState<SessionState>("active");
+  const location = useLocation();
 
   const { resetTimer } = useInactivityTimeout(
     userState.isAuthenticated && sessionState === "active",
   );
+
+  // On mount: if the session already expired while the user was on a public page
+  // (the "session-expired" event fired before this component existed), show the
+  // modal immediately instead of waiting for a page refresh.
+  useEffect(() => {
+    if (getSessionExpiredFlag()) {
+      setSessionState("expired");
+    }
+  }, []);
 
   // Listen for inactivity warning
   useEffect(() => {
@@ -49,7 +62,10 @@ const AuthGuard: React.FC = () => {
     const handleVisibility = () => {
       if (document.hidden) return;
 
-      if (sessionState !== "active") {
+      // Only auto-reset a false "expired" state (caused by a transient refresh
+      // failure during tab resume). "inactive" is a legitimate inactivity timeout
+      // that should remain until the user clicks "Stay Signed In".
+      if (sessionState === "expired") {
         const refreshToken = getRefreshToken();
         if (refreshToken) {
           resetSessionExpiredFlag();
@@ -80,7 +96,7 @@ const AuthGuard: React.FC = () => {
   }
 
   if (!userState.isAuthenticated && !userState.token) {
-    return <Navigate to={APP_ROUTES.AUTH.LOGIN} replace />;
+    return <Navigate to={APP_ROUTES.AUTH.LOGIN} state={{ from: location }} replace />;
   }
 
   return (

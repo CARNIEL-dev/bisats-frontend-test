@@ -12,12 +12,13 @@ import {
 import { useFormik } from "formik";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
 const VerifyEmail = () => {
   const user = useSelector((state: any) => state.user.user);
 
   const navigate = useNavigate();
+  const location = useLocation();
   const [searchParams] = useSearchParams();
 
   const codeLink = searchParams.get("code");
@@ -41,7 +42,9 @@ const VerifyEmail = () => {
       if (response?.statusCode === 200) {
         Toast.success(response.message, "Email verified");
 
-        navigate(APP_ROUTES.AUTH.LOGIN);
+        navigate(APP_ROUTES.AUTH.LOGIN, {
+          state: { from: (location.state as any)?.from },
+        });
       } else {
         Toast.error(response.message, "Verification failed");
       }

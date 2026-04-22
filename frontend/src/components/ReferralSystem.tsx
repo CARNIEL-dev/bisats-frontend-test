@@ -127,7 +127,7 @@ const ReferralSystem = () => {
         className="fixed inset-0 pointer-events-none z-[100] w-full h-full"
       />
 
-      <div className="flex flex-col gap-6 p-6 pb-10 border border-border rounded-2xl bg-slate-800 dark:bg-secondary  text-white  relative overflow-hidden">
+      <div className="flex flex-col gap-6 p-6 pb-10 border border-border rounded-2xl bg-gray-800 dark:bg-secondary  text-white  relative overflow-hidden">
         <div className="flex flex-col gap-8">
           <div>
             <h3 className="text-lg font-semibold  flex items-center gap-2">

@@ -17,12 +17,21 @@ import dispatchWrapper from "@/utils/dispatchWrapper";
 import { useFormik } from "formik";
 import { motion } from "motion/react";
 import { useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const LogIn = () => {
   const loginAttemptRef = useRef(0);
   const isLocked = useRef(false);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const getRedirectPath = () => {
+    const from = (location.state as any)?.from;
+    if (from?.pathname && from.pathname.startsWith("/")) {
+      return from.pathname + (from.search || "");
+    }
+    return APP_ROUTES.DASHBOARD;
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -54,6 +63,7 @@ const LogIn = () => {
               email: values.email,
               password: values.password,
               ip,
+              from: (location.state as any)?.from,
             },
           });
           return;
@@ -65,7 +75,9 @@ const LogIn = () => {
             payload: data,
           });
           await ReSendverificationCode();
-          navigate(APP_ROUTES.AUTH.VERIFY);
+          navigate(APP_ROUTES.AUTH.VERIFY, {
+            state: { from: (location.state as any)?.from },
+          });
           return;
         }
 
@@ -81,7 +93,7 @@ const LogIn = () => {
           data.refreshToken && setRefreshToken(data?.refreshToken);
         }
 
-        navigate(APP_ROUTES.DASHBOARD);
+        navigate(getRedirectPath(), { replace: true });
         // window.location.href = APP_ROUTES.DASHBOARD;
       } else {
         const errMessage = response.message as string;
@@ -91,6 +103,7 @@ const LogIn = () => {
               email: values.email,
               password: values.password,
               ip,
+              from: (location.state as any)?.from,
             },
           });
           return;
@@ -215,7 +228,11 @@ const LogIn = () => {
           <p>Don’t have an account?</p>
           <button
             className="text-[#C49600]  cursor-pointer"
-            onClick={() => navigate(APP_ROUTES.AUTH.SIGNUP)}
+            onClick={() =>
+              navigate(APP_ROUTES.AUTH.SIGNUP, {
+                state: { from: (location.state as any)?.from },
+              })
+            }
           >
             Sign Up
           </button>
