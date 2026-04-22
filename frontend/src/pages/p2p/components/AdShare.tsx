@@ -84,7 +84,7 @@ const AdShare = ({ adDetail }: { adDetail: AdsType | undefined }) => {
             type="button"
             onClick={handleShare}
             disabled={isGenerating || !isShareReady}
-            className="flex items-center justify-center border border-border rounded-md p-2.5 text-muted-foreground hover:bg-secondary transition-colors disabled:opacity-50"
+            className="flex items-center justify-center border border-border rounded-md p-2.5 text-muted-foreground hover:bg-secondary transition-colors disabled:opacity-50 cursor-pointer"
           >
             <Share2 size={16} />
           </button>

@@ -100,6 +100,7 @@ const Corporate = () => {
               label="Certificate of Incorporation"
               name="cacDocument"
               formik={formik}
+              maxSizeMB={5}
             />
 
             {/* SUB: Application for Registration of Company */}
@@ -108,6 +109,7 @@ const Corporate = () => {
               name="cacApplicationDocument"
               info="Profile screenshot"
               formik={formik}
+              maxSizeMB={5}
             />
 
             {/* SUB: Mermart (Optional) */}

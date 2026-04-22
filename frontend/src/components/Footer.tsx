@@ -32,7 +32,7 @@ export const Footer = ({
 
   return (
     <>
-      {isAuth ? (
+      {isDashboard && isAuth ? (
         <footer className="w-full flex flex-wrap items-center justify-between border-t border-border h-[56px]  bg-background">
           <div className="flex px-5 items-center w-full lg:w-3/4 mx-auto  justify-between">
             <div className="w-full lg:w-1/3 flex items-center justify-between">
@@ -110,7 +110,7 @@ export const Footer = ({
                 </div>
 
                 {/* CMT: Mobile app links */}
-                <div className="flex gap-4 md:gap-x-2 flex-col md:flex-row">
+                <div className="flex gap-4 md:gap-x-2 flex-col md:flex-row items-start">
                   {MOBILE_APP_INFO.map((app) => (
                     <a
                       key={app.name}
@@ -118,15 +118,15 @@ export const Footer = ({
                       target="_blank"
                       rel="noreferrer"
                       className={cn(
-                        "rounded-md overflow-hidden hover:scale-105 transition-all duration-300",
+                        "rounded-lg overflow-hidden hover:scale-105 transition-all duration-300 border border-border bg-black py-2 px-4 flex gap-3 items-center min-w-[200px] relative",
                         app.disabled && "pointer-events-none",
                       )}
                     >
-                      <img
-                        src={app.image}
-                        alt={app.name}
-                        className="w-[120px] md:w-[1500px] h-10 md:h-[45px] object-cover"
-                      />
+                      {app.icon && <app.icon className="size-8" />}
+                      <div className="flex flex-col text-sm">
+                        <span className="font-thin text-xs">Get it on</span>
+                        <span className="">{app.name}</span>
+                      </div>
                     </a>
                   ))}
                 </div>

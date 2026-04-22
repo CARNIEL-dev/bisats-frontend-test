@@ -12,15 +12,14 @@ import { motion } from "motion/react";
 import { BookOpen } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import SEO from "@/components/shared/SEO";
 
 const VideosPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const lessonId = searchParams.get("lesson") || null;
 
-  const {
-    data: categories = [],
-    isLoading: categoriesLoading,
-  } = useCategories("VIDEO");
+  const { data: categories = [], isLoading: categoriesLoading } =
+    useCategories("VIDEO");
 
   // Auto-select first lesson if none selected
   useEffect(() => {
@@ -83,7 +82,12 @@ const VideosPage = () => {
     };
   }, [categories]);
 
-  if (categoriesLoading) return <PreLoader />;
+  if (categoriesLoading)
+    return (
+      <div className="min-h-[60dvh] grid place-content-center">
+        <PreLoader primary={false} />
+      </div>
+    );
 
   if (categories.length === 0) {
     return (
@@ -96,6 +100,7 @@ const VideosPage = () => {
 
   return (
     <div className="flex flex-col lg:flex-row gap-8">
+      <SEO title="Videos" />
       {/* Lesson sidebar */}
       <aside className="lg:w-64 shrink-0">
         <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
@@ -163,9 +168,17 @@ const VideosPage = () => {
         )}
 
         {videosLoading ? (
-          <PreLoader />
+          <div className="min-h-[30dvh] grid place-content-center">
+            <PreLoader primary={false} />
+          </div>
         ) : isError ? (
-          <ErrorDisplay message={(error as Error)?.message} />
+          <div className="min-h-[30dvh] grid place-content-center">
+            <ErrorDisplay
+              message={(error as Error)?.message}
+              isError={false}
+              showIcon={false}
+            />
+          </div>
         ) : videos.length === 0 ? (
           <div className="text-center py-16 text-muted-foreground">
             <p className="text-lg font-medium">No videos in this lesson yet</p>

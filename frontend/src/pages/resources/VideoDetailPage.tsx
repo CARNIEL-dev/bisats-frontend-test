@@ -1,6 +1,7 @@
 import BackButton from "@/components/shared/BackButton";
 import ErrorDisplay from "@/components/shared/ErrorDisplay";
 import MaxWidth from "@/components/shared/MaxWith";
+import SEO from "@/components/shared/SEO";
 import { Badge } from "@/components/ui/badge";
 import PreLoader from "@/layouts/PreLoader";
 import { usePostById } from "@/pages/resources/hooks/useResources";
@@ -80,46 +81,54 @@ const VideoDetailPage = () => {
   };
 
   return (
-    <MaxWidth className="max-w-5xl py-8 md:py-12 space-y-6 min-h-[82dvh]">
-      <BackButton />
-      <div className="flex flex-col md:flex-row gap-4">
-        {/* Video player */}
-        {renderPlayer()}
+    <>
+      <MaxWidth className="max-w-5xl py-8 md:py-12 space-y-6 min-h-[82dvh]">
+        <BackButton />
+        <div className="flex flex-col md:flex-row gap-4">
+          {/* Video player */}
+          {renderPlayer()}
 
-        <div className="space-y-4">
-          <h1 className="text-2xl md:text-3xl font-bold leading-tight">
-            {video.title}
-          </h1>
+          <div className="space-y-4">
+            <h1 className="text-2xl md:text-3xl font-bold leading-tight">
+              {video.title}
+            </h1>
 
-          <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-            {formattedDate && (
+            <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+              {formattedDate && (
+                <span className="flex items-center gap-1.5">
+                  <Calendar size={14} />
+                  {formattedDate}
+                </span>
+              )}
               <span className="flex items-center gap-1.5">
-                <Calendar size={14} />
-                {formattedDate}
+                <Eye size={14} />
+                {video.views} views
               </span>
-            )}
-            <span className="flex items-center gap-1.5">
-              <Eye size={14} />
-              {video.views} views
-            </span>
-          </div>
-
-          <p className="text-muted-foreground text-sm italic leading-relaxed">
-            {video.description}
-          </p>
-          {/* Tags */}
-          {video.tags.length > 0 && (
-            <div className="flex flex-wrap items-center gap-2 pt-4 border-t border-border">
-              {video.tags.map((tag) => (
-                <Badge key={tag} variant="secondary">
-                  {tag}
-                </Badge>
-              ))}
             </div>
-          )}
+
+            <p className="text-muted-foreground text-sm italic leading-relaxed">
+              {video.description}
+            </p>
+            {/* Tags */}
+            {video.tags.length > 0 && (
+              <div className="flex flex-wrap items-center gap-2 pt-4 border-t border-border">
+                {video.tags.map((tag) => (
+                  <Badge key={tag} variant="secondary">
+                    {tag}
+                  </Badge>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
-      </div>
-    </MaxWidth>
+      </MaxWidth>
+      <SEO
+        title={video.title}
+        description={video.description}
+        keywords={video?.tags?.join(", ")}
+        image={video?.videoUrl || ""}
+      />
+    </>
   );
 };
 

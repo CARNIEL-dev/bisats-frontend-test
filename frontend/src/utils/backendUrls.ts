@@ -2,6 +2,7 @@
 
 export const BACKEND_URLS = {
   BASE_URL: process.env.REACT_APP_DEV_DOMAIN,
+  RESOURCES_BASE_URL: process.env.REACT_APP_RESOURCES_DOMAIN,
   GOOGLEAPI: "https://www.googleapis.com/oauth2/v2/userinfo",
   IP_ADDRESS_API: "/api/v1/user/ip",
   IP_ADDRESS_API_ZOHO: "https://api.ipify.org?format=json",
@@ -99,11 +100,11 @@ export const BACKEND_URLS = {
   SUPPORT_SOCKET_CHAT: "/withdraw",
 
   RESOURCES: {
-    PUBLISHED_ARTICLES: "/admin2/api/v1/admin/blog/published",
-    PUBLISHED_VIDEOS: "/admin2/api/v1/admin/videos/published/list",
-    CATEGORIES: "/admin2/api/v1/admin/categories",
-    POST_BY_ID: "/admin2/api/v1/admin/blog",
-    VIDEO_BY_ID: "/admin2/api/v1/admin/videos",
+    PUBLISHED_ARTICLES: "/api/v1/admin/blog/published",
+    PUBLISHED_VIDEOS: "/api/v1/admin/videos/published/list",
+    CATEGORIES: "/api/v1/admin/categories",
+    POST_BY_ID: "/api/v1/admin/blog",
+    VIDEO_BY_ID: "/api/v1/admin/videos",
   },
 
   SWAP: {

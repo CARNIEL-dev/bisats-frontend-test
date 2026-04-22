@@ -1,6 +1,8 @@
-import ApkImage from "@/assets/andriod_apk.png";
 import AppImage from "@/assets/apple_store.png";
 import GooglePlay from "@/assets/google_play.png";
+import AppStoreSvg from "@/assets/icons/appstore-svg";
+import PlayStoreSvg from "@/assets/icons/playstore-svg";
+import { STORE_URL } from "@/constants";
 
 export const countries = [
   { key: "NG", country: "Nigeria" },
@@ -224,23 +226,26 @@ Market Price - (1-3% margin) = Your buying price`,
 
 const MOBILE_APP_INFO = [
   {
-    name: "Andriod",
-    image: ApkImage,
-    link: "#",
+    name: "Google Play",
+    image: GooglePlay,
+    link: STORE_URL.playstore,
     disabled: false,
+    icon: PlayStoreSvg,
   },
   {
     name: "App Store",
     image: AppImage,
     link: "#",
     disabled: true,
+    icon: AppStoreSvg,
   },
-  {
-    name: "Google Play",
-    image: GooglePlay,
-    link: "#",
-    disabled: true,
-  },
+  // {
+  //   name: "Andriod",
+  //   image: ApkImage,
+  //   link: "#",
+  //   disabled: true,
+  //   icon: null,
+  // },
 ];
 
 export { faqData, MOBILE_APP_INFO };

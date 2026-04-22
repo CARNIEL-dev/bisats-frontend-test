@@ -1,6 +1,6 @@
 import { Footer } from "@/components/Footer";
 import NavBar from "@/components/NavBar";
-import SEO from "@/components/shared/SEO";
+import PlayStorePrompt from "@/components/shared/PlayStorePrompt";
 import { Outlet } from "react-router-dom";
 
 const Layout = () => {
@@ -15,7 +15,7 @@ const Layout = () => {
           <Footer />
         </div>
       </div>
-      <SEO title="" />
+      <PlayStorePrompt />
     </>
   );
 };
