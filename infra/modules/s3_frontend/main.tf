@@ -4,7 +4,7 @@
 
 resource "aws_s3_bucket" "this" {
   bucket        = var.bucket_name
-  force_destroy = false   # 🔐 Prevent accidental delete
+  force_destroy = false   #  Prevent accidental delete
 
   tags = {
     Project     = "BISATS"
