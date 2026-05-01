@@ -153,7 +153,7 @@ const P2PConfirmation: React.FC<Props> = ({
   };
 
   //   HDR: Place order
-  const placeOrder = async (feeData: any) => {
+  const placeOrder = async () => {
     if (!amount) return;
     if (!securePin) {
       Toast.error("Please enter your transaction pin", "Error");
@@ -169,7 +169,6 @@ const P2PConfirmation: React.FC<Props> = ({
       const response = await Bisatsfetch(`/api/v1/user/ads/${adsId}/order`, {
         method: "POST",
         body: JSON.stringify({
-          // userId: userId,
           amount: amountValue,
           transactionPin: securePin,
           // networkFee: feeData.networkFee,
@@ -248,7 +247,7 @@ const P2PConfirmation: React.FC<Props> = ({
         if (!feeData.status) {
           throw new Error(feeData?.message);
         }
-        orderResult = await placeOrder(feeData);
+        orderResult = await placeOrder();
       }
 
       if (!orderResult?.success) {
@@ -287,6 +286,13 @@ const P2PConfirmation: React.FC<Props> = ({
       queryClient.invalidateQueries({
         queryKey: ["searchAds"],
         exact: false,
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["bonusStatus", userId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["referralStats", userId],
       });
 
       refetchWallet();
