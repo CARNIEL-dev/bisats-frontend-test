@@ -72,7 +72,7 @@ const AdDetails = () => {
           <h2 className="font-semibold md:text-3xl text-xl">
             {mode ? "Edit Ad" : "Ad details"}
           </h2>
-          {!isClosed && (
+          {!isClosed && !isFetching && (
             <Button
               size={"sm"}
               variant={"outline"}
