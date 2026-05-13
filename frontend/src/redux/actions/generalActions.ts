@@ -66,10 +66,8 @@ const useFetchUserNotifications = ({
     queryKey: ["userNotifications", userId],
     queryFn: GetNotification,
     retry: false,
-    staleTime: 5 * 60 * 1000, // 5 minutes
     enabled: Boolean(userId && isKycVerified),
-    refetchOnMount: false,
-    // refetchInterval: 2 * 60 * 1000, // 2 minutes
+    refetchInterval: 2 * 60 * 1000,
   });
 };
 
