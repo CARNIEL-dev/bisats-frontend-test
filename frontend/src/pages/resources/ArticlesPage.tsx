@@ -2,6 +2,7 @@ import { container } from "@/components/animation";
 import { SelectDropDown } from "@/components/Inputs/MultiSelectInput";
 import SearchInput from "@/components/Inputs/SearchInput";
 import ErrorDisplay from "@/components/shared/ErrorDisplay";
+import SEO from "@/components/shared/SEO";
 import { Button } from "@/components/ui/Button";
 import PreLoader from "@/layouts/PreLoader";
 import ArticleCard from "@/pages/resources/components/ArticleCard";
@@ -113,10 +114,16 @@ const ArticlesPage = () => {
 
   const isLoading = categoriesLoading || postsLoading;
 
-  if (isLoading) return <PreLoader />;
+  if (isLoading)
+    return (
+      <div className="min-h-[60dvh] grid place-content-center">
+        <PreLoader primary={false} />
+      </div>
+    );
 
   return (
     <div className="space-y-6 overflow-hidden w-full">
+      <SEO title="Articles " />
       {/* Category filter — dropdown on mobile, pills on desktop */}
       <div className="md:hidden">
         <SelectDropDown
@@ -183,7 +190,13 @@ const ArticlesPage = () => {
 
       {/* Articles grid */}
       {isError ? (
-        <ErrorDisplay message={(error as Error)?.message} />
+        <div className="min-h-[30dvh] grid place-content-center">
+          <ErrorDisplay
+            message={(error as Error)?.message}
+            isError={false}
+            showIcon={false}
+          />
+        </div>
       ) : articles.length === 0 ? (
         <div className="text-center py-16 text-muted-foreground">
           <p className="text-lg font-medium">No articles found</p>

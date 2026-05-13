@@ -21,18 +21,20 @@ import { AnimatePresence, motion } from "motion/react";
 import { Link, useLocation } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 
-const refreshPaths = [
-  APP_ROUTES.P2P.MARKETPLACE,
-  APP_ROUTES.DASHBOARD,
-  APP_ROUTES.WALLET.HOME,
-];
-
 const Notification = () => {
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const userState: UserState = useSelector((state: any) => state.user);
   const userId: string = userState?.user?.userId || "";
   const pathName = useLocation().pathname;
   const queryClient = useQueryClient();
+
+  useEffect(() => {
+    queryClient.invalidateQueries({
+      queryKey: ["userNotifications", userId],
+      // stale: true,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathName]);
 
   const isKycVerified = [
     userState?.kyc?.identificationVerified,
@@ -53,16 +55,6 @@ const Notification = () => {
     userId,
     isKycVerified,
   });
-
-  useEffect(() => {
-    if (refreshPaths.includes(pathName)) {
-      queryClient.invalidateQueries({
-        queryKey: ["userNotifications", userId],
-        stale: true,
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathName]);
 
   const notificationData = useMemo(() => {
     const notifications = notificationState?.notifications || [];

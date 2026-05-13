@@ -7,7 +7,10 @@ import { useSelector } from "react-redux";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import useInactivityTimeout from "@/hooks/use-inactivity-timeout";
 import SessionExpiredModal from "@/components/Modals/SessionExpiredModal";
-import { resetSessionExpiredFlag } from "@/redux/fetchWrapper";
+import {
+  getSessionExpiredFlag,
+  resetSessionExpiredFlag,
+} from "@/redux/fetchWrapper";
 
 type SessionState = "active" | "inactive" | "expired";
 
@@ -26,6 +29,15 @@ const AuthGuard: React.FC = () => {
   const { resetTimer } = useInactivityTimeout(
     userState.isAuthenticated && sessionState === "active",
   );
+
+  // On mount: if the session already expired while the user was on a public page
+  // (the "session-expired" event fired before this component existed), show the
+  // modal immediately instead of waiting for a page refresh.
+  useEffect(() => {
+    if (getSessionExpiredFlag()) {
+      setSessionState("expired");
+    }
+  }, []);
 
   // Listen for inactivity warning
   useEffect(() => {

@@ -51,6 +51,10 @@ export const resetSessionExpiredFlag = () => {
   sessionExpired = false;
 };
 
+/** Read the current expired state — used by AuthGuard on mount to catch
+ *  expirations that fired before the guard was rendered. */
+export const getSessionExpiredFlag = () => sessionExpired;
+
 /**
  * Performs a token refresh with two layers of protection:
  * 1. navigator.locks — cross-tab: only one tab refreshes at a time

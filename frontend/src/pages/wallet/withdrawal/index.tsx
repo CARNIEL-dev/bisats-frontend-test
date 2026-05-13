@@ -571,6 +571,7 @@ const NGNWithdrawal = ({
         <WithdrawalProcessingModal
           isOpen={processingModal}
           reference={withdrawalData.referenceId}
+          approvalRequired={true}
           onComplete={() => {
             setProcessingModal(false);
             navigate(APP_ROUTES.WALLET.HOME);

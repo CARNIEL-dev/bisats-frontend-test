@@ -20,6 +20,7 @@ interface WithdrawalProcessingModalProps {
   onComplete: () => void;
   steps?: Step[];
   title?: string;
+  approvalRequired?: boolean;
 }
 
 const WithdrawalProcessingModal: React.FC<WithdrawalProcessingModalProps> = ({
@@ -28,6 +29,7 @@ const WithdrawalProcessingModal: React.FC<WithdrawalProcessingModalProps> = ({
   onComplete,
   steps = DEFAULT_NGN_STEPS,
   title = "Processing Withdrawal",
+  approvalRequired = false,
 }) => {
   const queryClient = useQueryClient();
   const { refetchWallet } = useGetWallet();
@@ -42,8 +44,9 @@ const WithdrawalProcessingModal: React.FC<WithdrawalProcessingModalProps> = ({
     ]);
   };
 
+  // When approvalRequired, pass null to disable all polling
   const { currentStep, isTimedOut } = useWithdrawalStatus({
-    reference,
+    reference: approvalRequired ? null : reference,
     onSuccess: handleSuccess,
   });
 
@@ -57,22 +60,41 @@ const WithdrawalProcessingModal: React.FC<WithdrawalProcessingModalProps> = ({
           {title}
         </h4>
 
-        <div className="w-full px-1 mb-6">
-          <StepProgress
-            steps={steps}
-            currentStep={currentStep}
-            isTimedOut={isTimedOut}
-            timedOutMessage={TIMED_OUT_MESSAGE}
-          />
-        </div>
+        {approvalRequired ? (
+          <>
+            <div className="w-full px-1 mb-6 text-center">
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                Your withdrawal request has been received and is currently being
+                processed. It will be settled as soon as possible.
+              </p>
+            </div>
+            <PrimaryButton
+              className="w-full !h-12"
+              text="Close"
+              loading={false}
+              onClick={onComplete}
+            />
+          </>
+        ) : (
+          <>
+            <div className="w-full px-1 mb-6">
+              <StepProgress
+                steps={steps}
+                currentStep={currentStep}
+                isTimedOut={isTimedOut}
+                timedOutMessage={TIMED_OUT_MESSAGE}
+              />
+            </div>
 
-        {showButton && (
-          <PrimaryButton
-            className="w-full !h-12"
-            text={isComplete ? "Done" : "Close"}
-            loading={false}
-            onClick={onComplete}
-          />
+            {showButton && (
+              <PrimaryButton
+                className="w-full !h-12"
+                text={isComplete ? "Done" : "Close"}
+                loading={false}
+                onClick={onComplete}
+              />
+            )}
+          </>
         )}
       </div>
     </ModalTemplate>

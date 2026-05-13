@@ -8,7 +8,7 @@ import type {
 } from "@/types/resources";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 
-const BASE_URL = BACKEND_URLS.BASE_URL;
+const BASE_URL = BACKEND_URLS.RESOURCES_BASE_URL;
 
 async function resourceFetch<T>(
   endpoint: string,
